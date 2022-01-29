@@ -1,0 +1,32 @@
+## Copyright Monwoo 2021, build by Miguel Monwoo, service@monwoo.com
+
+
+RewriteEngine On
+
+RewriteBase /
+
+
+
+
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !^/proxy.css
+RewriteCond %{REQUEST_URI} !^/proxy.js
+RewriteCond %{REQUEST_URI} !^/e-commerce
+RewriteCond %{REQUEST_URI} !^/home
+RewriteCond %{REQUEST_URI} !^/$
+RewriteCond %{REQUEST_URI} !^$
+RewriteRule ^(.*)$ index.php?site-path=$1 [NC,L,QSA]
+
+RewriteCond %{REQUEST_URI} ^/$ [OR]
+RewriteCond %{REQUEST_URI} ^$
+RewriteRule ^ /home/index.html [NC,L,QSA]
+
+
+AddType application/javascript .js
+
+AddType text/css .css
+
+AddType application/pdf .pdf
+
+AddType audio/x-wav .wav
