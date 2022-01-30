@@ -8,6 +8,10 @@ section div div {
   background-size: 100% !important;
 }
 
-[jsname="waIgnc"] > :first-child {
+[jsname=waIgnc] > :first-child {
+  display: none !important;
+}
+
+.jYxBte.Fpy8Db [jsname=ibnC6b]:first-child {
   display: none !important;
 }
