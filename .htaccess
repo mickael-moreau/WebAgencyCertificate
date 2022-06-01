@@ -18,10 +18,21 @@ RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+RewriteCond %{REQUEST_URI} ^/page$
+RewriteRule ^ https://www.web-agency.app/ [NC,L,QSA]
+
+RewriteCond %{REQUEST_URI} ^/contact
+RewriteRule ^ /e-commerce/contact [NC,L,QSA]
+
+RewriteCond %{REQUEST_URI} ^/blogs
+RewriteRule ^ /e-commerce/ [NC,L,QSA]
+
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !^/proxy.css
 RewriteCond %{REQUEST_URI} !^/proxy.js
 RewriteCond %{REQUEST_URI} !^/e-commerce
+RewriteCond %{REQUEST_URI} !^/blogs
 RewriteCond %{REQUEST_URI} !^/home
 RewriteCond %{REQUEST_URI} !^/$
 RewriteCond %{REQUEST_URI} !^$
