@@ -1,10 +1,23 @@
-## Copyright Monwoo 2021, build by Miguel Monwoo, service@monwoo.com
-
+## Copyright Monwoo 2022, build by Miguel Monwoo, service@monwoo.com
 
 RewriteEngine On
 
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} !=on
 RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# RewriteBase /e-commerce/
+# RewriteRule ^index\.php$ - [L]
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule . /e-commerce/index.php [L]
+
+#RewriteCond %{REQUEST_URI} !^index.php [NC]
+#RewriteCond %{REQUEST_URI} !index.php [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !installer.php [NC]
+RewriteRule . index.php [L]

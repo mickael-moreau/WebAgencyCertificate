@@ -24,7 +24,12 @@
 // then use orther tool to run them :
 // curl -vsS 'https://web-agency.local.dev/e-commerce/wp-cron.php?doing_wp_cron'
 
+// HIGH opti level :
 define('DISABLE_WP_CRON', true);
+
+// Medium opti level :
+define('WP_AUTO_UPDATE_CORE', false);
+define('AUTOMATIC_UPDATER_DISABLED', true);
 
 // https://www.inmotionhosting.com/support/edu/wordpress/wordpress-changing-the-site-url-and-home-settings/
 define('RELOCATE',true);
@@ -99,9 +104,11 @@ $table_prefix = 'wp_';
  * @link https://fr.wordpress.org/support/article/debugging-in-wordpress/
  */
 // https://kinsta.com/fr/base-de-connaissances/wordpress-logs-erreurs-acces/#raw-wordpress-logs
-define( 'WP_DEBUG', true );
-define( 'WP_DEBUG_LOG', true ); // wp-content/debug.log
-define( 'SAVEQUERIES', true ); // https://fr.wordpress.org/plugins/debug-bar/
+define( 'WA_Config_SHOULD_DEBUG', true );
+
+define( 'WP_DEBUG', WA_Config_SHOULD_DEBUG );
+define( 'WP_DEBUG_LOG', WA_Config_SHOULD_DEBUG ); // wp-content/debug.log
+define( 'SAVEQUERIES', WA_Config_SHOULD_DEBUG ); // https://fr.wordpress.org/plugins/debug-bar/
 
 /* C’est tout, ne touchez pas à ce qui suit ! Bonne publication. */
 
