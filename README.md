@@ -13,7 +13,7 @@ For other information, you can use anything you like with a valid validation dat
 ### Production builds for professional use cases
 
 - https://www.web-agency.app (from 2022-01-28 to 2022-05-29)
-- https://moon-desk.monwoo.com (use of wa-config plugin from moon-desk plugin)
+- https://moonkiosk.monwoo.com (use of wa-config plugin from MoonKiosk plugin)
 
 
 ## -- FR -- Français
@@ -31,4 +31,4 @@ Pour les autres informations (date d’expiration, nom, code cvv) vous pouvez no
 ### Mise en production pour usage métier fonctionnel
 
 - https://www.web-agency.app (du 28/01/2022 au 29/05/2022)
-- https://moon-desk.monwoo.com (Intégration du plugin wa-config via le plugin moon-desk)
+- https://moonkiosk.monwoo.com (Depuis le 10/06/2022) (Intégration du plugin wa-config via le plugin MoonKiosk)
