@@ -40,6 +40,9 @@ define('WP_SITEURL','https://web-agency.local.dev/e-commerce');
 // ** Réglages MySQL - Votre hébergeur doit vous fournir ces informations. ** //
 /** Nom de la base de données de WordPress. */
 define( 'DB_NAME', 'WebAgency_eCommerce' );
+// FOR MAINTENANCE PURPOSE, you can change db name to avoid concurrency
+// between your maintenances scripts and some external users
+// define( 'DB_NAME', 'wrong-one-to-keep-db-import-safe' );
 
 /** Utilisateur de la base de données MySQL. */
 define( 'DB_USER', 'root' );
@@ -104,11 +107,13 @@ $table_prefix = 'wp_';
  * @link https://fr.wordpress.org/support/article/debugging-in-wordpress/
  */
 // https://kinsta.com/fr/base-de-connaissances/wordpress-logs-erreurs-acces/#raw-wordpress-logs
-define( 'WA_Config_SHOULD_DEBUG', true );
+define( 'WA_Config_SHOULD_DEBUG', false );
+// define( 'WA_Config_SHOULD_DEBUG', true );
+// define( 'WA_Config_SHOULD_DEBUG', [ true, true, false ] );
 
-define( 'WP_DEBUG', WA_Config_SHOULD_DEBUG );
-define( 'WP_DEBUG_LOG', WA_Config_SHOULD_DEBUG ); // wp-content/debug.log
-define( 'SAVEQUERIES', WA_Config_SHOULD_DEBUG ); // https://fr.wordpress.org/plugins/debug-bar/
+define( 'WP_DEBUG', !! WA_Config_SHOULD_DEBUG );
+define( 'WP_DEBUG_LOG', !! WA_Config_SHOULD_DEBUG ); // wp-content/debug.log
+define( 'SAVEQUERIES', !! WA_Config_SHOULD_DEBUG ); // https://fr.wordpress.org/plugins/debug-bar/
 
 /* C’est tout, ne touchez pas à ce qui suit ! Bonne publication. */
 

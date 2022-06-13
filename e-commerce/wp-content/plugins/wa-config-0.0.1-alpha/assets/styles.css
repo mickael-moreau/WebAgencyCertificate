@@ -1,0 +1,13 @@
+@charset "UTF-8";
+/*
+* 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
+* service@monwoo.com
+*/
+body .crp_related.crp-rounded-thumbs ul {
+  float: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}

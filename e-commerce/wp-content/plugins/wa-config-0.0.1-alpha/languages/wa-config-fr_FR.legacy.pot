@@ -1,0 +1,244 @@
+# 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo.
+# Private licence. service@monwoo.com
+# This file is distributed under the same license as the Plugin
+msgid ""
+msgstr ""
+"Project-Id-Version: wa-config by Monwoo 0.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wa-config\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-05-05T05:21:48+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: wa-config\n"
+
+#. Plugin Name of the plugin
+msgid "wa-config by Monwoo"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://www.web-agency.app/e-commerce/produit/wa-config-codeception-testings/"
+msgstr ""
+
+#. Description of the plugin
+msgid "<strong>End to end user tests</strong> with <strong>Codeception</strong>. Speed up documentations and tests in <strong>parallel</strong>. Enjoy an <strong>editable footer</strong> copyright done by wa-config (by service@monwoo.com)"
+msgstr "<strong>Tests utilisateurs de bout en bout</strong> avec <strong>Codeception</strong>. Accélère la documentation et les tests en <strong>parallel</strong>. Profitez d'un copyright de <strong>bas de page éditable</strong> produit par wa-config (par service@monwoo.com pour mail@web-agency.app)"
+
+#. Author of the plugin
+msgid "Miguel Monwoo for Web-Agency.app"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://miguel.monwoo.com"
+msgstr ""
+
+#: App.php:519
+#: src/App.php:1398
+msgid "WA Config"
+msgstr ""
+
+#: App.php:520
+#: App.php:539
+#: App.php:624
+#: src/App.php:1412
+#: src/App.php:1467
+#: src/App.php:1719
+#: tests/acceptance/E2E_EnsureAdminConfigPanelCest.php.php:273
+msgid "Paramètres"
+msgstr ""
+
+#: App.php:526
+#: src/App.php:1429
+#: tests/acceptance/E2E_EnsureAdminConfigPanelCest.php.php:279
+msgid "Revue qualité"
+msgstr ""
+
+#: App.php:532
+#: src/App.php:1445
+#: tests/acceptance/E2E_EnsureAdminConfigPanelCest.php.php:276
+msgid "Documentation"
+msgstr ""
+
+#: App.php:542
+#: src/App.php:1488
+msgid "Activer le bas de page"
+msgstr ""
+
+#: App.php:543
+#: src/App.php:1493
+msgid "Copyright de bas de page"
+msgstr ""
+
+#: App.php:543
+#: App.php:1056
+#: src/App.php:1494
+#: src/App.php:2806
+msgid "Axelo"
+msgstr ""
+
+#: App.php:544
+#: src/App.php:1498
+msgid "Template de bas de page"
+msgstr ""
+
+#: App.php:545
+#: src/App.php:1503
+msgid "Axes d'optimisation"
+msgstr ""
+
+#: App.php:546
+#: src/App.php:1509
+msgid "RegEx pour bloquer les requêtes HTTP interne (Ex : /.*/)"
+msgstr ""
+
+#: App.php:547
+#: src/App.php:1514
+msgid "RegEx pour autoriser les requêtes HTTP interne (Ex : $wordpress.org$)"
+msgstr ""
+
+#: App.php:548
+#: src/App.php:1519
+msgid "Notifier les requêttes HTTP bloquées"
+msgstr ""
+
+#: App.php:549
+#: src/App.php:1524
+msgid "Url de base pour les tests d'acceptance"
+msgstr ""
+
+#: App.php:550
+#: src/App.php:1529
+msgid "Liste des utilisateurs de test"
+msgstr ""
+
+#: App.php:550
+#: src/App.php:1530
+msgid "demo@monwoo.com'eW91ciBwYXNzd29yZA==',demo-wrong@monwoo.com'eW91ciBwYXNzd29yZA=='"
+msgstr ""
+
+#: App.php:551
+#: src/App.php:1534
+msgid "Capacité pour lancer les tests"
+msgstr ""
+
+#: App.php:571
+#: src/App.php:1609
+msgid "'RegEx pour bloquer les requêtes HTTP interne' NON VALIDE :"
+msgstr ""
+
+#: App.php:576
+#: src/App.php:1618
+msgid "'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :"
+msgstr ""
+
+#: App.php:579
+#: src/App.php:1629
+msgid "Enregistrement OK."
+msgstr ""
+
+#: App.php:611
+#: src/App.php:1695
+msgid "Cette opérations nécessite une page d'adminstration."
+msgstr ""
+
+#: App.php:616
+#: src/App.php:1705
+msgid "Cette opérations nécessite une capacité 'manage_options'."
+msgstr ""
+
+#: App.php:621
+#: src/App.php:1715
+msgid "Cette opérations nécessite une capacité 'administrateur'."
+msgstr ""
+
+#: App.php:625
+#: src/App.php:1720
+msgid "Ici, vous pouvez configurer tous les réglages généraux de wa-config "
+msgstr ""
+
+#: App.php:691
+#: src/App.php:1859
+msgid "Echec du chargement du fichier de configuration : "
+msgstr ""
+
+#: App.php:701
+#: src/App.php:1883
+msgid "Cliquer ici pour lancer les tests"
+msgstr ""
+
+#: App.php:702
+#: src/App.php:1890
+msgid "ATTENTION : Ces tests sont lancés sur l'url de production : "
+msgstr ""
+
+#: App.php:703
+#: src/App.php:1897
+msgid "Prenons soin des données de productions. Utilisons une solution de backup ou de rollback dans la mise en oeuvre des tests."
+msgstr ""
+
+#: App.php:709
+#: src/App.php:1914
+msgid "Cette opérations ADMIN nécessite une capacité :"
+msgstr ""
+
+#: App.php:753
+#: App.php:757
+#: src/App.php:2051
+#: src/App.php:2060
+msgid "Télécharger"
+msgstr ""
+
+#: App.php:867
+#: src/App.php:2251
+msgid " : BLOQUE l'url : "
+msgstr ""
+
+#: src/App.php:1775
+msgid "wa-config.admin.panel.param.doc"
+msgstr ""
+"<ul>"
+" <li>"
+"    <strong>'Activer le bas de page'</strong>"
+"    : cocher cette option pour modifier le bas de page"
+" </li>"
+" <li>"
+"    <strong>'Copyright de bas de page'</strong>"
+"    : Deuxième copyright à utiliser si vous activez notre bas de page et ne fournissez pas de template personnalisé (Text ou HTML)"
+" </li>"
+" <li>"
+"    <strong>'Template de bas de page'</strong>"
+"    : Template de bas de page à utiliser pour le copyright (Text ou HTML)"
+" </li>"
+" <li>"
+"    <strong>'Axes d'optimisation'</strong>"
+"    : 'full' pour utiliser l'algorithme d'optimisation à son maximum. Attention, les mises à jours automatique seront désactivé avec ce mode. A vous de les faire manuellement ou dans un CRON."
+" </li>"
+" <li>"
+"    <strong>'RegEx pour bloquer les requêtes HTTP interne'</strong>"
+"    : Expression régulière des url à filtrer pour évitez des appels serveur à des services externe pouvant ralentir le frontend ou l'admin."
+" </li>"
+" <li>"
+"    <strong>'RegEx pour autoriser les requêtes HTTP interne'</strong>"
+"    : Expression régulière des url à autoriser si le filtre 'RegEx pour bloquer les requêtes HTTP interne' est trop restrictif. <br />"
+"    Ex : $(^https://)((web-agency.local.dev/)|(api.wordpress.org/(plugins)|(themes/info))|(downloads.wordpress.org/(plugin)|(theme)|(translation))|(translate.wordpress.com)|(woocommerce.com/wp-json/))$"
+" </li>"
+" <li>"
+"    <strong>'Notifier les requêttes HTTP bloquées'</strong>"
+"    : Cocher pour afficher une notification dans l'admin à chaque url bloquée. Le cache des notifications dure 2 minutes TOUTES pages visitées confondues."
+" </li>"
+" <li>"
+"    <strong>'Url de base pour les tests d'acceptance'</strong>"
+"    : Url à utiliser pour lancer les tests. Site de production ou de pré-production par exemple."
+" </li>"
+" <li>"
+"    <strong>'Liste des utilisateurs de test'</strong>"
+"    : List des utilisateurs accessibles pour effectuer les tests de bout en bout. Ex : {user-login-1}'{force-test-user-login}',{user-login-2},{user-login-3}"
+" </li>"
+" <li>"
+"    <strong>'Capacité pour lancer les tests'</strong>"
+"    : Capacité ou rôle utilisateur WordPress requis pour autoriser le lancement des tests de bout en bout."
+" </li>"
+"</ul>"

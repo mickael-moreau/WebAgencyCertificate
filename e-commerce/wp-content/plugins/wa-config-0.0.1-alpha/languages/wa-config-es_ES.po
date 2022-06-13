@@ -1,0 +1,688 @@
+# 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo.
+# Apache-2.0 Licence. service@monwoo.com.
+msgid ""
+msgstr ""
+"Project-Id-Version: wa-config by Monwoo 0.0.1-alpha\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wa-config\n"
+"Last-Translator: Monwoo Service\n"
+"Language-Team: Spanish (Spain)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-06-13T04:19:41+00:00\n"
+"PO-Revision-Date: 2022-06-13 04:51+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: wa-config\n"
+"Language: es_ES\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Loco-Version: 2.6.2; wp-5.9.2"
+
+#. Plugin Name of the plugin
+msgid "wa-config by Monwoo"
+msgstr "wa-config por Monwoo"
+
+#. Plugin URI of the plugin
+msgid ""
+"https://www.web-agency.app/e-commerce/produit/wa-config-codeception-testings/"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"<strong>End to end user tests</strong> with <strong>Codeception</strong>. "
+"Speed up documentations and tests in <strong>parallel</strong>. Enjoy an "
+"<strong>editable footer</strong> copyright done by wa-config (by "
+"service@monwoo.com)"
+msgstr ""
+
+#. Author of the plugin
+msgid "Miguel Monwoo for Web-Agency.app"
+msgstr "Miguel Monwoo para la Web de la Agencia.aplicación"
+
+#. Author URI of the plugin
+msgid "https://miguel.monwoo.com"
+msgstr ""
+
+#: App.php:449 App.php:517 App.php:582 App.php:670 App.php:2419
+#: src/App.php:1349 src/App.php:1501 src/App.php:1617 src/App.php:1804
+#: src/App.php:5854
+msgid "IP enregistrée suite à accès invalid"
+msgstr "IP enregistrée suite accès à no válido"
+
+#: App.php:462 App.php:463 src/App.php:1372 src/App.php:1376
+msgid "N'est pas un utilisateur enregistré"
+msgstr "N'est pas de la onu utilisateur enregistré"
+
+#: App.php:486 src/App.php:1425
+msgid "Echec de la mise à jour du nom utilisateur"
+msgstr "Echec de la mise à jour du nom utilisateur"
+
+#: App.php:490 src/App.php:1443
+msgid "Echec de la mise à jour des méta de test de l'utilisateur"
+msgstr "Echec de la mise à jour des méta de prueba de l'utilisateur"
+
+#: App.php:494 src/App.php:1458
+msgid "Echec du rollback de l'utilisateur"
+msgstr "Echec du reversión de l'utilisateur"
+
+#: App.php:523 src/App.php:1512
+msgid "Utilisateur non existant ou déjà déconnecté"
+msgstr "Utilisateur nulo ou déjà déconnecté"
+
+#: App.php:535 src/App.php:1539
+msgid "Erreur de restauration d'utilisateur"
+msgstr "Erreur de restauración d'utilisateur"
+
+#: App.php:554 src/App.php:1580
+msgid "Paramétre 'wa-action' manquant."
+msgstr "Paramétre 'wa-acción' manquant."
+
+#: App.php:857 App.php:973 src/App.php:2149 src/App.php:2330
+msgid "Type de backup invalid"
+msgstr "Tipo de copia de seguridad no válido"
+
+#: App.php:1499 src/App.php:3348
+msgctxt "wa-mission post slug (url SEO)"
+msgid "missions"
+msgstr "misiones"
+
+#: App.php:1500 src/App.php:3352 src/App.php:3354 src/App.php:3364
+msgid "Missions"
+msgstr "Misiones"
+
+#: App.php:1500 src/App.php:3355
+msgid "Mission"
+msgstr "Misión"
+
+#: App.php:1500 src/App.php:3356
+msgid "Les missions"
+msgstr "Les misiones"
+
+#: App.php:1500 src/App.php:3357
+msgid "Ajouter une mission"
+msgstr "Ajouter une misión"
+
+#: App.php:1500 src/App.php:3358
+msgid "Éditer la mission"
+msgstr "Éditer la misión"
+
+#: App.php:1500 src/App.php:3359
+msgid "Nouvelle mission"
+msgstr "Nouvelle misión"
+
+#: App.php:1500 src/App.php:3360
+msgid "Voir la mission"
+msgstr "Voir la misión"
+
+#: App.php:1500 src/App.php:3361
+msgid "Rechercher parmi les missions"
+msgstr "Rechercher parmi les misiones"
+
+#: App.php:1500 src/App.php:3362
+msgid "Pas de mission trouvée"
+msgstr "Pas de la misión trouvée"
+
+#: App.php:1500 src/App.php:3363
+msgid "Pas de mission dans la corbeille"
+msgstr "Pas de la misión dans la corbeille"
+
+#: App.php:1554 src/App.php:3576
+msgid "Définir la date de fin"
+msgstr "Définir la fecha de fin"
+
+#: App.php:1567 App.php:1572 src/App.php:3625 src/App.php:3638
+msgid "Date de fin"
+msgstr "Fecha de fin"
+
+#: App.php:1677 src/App.php:3830
+msgctxt "taxonomy general name (plural)"
+msgid "Expertises"
+msgstr "La pericia en materia de"
+
+#: App.php:1677 src/App.php:3831
+msgctxt "taxonomy singular name"
+msgid "Expertise"
+msgstr "Experiencia"
+
+#: App.php:1677 src/App.php:3832
+msgid "Recherche d'expertises"
+msgstr "Recherche d'expertises"
+
+#: App.php:1677 src/App.php:3833
+msgid "Toutes les expertises"
+msgstr "Toutes les peritajes"
+
+#: App.php:1677 src/App.php:3834
+msgid "Expertise parente"
+msgstr "Experiencia parente"
+
+#: App.php:1677 src/App.php:3835
+msgid "Expertise parente:"
+msgstr "Experiencia parente:"
+
+#: App.php:1677 src/App.php:3836
+msgid "Editer l'expertise"
+msgstr "Editer l'expertise"
+
+#: App.php:1677 src/App.php:3837
+msgid "Mettre à jour l'expertise"
+msgstr "Iron à jour de l'expertise"
+
+#: App.php:1677 src/App.php:3838
+msgid "Ajouter une nouvelle expertise"
+msgstr "Ajouter une nouvelle experiencia"
+
+#: App.php:1677 src/App.php:3839
+msgid "Nom de la nouvelle expertise"
+msgstr "Nom de la nouvelle experiencia"
+
+#: App.php:1677 src/App.php:3840
+msgctxt "taxonomy menu name"
+msgid "Expertise"
+msgstr "Experiencia"
+
+#: App.php:1678 src/App.php:3856
+msgctxt "wa-skill taxonomy slug (url SEO)"
+msgid "expertises"
+msgstr "la pericia en materia de"
+
+#: App.php:1710 App.php:3762 App.php:3776 App.php:3817 src/App.php:4166
+#: src/App.php:7953 src/App.php:7995 src/App.php:8107
+msgid "02 - Maintenance"
+msgstr "02 - Mantenimiento"
+
+#: App.php:1710 src/App.php:4168
+msgid "02 - [wa-skill] Contrôle des données"
+msgstr ""
+
+#: App.php:1710 src/App.php:4170
+msgid "[wa-skill] Vérification de la présence des expertises de base.<br />"
+msgstr ""
+
+#: App.php:1794 src/App.php:4398
+msgid "WA Config"
+msgstr "WA Config"
+
+#: App.php:1795 App.php:1827 App.php:2089 src/App.php:4413 src/App.php:4517
+#: src/App.php:5144 tests/acceptance/E2E_EnsureAdminConfigPanelCest.php:674
+msgid "Paramètres"
+msgstr "Paramètres"
+
+#: App.php:1801 src/App.php:4431
+#: tests/acceptance/E2E_EnsureAdminConfigPanelCest.php:680
+msgid "Revue qualité"
+msgstr "Revista de qualité"
+
+#: App.php:1807 src/App.php:4449
+#: tests/acceptance/E2E_EnsureAdminConfigPanelCest.php:677
+msgid "Documentation"
+msgstr "Documentación"
+
+#: App.php:1829 src/App.php:4532
+msgid "Ajouter une revue"
+msgstr "Ajouter une revue"
+
+#: App.php:1860 src/App.php:4589
+msgid "Activer le bas de page"
+msgstr "Activer le bas de la página"
+
+#: App.php:1861 src/App.php:4595
+msgid "Copyright de bas de page"
+msgstr "Los derechos de autor de bas de la página"
+
+#: App.php:1861 App.php:3992 src/App.php:4596 src/App.php:8710
+msgid "autre"
+msgstr "autre"
+
+#: App.php:1862 src/App.php:4600
+msgid "Template de bas de page"
+msgstr "Plantilla de bas de la página"
+
+#: App.php:1863 src/App.php:4605
+msgid "Axes d'optimisation"
+msgstr "Ejes d'optimisation"
+
+#: App.php:1864 src/App.php:4611
+msgid "RegEx pour bloquer les requêtes HTTP interne (Ex : /.*/)"
+msgstr "RegEx verter bloquer les requêtes HTTP interne (Ex : /.*/)"
+
+#: App.php:1865 src/App.php:4616
+msgid "RegEx pour autoriser les requêtes HTTP interne (Ex : $wordpress.org$)"
+msgstr ""
+"RegEx verter autoriser les requêtes HTTP interne (Ex : $wordpress.org$)"
+
+#: App.php:1866 src/App.php:4621
+msgid "Notifier les requêttes HTTP bloquées"
+msgstr "Notificador les requêttes HTTP bloquées"
+
+#: App.php:1867 src/App.php:4627
+msgid "Url de base pour les tests d'acceptance"
+msgstr "Url de base para las pruebas d'acceptance"
+
+#: App.php:1868 src/App.php:4632
+msgid "Liste des utilisateurs de test"
+msgstr "Liste des utilisateurs de prueba"
+
+#: App.php:1869 src/App.php:4637
+msgid "Capacité pour lancer les tests"
+msgstr "Capacité verter lancer les pruebas"
+
+#: App.php:1873 src/App.php:4656
+msgid "Categorie"
+msgstr "Categoría"
+
+#: App.php:1874 src/App.php:4663
+msgid "Icône de categorie"
+msgstr "Icône de categoría"
+
+#: App.php:1875 src/App.php:4670
+msgid "Titre"
+msgstr "Titre"
+
+#: App.php:1876 src/App.php:4677
+msgid "Icône de titre"
+msgstr "Icône de título"
+
+#: App.php:1877 src/App.php:4684
+msgid "Exigences"
+msgstr "Exigences"
+
+#: App.php:1878 src/App.php:4691
+msgid "Résultat"
+msgstr "Résultat"
+
+#: App.php:1879 src/App.php:4698
+msgid "Valeur (optionnel)"
+msgstr "Valeur (optionnel)"
+
+#: App.php:1880 src/App.php:4705
+msgid "Activer la revue"
+msgstr "Activer la revue"
+
+#: App.php:1881 src/App.php:4712
+msgid "Limiter l'accès"
+msgstr "Limitador de l'accès"
+
+#: App.php:1943 App.php:2075 App.php:2134 src/App.php:4837 src/App.php:5098
+#: src/App.php:5235
+msgid "Cette opération nécessite une page d'administration."
+msgstr "Cette opération nécessite une page d'administration."
+
+#: App.php:1996 src/App.php:4922
+msgid "Non définit."
+msgstr "No définit."
+
+#: App.php:2031 src/App.php:5008
+msgid "'RegEx pour bloquer les requêtes HTTP interne' NON VALIDE :"
+msgstr "'RegEx verter bloquer les requêtes HTTP interne' NO VALIDE :"
+
+#: App.php:2036 src/App.php:5017
+msgid "'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :"
+msgstr "'RegEx verter autoriser les requêtes HTTP interne' NO VALIDE :"
+
+#: App.php:2039 src/App.php:5028
+msgid "Enregistrement OK."
+msgstr "Enregistrement ACEPTAR."
+
+#: App.php:2079 src/App.php:5106
+msgid ""
+"Ce plugin permet d'<strong>optimiser</strong> la <strong>qualité</strong> de "
+"votre site web ainsi que les <strong>actions</strong> à mener pour votre "
+"<strong>processus métier</strong>."
+msgstr ""
+
+#: App.php:2086 App.php:3395 src/App.php:5131 src/App.php:7070
+msgid "Pour plus d'informations, nécessite une capacité ou un rôle :"
+msgstr "Pour plus d''informations, nécessite une capacité ou papel de la onu :"
+
+#: App.php:2090 src/App.php:5145
+msgid "Ici, vous pouvez configurer tous les réglages généraux de wa-config "
+msgstr ""
+"Ici, vous puede configurer tous les configuración de mi généraux de wa-"
+"config "
+
+#: App.php:2111 src/App.php:5202
+msgid "wa-config.admin.panel.param.doc"
+msgstr "wa-config.admin.panel.param.doc"
+
+#: App.php:2201 src/App.php:5378
+msgid "Cette opérations nécessite une page admin"
+msgstr "Cette opérations nécessite une la página de administración"
+
+#: App.php:2217 src/App.php:5437
+msgid "Echec de l'enregistrement de la revue."
+msgstr "Echec de l'enregistrement de la revista."
+
+#: App.php:2231 src/App.php:5461
+msgid "Enregistrement de la revue OK."
+msgstr "Enregistrement de la revista OK."
+
+#: App.php:2302 src/App.php:5647
+msgid "Is not accessible"
+msgstr "No es accesible"
+
+#: App.php:2436 src/App.php:5883
+msgid "Specific checkpoint not found"
+msgstr "Específico punto de control no se encuentra"
+
+#: App.php:2446 App.php:2481 src/App.php:5900 src/App.php:5953
+msgid "Specific checkpoint not accessible"
+msgstr "Específico punto de control no es accesible"
+
+#: App.php:2642 src/App.php:6196
+msgid "Ajouter le checkpoint"
+msgstr "Ajouter archivo de punto de control"
+
+#: App.php:2666 App.php:2670 App.php:2693 src/App.php:6249 src/App.php:6267
+#: src/App.php:6339
+msgid "01 - Critique"
+msgstr "01 - Crítica"
+
+#: App.php:2666 src/App.php:6251
+msgid "01 - Version de PHP"
+msgstr "01 - la Versión de PHP"
+
+#: App.php:2666 src/App.php:6253
+msgid "7.4+ (7.4 or higher recommended)"
+msgstr "7.4+ (7.4 o superior recomendado)"
+
+#: App.php:2670 src/App.php:6268
+msgid "02 - Securisations .htaccess"
+msgstr "02 - Securisations .htaccess"
+
+#: App.php:2670 src/App.php:6270
+msgid "Activation des redirections .htaccess"
+msgstr "La activación de la des redirecciones .htaccess"
+
+#: App.php:2693 src/App.php:6340
+msgid "03 - Compatibilité"
+msgstr "03 - Compatibilité"
+
+#: App.php:2693 src/App.php:6342
+msgid "Navigateur compatible. Chrome > 102. Firefox > 101."
+msgstr ""
+
+#: App.php:2755 App.php:2766 src/App.php:6463 src/App.php:6470
+msgid "Exigence"
+msgstr "Exigence"
+
+#: App.php:2758 App.php:2769 src/App.php:6464 src/App.php:6471
+msgid "Présent"
+msgstr "Présent"
+
+#: App.php:2829 App.php:2896 src/App.php:6518 src/App.php:6583
+msgid "Yes"
+msgstr "Sí"
+
+#: App.php:2841 App.php:2908 src/App.php:6530 src/App.php:6595
+msgid "Pour :"
+msgstr "Pour :"
+
+#: App.php:2928 App.php:3045 src/App.php:6615 src/App.php:6686
+msgid "Validé"
+msgstr "Validé"
+
+#: App.php:2932 App.php:3049 src/App.php:6619 src/App.php:6689
+msgid "Compensé"
+msgstr "Compensé"
+
+#: App.php:2937 App.php:3054 src/App.php:6624 src/App.php:6694
+msgid "A faire"
+msgstr "Una feria de"
+
+#: App.php:2967 src/App.php:6642
+msgid "Desactiver"
+msgstr "Desactiver"
+
+#: App.php:2974 src/App.php:6645
+msgid "Activer"
+msgstr "Activer"
+
+#: App.php:2998 src/App.php:6657
+msgid "Supprimer"
+msgstr "Supprimer"
+
+#: App.php:3019 src/App.php:6668
+msgid "Dupliquer"
+msgstr "Dupliquer"
+
+#: App.php:3068 src/App.php:6712
+msgid "Exporter les checkpoints en CSV"
+msgstr "Exportador les puntos de control en CSV"
+
+#: App.php:3069 src/App.php:6721
+msgid "Importer les checkpoints depuis un fichier CSV"
+msgstr ""
+"El importador de archivos puestos de control depuis de la onu en el archivo "
+"CSV"
+
+#: App.php:3077 src/App.php:6744
+msgid ""
+"Supprimer toutes les données de review (Nettoyage des revues en cours et "
+"historique de suppression)"
+msgstr ""
+"Supprimer toutes les données de revisión (Nettoyage des revistas en cours et "
+"historique de la supresión)"
+
+#: App.php:3401 src/App.php:7084
+msgid "CRITIQUE : prevoir un roolback SQL"
+msgstr "CRÍTICA : prevoir de la onu roolback SQL"
+
+#: App.php:3402 src/App.php:7089
+msgid ""
+"<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de "
+"données en dehors de WordPress pour recharger cette dernière via le backup "
+"SQL suivant en cas d'echec de roolback des actions de tests (ex : accès "
+"phpmyadmin) : "
+msgstr ""
+
+#: App.php:3407 src/App.php:7113
+msgid ""
+"Cliquer ici pour effectuer et télécharger le backup SQL avant de lancer les "
+"tests."
+msgstr ""
+"Cliquer ici pour effectuer et descargar archivo de copia de seguridad de SQL "
+"avant de lancer les pruebas."
+
+#: App.php:3409 src/App.php:7125
+msgid ""
+"Cliquer ici pour effectuer et télécharger le backup Zip simple (SQL + "
+"fichiers d'Upload)."
+msgstr ""
+"Cliquer ici pour effectuer et descargar archivo Zip de copia de seguridad "
+"simple (SQL + fichiers d'Upload)."
+
+#: App.php:3411 src/App.php:7137
+msgid ""
+"Cliquer ici pour effectuer et télécharger le backup Zip complet (SQL + tous "
+"les fichiers WordPress depuis la racine du site web)."
+msgstr ""
+"Cliquer ici pour effectuer et descargar archivo Zip de copia de seguridad "
+"completo (SQL + tous les fichiers WordPress depuis la racine du sitio web)."
+
+#: App.php:3418 src/App.php:7156
+msgid ""
+"Ne peut backuper et charger en même temps, choisissez l'un ou l'autre s.v.p."
+msgstr ""
+"Ne peut backuper et cargador en même temps, choisissez l'un ou l'autre s.v.p."
+
+#: App.php:3423 src/App.php:7166
+msgid "Backuper les fichiers de tests dans un dossier upload privé."
+msgstr "Backuper les fichiers de pruebas dans un expediente de subir privé."
+
+#: App.php:3424 src/App.php:7173
+msgid "Charger les fichers de tests depuis le dossier upload."
+msgstr "Cargador les fichers de pruebas depuis le dossier de carga."
+
+#: App.php:3440 src/App.php:7217
+msgid "Backup des fichiers de test vers le backup upload privé OK"
+msgstr ""
+"Copia de seguridad de des fichiers de prueba vers le de copia de seguridad "
+"de carga privé OK"
+
+#: App.php:3448 src/App.php:7233
+msgid "Chargement des fichiers de test depuis le backup upload OK"
+msgstr ""
+"Chargement des fichiers de prueba depuis le de copia de seguridad de carga OK"
+
+#: App.php:3450 src/App.php:7245
+msgid "Aucun backup de tests dans l'upload privé du site"
+msgstr "Aucun copia de seguridad de pruebas de dans l''upload privé du site"
+
+#: App.php:3468 src/App.php:7281
+msgid "Cliquer ici pour visualiser le dernier rapport de test effectué"
+msgstr "Cliquer ici pour visualizador le dernier rapport de prueba effectué"
+
+#: App.php:3490 src/App.php:7338
+msgid "Echec du chargement du fichier de configuration : "
+msgstr "Echec du chargement du fichier de configuración : "
+
+#: App.php:3498 src/App.php:7356
+msgid "Cliquer ici pour lancer les tests"
+msgstr "Cliquer ici pour lancer les pruebas"
+
+#: App.php:3499 src/App.php:7363
+msgid "ATTENTION : Ces tests sont lancés sur l'url de production : "
+msgstr ""
+"ATENCIÓN : el Ces de las pruebas sont lancés sur l''url de producción : "
+
+#: App.php:3500 src/App.php:7370
+msgid ""
+"Prenons soin des données de productions. Utilisons une solution de backup ou "
+"de rollback dans la mise en oeuvre des tests."
+msgstr ""
+"Prenons soin des données de producciones. Utilisons une solución de copia de "
+"seguridad o de reversión dans la mise en oeuvre des pruebas."
+
+#: App.php:3505 src/App.php:7382
+msgid "Cette opérations ADMIN nécessite une capacité :"
+msgstr "Cette opérations de ADMINISTRACIÓN de nécessite une capacité :"
+
+#: App.php:3558 App.php:3562 App.php:3588 src/App.php:7558 src/App.php:7567
+#: src/App.php:7612
+msgid "Télécharger"
+msgstr "Télécharger"
+
+#: App.php:3568 src/App.php:7582
+msgid "Documentation supplémentaire"
+msgstr "Documentación supplémentaire"
+
+#: App.php:3721 src/App.php:7862
+msgid " : BLOQUE l'url : "
+msgstr " : BLOQUE l'url : "
+
+#: App.php:3762 src/App.php:7955
+msgid "03 - [Optimisations] Niveau maximal"
+msgstr ""
+
+#: App.php:3762 src/App.php:7957
+msgid "Vérification de la présence des optimisations maximales.<br />"
+msgstr ""
+
+#: App.php:3776 src/App.php:7997
+msgid "03 - [Optimisations] Niveau moyen"
+msgstr ""
+
+#: App.php:3776 src/App.php:7999
+msgid "Vérification de la présence des optimisations moyennes.<br />"
+msgstr ""
+
+#: App.php:3811 src/App.php:8093
+msgid "Alternative OK :"
+msgstr "Alternativa OK :"
+
+#: App.php:3817 src/App.php:8109
+msgid "01 - Plugin : "
+msgstr "01 - Plugin : "
+
+#: App.php:3817 src/App.php:8112
+msgid "Validation humaine requise."
+msgstr "Validación humaine requise."
+
+#: App.php:3819 src/App.php:8125
+msgid ""
+"Internationalisation continue de votre contenu web en activant le plugin :"
+msgstr ""
+"La internacionalización continuar de votre contenu web en activant le plugin "
+":"
+
+#: App.php:3819 src/App.php:8126
+msgid "Polylang"
+msgstr "Polylang"
+
+#: App.php:3819 src/App.php:8129
+msgid "Bonus : Loco Translate"
+msgstr "Bono : Loco Traducir"
+
+#: App.php:3819 src/App.php:8130
+msgid "Bonus : Automatic Translate Addon For Loco Translate"
+msgstr "Bonus : Automático De Traducir Addon Para Traducir Loco"
+
+#: App.php:3819 src/App.php:8133
+msgid "Alternative : TranslatePress - Multilingual"
+msgstr "Alternativa : TranslatePress - Multilingüe"
+
+#: App.php:3819 src/App.php:8135
+msgid "Bonus : Automatic Translate Addon For TranslatePress"
+msgstr "Bonus : Automático De Traducir Addon Para TranslatePress"
+
+#: App.php:3819 src/App.php:8138
+msgid "Alternative : Translate WordPress with GTranslate"
+msgstr "Alternativa : Traducir WordPress con GTranslate"
+
+#: App.php:3820 src/App.php:8145
+msgid "Suivi des actions des utilisateurs réel en activant le plugin :"
+msgstr "Suivi des acciones des utilisateurs réel en activant le plugin :"
+
+#: App.php:3820 src/App.php:8146
+msgid "History Log by click5"
+msgstr "Registro de la historia por click5"
+
+#: App.php:3821 src/App.php:8150
+msgid "Suivi des emails en activant le plugin :"
+msgstr "Suivi des correos electrónicos en activant le plugin :"
+
+#: App.php:3821 src/App.php:8151
+msgid "Check & Log Email"
+msgstr "Comprobar Y Registro De Correo Electrónico"
+
+#: App.php:3822 src/App.php:8155
+msgid "Suivi des CRON en activant le plugin :"
+msgstr "Suivi des CRON es activant le plugin :"
+
+#: App.php:3822 src/App.php:8156
+msgid "WP Crontrol"
+msgstr "WP Crontrol"
+
+#: App.php:3823 src/App.php:8160
+msgid "Ajustements divers de la base de données en activant le plugin :"
+msgstr "Ajustements buzos de la base de données en activant le plugin :"
+
+#: App.php:3823 src/App.php:8161
+msgid "Better Search Replace"
+msgstr "La Mejor Búsqueda De Reemplazar"
+
+#: App.php:3824 src/App.php:8201
+msgid ""
+"Ajustements des post et taxonomies personalisées en activant le plugin :"
+msgstr ""
+"Ajustements des post et taxonomías personalisées en activant le plugin :"
+
+#: App.php:3824 src/App.php:8202
+msgid "Pods – Custom Content Types and Fields"
+msgstr "Vainas Tipos de Contenido Personalizados y Campos"
+
+#: App.php:3824 src/App.php:8206
+msgid "Bonus : Custom Post Type Widgets"
+msgstr "Bonus : Tipo De Mensaje Personalizado De Los Widgets"
+
+#: App.php:3826 src/App.php:8212
+msgid ""
+"ATTENTION : MODE DEBUG activé, non conseillé en production. Cela dis, "
+"optimisons les débugs en activant le plugin :"
+msgstr ""
+"ATENCIÓN : el MODO de DEPURACIÓN activé, no conseillé en la producción. Cela "
+"dis, optimisons les débugs en activant le plugin :"
+
+#: App.php:3826 src/App.php:8213
+msgid "Query Monitor"
+msgstr "Consulta Monitor"

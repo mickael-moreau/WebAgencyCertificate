@@ -1,0 +1,23 @@
+# Codeception Test Suite Configuration
+#
+#    🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
+#    service@monwoo.com
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the PhpBrowser Driver.
+actor: AcceptanceTester
+modules:
+    enabled:
+        - PhpBrowser:
+            url: https://web-agency.local.dev/e-commerce
+            headers:
+                wa-e2e-test-mode: %wa_e2e_test_mode%
+            curl:
+                CURLOPT_RETURNTRANSFER: true
+        - \Helper\Acceptance
+        - Asserts
+        - REST:
+            url: api/v1/
+            depends: PhpBrowser
+            part: Json
+step_decorators: ~
