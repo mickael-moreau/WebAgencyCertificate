@@ -7,13 +7,13 @@ var jQuery;
 (function(window, document, $, undefined){
     function suggestFactory(selector, query, defaultOpts = {}) {
         // TODO unit speed test bench with ? : https://code.tutsplus.com/tutorials/enhancing-the-search-form-with-typeaheadjs--wp-30844
-
-        return $(selector).suggest(window.ajaxurl + query, {
+        var target = $(selector);
+        return target.length ? target.suggest(window.ajaxurl + query, {
             // https://stackoverflow.com/questions/30128805/is-is-possible-to-override-a-suggest-js-function-in-wordpress
             delay: 500, minchars: 1,
             // onSelect: function() { do_something(this.value);},
             ...defaultOpts
-        })
+        }) : null;
     }
 
     var waConfigAdmin = {

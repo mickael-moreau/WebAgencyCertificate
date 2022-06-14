@@ -37,8 +37,7 @@ msgstr ""
 "<strong>Tests utilisateurs de bout en bout</strong> avec <strong>"
 "Codeception</strong>. Accélère la documentation et les tests en <strong>"
 "parallel</strong>. Profitez d'un copyright de <strong>bas de page "
-"éditable</strong> produit par wa-config (par service@monwoo.com pour "
-"mail@web-agency.app)"
+"éditable</strong> produit par wa-config (par service@monwoo.com)"
 
 #. Author of the plugin
 msgid "Miguel Monwoo for Web-Agency.app"
@@ -512,9 +511,9 @@ msgid ""
 "SQL suivant en cas d'echec de roolback des actions de tests (ex : accès "
 "phpmyadmin) : "
 msgstr ""
-"ATTENTION : Assurez vous de pouvoir modifier votre base de données en dehors "
+"<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de données en dehors "
 "de WordPress pour recharger cette dernière via le backup SQL suivant en cas "
-"d'echec de roolback des actions de tests (ex : accès phpmyadmin) :\n"
+"d'echec de roolback des actions de tests (ex : accès phpmyadmin) :"
 
 #: App.php:3407 src/App.php:7113
 msgid ""
@@ -725,3 +724,7 @@ msgstr ""
 #: App.php:3826 src/App.php:8213
 msgid "Query Monitor"
 msgstr "Requête Moniteur"
+
+#:
+msgid "Build by Monwoo and"
+msgstr "Construit par Monwoo et"

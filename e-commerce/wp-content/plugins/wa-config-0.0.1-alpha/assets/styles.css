@@ -11,3 +11,6 @@ body .crp_related.crp-rounded-thumbs ul {
   justify-content: space-between;
   align-items: center;
 }
+body.single-wa-mission .thumbnail img {
+  max-width: 256px;
+}

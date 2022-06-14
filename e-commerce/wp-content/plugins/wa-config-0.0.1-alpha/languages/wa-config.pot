@@ -829,3 +829,7 @@ msgstr ""
 #: src/App.php:8213
 msgid "Query Monitor"
 msgstr ""
+
+#:
+msgid "Build by Monwoo and"
+msgstr "Construit par Monwoo et"

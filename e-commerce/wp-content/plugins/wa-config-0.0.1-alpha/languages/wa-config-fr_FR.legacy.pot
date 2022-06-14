@@ -25,7 +25,7 @@ msgstr ""
 
 #. Description of the plugin
 msgid "<strong>End to end user tests</strong> with <strong>Codeception</strong>. Speed up documentations and tests in <strong>parallel</strong>. Enjoy an <strong>editable footer</strong> copyright done by wa-config (by service@monwoo.com)"
-msgstr "<strong>Tests utilisateurs de bout en bout</strong> avec <strong>Codeception</strong>. Accélère la documentation et les tests en <strong>parallel</strong>. Profitez d'un copyright de <strong>bas de page éditable</strong> produit par wa-config (par service@monwoo.com pour mail@web-agency.app)"
+msgstr "<strong>Tests utilisateurs de bout en bout</strong> avec <strong>Codeception</strong>. Accélère la documentation et les tests en <strong>parallel</strong>. Profitez d'un copyright de <strong>bas de page éditable</strong> produit par wa-config (par service@monwoo.com)"
 
 #. Author of the plugin
 msgid "Miguel Monwoo for Web-Agency.app"

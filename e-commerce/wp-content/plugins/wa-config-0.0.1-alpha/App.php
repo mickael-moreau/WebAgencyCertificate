@@ -1,7 +1,7 @@
 <?php
 /*   __________________________________________________
     |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-06-13 04:54:44              |
+    |              on 2022-06-14 05:34:08              |
     |    GitHub: https://github.com/pk-fr/yakpro-po    |
     |__________________________________________________|
 */
@@ -1221,6 +1221,7 @@ namespace WA\Config\Core {
     }
 }
 namespace WA\Config\Utils {
+    use Walker_Nav_Menu_Checklist;
     if (!function_exists(strEndsWith::class)) {
         function strEndsWith($haystack, $needle)
         {
@@ -1352,6 +1353,43 @@ TEMPLATE;
             }
         }
     }
+    if (!trait_exists(TranslatableProduct::class)) {
+        trait TranslatableProduct
+        {
+            protected function _010_t_product__load()
+            {
+                if ($this->p_higherThanOneCallAchievedSentinel('_010_t_product_post__load')) {
+                    return;
+                }
+                if (function_exists('pll_count_posts')) {
+                    add_filter('pll_get_post_types', [$this, 't_product_post_type_polylang_register'], 10, 2);
+                    add_filter('pll_get_taxonomies', [$this, 't_product_category_taxo_polylang_register'], 10, 2);
+                }
+            }
+            public function t_product_post_type_polylang_register($post_types, $is_settings)
+            {
+                $missionCptKey = 'product';
+                if ($is_settings) {
+                    unset($post_types[$missionCptKey]);
+                } else {
+                    $post_types[$missionCptKey] = $missionCptKey;
+                }
+                return $post_types;
+            }
+            public function t_product_category_taxo_polylang_register($taxonomies, $is_settings)
+            {
+                $productTaxoList = ['product_tag', 'product_shipping_class', 'product_type', 'product_visibility', 'product_cat'];
+                foreach ($productTaxoList as $taxoKey) {
+                    if ($is_settings) {
+                        unset($taxonomies[$taxoKey]);
+                    } else {
+                        $taxonomies[$taxoKey] = $taxoKey;
+                    }
+                }
+                return $taxonomies;
+            }
+        }
+    }
 }
 namespace WA\Config\Admin {
     use PhpParser\Node\Stmt\Foreach_;
@@ -1366,6 +1404,7 @@ namespace WA\Config\Admin {
     use WA\Config\Core\WPActions;
     use WA\Config\Core\WPFilters;
     use WA\Config\Utils\PdfToHTMLable;
+    use Walker_Nav_Menu_Checklist;
     use WP_Error;
     use WP_Filesystem_Direct;
     if (!class_exists(Notice::class)) {
@@ -1479,6 +1518,59 @@ namespace WA\Config\Admin {
                 if (function_exists('pll_count_posts')) {
                     add_filter('pll_get_post_types', [$this, 'e_mission_post_type_polylang_register'], 10, 2);
                 }
+                add_action('admin_head-nav-menus.php', 'e_mission_post_type_do_template_nav_menus');
+                add_filter('wp_get_nav_menu_items', [$this, 'e_mission_post_type_do_template_nav_menus_filter'], 10, 3);
+            }
+            public function e_mission_post_type_do_template_nav_menus()
+            {
+                add_meta_box('wa_mission_do_template_nav_menus', __('Missions'), [$this, 'e_mission_post_type_do_template_nav_menu_metabox'], 'nav-menus', 'side', 'default');
+            }
+            public function e_mission_post_type_do_template_nav_menus_filter($items, $menu, $args)
+            {
+                foreach ($items as &$item) {
+                    if ($item->object != 'cpt_archive') {
+                        continue;
+                    }
+                    $item->url = get_post_type_archive_link($item->type);
+                    if (get_query_var('post_type') == $item->type) {
+                        $item->classes[] = 'current-menu-item';
+                        $item->current = true;
+                    }
+                }
+                return $items;
+            }
+            public function e_mission_post_type_do_template_nav_menu_metabox()
+            {
+                $missionCptKey = 'wa-mission';
+                $post_types = get_post_types(array('show_in_nav_menus' => true, 'has_archive' => true), 'object');
+                if ($post_types) {
+                    foreach ($post_types as $post_type) {
+                        $post_type->classes = array($post_type->name);
+                        $post_type->type = $post_type->name;
+                        $post_type->object_id = $post_type->name;
+                        $post_type->title = $post_type->labels->name;
+                        $post_type->object = $missionCptKey;
+                    }
+                    $walker = new Walker_Nav_Menu_Checklist(array());
+                    ?>
+                  <div id="wa-mission-menu" class="posttypediv">
+                    <div id="tabs-panel-wa-mission" class="tabs-panel tabs-panel-active">
+                      <ul id="wa-mission-checklist" class="categorychecklist form-no-clear"><?php 
+                    echo walk_nav_menu_tree(array_map('wp_setup_nav_menu_item', $post_types), 0, (object) array('walker' => $walker));
+                    ?>
+                      </ul>
+                    </div>
+                  </div>
+                  <p class="button-controls">
+                    <span class="add-to-menu">
+                      <input type="submit"<?php 
+                    disabled($nav_menu_selected_id ?? null, 0);
+                    ?> class="button-secondary submit-add-to-menu" value="<?php 
+                    esc_attr_e('Add to Menu');
+                    ?>" name="add-wa-mission-menu-item" id="submit-wa-mission-menu" />
+                    </span>
+                  </p><?php 
+                }
             }
             public function e_mission_post_type_polylang_register($post_types, $is_settings)
             {
@@ -1497,7 +1589,7 @@ namespace WA\Config\Admin {
                 $this->debugVerbose("Will e_mission_post_type_register");
                 $missionCptKey = 'wa-mission';
                 $permalink = _x('missions', 'wa-mission post slug (url SEO)', 'wa-config');
-                $missionCpt = register_post_type($missionCptKey, ['label' => __('Missions', 'wa-config'), 'labels' => ['name' => __('Missions', 'wa-config'), 'singular_name' => __('Mission', 'wa-config'), 'all_items' => __('Les missions', 'wa-config'), 'add_new_item' => __('Ajouter une mission', 'wa-config'), 'edit_item' => __('Éditer la mission', 'wa-config'), 'new_item' => __('Nouvelle mission', 'wa-config'), 'view_item' => __('Voir la mission', 'wa-config'), 'search_items' => __('Rechercher parmi les missions', 'wa-config'), 'not_found' => __('Pas de mission trouvée', 'wa-config'), 'not_found_in_trash' => __('Pas de mission dans la corbeille', 'wa-config'), 'menu_name' => __('Missions', 'wa-config')], 'public' => true, 'delete_with_user' => false, 'supports' => ['title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'custom-fields'], 'can_export' => true, 'has_archive' => true, 'exclude_from_search' => false, 'publicly_queryable' => true, 'query_var' => true, 'show_admin_column' => true, 'show_in_rest' => true, 'show_ui' => true, 'show_in_admin_bar' => true, 'show_in_menu' => false, 'menu_icon' => 'dashicons-clipboard', 'taxonomies' => [$skillTaxoKey], 'show_in_nav_menus' => false, 'map_meta_cap' => true, 'hierarchical' => false, 'rewrite' => ['slug' => $permalink, 'with_front' => false, 'feeds' => true], 'slug' => $permalink]);
+                $missionCpt = register_post_type($missionCptKey, ['label' => __('Missions', 'wa-config'), 'labels' => ['name' => __('Missions', 'wa-config'), 'singular_name' => __('Mission', 'wa-config'), 'all_items' => __('Les missions', 'wa-config'), 'add_new_item' => __('Ajouter une mission', 'wa-config'), 'edit_item' => __('Éditer la mission', 'wa-config'), 'new_item' => __('Nouvelle mission', 'wa-config'), 'view_item' => __('Voir la mission', 'wa-config'), 'search_items' => __('Rechercher parmi les missions', 'wa-config'), 'not_found' => __('Pas de mission trouvée', 'wa-config'), 'not_found_in_trash' => __('Pas de mission dans la corbeille', 'wa-config'), 'menu_name' => __('Missions', 'wa-config')], 'public' => true, 'delete_with_user' => false, 'supports' => ['title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'custom-fields'], 'can_export' => true, 'has_archive' => true, 'exclude_from_search' => false, 'publicly_queryable' => true, 'query_var' => true, 'show_admin_column' => true, 'show_in_rest' => true, 'show_ui' => true, 'show_in_admin_bar' => true, 'show_in_menu' => false, 'menu_icon' => 'dashicons-clipboard', 'taxonomies' => [$skillTaxoKey], 'show_in_nav_menus' => true, 'map_meta_cap' => true, 'hierarchical' => false, 'rewrite' => ['slug' => $permalink, 'with_front' => false, 'feeds' => true], 'slug' => $permalink]);
                 if (!function_exists(\add_submenu_page::class)) {
                     $this->warn("MISSING add_submenu_page, strange stuff to debug...");
                 }
@@ -1854,6 +1946,25 @@ TEMPLATE;
     name="{$fieldName}"
     >{$safeValue}</textarea>
 TEMPLATE;
+                };
+                $multilLangTemplate = function ($safeValue, $fieldId, $fieldName) {
+                    $locals = [get_locale()];
+                    if (function_exists('pll_languages_list')) {
+                        $pllLangs = pll_languages_list(array('fields' => array()));
+                        $locals = array_map(function ($l) {
+                            return $l[''];
+                        }, $pllLangs);
+                    }
+                    $t = "";
+                    foreach ($locals as $l) {
+                        $t .= <<<TEMPLATE
+<input id='{$fieldId}-{$l}' type='text'
+name='{$fieldName}-{$l}'
+value='{$safeValue}'
+/>
+TEMPLATE;
+                    }
+                    return $t;
                 };
                 $oLvls = implode(",", (new ReflectionClass(OptiLvl::class))->getConstants());
                 if (current_user_can($this->optAdminEditCabability)) {
@@ -2661,6 +2772,8 @@ TEMPLATE;
             public function e_admin_config_add_base_review()
             {
                 $this->eACChecksByCategorieByTitle = $this->getReviewOption($this->eConfOptReviewsByCategorieByTitle, []);
+                unregister_post_type('wa-config');
+                register_taxonomy('wa-skill', array());
                 $app = $this;
                 do_action(WPActions::wa_do_base_review_preprocessing, $app);
                 $this->e_admin_config_add_check_list_to_review(['category' => __('01 - Critique', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-plugins-checked"></span>', 'title' => __('01 - Version de PHP', 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-shield"></span>', 'requirements' => __('7.4+ (7.4 or higher recommended)', 'wa-config'), 'value' => "PHP " . PHP_VERSION, 'result' => version_compare(PHP_VERSION, '7.4', '>'), 'fixed_id' => "{$this->iId}-check-php-version", 'is_computed' => true]);
@@ -3886,9 +3999,13 @@ namespace WA\Config\Frontend {
                 $currentTheme = basename(get_parent_theme_file_path());
                 $enableFooter = boolVal($this->getWaConfigOption($this->eConfOptEnableFooter, true));
                 if ($enableFooter) {
+                    $this->debugVerbose("Will _010_e_footer__load for theme '{$currentTheme}'");
                     add_filter('storefront_credit_links_output', [$this, 'e_footer_render']);
                     if ('twentytwenty' === $currentTheme || 'restaurant-food-delivery' === $currentTheme) {
                         add_action('wp_footer', [$this, 'e_footer_do_wp_footer_twentytwenty'], 20);
+                    }
+                    if ('oceanwp' === $currentTheme) {
+                        add_action('ocean_after_footer_bottom_inner', [$this, 'e_footer_do_wp_footer_twentytwenty'], 20);
                     }
                     if ('twentytwentytwo' === $currentTheme) {
                         add_filter('render_block', [$this, 'e_footer_filter_render_block_twentytwentytwo'], null, 3);
@@ -3914,11 +4031,15 @@ namespace WA\Config\Frontend {
             {
                 $enableFooter = boolVal($this->getWaConfigOption($this->eConfOptEnableFooter, true));
                 $currentTheme = basename(get_parent_theme_file_path());
-                if ($enableFooter && ('twentytwentytwo' === $currentTheme || 'restaurant-food-delivery' === $currentTheme)) {
+                if ($enableFooter && ('twentytwentytwo' === $currentTheme || 'oceanwp' === $currentTheme || 'restaurant-food-delivery' === $currentTheme)) {
                     ?>
                     <style>
                         /* twentytwenty */
                         .powered-by-wordpress {
+                            display: none !important;
+                        }
+                        /* oceanwp */
+                        #footer-bottom-inner #copyright {
                             display: none !important;
                         }
                         /* restaurant-food-delivery */
@@ -3990,6 +4111,7 @@ namespace WA\Config\Frontend {
                     $htmlFooter = $waFooterTemplate;
                 } else {
                     $waFooterCredit = $this->getWaConfigOption($this->eConfOptFooterCredit, __("autre", 'wa-config'));
+                    $monwooCredit = __("Build by Monwoo and", 'wa-config');
                     $htmlFooter = <<<TEMPLATE
 <style>
   #wa-site-footer {
@@ -4002,11 +4124,11 @@ namespace WA\Config\Frontend {
         <div class="footer-credits">
             <p class="powered-by-monwoo powered-by-web-agency-app">
                 <a href="{$this->siteBaseHref}/credits">
-                    Build by Monwoo and {$waFooterCredit}
+                    {$monwooCredit} {$waFooterCredit}
                 </a>
                 <br />
-                <a href="mailto:mail@web-agency.app">
-                    mail@web-agency.app
+                <a href="mailto:service@monwoo.com">
+                    service@monwoo.com
                 </a>
             </p>
 
@@ -4032,6 +4154,7 @@ namespace WA\Config {
     use WA\Config\Frontend\EditableScripts;
     use WA\Config\Frontend\EditableStyles;
     use WA\Config\Frontend\EditableFooter;
+    use WA\Config\Utils\TranslatableProduct;
     $current_WA_Version = "0.0.1-alpha";
     $pFolder = basename(plugin_dir_path(__FILE__));
     if ($pFolder === 'src') {
@@ -4058,6 +4181,7 @@ namespace WA\Config {
             use EditableSkillsTaxo;
             use ExtendablePluginDescription;
             use Optimisable;
+            use TranslatableProduct;
             public function __construct(string $siteBaseHref, string $pluginFile, string $iPrefix, $shouldDebug)
             {
                 if (is_array($shouldDebug)) {

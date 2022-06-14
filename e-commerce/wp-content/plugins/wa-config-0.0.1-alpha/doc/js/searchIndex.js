@@ -526,6 +526,21 @@ Search.appendIndex(
             "summary": "Add\u0020async\u0020script\u0020tags\u0020feature\u0020for\u0020\u0027wa\u002Dconfig\u002Dpdf\u002Dto\u002Dhtml\u002Djs\u0027.",
             "url": "classes/WA-Config-Utils-PdfToHTMLable.html#method_apdfAble_scripts_tag"
         },                {
+            "fqsen": "\\WA\\Config\\Utils\\TranslatableProduct",
+            "name": "TranslatableProduct",
+            "summary": "This\u0020trait\u0020will\u0020add\u0020the\u0020polylang\u0020language\u0020feature\u0020to\u0020WooCommerce\u0020product\u0020post\u0020type",
+            "url": "classes/WA-Config-Utils-TranslatableProduct.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\TranslatableProduct\u003A\u003At_product_post_type_polylang_register\u0028\u0029",
+            "name": "t_product_post_type_polylang_register",
+            "summary": "Register\u0020woocommerce\u0020product\u0020post\u0020type\u0020with\u0020polylang\u0020plugin",
+            "url": "classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_post_type_polylang_register"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\TranslatableProduct\u003A\u003At_product_category_taxo_polylang_register\u0028\u0029",
+            "name": "t_product_category_taxo_polylang_register",
+            "summary": "Register\u0020woocommerce\u0020product\u0020related\u0020taxonomy\u0020with\u0020polylang\u0020plugin",
+            "url": "classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_category_taxo_polylang_register"
+        },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableAdminScripts",
             "name": "EditableAdminScripts",
             "summary": "This\u0020trait\u0020loads\u0020the\u0020wa\u002Dconfig\u0020administration\u0020sytesheet",
@@ -550,6 +565,21 @@ Search.appendIndex(
             "name": "EditableMissionPost",
             "summary": "This\u0020trait\u0020will\u0020add\u0020the\u0020wa\u002Dmission\u0020post\u0020type",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_do_template_nav_menus\u0028\u0029",
+            "name": "e_mission_post_type_do_template_nav_menus",
+            "summary": "Add\u0020nav\u0020menu",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menus"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_do_template_nav_menus_filter\u0028\u0029",
+            "name": "e_mission_post_type_do_template_nav_menus_filter",
+            "summary": "Filter\u0020to\u0020render\u0020our\u0020nav\u0020menu",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menus_filter"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_do_template_nav_menu_metabox\u0028\u0029",
+            "name": "e_mission_post_type_do_template_nav_menu_metabox",
+            "summary": "Add\u0020nav\u0020menu\u0020admin\u0020metabox",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menu_metabox"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_polylang_register\u0028\u0029",
             "name": "e_mission_post_type_polylang_register",
