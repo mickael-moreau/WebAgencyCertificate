@@ -238,13 +238,13 @@ body.auto-fold #wpcontent {
 body #adminmenu .toplevel_page_wa-config-e-admin-config .wp-menu-image img {
   padding: 7px 0 0;
 }
-body #wa_config_e_admin_config_review_opts_wa_review_requirements {
+body textarea[name^="wa_config_e_admin"] {
   width: 100%;
 }
 body .wa-add-page-btn-icon {
   font-family: dashicons, -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
-body input[id^="wa_config_e_admin"] {
+body input[name^="wa_config_e_admin"] {
   width: 100%;
 }
 body input[type="checkbox"].wppd-ui-toggle {

@@ -1,7 +1,7 @@
 <?php
 /*   __________________________________________________
     |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-06-14 05:34:08              |
+    |              on 2022-06-16 10:39:53              |
     |    GitHub: https://github.com/pk-fr/yakpro-po    |
     |__________________________________________________|
 */
@@ -66,7 +66,7 @@ namespace WA\Config\Core {
             public $pluginVersion = "";
             protected $siteBaseHref = "";
             protected $pluginFile = "";
-            protected $pluginRoot = "";
+            public $pluginRoot = "";
             function is_cli()
             {
                 if (defined('STDIN')) {
@@ -291,6 +291,9 @@ namespace WA\Config\Core {
             protected $eConfOptEnableFooter = 'wa_enable_footer';
             protected $eConfOptFooterTemplate = 'wa_footer_template';
             protected $eConfOptFooterCredit = 'wa_footer_credit';
+            protected $eConfStaticHeadTarget = 'wa_static_head_target';
+            protected $eConfWooCommerceOrderPrefix = 'wa_woo_com_order_prefix';
+            protected $eConfShouldRenderFrontendScripts = 'wa_should_render_frontend_scripts';
             protected $eConfOptOptiLevels = 'wa_optimisable_levels';
             protected $eConfOptOptiWpRequestsFilter = 'wa_optimisable_wp_http_request_filter';
             protected $eConfOptOptiWpRequestsSafeFilter = 'wa_optimisable_wp_http_request_safe_filter';
@@ -1221,6 +1224,7 @@ namespace WA\Config\Core {
     }
 }
 namespace WA\Config\Utils {
+    use WA\Config\Core\AppInterface;
     use Walker_Nav_Menu_Checklist;
     if (!function_exists(strEndsWith::class)) {
         function strEndsWith($haystack, $needle)
@@ -1230,6 +1234,38 @@ namespace WA\Config\Utils {
                 return true;
             }
             return substr($haystack, -$length) === $needle;
+        }
+    }
+    if (!function_exists(_l::class)) {
+        function _l($text, $textdomain, $locale)
+        {
+            global $l10n;
+            if (isset($l10n[$textdomain])) {
+                $backup = $l10n[$textdomain];
+            }
+            $app = AppInterface::instance();
+            $langFolder = $app->pluginRoot . "languages/{$textdomain}-{$locale}.mo";
+            $app->assertLog(load_textdomain($textdomain, $langFolder), "Fail to load textdomain {$textdomain} for {$locale}" . " at {$langFolder}");
+            $translation = __($text, $textdomain);
+            if (isset($backup)) {
+                $l10n[$textdomain] = $backup;
+            }
+            return $translation;
+        }
+        function _lx($text, $context, $textdomain, $locale)
+        {
+            global $l10n;
+            if (isset($l10n[$textdomain])) {
+                $backup = $l10n[$textdomain];
+            }
+            $app = AppInterface::instance();
+            $langFolder = $app->pluginRoot . "languages/{$textdomain}-{$locale}.mo";
+            $app->assertLog(load_textdomain($textdomain, $langFolder), "Fail to load textdomain '{$textdomain}' for '{$locale}'" . " at {$langFolder}");
+            $translation = _x($text, $context, $textdomain);
+            if (isset($backup)) {
+                $l10n[$textdomain] = $backup;
+            }
+            return $translation;
         }
     }
     if (!trait_exists(PdfToHTMLable::class)) {
@@ -1407,6 +1443,7 @@ namespace WA\Config\Admin {
     use Walker_Nav_Menu_Checklist;
     use WP_Error;
     use WP_Filesystem_Direct;
+    use function WA\Config\Utils\_lx;
     if (!class_exists(Notice::class)) {
         class Notice
         {
@@ -1470,7 +1507,7 @@ namespace WA\Config\Admin {
                 $this->debugVerbose("Will e_admin_scripts_do_enqueue");
                 $cssFile = "assets/styles-admin.css";
                 wp_enqueue_style('wa-config-css-admin', plugins_url($cssFile, $this->pluginFile), [], $this->pluginVersion);
-                $jsFile = "assets/app.js";
+                $jsFile = "assets/app-admin.js";
                 $jsUrl = plugins_url($jsFile, $this->pluginFile);
                 wp_enqueue_script('wa-admin-js', $jsUrl, ['jquery', 'suggest'], $this->pluginVersion, true);
                 $this->debugVerbose("Will e_admin_scripts_do_enqueue for ", get_current_screen()->id);
@@ -1515,11 +1552,53 @@ namespace WA\Config\Admin {
                 }
                 add_action('init', [$this, 'e_mission_post_type_register']);
                 add_action('get_the_date', [$this, 'e_mission_post_type_get_the_date'], 10, 3);
+                add_filter('template_include', [$this, 'e_mission_post_type_load_template_includes'], 1);
+                add_filter('woocommerce_order_number', [$this, 'e_mission_post_type_change_woocommerce_order_number'], 1, 2);
+                add_filter('ocean_main_metaboxes_post_types', [$this, 'e_mission_post_type_oceanwp_metabox'], 20);
+                add_filter('ocean_post_layout_class', [$this, 'e_mission_post_type_layout_class'], 20);
                 if (function_exists('pll_count_posts')) {
                     add_filter('pll_get_post_types', [$this, 'e_mission_post_type_polylang_register'], 10, 2);
                 }
-                add_action('admin_head-nav-menus.php', 'e_mission_post_type_do_template_nav_menus');
-                add_filter('wp_get_nav_menu_items', [$this, 'e_mission_post_type_do_template_nav_menus_filter'], 10, 3);
+            }
+            public function e_mission_post_type_layout_class($class)
+            {
+                $pType = 'wa-mission';
+                if (is_singular($pType) || is_post_type_archive($pType)) {
+                    $class = 'full-width';
+                }
+                return $class;
+            }
+            public function e_mission_post_type_oceanwp_metabox($types)
+            {
+                $types[] = 'wa-mission';
+                return $types;
+            }
+            public function e_mission_post_type_change_woocommerce_order_number($order_id, $order)
+            {
+                $prefix = $this->getWaConfigOption($this->eConfWooCommerceOrderPrefix, "");
+                $suffix = '';
+                return $prefix . $order->id . $suffix;
+            }
+            public function e_mission_post_type_load_template_includes($template_path)
+            {
+                if (get_post_type() == 'wa-mission') {
+                    if (is_single()) {
+                        if ($theme_file = locate_template(array('single-wa-mission.php'))) {
+                            $template_path = $theme_file;
+                        } else {
+                            $theme_file = false;
+                            $currentTheme = basename(get_parent_theme_file_path());
+                            if ("oceanwp" === $currentTheme) {
+                                $theme_file = realpath($this->pluginRoot . 'templates/themes/oceanwp/singular-wa-mission.php');
+                            }
+                            $theme_file = $theme_file ? $theme_file : realpath($this->pluginRoot . 'templates/single-wa-mission.php');
+                            if ($theme_file) {
+                                $template_path = $theme_file;
+                            }
+                        }
+                    }
+                }
+                return $template_path;
             }
             public function e_mission_post_type_do_template_nav_menus()
             {
@@ -1528,7 +1607,7 @@ namespace WA\Config\Admin {
             public function e_mission_post_type_do_template_nav_menus_filter($items, $menu, $args)
             {
                 foreach ($items as &$item) {
-                    if ($item->object != 'cpt_archive') {
+                    if ($item->object != 'wa-mission') {
                         continue;
                     }
                     $item->url = get_post_type_archive_link($item->type);
@@ -1572,6 +1651,34 @@ namespace WA\Config\Admin {
                   </p><?php 
                 }
             }
+            public function e_mission_post_type_polylang_lang_link($url, $slug, $locale)
+            {
+                if ($url) {
+                    return $url;
+                }
+                return home_url("TODO");
+            }
+            public function e_mission_post_type_polylang_rewrite_slugs($post_type_translated_slugs)
+            {
+                $pType = "wa-mission";
+                $locals = pll_languages_list();
+                $rules = [];
+                foreach ($locals as $idx => $localeMetas) {
+                    $localeSlug = $localeMetas['slug'];
+                    $locale = $localeMetas['locale'];
+                    $permalink = _lx('missions', 'wa-mission post slug (url SEO)', 'wa-config', $locale);
+                    $rules[$localeSlug] = ['has_archive' => true, 'rewrite' => ['slug' => $permalink, 'with_front' => false, 'feeds' => true], 'slug' => $permalink];
+                }
+                $post_type_translated_slugs[$pType] = $rules;
+                $this->debugVeryVerbose("Did e_mission_post_type_polylang_rewrite_slugs for Polylangs : ", $post_type_translated_slugs);
+                return $post_type_translated_slugs;
+            }
+            public function e_mission_register_localized_slug()
+            {
+                $permalink = _x('missions', 'wa-mission post slug (url SEO)', 'wa-config');
+                $this->warn("Will e_mission_register_localized_slug {$permalink}");
+                register_post_type('wa-mission', array('rewrite' => array('slug' => $permalink, 'with_front' => true, 'walk_dirs' => false), 'slug' => $permalink));
+            }
             public function e_mission_post_type_polylang_register($post_types, $is_settings)
             {
                 $missionCptKey = 'wa-mission';
@@ -1589,7 +1696,8 @@ namespace WA\Config\Admin {
                 $this->debugVerbose("Will e_mission_post_type_register");
                 $missionCptKey = 'wa-mission';
                 $permalink = _x('missions', 'wa-mission post slug (url SEO)', 'wa-config');
-                $missionCpt = register_post_type($missionCptKey, ['label' => __('Missions', 'wa-config'), 'labels' => ['name' => __('Missions', 'wa-config'), 'singular_name' => __('Mission', 'wa-config'), 'all_items' => __('Les missions', 'wa-config'), 'add_new_item' => __('Ajouter une mission', 'wa-config'), 'edit_item' => __('Éditer la mission', 'wa-config'), 'new_item' => __('Nouvelle mission', 'wa-config'), 'view_item' => __('Voir la mission', 'wa-config'), 'search_items' => __('Rechercher parmi les missions', 'wa-config'), 'not_found' => __('Pas de mission trouvée', 'wa-config'), 'not_found_in_trash' => __('Pas de mission dans la corbeille', 'wa-config'), 'menu_name' => __('Missions', 'wa-config')], 'public' => true, 'delete_with_user' => false, 'supports' => ['title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'custom-fields'], 'can_export' => true, 'has_archive' => true, 'exclude_from_search' => false, 'publicly_queryable' => true, 'query_var' => true, 'show_admin_column' => true, 'show_in_rest' => true, 'show_ui' => true, 'show_in_admin_bar' => true, 'show_in_menu' => false, 'menu_icon' => 'dashicons-clipboard', 'taxonomies' => [$skillTaxoKey], 'show_in_nav_menus' => true, 'map_meta_cap' => true, 'hierarchical' => false, 'rewrite' => ['slug' => $permalink, 'with_front' => false, 'feeds' => true], 'slug' => $permalink]);
+                $missionCpt = register_post_type($missionCptKey, ['label' => __('Missions', 'wa-config'), 'labels' => ['name' => __('Missions', 'wa-config'), 'singular_name' => __('Mission', 'wa-config'), 'all_items' => __('Les missions', 'wa-config'), 'add_new_item' => __('Ajouter une mission', 'wa-config'), 'edit_item' => __('Éditer la mission', 'wa-config'), 'new_item' => __('Nouvelle mission', 'wa-config'), 'view_item' => __('Voir la mission', 'wa-config'), 'search_items' => __('Rechercher parmi les missions', 'wa-config'), 'not_found' => __('Pas de mission trouvée', 'wa-config'), 'not_found_in_trash' => __('Pas de mission dans la corbeille', 'wa-config'), 'menu_name' => __('Missions', 'wa-config')], 'public' => true, 'delete_with_user' => false, 'supports' => ['title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'custom-fields', 'headway-seo', 'date', 'sticky', 'views', 'revisions', 'trackbacks', 'page-attributes', 'post-formats'], 'can_export' => true, 'has_archive' => true, 'exclude_from_search' => false, 'publicly_queryable' => true, 'query_var' => true, 'show_admin_column' => true, 'show_in_rest' => true, 'show_ui' => true, 'show_in_admin_bar' => true, 'show_in_menu' => false, 'menu_icon' => 'dashicons-clipboard', 'taxonomies' => [$skillTaxoKey], 'show_in_nav_menus' => true, 'map_meta_cap' => true, 'hierarchical' => false, 'rewrite' => ['slug' => $permalink], 'slug' => $permalink]);
+                flush_rewrite_rules();
                 if (!function_exists(\add_submenu_page::class)) {
                     $this->warn("MISSING add_submenu_page, strange stuff to debug...");
                 }
@@ -1634,9 +1742,13 @@ namespace WA\Config\Admin {
                 }
                 $post_id = $post->ID;
                 if ($post->post_type === $missionCptKey) {
+                    if (!strlen($d)) {
+                        $d = get_option('date_format');
+                    }
                     $val = get_post_meta($post_id, 'wa_end_date', true);
-                    $this->debug("Will e_mission_post_type_get_the_date end date with ", $val);
-                    return $the_date . ($val ? " - " . date($d, strtotime($val)) : "");
+                    $time = wp_date($d, strtotime($val));
+                    $this->debug("Will e_mission_post_type_get_the_date formated as '{$d}' with ", $val);
+                    return $val ? "[ {$the_date} .. " . $time . " ]" : $the_date;
                 }
                 return $the_date;
             }
@@ -1771,6 +1883,7 @@ namespace WA\Config\Admin {
                 $missionCptKey = 'wa-mission';
                 $skillTaxoKey = 'wa-skill';
                 $taxo = register_taxonomy($skillTaxoKey, [$missionCptKey, 'user'], $args);
+                flush_rewrite_rules();
                 if (is_admin() && function_exists(\add_submenu_page::class)) {
                     \add_submenu_page($this->eAdminConfigPageKey, $taxo->labels->name, "<span class='dashicons {$taxo->menu_icon}'></span> " . $taxo->labels->name, $taxo->cap->manage_terms, "edit-tags.php?post_type={$missionCptKey}&taxonomy={$skillTaxoKey}");
                 }
@@ -1853,6 +1966,22 @@ namespace WA\Config\Admin {
             use Identifiable, Translatable, Editable, EditableWaConfigOptions, EditableAdminScripts, Parallelizable, PdfToHTMLable;
             protected function _010_e_admin_config__bootstrap()
             {
+                $staticHeadTarget = $this->getWaConfigOption($this->eConfStaticHeadTarget, "");
+                if (strlen($staticHeadTarget) && !is_admin()) {
+                    $self = $this;
+                    add_action('parse_request', function () use($self, $staticHeadTarget) {
+                        global $wp;
+                        if (0 !== strpos($wp->request, "wp-admin") && 0 !== strpos($wp->request, "wp-json")) {
+                            $proxy = $this->pluginRoot . "head-proxy.php";
+                            $GLOBALS["wa-proxy-url"] = $wp->request;
+                            $GLOBALS["wa-front-head"] = $staticHeadTarget;
+                            include $proxy;
+                            $self->exit();
+                            return;
+                        }
+                    });
+                    return;
+                }
                 $this->eAdminConfigReviewOptsDefaults = [$this->eConfOptReviewCategory => "", $this->eConfOptReviewCategoryIcon => "", $this->eConfOptReviewTitle => "", $this->eConfOptReviewTitleIcon => "", $this->eConfOptReviewRequirements => "", $this->eConfOptReviewResult => true, $this->eConfOptReviewValue => "", $this->eConfOptReviewIsActivated => true, $this->eConfOptReviewAccessCapOrRole => ""];
                 add_action('activated_plugin', [$this, 'e_admin_config_on_plugins_activated'], 10, 2);
             }
@@ -1948,20 +2077,46 @@ TEMPLATE;
 TEMPLATE;
                 };
                 $multilLangTemplate = function ($safeValue, $fieldId, $fieldName) {
-                    $locals = [get_locale()];
-                    if (function_exists('pll_languages_list')) {
-                        $pllLangs = pll_languages_list(array('fields' => array()));
-                        $locals = array_map(function ($l) {
-                            return $l[''];
-                        }, $pllLangs);
+                    $localTranslations = $safeValue;
+                    $emptyDefaults = $this->e_footer_get_empty_string_by_locale();
+                    if (!is_array($localTranslations)) {
+                        $this->warn("Fixing wrong multilang value to empty", $localTranslations);
+                        $localTranslations = $emptyDefaults;
                     }
+                    $localTranslations = array_merge($emptyDefaults, $localTranslations);
                     $t = "";
-                    foreach ($locals as $l) {
+                    foreach ($localTranslations as $locale => $translate) {
                         $t .= <<<TEMPLATE
-<input id='{$fieldId}-{$l}' type='text'
-name='{$fieldName}-{$l}'
-value='{$safeValue}'
-/>
+<p>
+    <label>{$locale} : </label>
+    <input class='{$fieldId}_{$locale}' type='text'
+    name='{$fieldName}[{$locale}]'
+    value='{$translate}'
+    />
+</p>
+TEMPLATE;
+                    }
+                    return $t;
+                };
+                $multilLangTextAreaTemplate = function ($safeValue, $fieldId, $fieldName) {
+                    $localTranslations = $safeValue;
+                    $emptyDefaults = $this->e_footer_get_empty_string_by_locale();
+                    if (!is_array($localTranslations)) {
+                        $this->warn("Fixing wrong multilang value to empty", $localTranslations);
+                        $localTranslations = $emptyDefaults;
+                    }
+                    $localTranslations = array_merge($emptyDefaults, $localTranslations);
+                    $t = "";
+                    foreach ($localTranslations as $locale => $translate) {
+                        $t .= <<<TEMPLATE
+<p>
+    <label>{$locale} : </label>
+    <textarea
+    rows="5"
+    class="{$fieldId}_{$locale}"
+    name="{$fieldName}[{$locale}]"
+    >{$translate}</textarea>
+</p>
 TEMPLATE;
                     }
                     return $t;
@@ -1969,8 +2124,11 @@ TEMPLATE;
                 $oLvls = implode(",", (new ReflectionClass(OptiLvl::class))->getConstants());
                 if (current_user_can($this->optAdminEditCabability)) {
                     $this->e_admin_menu_add_param_field($this->eConfOptEnableFooter, __("Activer le bas de page", 'wa-config'), true, $checkboxTemplate);
-                    $this->e_admin_menu_add_param_field($this->eConfOptFooterCredit, __("Copyright de bas de page", 'wa-config'), __("autre", 'wa-config'));
-                    $this->e_admin_menu_add_param_field($this->eConfOptFooterTemplate, __("Template de bas de page", 'wa-config'), "");
+                    $this->e_admin_menu_add_param_field($this->eConfOptFooterCredit, __("Copyright de bas de page", 'wa-config'), $this->e_footer_get_localized_credit(), $multilLangTemplate);
+                    $this->e_admin_menu_add_param_field($this->eConfOptFooterTemplate, __("Template de bas de page", 'wa-config'), $this->e_footer_get_localized_template(), $multilLangTextAreaTemplate);
+                    $this->e_admin_menu_add_param_field($this->eConfStaticHeadTarget, __("Redirect du Frontend", 'wa-config'), "");
+                    $this->e_admin_menu_add_param_field($this->eConfWooCommerceOrderPrefix, __("Prefix pour num de commande WooCommerce", 'wa-config'), "");
+                    $this->e_admin_menu_add_param_field($this->eConfShouldRenderFrontendScripts, __("Scripts frontend", 'wa-config'), true, $checkboxTemplate);
                     $this->e_admin_menu_add_param_field($this->eConfOptOptiLevels, __("Axes d'optimisation", 'wa-config') . " ({$oLvls})", "");
                     $this->e_admin_menu_add_param_field($this->eConfOptOptiWpRequestsFilter, __("RegEx pour bloquer les requêtes HTTP interne (Ex : /.*/)", 'wa-config'), "");
                     $this->e_admin_menu_add_param_field($this->eConfOptOptiWpRequestsSafeFilter, __('RegEx pour autoriser les requêtes HTTP interne (Ex : $wordpress.org$)', 'wa-config'), $this->E_DEFAULT_OPTIMISABLE_SAFE_FILTER);
@@ -2164,7 +2322,7 @@ TEMPLATE;
                 $fieldId = "{$this->eAdminConfigOptsKey}_{$key}";
                 $fieldName = "{$this->eAdminConfigOptsKey}[{$key}]";
                 $value = $this->getWaConfigOption($key, $default);
-                $safeValue = esc_attr($value);
+                $safeValue = $value;
                 add_settings_field($fieldId, $title, function () use($safeValue, $fieldId, $fieldName, $template) {
                     if ($template) {
                         echo $template($safeValue, $fieldId, $fieldName);
@@ -3949,6 +4107,7 @@ namespace WA\Config\Frontend {
     use WA\Config\Core\Editable;
     use WA\Config\Core\EditableWaConfigOptions;
     use WA\Config\Core\WPFilters;
+    use function WA\Config\Utils\_lx;
     if (!trait_exists(EditableScripts::class)) {
         trait EditableScripts
         {
@@ -3958,7 +4117,10 @@ namespace WA\Config\Frontend {
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_scripts__load')) {
                     return;
                 }
-                add_action('wp_enqueue_scripts', [$this, 'e_scripts_do_enqueue']);
+                $shouldRender = $this->getWaConfigOption($this->eConfShouldRenderFrontendScripts, true);
+                if ($shouldRender) {
+                    add_action('wp_enqueue_scripts', [$this, 'e_scripts_do_enqueue']);
+                }
             }
             public function e_scripts_do_enqueue() : void
             {
@@ -3977,7 +4139,10 @@ namespace WA\Config\Frontend {
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_styles__load')) {
                     return;
                 }
-                add_action('wp_enqueue_scripts', [$this, 'e_styles_do_enqueue']);
+                $shouldRender = $this->getWaConfigOption($this->eConfShouldRenderFrontendScripts, true);
+                if ($shouldRender) {
+                    add_action('wp_enqueue_scripts', [$this, 'e_styles_do_enqueue']);
+                }
             }
             public function e_styles_do_enqueue() : void
             {
@@ -4097,6 +4262,66 @@ namespace WA\Config\Frontend {
                 }
                 return $path;
             }
+            protected function e_footer_get_languages()
+            {
+                $locals = [get_locale()];
+                if (function_exists('pll_languages_list')) {
+                    $locals = pll_languages_list(array('fields' => 'locale'));
+                    $this->debugVeryVerbose("Will e_footer_get_languages for Polylangs : ", $locals);
+                }
+                return $locals;
+            }
+            protected function e_footer_get_empty_string_by_locale()
+            {
+                $locals = $this->e_footer_get_languages();
+                $this->debugVerbose("Will e_footer_get_empty_string_by_locale");
+                $localizedCredit = [];
+                array_walk($locals, function ($l) use(&$localizedCredit) {
+                    $localizedCredit[$l] = "";
+                });
+                return $localizedCredit;
+            }
+            protected function e_footer_get_default_credit_by_locale()
+            {
+                $locals = $this->e_footer_get_languages();
+                $this->debugVerbose("Will e_footer_get_default_credit_by_locale");
+                $localizedCredit = [];
+                return $localizedCredit;
+            }
+            protected function e_footer_get_localized_credit()
+            {
+                $this->debugVerbose("Will e_footer_get_localized_credit");
+                $localizedCredit = $this->e_footer_get_default_credit_by_locale();
+                $waFooterCreditByLocale = $this->getWaConfigOption($this->eConfOptFooterCredit, $localizedCredit);
+                if (!is_array($waFooterCreditByLocale)) {
+                    $waFooterCreditByLocale = [];
+                }
+                $waFooterCreditByLocale = array_merge($localizedCredit, $waFooterCreditByLocale);
+                $locale = get_locale();
+                $defaultLocale = 'fr_FR';
+                if (function_exists('pll_count_posts')) {
+                    $defaultLocale = pll_default_language('locale');
+                }
+                $waFooterCredit = $waFooterCreditByLocale[$locale] ?? $waFooterCreditByLocale[$defaultLocale] ?? "";
+                return $waFooterCredit;
+            }
+            protected function e_footer_get_localized_template()
+            {
+                $locals = $this->e_footer_get_languages();
+                $this->debugVerbose("Will e_footer_get_localized_template");
+                $localizedTemplates = [];
+                array_walk($locals, function ($l) use(&$localizedTemplates) {
+                    $localizedTemplates[$l] = "";
+                });
+                $waFooterTemplateByLocale = $this->getWaConfigOption($this->eConfOptFooterTemplate, $localizedTemplates);
+                $locale = get_locale();
+                $defaultLocale = 'fr_FR';
+                if (function_exists('pll_count_posts')) {
+                    $defaultLocale = pll_default_language('locale');
+                }
+                $waFooterTemplate = $waFooterTemplateByLocale[$locale] ?? $waFooterTemplateByLocale[$defaultLocale] ?? "";
+                return $waFooterTemplate;
+            }
             public function e_footer_render()
             {
                 if (!boolVal($this->getWaConfigOption($this->eConfOptEnableFooter, true))) {
@@ -4105,12 +4330,12 @@ namespace WA\Config\Frontend {
                 }
                 $this->debugVerbose("Will e_footer_render");
                 $htmlFooter = null;
-                $waFooterTemplate = $this->getWaConfigOption($this->eConfOptFooterTemplate, "");
+                $waFooterTemplate = $this->e_footer_get_localized_template();
                 if (strlen($waFooterTemplate) > 0) {
                     $this->debugVeryVerbose("e_footer_render from eConfOptFooterTemplate");
                     $htmlFooter = $waFooterTemplate;
                 } else {
-                    $waFooterCredit = $this->getWaConfigOption($this->eConfOptFooterCredit, __("autre", 'wa-config'));
+                    $waFooterCredit = $this->e_footer_get_localized_credit();
                     $monwooCredit = __("Build by Monwoo and", 'wa-config');
                     $htmlFooter = <<<TEMPLATE
 <style>

@@ -11,6 +11,16 @@ Search.appendIndex(
             "summary": "Check\u0020if\u0020string\u0020\u0024haystack\u0020end\u0020with\u0020\u0024needle",
             "url": "namespaces/wa-config-utils.html#function_strEndsWith"
         },                {
+            "fqsen": "\\WA\\Config\\Utils\\_l\u0028\u0029",
+            "name": "_l",
+            "summary": "Get\u0020a\u0020translated\u0020string\u0020in\u0020the\u0020given\u0020translated\u0020domain",
+            "url": "namespaces/wa-config-utils.html#function__l"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\_lx\u0028\u0029",
+            "name": "_lx",
+            "summary": "Get\u0020a\u0020translated\u0020string\u0020in\u0020the\u0020given\u0020translated\u0020domain",
+            "url": "namespaces/wa-config-utils.html#function__lx"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\WPFilters",
             "name": "WPFilters",
             "summary": "This\u0020class\u0020register\u0020all\u0020wa\u002Dconfig\u0020WordPress\u0020filters\u0020like\u0020an\u0020ENUM",
@@ -386,6 +396,11 @@ Search.appendIndex(
             "summary": "Current\u0020plugin\u0020version",
             "url": "classes/WA-Config-Core-Identifiable.html#property_pluginVersion"
         },                {
+            "fqsen": "\\WA\\Config\\Core\\Identifiable\u003A\u003A\u0024pluginRoot",
+            "name": "pluginRoot",
+            "summary": "Full\u0020plugin\u0020root\u0020folder\u0020path\u0020of\u0020this\u0020plugin\u0020instance",
+            "url": "classes/WA-Config-Core-Identifiable.html#property_pluginRoot"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\Parallelizable",
             "name": "Parallelizable",
             "summary": "This\u0020trait\u0020will\u0020provide\u0020sentinels\nto\u0020handle\u0020parallelizable\u0020loads",
@@ -566,6 +581,26 @@ Search.appendIndex(
             "summary": "This\u0020trait\u0020will\u0020add\u0020the\u0020wa\u002Dmission\u0020post\u0020type",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html"
         },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_layout_class\u0028\u0029",
+            "name": "e_mission_post_type_layout_class",
+            "summary": "Alter\u0020your\u0020post\u0020layouts",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_layout_class"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_oceanwp_metabox\u0028\u0029",
+            "name": "e_mission_post_type_oceanwp_metabox",
+            "summary": "Add\u0020the\u0020OceanWP\u0020Settings\u0020metabox\u0020in\u0020your\u0020CPT",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_oceanwp_metabox"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_change_woocommerce_order_number\u0028\u0029",
+            "name": "e_mission_post_type_change_woocommerce_order_number",
+            "summary": "Add\u0020prefix\u0020to\u0020woocommerce\u0020order\u0020numbers",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_change_woocommerce_order_number"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_load_template_includes\u0028\u0029",
+            "name": "e_mission_post_type_load_template_includes",
+            "summary": "Filter\u0020templates\u0020to\u0020load\u0020custom\u0020templates\u0020if\u0020availables",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_load_template_includes"
+        },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_do_template_nav_menus\u0028\u0029",
             "name": "e_mission_post_type_do_template_nav_menus",
             "summary": "Add\u0020nav\u0020menu",
@@ -580,6 +615,21 @@ Search.appendIndex(
             "name": "e_mission_post_type_do_template_nav_menu_metabox",
             "summary": "Add\u0020nav\u0020menu\u0020admin\u0020metabox",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menu_metabox"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_polylang_lang_link\u0028\u0029",
+            "name": "e_mission_post_type_polylang_lang_link",
+            "summary": "Register\u0020polylang\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_lang_link"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_polylang_rewrite_slugs\u0028\u0029",
+            "name": "e_mission_post_type_polylang_rewrite_slugs",
+            "summary": "Register\u0020polylang\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_rewrite_slugs"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_register_localized_slug\u0028\u0029",
+            "name": "e_mission_register_localized_slug",
+            "summary": "Register\u0020polylang\u0020localized\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs\u0020Polylang\u0020404\u0020page\u0020fixes",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_register_localized_slug"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_polylang_register\u0028\u0029",
             "name": "e_mission_post_type_polylang_register",
@@ -820,6 +870,166 @@ Search.appendIndex(
             "name": "e_footer_render",
             "summary": "Return\u0020the\u0020rendered\u0020Frontend\u0020footer\u0020acordingly\u0020to\u0020wa\u002Dconfig\u0020Admin\u0020options\u0020\u003A",
             "url": "classes/WA-Config-Frontend-EditableFooter.html#method_e_footer_render"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize",
+            "name": "Restaurant_Food_Delivery_Customize",
+            "summary": "Singleton\u0020class\u0020for\u0020handling\u0020the\u0020theme\u0027s\u0020customizer\u0020integration.",
+            "url": "classes/Restaurant-Food-Delivery-Customize.html"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize\u003A\u003Aget_instance\u0028\u0029",
+            "name": "get_instance",
+            "summary": "Returns\u0020the\u0020instance.",
+            "url": "classes/Restaurant-Food-Delivery-Customize.html#method_get_instance"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize\u003A\u003Asections\u0028\u0029",
+            "name": "sections",
+            "summary": "Sets\u0020up\u0020the\u0020customizer\u0020sections.",
+            "url": "classes/Restaurant-Food-Delivery-Customize.html#method_sections"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize\u003A\u003Aenqueue_control_scripts\u0028\u0029",
+            "name": "enqueue_control_scripts",
+            "summary": "Loads\u0020theme\u0020customizer\u0020CSS.",
+            "url": "classes/Restaurant-Food-Delivery-Customize.html#method_enqueue_control_scripts"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_customizer_settings\u0028\u0029",
+            "name": "restaurant_food_delivery_customizer_settings",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_customizer_settings"
+        },                {
+            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_DOCS_FREE",
+            "name": "RESTAURANT_FOOD_DELIVERY_DOCS_FREE",
+            "summary": "",
+            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_DOCS_FREE"
+        },                {
+            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_DOCS_PRO",
+            "name": "RESTAURANT_FOOD_DELIVERY_DOCS_PRO",
+            "summary": "",
+            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_DOCS_PRO"
+        },                {
+            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_BUY_NOW",
+            "name": "RESTAURANT_FOOD_DELIVERY_BUY_NOW",
+            "summary": "",
+            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_BUY_NOW"
+        },                {
+            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_SUPPORT_FREE",
+            "name": "RESTAURANT_FOOD_DELIVERY_SUPPORT_FREE",
+            "summary": "",
+            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_SUPPORT_FREE"
+        },                {
+            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_REVIEW_FREE",
+            "name": "RESTAURANT_FOOD_DELIVERY_REVIEW_FREE",
+            "summary": "",
+            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_REVIEW_FREE"
+        },                {
+            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_DEMO_PRO",
+            "name": "RESTAURANT_FOOD_DELIVERY_DEMO_PRO",
+            "summary": "",
+            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_DEMO_PRO"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_getting_started\u0028\u0029",
+            "name": "restaurant_food_delivery_getting_started",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_getting_started"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_admin_enqueue_scripts\u0028\u0029",
+            "name": "restaurant_food_delivery_admin_enqueue_scripts",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_admin_enqueue_scripts"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_test_guide\u0028\u0029",
+            "name": "restaurant_food_delivery_test_guide",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_test_guide"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_register_recommended_plugins\u0028\u0029",
+            "name": "restaurant_food_delivery_register_recommended_plugins",
+            "summary": "Recommended\u0020plugins.",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_register_recommended_plugins"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro",
+            "name": "Restaurant_Food_Delivery_Customize_Section_Pro",
+            "summary": "Pro\u0020customizer\u0020section.",
+            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro\u003A\u003Ajson\u0028\u0029",
+            "name": "json",
+            "summary": "Add\u0020custom\u0020parameters\u0020to\u0020pass\u0020to\u0020the\u0020JS\u0020via\u0020JSON.",
+            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html#method_json"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro\u003A\u003A\u0024type",
+            "name": "type",
+            "summary": "The\u0020type\u0020of\u0020customize\u0020section\u0020being\u0020rendered.",
+            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html#property_type"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro\u003A\u003A\u0024pro_text",
+            "name": "pro_text",
+            "summary": "Custom\u0020button\u0020text\u0020to\u0020output.",
+            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html#property_pro_text"
+        },                {
+            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro\u003A\u003A\u0024pro_url",
+            "name": "pro_url",
+            "summary": "Custom\u0020pro\u0020button\u0020URL.",
+            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html#property_pro_url"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_enqueue_google_fonts\u0028\u0029",
+            "name": "restaurant_food_delivery_enqueue_google_fonts",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_enqueue_google_fonts"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_enqueue_scripts\u0028\u0029",
+            "name": "restaurant_food_delivery_enqueue_scripts",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_enqueue_scripts"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_after_setup_theme\u0028\u0029",
+            "name": "restaurant_food_delivery_after_setup_theme",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_after_setup_theme"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_logo_resizer\u0028\u0029",
+            "name": "restaurant_food_delivery_logo_resizer",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_logo_resizer"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_comment\u0028\u0029",
+            "name": "restaurant_food_delivery_comment",
+            "summary": "Template\u0020for\u0020comments\u0020and\u0020pingbacks.",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_comment"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_widgets_init\u0028\u0029",
+            "name": "restaurant_food_delivery_widgets_init",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_widgets_init"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_get_categories_select\u0028\u0029",
+            "name": "restaurant_food_delivery_get_categories_select",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_get_categories_select"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_sanitize_select\u0028\u0029",
+            "name": "restaurant_food_delivery_sanitize_select",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_sanitize_select"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_loop_columns\u0028\u0029",
+            "name": "restaurant_food_delivery_loop_columns",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_loop_columns"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_remove_sections\u0028\u0029",
+            "name": "restaurant_food_delivery_remove_sections",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_remove_sections"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_load_dashicons_front_end\u0028\u0029",
+            "name": "restaurant_food_delivery_load_dashicons_front_end",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_load_dashicons_front_end"
+        },                {
+            "fqsen": "\\restaurant_food_delivery_notice\u0028\u0029",
+            "name": "restaurant_food_delivery_notice",
+            "summary": "",
+            "url": "namespaces/default.html#function_restaurant_food_delivery_notice"
         },                {
             "fqsen": "\\WA\\Config\\E2E\\E2E_EnsureAdminConfigPanelCest",
             "name": "E2E_EnsureAdminConfigPanelCest",
