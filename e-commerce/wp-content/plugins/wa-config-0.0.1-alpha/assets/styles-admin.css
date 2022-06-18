@@ -219,6 +219,23 @@
     border-collapse: collapse;
   }
 }
+body .wa-blocked-url-frames {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+body .wa-blocked-url-frames span {
+  width: 20%;
+  margin: 1%;
+}
+@media (max-width: 700px) {
+  body .wa-blocked-url-frames span {
+    width: 42%;
+    margin: 0%;
+  }
+}
 body pre {
   overflow: scroll;
 }

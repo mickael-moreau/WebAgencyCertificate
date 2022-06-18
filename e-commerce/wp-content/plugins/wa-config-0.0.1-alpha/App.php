@@ -1,7 +1,7 @@
 <?php
 /*   __________________________________________________
     |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-06-16 10:39:53              |
+    |              on 2022-06-18 03:29:46              |
     |    GitHub: https://github.com/pk-fr/yakpro-po    |
     |__________________________________________________|
 */
@@ -14,6 +14,10 @@ namespace {
     if (!defined('WPINC')) {
         exit;
     }
+    global $_wa_fetch_instance;
+    $_wa_fetch_instance = function () {
+        return AppInterface::instance();
+    };
     if (!function_exists(_wa_e2e_tests_wp_die_handler::class)) {
         function _wa_e2e_tests_wp_die_handler($message, $title = '', $args = array())
         {
@@ -292,6 +296,7 @@ namespace WA\Config\Core {
             protected $eConfOptFooterTemplate = 'wa_footer_template';
             protected $eConfOptFooterCredit = 'wa_footer_credit';
             protected $eConfStaticHeadTarget = 'wa_static_head_target';
+            protected $eConfStaticHeadSafeWpKeeper = 'wa_static_head_target_safe_keeper';
             protected $eConfWooCommerceOrderPrefix = 'wa_woo_com_order_prefix';
             protected $eConfShouldRenderFrontendScripts = 'wa_should_render_frontend_scripts';
             protected $eConfOptOptiLevels = 'wa_optimisable_levels';
@@ -299,6 +304,7 @@ namespace WA\Config\Core {
             protected $eConfOptOptiWpRequestsSafeFilter = 'wa_optimisable_wp_http_request_safe_filter';
             protected $E_DEFAULT_OPTIMISABLE_SAFE_FILTER = '$(^https://)((web-agency.local.dev/)|(api.wordpress.org/(plugins)|(themes/info))|(downloads.wordpress.org/(plugin)|(theme)|(translation))|(translate.wordpress.com)|(woocommerce.com/wp-json/))$';
             protected $eConfOptOptiEnableBlockedHttpNotice = 'wa_optimisable_enable_blocked_http_notice';
+            protected $eConfOptOptiEnableBlockedReviewReport = 'wa_optimisable_enable_blocked_review_report';
             protected $eConfOptATestsUsers = 'wa_acceptance_tests_users';
             protected $E_DEFAULT_A_TESTS_USERS_LIST = "demo@monwoo.com,editor-wa@monwoo.com,client-wa@monwoo.com,demo-wrong@monwoo.com'demo-wrong@monwoo.com'";
             protected $eConfOptATestsBaseUrl = 'wa_acceptance_tests_base_url';
@@ -1504,13 +1510,12 @@ namespace WA\Config\Admin {
             }
             public function e_admin_scripts_do_enqueue() : void
             {
-                $this->debugVerbose("Will e_admin_scripts_do_enqueue");
+                $this->debugVerbose("Will e_admin_scripts_do_enqueue for '" . get_current_screen()->id . "'");
                 $cssFile = "assets/styles-admin.css";
                 wp_enqueue_style('wa-config-css-admin', plugins_url($cssFile, $this->pluginFile), [], $this->pluginVersion);
                 $jsFile = "assets/app-admin.js";
                 $jsUrl = plugins_url($jsFile, $this->pluginFile);
                 wp_enqueue_script('wa-admin-js', $jsUrl, ['jquery', 'suggest'], $this->pluginVersion, true);
-                $this->debugVerbose("Will e_admin_scripts_do_enqueue for ", get_current_screen()->id);
                 if (false !== strpos(get_current_screen()->id, $this->eAdminConfigReviewPageKey)) {
                     wp_enqueue_style('thickbox');
                     wp_enqueue_script('plugin-install');
@@ -1551,6 +1556,7 @@ namespace WA\Config\Admin {
                     return;
                 }
                 add_action('init', [$this, 'e_mission_post_type_register']);
+                add_action('admin_menu', [$this, 'e_mission_post_type_admin_menu']);
                 add_action('get_the_date', [$this, 'e_mission_post_type_get_the_date'], 10, 3);
                 add_filter('template_include', [$this, 'e_mission_post_type_load_template_includes'], 1);
                 add_filter('woocommerce_order_number', [$this, 'e_mission_post_type_change_woocommerce_order_number'], 1, 2);
@@ -1689,19 +1695,19 @@ namespace WA\Config\Admin {
                 }
                 return $post_types;
             }
-            public function e_mission_post_type_register() : void
+            public function e_mission_post_type_admin_menu() : void
             {
-                $self = $this;
-                $skillTaxoKey = 'wa-skill';
-                $this->debugVerbose("Will e_mission_post_type_register");
+                $this->debugVerbose("Will e_mission_post_type_admin_menu");
                 $missionCptKey = 'wa-mission';
-                $permalink = _x('missions', 'wa-mission post slug (url SEO)', 'wa-config');
-                $missionCpt = register_post_type($missionCptKey, ['label' => __('Missions', 'wa-config'), 'labels' => ['name' => __('Missions', 'wa-config'), 'singular_name' => __('Mission', 'wa-config'), 'all_items' => __('Les missions', 'wa-config'), 'add_new_item' => __('Ajouter une mission', 'wa-config'), 'edit_item' => __('Éditer la mission', 'wa-config'), 'new_item' => __('Nouvelle mission', 'wa-config'), 'view_item' => __('Voir la mission', 'wa-config'), 'search_items' => __('Rechercher parmi les missions', 'wa-config'), 'not_found' => __('Pas de mission trouvée', 'wa-config'), 'not_found_in_trash' => __('Pas de mission dans la corbeille', 'wa-config'), 'menu_name' => __('Missions', 'wa-config')], 'public' => true, 'delete_with_user' => false, 'supports' => ['title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'custom-fields', 'headway-seo', 'date', 'sticky', 'views', 'revisions', 'trackbacks', 'page-attributes', 'post-formats'], 'can_export' => true, 'has_archive' => true, 'exclude_from_search' => false, 'publicly_queryable' => true, 'query_var' => true, 'show_admin_column' => true, 'show_in_rest' => true, 'show_ui' => true, 'show_in_admin_bar' => true, 'show_in_menu' => false, 'menu_icon' => 'dashicons-clipboard', 'taxonomies' => [$skillTaxoKey], 'show_in_nav_menus' => true, 'map_meta_cap' => true, 'hierarchical' => false, 'rewrite' => ['slug' => $permalink], 'slug' => $permalink]);
-                flush_rewrite_rules();
+                $self = $this;
                 if (!function_exists(\add_submenu_page::class)) {
-                    $this->warn("MISSING add_submenu_page, strange stuff to debug...");
+                    $this->warn("MISSING add_submenu_page function, 'e_mission_post_type_admin_menu' should be registred with 'admin_menu' hook.");
                 }
                 if (is_admin() && function_exists(\add_submenu_page::class)) {
+                    $missionCpt = get_post_type_object($missionCptKey);
+                    if (!$missionCpt) {
+                        $this->error("Custom post type '{$missionCptKey}' is not defined.");
+                    }
                     add_action('add_meta_boxes_' . $missionCptKey, [$this, 'e_mission_post_end_date_add_metabox']);
                     add_action("save_post_{$missionCptKey}", [$this, 'e_mission_post_end_date_save_metabox']);
                     add_filter("manage_{$missionCptKey}_posts_columns", [$this, 'e_mission_post_end_date_add_column']);
@@ -1709,7 +1715,7 @@ namespace WA\Config\Admin {
                     add_action('quick_edit_custom_box', [$this, 'e_mission_post_end_date_quick_edit'], 10, 2);
                     add_action('admin_print_footer_scripts-edit.php', [$this, 'e_mission_post_end_date_quick_edit_js']);
                     \add_submenu_page($this->eAdminConfigPageKey, $missionCpt->labels->name, "<span class='dashicons {$missionCpt->menu_icon}'></span> " . $missionCpt->labels->menu_name, $missionCpt->cap->edit_posts, 'edit.php?post_type=' . $missionCptKey);
-                    $my_cpt_parent_file = function ($parent_file) use($self, $missionCptKey, $skillTaxoKey) {
+                    $my_cpt_parent_file = function ($parent_file) use($self, $missionCptKey) {
                         global $current_screen;
                         $self->debugVeryVerbose("Screen for parent_file : ", $current_screen);
                         if (in_array($current_screen->base, array('term', 'post-tags', 'edit-tags', 'post', 'edit')) && $missionCptKey == $current_screen->post_type) {
@@ -1733,6 +1739,22 @@ namespace WA\Config\Admin {
                     };
                     add_filter('submenu_file', $my_cpt_submenu_file);
                 }
+            }
+            public function e_mission_post_type_register() : void
+            {
+                $self = $this;
+                $skillTaxoKey = 'wa-skill';
+                $this->debugVerbose("Will e_mission_post_type_register");
+                $missionCptKey = 'wa-mission';
+                $permalink = _x('missions', 'wa-mission post slug (url SEO)', 'wa-config');
+                $missionCpt = register_post_type($missionCptKey, ['label' => __('Missions', 'wa-config'), 'labels' => ['name' => __('Missions', 'wa-config'), 'singular_name' => __('Mission', 'wa-config'), 'all_items' => __('Les missions', 'wa-config'), 'add_new_item' => __('Ajouter une mission', 'wa-config'), 'edit_item' => __('Éditer la mission', 'wa-config'), 'new_item' => __('Nouvelle mission', 'wa-config'), 'view_item' => __('Voir la mission', 'wa-config'), 'search_items' => __('Rechercher parmi les missions', 'wa-config'), 'not_found' => __('Pas de mission trouvée', 'wa-config'), 'not_found_in_trash' => __('Pas de mission dans la corbeille', 'wa-config'), 'menu_name' => __('Missions', 'wa-config')], 'public' => true, 'delete_with_user' => false, 'supports' => ['title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'custom-fields', 'headway-seo', 'date', 'sticky', 'views', 'revisions', 'trackbacks', 'page-attributes', 'post-formats'], 'can_export' => true, 'has_archive' => true, 'exclude_from_search' => false, 'publicly_queryable' => true, 'query_var' => true, 'show_admin_column' => true, 'show_in_rest' => true, 'show_ui' => true, 'show_in_admin_bar' => true, 'show_in_menu' => false, 'menu_icon' => 'dashicons-clipboard', 'taxonomies' => [$skillTaxoKey], 'show_in_nav_menus' => true, 'map_meta_cap' => true, 'hierarchical' => false, 'rewrite' => ['slug' => $permalink], 'slug' => $permalink]);
+                register_rest_field($missionCptKey, 'wa_end_date', array('get_callback' => [$this, 'e_mission_post_type_get_meta_from_rest'], 'schema' => null));
+                flush_rewrite_rules();
+            }
+            public function e_mission_post_type_get_meta_from_rest($object = '', $field_name = '', $request = array())
+            {
+                $this->warn("Will e_mission_post_type_get_meta_from_rest", $object);
+                return get_post_meta($object['id'], $field_name, true);
             }
             public function e_mission_post_type_get_the_date($the_date, $d, $post)
             {
@@ -1860,6 +1882,7 @@ namespace WA\Config\Admin {
                     return;
                 }
                 add_action('init', [$this, 'e_skill_taxo_register_taxonomy']);
+                add_action('admin_menu', [$this, 'e_skill_taxo_admin_menu']);
                 add_action(WPActions::wa_do_base_review_preprocessing, [$this, 'e_skill_taxo_data_review']);
                 if (function_exists('pll_count_posts')) {
                     add_filter('pll_get_taxonomies', [$this, 'e_skill_taxo_polylang_register'], 10, 2);
@@ -1875,6 +1898,18 @@ namespace WA\Config\Admin {
                 }
                 return $taxonomies;
             }
+            public function e_skill_taxo_admin_menu() : void
+            {
+                $missionCptKey = 'wa-mission';
+                $skillTaxoKey = 'wa-skill';
+                $taxo = get_taxonomy($skillTaxoKey);
+                if (!function_exists(\add_submenu_page::class)) {
+                    $this->warn("MISSING add_submenu_page function, 'e_skill_taxo_admin_menu' should be registred with 'admin_menu' hook.");
+                }
+                if (is_admin() && function_exists(\add_submenu_page::class)) {
+                    \add_submenu_page($this->eAdminConfigPageKey, $taxo->labels->name, "<span class='dashicons {$taxo->menu_icon}'></span> " . $taxo->labels->name, $taxo->cap->manage_terms, "edit-tags.php?post_type={$missionCptKey}&taxonomy={$skillTaxoKey}");
+                }
+            }
             public function e_skill_taxo_register_taxonomy() : void
             {
                 $this->debugVerbose("Will e_skill_taxo_register_taxonomy");
@@ -1884,9 +1919,6 @@ namespace WA\Config\Admin {
                 $skillTaxoKey = 'wa-skill';
                 $taxo = register_taxonomy($skillTaxoKey, [$missionCptKey, 'user'], $args);
                 flush_rewrite_rules();
-                if (is_admin() && function_exists(\add_submenu_page::class)) {
-                    \add_submenu_page($this->eAdminConfigPageKey, $taxo->labels->name, "<span class='dashicons {$taxo->menu_icon}'></span> " . $taxo->labels->name, $taxo->cap->manage_terms, "edit-tags.php?post_type={$missionCptKey}&taxonomy={$skillTaxoKey}");
-                }
             }
             public function e_skill_taxo_data_review($app) : void
             {
@@ -1967,23 +1999,36 @@ namespace WA\Config\Admin {
             protected function _010_e_admin_config__bootstrap()
             {
                 $staticHeadTarget = $this->getWaConfigOption($this->eConfStaticHeadTarget, "");
+                $staticHeadTargetSafeWpKeeper = $this->getWaConfigOption($this->eConfStaticHeadSafeWpKeeper, "");
+                $staticHeadTarget = trim($staticHeadTarget, '/');
                 if (strlen($staticHeadTarget) && !is_admin()) {
                     $self = $this;
-                    add_action('parse_request', function () use($self, $staticHeadTarget) {
+                    add_action('parse_request', function () use($self, $staticHeadTarget, $staticHeadTargetSafeWpKeeper) {
                         global $wp;
-                        if (0 !== strpos($wp->request, "wp-admin") && 0 !== strpos($wp->request, "wp-json")) {
+                        $isSafeWp = strlen($staticHeadTargetSafeWpKeeper) ? !!preg_match($staticHeadTargetSafeWpKeeper, $wp->request) : false;
+                        if (0 !== strpos($wp->request, "wp-admin") && 0 !== strpos($wp->request, "wp-json") && !$isSafeWp) {
                             $proxy = $this->pluginRoot . "head-proxy.php";
                             $GLOBALS["wa-proxy-url"] = $wp->request;
                             $GLOBALS["wa-front-head"] = $staticHeadTarget;
+                            $this->debugVerbose("EditableConfigPannels proxify Frontend for : '{$wp->request}' at '{$staticHeadTarget}'");
                             include $proxy;
                             $self->exit();
                             return;
+                        }
+                        if ($isSafeWp) {
+                            $this->debugVerbose("EditableConfigPannels did keep wp url safe for : '{$wp->request}'");
                         }
                     });
                     return;
                 }
                 $this->eAdminConfigReviewOptsDefaults = [$this->eConfOptReviewCategory => "", $this->eConfOptReviewCategoryIcon => "", $this->eConfOptReviewTitle => "", $this->eConfOptReviewTitleIcon => "", $this->eConfOptReviewRequirements => "", $this->eConfOptReviewResult => true, $this->eConfOptReviewValue => "", $this->eConfOptReviewIsActivated => true, $this->eConfOptReviewAccessCapOrRole => ""];
                 add_action('activated_plugin', [$this, 'e_admin_config_on_plugins_activated'], 10, 2);
+                if (is_admin()) {
+                    $filter = "pre_update_option_{$this->eAdminConfigReviewOptsKey}";
+                    $this->debugVerbose("Will add '{$filter}' to the e_admin_config_pre_update_review_filter filter for '{$this->eAdminConfigReviewOptsKey}'");
+                    add_filter($filter, [$this, "e_admin_config_pre_update_review_filter"], 10, 3);
+                    add_filter("option_page_capability_{$this->eAdminConfigOptsReviewGroupKey}", [$this, "e_admin_config_review_option_page_capability"]);
+                }
             }
             public function e_admin_config_on_plugins_activated($plugin, $network_wide)
             {
@@ -2048,8 +2093,6 @@ namespace WA\Config\Admin {
                 add_settings_section($this->eAdminConfigParamSettingsKey, __('Paramètres', 'wa-config'), '', $this->eAdminConfigParamPageKey);
                 register_setting($this->eAdminConfigOptsReviewGroupKey, $this->eAdminConfigReviewOptsKey, [$this, 'e_admin_config_opts_review_validate']);
                 add_settings_section($this->eAdminConfigReviewSettingsKey, __('Ajouter une revue', 'wa-config'), '', $this->eAdminConfigReviewPageKey);
-                add_filter("pre_update_option_{$this->eAdminConfigReviewOptsKey}", [$this, "e_admin_config_pre_update_review_filter"], 10, 3);
-                add_filter("option_page_capability_{$this->eAdminConfigOptsReviewGroupKey}", [$this, "e_admin_config_review_option_page_capability"]);
                 $checkboxTemplate = function ($safeValue, $fieldId, $fieldName) {
                     $checked = boolval($safeValue) ? 'checked' : '';
                     $value = $checked ? '1' : '0';
@@ -2127,12 +2170,14 @@ TEMPLATE;
                     $this->e_admin_menu_add_param_field($this->eConfOptFooterCredit, __("Copyright de bas de page", 'wa-config'), $this->e_footer_get_localized_credit(), $multilLangTemplate);
                     $this->e_admin_menu_add_param_field($this->eConfOptFooterTemplate, __("Template de bas de page", 'wa-config'), $this->e_footer_get_localized_template(), $multilLangTextAreaTemplate);
                     $this->e_admin_menu_add_param_field($this->eConfStaticHeadTarget, __("Redirect du Frontend", 'wa-config'), "");
+                    $this->e_admin_menu_add_param_field($this->eConfStaticHeadSafeWpKeeper, __("Regex pour exclure des url du Frontend", 'wa-config'), "");
                     $this->e_admin_menu_add_param_field($this->eConfWooCommerceOrderPrefix, __("Prefix pour num de commande WooCommerce", 'wa-config'), "");
                     $this->e_admin_menu_add_param_field($this->eConfShouldRenderFrontendScripts, __("Scripts frontend", 'wa-config'), true, $checkboxTemplate);
                     $this->e_admin_menu_add_param_field($this->eConfOptOptiLevels, __("Axes d'optimisation", 'wa-config') . " ({$oLvls})", "");
                     $this->e_admin_menu_add_param_field($this->eConfOptOptiWpRequestsFilter, __("RegEx pour bloquer les requêtes HTTP interne (Ex : /.*/)", 'wa-config'), "");
                     $this->e_admin_menu_add_param_field($this->eConfOptOptiWpRequestsSafeFilter, __('RegEx pour autoriser les requêtes HTTP interne (Ex : $wordpress.org$)', 'wa-config'), $this->E_DEFAULT_OPTIMISABLE_SAFE_FILTER);
                     $this->e_admin_menu_add_param_field($this->eConfOptOptiEnableBlockedHttpNotice, __("Notifier les requêttes HTTP bloquées", 'wa-config'), false, $checkboxTemplate);
+                    $this->e_admin_menu_add_param_field($this->eConfOptOptiEnableBlockedReviewReport, __("Activer le rapport des url bloquées", 'wa-config'), false, $checkboxTemplate);
                     $this->e_admin_menu_add_param_field($this->eConfOptATestsBaseUrl, __("Url de base pour les tests d'acceptance", 'wa-config'), site_url());
                     $this->e_admin_menu_add_param_field($this->eConfOptATestsUsers, __("Liste des utilisateurs de test", 'wa-config'), $this->E_DEFAULT_A_TESTS_USERS_LIST);
                     $this->e_admin_menu_add_param_field($this->eConfOptATestsRunForCabability, __("Capacité pour lancer les tests", 'wa-config'), 'administrator', [$this, 'e_admin_config_capability_suggestionbox_template']);
@@ -2305,6 +2350,17 @@ TEMPLATE;
                     Notice::displayError("" . __("'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :", 'wa-config') . "<br />\n{$newinput[$regExKeySafe]}<br />\n" . $noticeErrSafe);
                     $newinput[$regExKeySafe] = '';
                 }
+                $booleanAdaptor = function ($fieldName) use(&$newinput) {
+                    $newinput[$fieldName] = boolval(array_key_exists($fieldName, $newinput) ? $newinput[$fieldName] : false);
+                };
+                $booleanAdaptor($this->eConfOptEnableFooter);
+                $booleanAdaptor($this->eConfOptOptiEnableBlockedHttpNotice);
+                $booleanAdaptor($this->eConfOptOptiEnableBlockedReviewReport);
+                if (!$newinput[$this->eConfOptOptiEnableBlockedReviewReport]) {
+                    delete_transient($this->BLOCKED_URL_REVIEW_REPORT);
+                    delete_transient($this->ALLOWED_URL_REVIEW_REPORT);
+                }
+                $booleanAdaptor($this->eConfShouldRenderFrontendScripts);
                 Notice::displaySuccess(__('Enregistrement OK.', 'wa-config'));
                 return $newinput;
             }
@@ -2454,8 +2510,12 @@ TEMPLATE;
             {
                 $newinput = $input;
                 $this->debugVerbose("Will e_admin_config_opts_review_validate");
-                $newinput[$this->eConfOptReviewResult] = boolval($newinput[$this->eConfOptReviewResult] ?? false);
-                $newinput[$this->eConfOptReviewIsActivated] = boolval($newinput[$this->eConfOptReviewIsActivated] ?? false);
+                $booleanAdaptor = function ($fieldName) use(&$newinput) {
+                    $newinput[$fieldName] = intval(array_key_exists($fieldName, $newinput) ? $newinput[$fieldName] : false);
+                };
+                $booleanAdaptor($this->eConfOptReviewIsActivated);
+                $booleanAdaptor($this->eConfOptReviewResult);
+                $this->debugVeryVerbose("Validated e_admin_config_opts_review_validate input", array_keys($input), array_keys($newinput));
                 return $newinput;
             }
             public function e_admin_config_review_option_page_capability($capability)
@@ -2465,6 +2525,7 @@ TEMPLATE;
             protected $_eACPreUpdateReviewSelfSentinel = false;
             public function e_admin_config_pre_update_review_filter($value, $old_value, $option)
             {
+                $this->debugVerbose("Will e_admin_config_pre_update_review_filter on {$option}");
                 if (!is_admin()) {
                     $this->err("wa-config e_admin_config_pre_update_review_filter need admin page.");
                     echo "<p> " . __("Cette opérations nécessite une page admin", 'wa-config') . "</p>";
@@ -2935,10 +2996,16 @@ TEMPLATE;
                 $app = $this;
                 do_action(WPActions::wa_do_base_review_preprocessing, $app);
                 $this->e_admin_config_add_check_list_to_review(['category' => __('01 - Critique', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-plugins-checked"></span>', 'title' => __('01 - Version de PHP', 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-shield"></span>', 'requirements' => __('7.4+ (7.4 or higher recommended)', 'wa-config'), 'value' => "PHP " . PHP_VERSION, 'result' => version_compare(PHP_VERSION, '7.4', '>'), 'fixed_id' => "{$this->iId}-check-php-version", 'is_computed' => true]);
-                $aTestBaseUrl = $this->getWaConfigOption($this->eConfOptATestsBaseUrl, site_url());
+                $htaccessTestsFolder = 'tests';
+                $htaccessTestsBaseUrl = plugins_url($htaccessTestsFolder, $this->pluginFile);
                 require_once $this->pluginRoot . "tests/external/EXT_TEST_htaccessIsEnabled.php";
-                $htaccessOK = \WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::check($aTestBaseUrl);
-                $this->e_admin_config_add_check_list_to_review(['category' => __('01 - Critique', 'wa-config'), 'title' => __('02 - Securisations .htaccess', 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-shield"></span>', 'requirements' => __('Activation des redirections .htaccess', 'wa-config'), 'result' => !$htaccessOK, 'fixed_id' => "{$this->iId}-check-htaccess-ok", 'is_computed' => true]);
+                $htaccessOK = \WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::check($htaccessTestsBaseUrl);
+                if (!$htaccessOK) {
+                    foreach (\WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::$errors as $e) {
+                        $this->err($e);
+                    }
+                }
+                $this->e_admin_config_add_check_list_to_review(['category' => __('01 - Critique', 'wa-config'), 'title' => __('02 - Securisations .htaccess', 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-shield"></span>', 'requirements' => __('Activation des redirections .htaccess', 'wa-config'), 'result' => $htaccessOK, 'fixed_id' => "{$this->iId}-check-htaccess-ok", 'is_computed' => true]);
                 $report = "";
                 $result = (function () use(&$report) {
                     $version = null;
@@ -3349,242 +3416,131 @@ TEMPLATE;
                 }
                 ?>
                 <script>
-                    // TODO : debounce and UI lock loader ?
+                    jQuery(function() {
+                        // Will be loaded only when all page will have load
+                        // TODO : debounce and UI lock loader ?
 
-                    var expTriggers = document.querySelectorAll('.wa-expand-toggler');
+                        var expTriggers = document.querySelectorAll('.wa-expand-toggler');
 
-                    // <span class="dashicons dashicons-hidden"></span>
-                    // visibility hidden post status edit trash
+                        // <span class="dashicons dashicons-hidden"></span>
+                        // visibility hidden post status edit trash
 
-                    expTriggers.forEach(function(trigger) {
-                        var tTargetsSelector = trigger.getAttribute(
-                            'data-wa-expand-target'
-                        );
-                        var tTargets = document.querySelectorAll(
-                            tTargetsSelector
-                        );
-                        if (tTargets.length) {
-                            trigger.onclick = function(e) {
-                                // e.preventDefault(); // Do not follow link, prevent page refresh => but also prevent link click if link in title...
-                                // console.log(e);
-                                var didExpand = !!Number(trigger.getAttribute(
-                                    'data-wa-did-expand'
-                                ));
-                                var icon = trigger.querySelector(
-                                    '.dashicons.dashicons-fullscreen-exit-alt,'
-                                    + '.dashicons.dashicons-fullscreen-alt'
-                                );
+                        expTriggers.forEach(function(trigger) {
+                            var tTargetsSelector = trigger.getAttribute(
+                                'data-wa-expand-target'
+                            );
+                            var tTargets = document.querySelectorAll(
+                                tTargetsSelector
+                            );
+                            if (tTargets.length) {
+                                trigger.onclick = function(e) {
+                                    // e.preventDefault(); // Do not follow link, prevent page refresh => but also prevent link click if link in title...
+                                    // console.log(e);
+                                    var didExpand = !!Number(trigger.getAttribute(
+                                        'data-wa-did-expand'
+                                    ));
+                                    var icon = trigger.querySelector(
+                                        '.dashicons.dashicons-fullscreen-exit-alt,'
+                                        + '.dashicons.dashicons-fullscreen-alt'
+                                    );
 
-                                if (icon && icon.classList) {
-                                    if (didExpand) {
-                                        icon.classList.remove('dashicons-fullscreen-exit-alt');
-                                        icon.classList.add('dashicons-fullscreen-alt');
-                                    } else {
-                                        icon.classList.add('dashicons-fullscreen-exit-alt');
-                                        icon.classList.remove('dashicons-fullscreen-alt');
+                                    if (icon && icon.classList) {
+                                        if (didExpand) {
+                                            icon.classList.remove('dashicons-fullscreen-exit-alt');
+                                            icon.classList.add('dashicons-fullscreen-alt');
+                                        } else {
+                                            icon.classList.add('dashicons-fullscreen-exit-alt');
+                                            icon.classList.remove('dashicons-fullscreen-alt');
+                                        }
                                     }
+
+                                    // e.target.classList.toggle('transition'); => will swith open to close by TARGET
+                                    tTargets.forEach(function(tTarget) {
+                                        if (didExpand) {
+                                            tTarget.classList.add('wa-expand-collapsed');
+                                            // tTarget.classList.remove('wa-expand'); // wa-expand should always stay since lookup used by expand toggler
+                                        } else {
+                                            tTarget.classList.remove('wa-expand-collapsed');
+                                            // tTarget.classList.add('wa-expand');
+                                        }
+                                    });
+                                    trigger.setAttribute('data-wa-did-expand', Number(!didExpand));
                                 }
-
-                                // e.target.classList.toggle('transition'); => will swith open to close by TARGET
-                                tTargets.forEach(function(tTarget) {
-                                    if (didExpand) {
-                                        tTarget.classList.add('wa-expand-collapsed');
-                                        // tTarget.classList.remove('wa-expand'); // wa-expand should always stay since lookup used by expand toggler
-                                    } else {
-                                        tTarget.classList.remove('wa-expand-collapsed');
-                                        // tTarget.classList.add('wa-expand');
-                                    }
-                                });
-                                trigger.setAttribute('data-wa-did-expand', Number(!didExpand));
                             }
-                        }
-                    });
+                        });
 
-                    var duplicateTriggers = document.querySelectorAll('.wa-check-duplicate-trigger');
+                        var duplicateTriggers = document.querySelectorAll('.wa-check-duplicate-trigger');
 
-                    duplicateTriggers.forEach(function(trigger) {
-                        trigger.onclick = function(e) {
-                            var duplicateData = JSON.parse(atob(trigger.getAttribute(
-                                'data-wa-review-duplicate-src'
-                            )));
-                            var addCheckpointForm = document.querySelector('#wa_config_review_add_checkpoint');
-                            // https://stackoverflow.com/questions/5700471/set-value-of-input-using-javascript-function
-                            // // Try... for YUI
-                            // Dom.get("gadget_url").set("value","");
-                            // // with normal Javascript
-                            // document.getElementById('gadget_url').value = '';
-                            // // with JQuery
-                            // $("#gadget_url").val("");
+                        duplicateTriggers.forEach(function(trigger) {
+                            trigger.onclick = function(e) {
+                                var duplicateData = JSON.parse(atob(trigger.getAttribute(
+                                    'data-wa-review-duplicate-src'
+                                )));
+                                var addCheckpointForm = document.querySelector('#wa_config_review_add_checkpoint');
+                                // https://stackoverflow.com/questions/5700471/set-value-of-input-using-javascript-function
+                                // // Try... for YUI
+                                // Dom.get("gadget_url").set("value","");
+                                // // with normal Javascript
+                                // document.getElementById('gadget_url').value = '';
+                                // // with JQuery
+                                // $("#gadget_url").val("");
 
-                            // Use configured wa-config dynamic labelings ?
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_category')
-                            .value = duplicateData.category;
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_category_icon')
-                            .value = duplicateData.category_icon || '';
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_title')
-                            .value = duplicateData.title;
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_title_icon')
-                            .value = duplicateData.title_icon || '';
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_requirements')
-                            .value = duplicateData.requirements;
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_result')
-                            .checked = duplicateData.result;
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_value')
-                            .value = duplicateData.value;
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_is_activated')
-                            .checked = duplicateData.is_activated;
-                            addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_access_cap_or_role')
-                            .value = duplicateData.access_cap_or_role || "";
-                        }
-                    });
+                                // Use configured wa-config dynamic labelings ?
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_category')
+                                .value = duplicateData.category;
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_category_icon')
+                                .value = duplicateData.category_icon || '';
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_title')
+                                .value = duplicateData.title;
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_title_icon')
+                                .value = duplicateData.title_icon || '';
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_requirements')
+                                .value = duplicateData.requirements;
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_result')
+                                .checked = duplicateData.result;
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_value')
+                                .value = duplicateData.value;
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_is_activated')
+                                .checked = duplicateData.is_activated;
+                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_access_cap_or_role')
+                                .value = duplicateData.access_cap_or_role || "";
+                            }
+                        });
 
-                    var activateTogglers = document.querySelectorAll(
-                        '.wa-check-activate-toogle'
-                    );
+                        var activateTogglers = document.querySelectorAll(
+                            '.wa-check-activate-toogle'
+                        );
 
-                    activateTogglers.forEach(function(toggler) {
-                        toggler.onclick = function(event) {
-                            event.preventDefault();
-                            // var checkData = JSON.parse(atob(toggler.getAttribute(
-                            //     'data-wa-review-activate-src'
-                            // )));
-                            // var encodedData = btoa(JSON.stringify(checkData));
-                            var encodedData = toggler.getAttribute(
-                                'data-wa-review-activate-src'
-                            );
-                            // Will not be used to update check point, 
-                            // checkData is just used as a search lookup
-                            //   checkData['is_activated'] = !checkData['is_activated'];
-                            var nonce = toggler.getAttribute(
-                                'data-wa-nonce'
-                            );
-                            // var data = jQuery({ // "action=wa-review-action&" + jQuery({
-                            //     'wa-action': 'update-checkpoint',
-                            //     'wa-nonce': nonce,
-                            //     'wa-data': JSON.stringify(checkData),
-                            // }).serialize();
-                            var data = { // "action=wa-review-action&" + jQuery({
-                                'wa-action': 'checkpoint-activate-toggler',
-                                'wa-nonce': nonce,
-                                // Wrappers shitting the json, so need another wrapper clean to POST
-                                // 'wa-data': JSON.stringify(checkData),
-                                // https://stackoverflow.com/questions/246801/how-can-you-encode-a-string-to-base64-in-javascript
-                                'wa-data': encodedData,
-                            };
-
-                            console.log(data);
-                            jQuery.ajax(
-                            {
-                                type: "POST",
-                                url: window.ajaxurl + '?action=wa-review-action',
-                                data: data,
-                                success: function(msg) {
-                                    console.log(msg);
-                                    // https://developer.mozilla.org/fr/docs/Web/API/Location/reload
-                                    document.location.reload();
-                                },
-                                error: function(jqXHR, textStatus, errorThrown) {
-                                    console.log(errorThrown);
-                                }
-                            });
-                        };
-                    });
-
-                    var deleteTriggers = document.querySelectorAll(
-                        '.wa-check-delete-trigger'
-                    );
-
-                    deleteTriggers.forEach(function(trigger) {
-                        trigger.onclick = function(event) {
-                            event.preventDefault();
-                            var encodedData = trigger.getAttribute(
-                                'data-wa-review-delete-src'
-                            );
-                            var nonce = trigger.getAttribute(
-                                'data-wa-nonce'
-                            );
-                            var data = {
-                                'wa-action': 'delete-checkpoint',
-                                'wa-nonce': nonce,
-                                'wa-data': encodedData,
-                            };
-
-                            console.log(data);
-                            jQuery.ajax(
-                            {
-                                type: "POST",
-                                url: window.ajaxurl + '?action=wa-review-action',
-                                data: data,
-                                success: function(msg) {
-                                    console.log(msg);
-                                    document.location.reload();
-                                },
-                                error: function(jqXHR, textStatus, errorThrown) {
-                                    console.log(errorThrown);
-                                }
-                            });
-                        };
-                    });
-
-                    // var cleanAllTriggers = document.querySelectorAll('.wa-check-clean-all');
-                    // cleanAllTriggers.forEach(function(trigger) {
-                    //     trigger.onclick = function(event) {
-                    //         event.preventDefault();
-                    //         var nonce = trigger.getAttribute(
-                    //             'data-wa-nonce'
-                    //         );
-                    //         var data = {
-                    //             'wa-action': 'clean-all',
-                    //             'wa-nonce': nonce,
-                    //         };
-                    //         console.log(data);
-                    //         jQuery.ajax(
-                    //         {
-                    //             type: "POST",
-                    //             url: window.ajaxurl + '?action=wa-review-action',
-                    //             data: data,
-                    //             success: function(msg) {
-                    //                 console.log(msg);
-                    //                 // https://developer.mozilla.org/fr/docs/Web/API/Location/reload
-                    //                 document.location.reload();
-                    //             },
-                    //             error: function(jqXHR, textStatus, errorThrown) {
-                    //                 console.error(errorThrown);
-                    //             }
-                    //         });
-                    //     };
-                    // });
-
-                    // convert a Unicode string to a string in which
-                    // each 16-bit unit occupies only one byte
-                    // function toBinary(string) {
-                    //     const codeUnits = new Uint16Array(string.length);
-                    //     for (let i = 0; i < codeUnits.length; i++) {
-                    //         codeUnits[i] = string.charCodeAt(i);
-                    //     }
-                    //     return btoa(String.fromCharCode(...new Uint8Array(codeUnits.buffer)));
-                    // }
-                    var exportCSVTriggers = document.querySelectorAll('.wa-check-export-csv-trigger');
-                    exportCSVTriggers.forEach(function(trigger) {
-                        trigger.onclick = function(event) {
-                            event.preventDefault();
-                            var nonce = trigger.getAttribute(
-                                'data-wa-nonce'
-                            );
-                            var shouldCleanAfterDownload = trigger.getAttribute(
-                                'data-wa-clean-after-download'
-                            );
-                            var data = {
-                                'wa-action': 'export-csv',
-                                'wa-nonce': nonce,
-                            };
-                            console.log(data);
-
-                            var cleanAll = function () {
-                                var data = {
-                                    'wa-action': 'clean-all',
+                        activateTogglers.forEach(function(toggler) {
+                            toggler.onclick = function(event) {
+                                event.preventDefault();
+                                // var checkData = JSON.parse(atob(toggler.getAttribute(
+                                //     'data-wa-review-activate-src'
+                                // )));
+                                // var encodedData = btoa(JSON.stringify(checkData));
+                                var encodedData = toggler.getAttribute(
+                                    'data-wa-review-activate-src'
+                                );
+                                // Will not be used to update check point, 
+                                // checkData is just used as a search lookup
+                                //   checkData['is_activated'] = !checkData['is_activated'];
+                                var nonce = toggler.getAttribute(
+                                    'data-wa-nonce'
+                                );
+                                // var data = jQuery({ // "action=wa-review-action&" + jQuery({
+                                //     'wa-action': 'update-checkpoint',
+                                //     'wa-nonce': nonce,
+                                //     'wa-data': JSON.stringify(checkData),
+                                // }).serialize();
+                                var data = { // "action=wa-review-action&" + jQuery({
+                                    'wa-action': 'checkpoint-activate-toggler',
                                     'wa-nonce': nonce,
+                                    // Wrappers shitting the json, so need another wrapper clean to POST
+                                    // 'wa-data': JSON.stringify(checkData),
+                                    // https://stackoverflow.com/questions/246801/how-can-you-encode-a-string-to-base64-in-javascript
+                                    'wa-data': encodedData,
                                 };
+
                                 console.log(data);
                                 jQuery.ajax(
                                 {
@@ -3597,69 +3553,186 @@ TEMPLATE;
                                         document.location.reload();
                                     },
                                     error: function(jqXHR, textStatus, errorThrown) {
-                                        console.error(errorThrown);
+                                        console.log(errorThrown);
                                     }
                                 });
                             };
+                        });
 
-                            jQuery.ajax(
-                            {
-                                type: "POST",
-                                url: window.ajaxurl + '?action=wa-review-action',
-                                data: data,
-                                dataType: "text",
-                                // dataType: "html",
-                                success: function(msg, textStatus, request) {
-                                    // console.log(msg);
-                                    // https://stackoverflow.com/questions/26584349/downloading-files-using-ajax-in-wordpress
-                                    // https://codepen.io/chriddyp/pen/aVammp
-                                    // https://diegolamonica.info/generate-csv-data-uri-from-a-table-via-javascript/
-                                    // 'data:text/csv;charset=utf-8;base64,' + btoa(dataURL);
-                                    // Open is good, but may blocked by pop up blockers...
-                                    // window.open('data:text/csv;charset=utf-8;base64,' + btoa(msg));
+                        var deleteTriggers = document.querySelectorAll(
+                            '.wa-check-delete-trigger'
+                        );
 
-                                    // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
-                                    // // var blob = request.blob();
-                                    // var blob = msg;
-                                    // // Uncaught TypeError: Failed to execute 'createObjectURL' on 'URL': Overload resolution failed. :
-                                    // var url = window.URL.createObjectURL(blob);
+                        deleteTriggers.forEach(function(trigger) {
+                            trigger.onclick = function(event) {
+                                event.preventDefault();
+                                var encodedData = trigger.getAttribute(
+                                    'data-wa-review-delete-src'
+                                );
+                                var nonce = trigger.getAttribute(
+                                    'data-wa-nonce'
+                                );
+                                var data = {
+                                    'wa-action': 'delete-checkpoint',
+                                    'wa-nonce': nonce,
+                                    'wa-data': encodedData,
+                                };
 
-                                    // var rawData = toBinary(msg);
-                                    // https://stackoverflow.com/questions/12270764/get-raw-text-from-ajax-request
-                                    // var rawData = request.responseText;
-                                    var rawData = msg;
-
-                                    // var url = 'data:text/csv;charset=utf-8;base64,'
-                                    // + btoa(rawData); // TIPS : btoa HAVE ISSUE with special utf8 chars, use encodeURIComponent instead
-                                    // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue
-                                    var url = 'data:text/csv;charset=utf-8,'
-                                    + encodeURIComponent(rawData);
-                                    
-                                    var a = document.createElement('a');
-                                    a.href = url;
-                                    contentDisposition = request.getResponseHeader('Content-Disposition');
-                                    a.download = contentDisposition.split('filename=')[1];
-                                    document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-                                    a.click();
-                                    a.remove();  //afterwards we remove the element again
-                                    if (shouldCleanAfterDownload) {
-                                        cleanAll();
+                                console.log(data);
+                                jQuery.ajax(
+                                {
+                                    type: "POST",
+                                    url: window.ajaxurl + '?action=wa-review-action',
+                                    data: data,
+                                    success: function(msg) {
+                                        console.log(msg);
+                                        document.location.reload();
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        console.log(errorThrown);
                                     }
-                                },
-                                error: function(jqXHR, textStatus, errorThrown) {
-                                    console.error(errorThrown);
-                                },
-                                // progress: function() {
-                                //     if (shouldCleanAfterDownload) {
-                                //         cleanAll();
-                                //     }
-                                // }
-                            });
-                        };
-                    });
+                                });
+                            };
+                        });
+
+                        // var cleanAllTriggers = document.querySelectorAll('.wa-check-clean-all');
+                        // cleanAllTriggers.forEach(function(trigger) {
+                        //     trigger.onclick = function(event) {
+                        //         event.preventDefault();
+                        //         var nonce = trigger.getAttribute(
+                        //             'data-wa-nonce'
+                        //         );
+                        //         var data = {
+                        //             'wa-action': 'clean-all',
+                        //             'wa-nonce': nonce,
+                        //         };
+                        //         console.log(data);
+                        //         jQuery.ajax(
+                        //         {
+                        //             type: "POST",
+                        //             url: window.ajaxurl + '?action=wa-review-action',
+                        //             data: data,
+                        //             success: function(msg) {
+                        //                 console.log(msg);
+                        //                 // https://developer.mozilla.org/fr/docs/Web/API/Location/reload
+                        //                 document.location.reload();
+                        //             },
+                        //             error: function(jqXHR, textStatus, errorThrown) {
+                        //                 console.error(errorThrown);
+                        //             }
+                        //         });
+                        //     };
+                        // });
+
+                        // convert a Unicode string to a string in which
+                        // each 16-bit unit occupies only one byte
+                        // function toBinary(string) {
+                        //     const codeUnits = new Uint16Array(string.length);
+                        //     for (let i = 0; i < codeUnits.length; i++) {
+                        //         codeUnits[i] = string.charCodeAt(i);
+                        //     }
+                        //     return btoa(String.fromCharCode(...new Uint8Array(codeUnits.buffer)));
+                        // }
+                        var exportCSVTriggers = document.querySelectorAll('.wa-check-export-csv-trigger');
+                        exportCSVTriggers.forEach(function(trigger) {
+                            trigger.onclick = function(event) {
+                                event.preventDefault();
+                                var nonce = trigger.getAttribute(
+                                    'data-wa-nonce'
+                                );
+                                var shouldCleanAfterDownload = trigger.getAttribute(
+                                    'data-wa-clean-after-download'
+                                );
+                                var data = {
+                                    'wa-action': 'export-csv',
+                                    'wa-nonce': nonce,
+                                };
+                                console.log(data);
+
+                                var cleanAll = function () {
+                                    var data = {
+                                        'wa-action': 'clean-all',
+                                        'wa-nonce': nonce,
+                                    };
+                                    console.log(data);
+                                    jQuery.ajax(
+                                    {
+                                        type: "POST",
+                                        url: window.ajaxurl + '?action=wa-review-action',
+                                        data: data,
+                                        success: function(msg) {
+                                            console.log(msg);
+                                            // https://developer.mozilla.org/fr/docs/Web/API/Location/reload
+                                            document.location.reload();
+                                        },
+                                        error: function(jqXHR, textStatus, errorThrown) {
+                                            console.error(errorThrown);
+                                        }
+                                    });
+                                };
+
+                                jQuery.ajax(
+                                {
+                                    type: "POST",
+                                    url: window.ajaxurl + '?action=wa-review-action',
+                                    data: data,
+                                    dataType: "text",
+                                    // dataType: "html",
+                                    success: function(msg, textStatus, request) {
+                                        // console.log(msg);
+                                        // https://stackoverflow.com/questions/26584349/downloading-files-using-ajax-in-wordpress
+                                        // https://codepen.io/chriddyp/pen/aVammp
+                                        // https://diegolamonica.info/generate-csv-data-uri-from-a-table-via-javascript/
+                                        // 'data:text/csv;charset=utf-8;base64,' + btoa(dataURL);
+                                        // Open is good, but may blocked by pop up blockers...
+                                        // window.open('data:text/csv;charset=utf-8;base64,' + btoa(msg));
+
+                                        // https://stackoverflow.com/questions/32545632/how-can-i-download-a-file-using-window-fetch
+                                        // // var blob = request.blob();
+                                        // var blob = msg;
+                                        // // Uncaught TypeError: Failed to execute 'createObjectURL' on 'URL': Overload resolution failed. :
+                                        // var url = window.URL.createObjectURL(blob);
+
+                                        // var rawData = toBinary(msg);
+                                        // https://stackoverflow.com/questions/12270764/get-raw-text-from-ajax-request
+                                        // var rawData = request.responseText;
+                                        var rawData = msg;
+
+                                        // var url = 'data:text/csv;charset=utf-8;base64,'
+                                        // + btoa(rawData); // TIPS : btoa HAVE ISSUE with special utf8 chars, use encodeURIComponent instead
+                                        // https://stackoverflow.com/questions/42462764/javascript-export-csv-encoding-utf-8-issue
+                                        var url = 'data:text/csv;charset=utf-8,'
+                                        + encodeURIComponent(rawData);
+                                        
+                                        var a = document.createElement('a');
+                                        a.href = url;
+                                        contentDisposition = request.getResponseHeader('Content-Disposition');
+                                        a.download = contentDisposition.split('filename=')[1];
+                                        document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                                        a.click();
+                                        a.remove();  //afterwards we remove the element again
+                                        if (shouldCleanAfterDownload) {
+                                            cleanAll();
+                                        }
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        console.error(errorThrown);
+                                    },
+                                    // progress: function() {
+                                    //     if (shouldCleanAfterDownload) {
+                                    //         cleanAll();
+                                    //     }
+                                    // }
+                                });
+                            };
+                        });
+
+                    })
                 </script>
 
                 <?php 
+                $this->opti_print_blocked_urls_report();
+                $this->opti_print_allowed_urls_report();
                 $minimumCapabilityToRun = $this->getWaConfigOption($this->eConfOptATestsRunForCabability, 'administrator');
                 if (!is_admin() || !current_user_can($minimumCapabilityToRun)) {
                     $this->debug("wa-config TEST RUN can be done by {$minimumCapabilityToRun} only.");
@@ -3952,6 +4025,7 @@ TEMPLATE;
             use Identifiable;
             protected function _020_opti__bootstrap()
             {
+                add_filter('pre_http_request', [$this, 'opti_filter_wp_http_requests'], 10, 3);
                 if (defined('DOING_CRON')) {
                     return;
                 }
@@ -3975,7 +4049,171 @@ TEMPLATE;
                     }
                 }
                 add_action(WPActions::wa_do_base_review_preprocessing, [$this, 'opti_common_review']);
-                add_filter('pre_http_request', [$this, 'opti_filter_wp_http_requests'], 10, 3);
+            }
+            protected $blockedUrlReviewReport = [];
+            protected $allowedUrlReviewReport = [];
+            protected $optiBlockedUrlBckupPeriode = 30 * 60 * 1000;
+            public $BLOCKED_URL_REVIEW_REPORT = "wa_blocked_url_review_report";
+            public $ALLOWED_URL_REVIEW_REPORT = "wa_allowed_url_review_report";
+            public function opti_add_url_to_blocked_review_report($sentinel, $url)
+            {
+                $enableBlockedReviewReport = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedReviewReport, false);
+                if (!$enableBlockedReviewReport) {
+                    return;
+                }
+                $this->blockedUrlReviewReport = get_transient($this->BLOCKED_URL_REVIEW_REPORT) ?? $this->blockedUrlReviewReport;
+                if (!is_array($this->blockedUrlReviewReport)) {
+                    $this->warn("opti_add_url_to_blocked_review_report 'blockedUrlReviewReport' have wrong type, should be 'array'", $this->blockedUrlReviewReport);
+                    $this->blockedUrlReviewReport = [];
+                }
+                $this->debugVerbose("Will opti_add_url_to_blocked_review_report with '{$url}'");
+                $report =& $this->blockedUrlReviewReport;
+                $currentTime = time();
+                if (!array_key_exists($url, $report)) {
+                    $report[$url] = ['sentinel' => $sentinel, 'access_log' => [], 'first_access' => $currentTime];
+                }
+                $bckupPeriode = $this->optiBlockedUrlBckupPeriode;
+                $report[$url]['last_access'] = $currentTime;
+                $report[$url]['access_log'][] = $currentTime;
+                $report[$url]['access_log'] = array_filter($report[$url]['access_log'], function ($time) use($currentTime, $bckupPeriode) {
+                    return $currentTime - $time < $bckupPeriode;
+                });
+                $report = array_filter($report, function ($log) use($currentTime, $bckupPeriode) {
+                    return $currentTime - $log['last_access'] < $bckupPeriode;
+                });
+                set_transient($this->BLOCKED_URL_REVIEW_REPORT, $this->blockedUrlReviewReport, $this->optiBlockedUrlBckupPeriode / 1000);
+            }
+            public function opti_add_url_to_allowed_review_report($sentinel, $url)
+            {
+                $enableBlockedReviewReport = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedReviewReport, false);
+                if (!$enableBlockedReviewReport) {
+                    return;
+                }
+                $this->allowedUrlReviewReport = get_transient($this->ALLOWED_URL_REVIEW_REPORT) ?? $this->allowedUrlReviewReport;
+                if (!is_array($this->allowedUrlReviewReport)) {
+                    $this->warn("opti_add_url_to_allowed_review_report 'allowedUrlReviewReport' have wrong type, should be 'array'", $this->allowedUrlReviewReport);
+                    $this->allowedUrlReviewReport = [];
+                }
+                $this->debugVerbose("Will opti_add_url_to_blocked_review_report with '{$url}'");
+                $report =& $this->allowedUrlReviewReport;
+                $currentTime = time();
+                if (!array_key_exists($url, $report)) {
+                    $report[$url] = ['sentinel' => $sentinel, 'access_log' => [], 'first_access' => $currentTime];
+                }
+                $bckupPeriode = $this->optiBlockedUrlBckupPeriode;
+                $report[$url]['last_access'] = $currentTime;
+                $report[$url]['access_log'][] = $currentTime;
+                $report[$url]['access_log'] = array_filter($report[$url]['access_log'], function ($time) use($currentTime, $bckupPeriode) {
+                    return $currentTime - $time < $bckupPeriode;
+                });
+                $report = array_filter($report, function ($log) use($currentTime, $bckupPeriode) {
+                    return $currentTime - $log['last_access'] < $bckupPeriode;
+                });
+                set_transient($this->ALLOWED_URL_REVIEW_REPORT, $this->allowedUrlReviewReport, $this->optiBlockedUrlBckupPeriode / 1000);
+            }
+            public function opti_print_blocked_urls_report($shouldEcho = true, $reportOrder = 0)
+            {
+                $enableBlockedReviewReport = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedReviewReport, false);
+                if (!$enableBlockedReviewReport) {
+                    return;
+                }
+                echo "<h1> " . __("Détail des urls bloquées", 'wa-config') . " </h1>";
+                $self = $this;
+                $resp = "";
+                $idx = 0;
+                $dateFormat = "Y/m/d H:i:s O";
+                $this->blockedUrlReviewReport = get_transient($this->BLOCKED_URL_REVIEW_REPORT) ?? $this->blockedUrlReviewReport;
+                if (!is_array($this->blockedUrlReviewReport)) {
+                    $this->warn("opti_print_blocked_urls_report 'blockedUrlReviewReport' have wrong type, should be 'array'", $this->blockedUrlReviewReport);
+                    $this->blockedUrlReviewReport = [];
+                }
+                $this->debug("Will opti_print_blocked_urls_report");
+                $this->debugVeryVerbose("With : ", $this->blockedUrlReviewReport);
+                $this->blockedUrlReviewReport = array_filter($this->blockedUrlReviewReport, function ($log) use($self) {
+                    return time() - $log['last_access'] < $self->optiBlockedUrlBckupPeriode;
+                });
+                set_transient($this->BLOCKED_URL_REVIEW_REPORT, $this->blockedUrlReviewReport, $this->optiBlockedUrlBckupPeriode / 1000);
+                foreach ($this->blockedUrlReviewReport as $url => $log) {
+                    $itemId = "wa-blocked-url-{$reportOrder}-{$idx}";
+                    $timeFrame = "<span>" . implode("</span> <span>", array_map(function ($t) use($dateFormat) {
+                        return wp_date($dateFormat, $t);
+                    }, $log['access_log'])) . '</span>';
+                    $lastAccess = wp_date($dateFormat, $log['last_access']);
+                    $sentinel = $log['sentinel'];
+                    $countAccess = count($log['access_log']);
+                    $resp .= <<<TEMPLATE
+    <div class="{$itemId}">
+        <p
+        data-wa-expand-target='.{$itemId} .wa-expand'
+        class='wa-expand-toggler'>
+            <span>[{$lastAccess}]</span>
+            <span>[{$sentinel}]</span> <br />
+            <span>[{$countAccess}]</span>
+            <strong>{$url}</strong>
+        </p>
+        <p class="wa-blocked-url-frames wa-expand wa-expand-collapsed">
+            {$timeFrame}
+        </p>
+    </div>
+TEMPLATE;
+                    $idx++;
+                }
+                if ($shouldEcho) {
+                    echo $resp;
+                }
+                return $resp;
+            }
+            public function opti_print_allowed_urls_report($shouldEcho = true, $reportOrder = 0)
+            {
+                $enableBlockedReviewReport = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedReviewReport, false);
+                if (!$enableBlockedReviewReport) {
+                    return;
+                }
+                echo "<h1> " . __("Détail des urls autorisées", 'wa-config') . " </h1>";
+                $self = $this;
+                $resp = "";
+                $idx = 0;
+                $dateFormat = "Y/m/d H:i:s O";
+                $this->allowedUrlReviewReport = get_transient($this->ALLOWED_URL_REVIEW_REPORT) ?? $this->allowedUrlReviewReport;
+                if (!is_array($this->allowedUrlReviewReport)) {
+                    $this->warn("opti_print_blocked_urls_report 'allowedUrlReviewReport' have wrong type, should be 'array'", $this->allowedUrlReviewReport);
+                    $this->allowedUrlReviewReport = [];
+                }
+                $this->debug("Will opti_print_blocked_urls_report");
+                $this->debugVeryVerbose("With : ", $this->allowedUrlReviewReport);
+                $this->allowedUrlReviewReport = array_filter($this->allowedUrlReviewReport, function ($log) use($self) {
+                    return time() - $log['last_access'] < $self->optiBlockedUrlBckupPeriode;
+                });
+                set_transient($this->ALLOWED_URL_REVIEW_REPORT, $this->allowedUrlReviewReport, $this->optiBlockedUrlBckupPeriode / 1000);
+                foreach ($this->allowedUrlReviewReport as $url => $log) {
+                    $itemId = "wa-blocked-url-{$reportOrder}-{$idx}";
+                    $timeFrame = "<span>" . implode("</span> <span>", array_map(function ($t) use($dateFormat) {
+                        return wp_date($dateFormat, $t);
+                    }, $log['access_log'])) . '</span>';
+                    $lastAccess = wp_date($dateFormat, $log['last_access']);
+                    $sentinel = $log['sentinel'];
+                    $countAccess = count($log['access_log']);
+                    $resp .= <<<TEMPLATE
+    <div class="{$itemId}">
+        <p
+        data-wa-expand-target='.{$itemId} .wa-expand'
+        class='wa-expand-toggler'>
+            <span>[{$lastAccess}]</span>
+            <span>[{$sentinel}]</span> <br />
+            <span>[{$countAccess}]</span>
+            <strong>{$url}</strong>
+        </p>
+        <p class="wa-blocked-url-frames wa-expand wa-expand-collapsed">
+            {$timeFrame}
+        </p>
+    </div>
+TEMPLATE;
+                    $idx++;
+                }
+                if ($shouldEcho) {
+                    echo $resp;
+                }
+                return $resp;
             }
             public function opti_filter_wp_http_requests($preempt, $parsed_args, $url)
             {
@@ -3985,14 +4223,18 @@ TEMPLATE;
                     $safeFilter = $this->getWaConfigOption($this->eConfOptOptiWpRequestsSafeFilter, $this->E_DEFAULT_OPTIMISABLE_SAFE_FILTER);
                     if (is_string($safeFilter) && strlen($safeFilter) && preg_match($safeFilter, $url)) {
                         $this->debugVerbose("opti_filter_wp_http_requests whitelisted by {$safeFilter}");
+                        $this->opti_add_url_to_allowed_review_report($this->iId . '-filtered', $url);
                         return $preempt;
                     }
                     $enableNotice = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedHttpNotice, false);
                     if ($enableNotice) {
                         Notice::displayInfo("{$regExFilter} " . __(" : BLOQUE l'url : ", 'wa-config') . " {$url}");
                     }
+                    $this->opti_add_url_to_blocked_review_report($this->iId . '-filtered', $url);
                     $this->debugVerbose("opti_filter_wp_http_requests blocked by {$regExFilter}");
                     return array('headers' => array(), 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => array(), 'http_response' => null);
+                } else {
+                    $this->opti_add_url_to_allowed_review_report($this->iId . '-filtered', $url);
                 }
                 return $preempt;
             }
@@ -4088,7 +4330,9 @@ TEMPLATE;
                     $this->e_admin_config_add_check_list_to_review(['category' => __('02 - Maintenance', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>', 'title' => __("01 - Plugin : ", 'wa-config') . $localPluginBase, 'title_icon' => '<span class="dashicons dashicons-dashboard"></span>', 'requirements' => "{$pluginRequest} <a class='thickbox open-plugin-details-modal' data-title='{$pluginLinkTitle}' href='{$url}'>{$pluginLinkTitle}</a> {$extras}", 'value' => $isPluginActivated ? $activationReport : __('Validation humaine requise.', 'wa-config'), 'result' => $isPluginActivated, 'is_activated' => true, 'fixed_id' => "{$this->iId}-check-plugin-{$localPluginBase}", 'is_computed' => true]);
                 };
                 $pluginReviewer(__('Internationalisation continue de votre contenu web en activant le plugin :', 'wa-config'), __('Polylang', 'wa-config'), 'polylang', ['loco-translate' => __('Bonus : Loco Translate', 'wa-config'), 'automatic-translator-addon-for-loco-translate' => __('Bonus : Automatic Translate Addon For Loco Translate', 'wa-config'), 'translatepress-multilingual' => ['type' => 'alternative', 'title' => __('Alternative : TranslatePress - Multilingual', 'wa-config')], 'automatic-translate-addon-for-translatepress' => __('Bonus : Automatic Translate Addon For TranslatePress', 'wa-config'), 'gtranslate' => ['type' => 'alternative', 'title' => __('Alternative : Translate WordPress with GTranslate', 'wa-config')]]);
-                $pluginReviewer(__('Suivi des actions des utilisateurs réel en activant le plugin :', 'wa-config'), __('History Log by click5', 'wa-config'), 'history-log-by-click5');
+                $pluginReviewer(__('Mise en cache et optimisations en activant le plugin :', 'wa-config'), __('LiteSpeed Cache', 'wa-config'), 'litespeed-cache', ['w3-total-cache' => ['type' => 'alternative', 'title' => __('Alternative : W3 Total Cache', 'wa-config')], 'wp-optimize' => ['type' => 'alternative', 'title' => __('Alternative : WP-Optimize', 'wa-config')], 'wp-super-cache' => ['type' => 'alternative', 'title' => __('Alternative : WP Super Cache', 'wa-config')], 'sg-cachepress' => ['type' => 'alternative', 'title' => __('Alternative : SiteGround Optimizer', 'wa-config')], 'use-memcached' => __("Bonus : Utiliser 'Use Memcached' avec d'autres caches ne faisant pas de cache objet (Ex : SiteGround Optimizer).", 'wa-config')]);
+                $pluginReviewer(__('Amélioration du SEO (Search Engine Optimisation) en activant le plugin :', 'wa-config'), __('All in One SEO', 'wa-config'), 'all-in-one-seo-pack', ['wordpress-seo' => ['type' => 'alternative', 'title' => __('Alternative : Yoast SEO', 'wa-config')], 'stockpack' => __("Bonus : StockPack configuré sur Pixabay.", 'wa-config')]);
+                $pluginReviewer(__('Suivi des utilisateurs en activant le plugin :', 'wa-config'), __('History Log by click5', 'wa-config'), 'history-log-by-click5', ['woocommerce' => __("Bonus : Activer WooCommerce.", 'wa-config'), 'woocommerce-pdf-invoices-packing-slips' => __("Bonus : Activer WooCommerce PDF Invoices & Packing Slips.", 'wa-config')]);
                 $pluginReviewer(__('Suivi des emails en activant le plugin :', 'wa-config'), __('Check & Log Email', 'wa-config'), 'check-email');
                 $pluginReviewer(__('Suivi des CRON en activant le plugin :', 'wa-config'), __('WP Crontrol', 'wa-config'), 'wp-crontrol');
                 $pluginReviewer(__('Ajustements divers de la base de données en activant le plugin :', 'wa-config'), __('Better Search Replace', 'wa-config'), 'better-search-replace');
@@ -4336,6 +4580,7 @@ namespace WA\Config\Frontend {
                     $htmlFooter = $waFooterTemplate;
                 } else {
                     $waFooterCredit = $this->e_footer_get_localized_credit();
+                    $mailTarget = get_option('admin_email');
                     $monwooCredit = __("Build by Monwoo and", 'wa-config');
                     $htmlFooter = <<<TEMPLATE
 <style>
@@ -4352,8 +4597,8 @@ namespace WA\Config\Frontend {
                     {$monwooCredit} {$waFooterCredit}
                 </a>
                 <br />
-                <a href="mailto:service@monwoo.com">
-                    service@monwoo.com
+                <a href="mailto:{$mailTarget}">
+                    {$mailTarget}
                 </a>
             </p>
 

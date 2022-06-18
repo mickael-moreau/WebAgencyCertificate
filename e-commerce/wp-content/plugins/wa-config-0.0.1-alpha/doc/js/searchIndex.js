@@ -636,10 +636,20 @@ Search.appendIndex(
             "summary": "Register\u0020wa\u002Dmission\u0020post\u0020type\u0020with\u0020polylang\u0020plugin",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_register"
         },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_admin_menu\u0028\u0029",
+            "name": "e_mission_post_type_admin_menu",
+            "summary": "Register\u0020wa\u002Dmission\u0020admin\u0020menu.",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_admin_menu"
+        },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_register\u0028\u0029",
             "name": "e_mission_post_type_register",
             "summary": "Register\u0020wa\u002Dmission\u0020custom\u0020Post\u0020type.",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_register"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_get_meta_from_rest\u0028\u0029",
+            "name": "e_mission_post_type_get_meta_from_rest",
+            "summary": "Get\u0020Site\u0020URL",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_get_meta_from_rest"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_get_the_date\u0028\u0029",
             "name": "e_mission_post_type_get_the_date",
@@ -690,6 +700,11 @@ Search.appendIndex(
             "name": "e_skill_taxo_polylang_register",
             "summary": "Register\u0020wa\u002Dskill\u0020taxonomy\u0020with\u0020polylang\u0020plugin",
             "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_register"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_admin_menu\u0028\u0029",
+            "name": "e_skill_taxo_admin_menu",
+            "summary": "Register\u0020wa\u002Dskill\u0020admin\u0020menu.",
+            "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_admin_menu"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_register_taxonomy\u0028\u0029",
             "name": "e_skill_taxo_register_taxonomy",
@@ -806,6 +821,26 @@ Search.appendIndex(
             "summary": "This\u0020trait\u0020will\u0020help\u0020with\u0020speed\u0020optimisations",
             "url": "classes/WA-Config-Admin-Optimisable.html"
         },                {
+            "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_add_url_to_blocked_review_report\u0028\u0029",
+            "name": "opti_add_url_to_blocked_review_report",
+            "summary": "Add\u0020a\u002030\u0020minutes\u0020backlog\u0020review\u0020report\u0020about\u0020blocked\u0020url",
+            "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_add_url_to_blocked_review_report"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_add_url_to_allowed_review_report\u0028\u0029",
+            "name": "opti_add_url_to_allowed_review_report",
+            "summary": "Add\u0020a\u002030\u0020minutes\u0020backlog\u0020review\u0020report\u0020about\u0020allowed\u0020url",
+            "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_add_url_to_allowed_review_report"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_print_blocked_urls_report\u0028\u0029",
+            "name": "opti_print_blocked_urls_report",
+            "summary": "Print\u0020the\u0020blocked\u0020url\u0020review\u0020report",
+            "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_print_blocked_urls_report"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_print_allowed_urls_report\u0028\u0029",
+            "name": "opti_print_allowed_urls_report",
+            "summary": "Print\u0020the\u0020allowed\u0020url\u0020review\u0020report",
+            "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_print_allowed_urls_report"
+        },                {
             "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_filter_wp_http_requests\u0028\u0029",
             "name": "opti_filter_wp_http_requests",
             "summary": "Filter\u0020internal\u0020WP\u0020HTTP\u0020calls\u0020as\u0020requested\u0020by\u0020\u0027\u0027\u0020WA\u0020Config\u0020option",
@@ -830,6 +865,16 @@ Search.appendIndex(
             "name": "opti_common_review",
             "summary": "Review\u0020for\u0020common\u0020checkpoints",
             "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_common_review"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003A\u0024BLOCKED_URL_REVIEW_REPORT",
+            "name": "BLOCKED_URL_REVIEW_REPORT",
+            "summary": "",
+            "url": "classes/WA-Config-Admin-Optimisable.html#property_BLOCKED_URL_REVIEW_REPORT"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003A\u0024ALLOWED_URL_REVIEW_REPORT",
+            "name": "ALLOWED_URL_REVIEW_REPORT",
+            "summary": "",
+            "url": "classes/WA-Config-Admin-Optimisable.html#property_ALLOWED_URL_REVIEW_REPORT"
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableScripts",
             "name": "EditableScripts",
