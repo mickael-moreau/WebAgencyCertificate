@@ -20,7 +20,7 @@
  * - **Pdf.js** for quick display of main documentations files.
  * - Results of **Miguel Monwoo R&D** for **parallel programmings** and **advanced integrations**.
  *
- * {@link https://www.web-agency.app/e-commerce/produit/wa-config-codeception-testings Product owner}
+ * {@link https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo Product owner}
  *
  * {@link https://codeception.com/docs/03-AcceptanceTests End to end test documentation}
  *
@@ -41,10 +41,10 @@
  *
  * @wordpress-plugin
  * Plugin Name:       wa-config by Monwoo
- * Plugin URI:        https://www.web-agency.app/e-commerce/produit/wa-config-codeception-testings/
+ * Plugin URI:        https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo
  * Description:       <strong>End to end user tests</strong> with <strong>Codeception</strong>. Speed up documentations and tests in <strong>parallel</strong>. Enjoy an <strong>editable footer</strong> copyright done by wa-config (by service@monwoo.com)
  * Version:           0.0.1-alpha
- * Author:            Miguel Monwoo for Web-Agency.app
+ * Author:            Miguel Monwoo
  * Author URI:        https://miguel.monwoo.com
  * License:           Apache-2.0
  * License URI:       https://directory.fsf.org/wiki/License:Apache-2.0
@@ -61,7 +61,6 @@ if ( ! defined( 'WPINC' ) ) {
 
 $WA_Config_SHOULD_DEBUG = false;
 if (file_exists(__DIR__ . "/src/App.php")) {
-    // $WA_Config_SHOULD_DEBUG = true;
     $WA_Config_SHOULD_DEBUG = [true, true, false];
     // $WA_Config_SHOULD_DEBUG = [true, true, true];
     // $WA_Config_SHOULD_DEBUG = false;
@@ -75,6 +74,8 @@ if (defined('WA_Config_SHOULD_DEBUG')) {
     // $WA_Config_SHOULD_DEBUG = false;
 }
 // $WA_Config_SHOULD_DEBUG = [true, true, false];
+// $WA_Config_SHOULD_DEBUG = [true, true, true];
+// $WA_Config_SHOULD_DEBUG = true;
 
 if ($WA_Config_SHOULD_DEBUG) {
     // TODO : not working to set those here ?

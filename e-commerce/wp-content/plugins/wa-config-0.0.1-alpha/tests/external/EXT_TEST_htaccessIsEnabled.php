@@ -5,7 +5,7 @@
  *
  * This test will check if '.htaccess' redirect is activated
  *
- * @link https://www.web-agency.app/e-commerce/produit/wa-config-codeception-testings/ wa-config by Monwoo
+ * @link https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo wa-config by Monwoo
  * @since 0.0.1
  * @package
  * @filesource

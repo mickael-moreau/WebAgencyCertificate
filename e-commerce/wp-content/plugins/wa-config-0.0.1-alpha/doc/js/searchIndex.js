@@ -76,6 +76,16 @@ Search.appendIndex(
             "summary": "Get\u0020App\u0020instance\u0020by\u0020index",
             "url": "classes/WA-Config-Core-AppInterface.html#method_instance"
         },                {
+            "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AallInstances\u0028\u0029",
+            "name": "allInstances",
+            "summary": "Get\u0020All\u0020registred\u0020App\u0020instance\u0020by\u0020index",
+            "url": "classes/WA-Config-Core-AppInterface.html#method_allInstances"
+        },                {
+            "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AdecreasePluginLoadOrder\u0028\u0029",
+            "name": "decreasePluginLoadOrder",
+            "summary": "Decrease\u0020the\u0020plugin\u0020load\u0020order,\u0020to\u0020handle\u0020multiple\u0020plugins\u0020class\u0020load\u0020orderings",
+            "url": "classes/WA-Config-Core-AppInterface.html#method_decreasePluginLoadOrder"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AuIdx\u0028\u0029",
             "name": "uIdx",
             "summary": "Get\u0020a\u0020unique\u0020index\u0020counter\u0020shared\u0020by\u0020all\u0020App\u0020instance",
@@ -815,6 +825,41 @@ Search.appendIndex(
             "name": "ext_plugin_description_meta",
             "summary": "Update\u0020the\u0020plugin\u0020description\u0020meta\u0020with\u0020parallel\u0020load\u0020extra\u0020informations",
             "url": "classes/WA-Config-Admin-ExtendablePluginDescription.html#method_ext_plugin_description_meta"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable",
+            "name": "ApiInstanciable",
+            "summary": "This\u0020trait\u0020will\u0020allow\u0020to\u0020move\u0020wa\u002Dconfig\u0020plugins\u0020load\u0020orders",
+            "url": "classes/WA-Config-Admin-ApiInstanciable.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_rest_init\u0028\u0029",
+            "name": "api_inst_rest_init",
+            "summary": "Init\u0020wa\u002Dconfig\u0020instanciable\u0020routings",
+            "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_rest_init"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_rest_check_auth_errors\u0028\u0029",
+            "name": "api_inst_rest_check_auth_errors",
+            "summary": "Verify\u0020errors\u0020and\u0020invalidate\u0020pre\u002Dfetch\u0020token\u0020if\u0020wordpress\u0020did\u0020send\u0020regular\u0020error\u0020event\u0020on\u0020it.",
+            "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_rest_check_auth_errors"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_run_action\u0028\u0029",
+            "name": "api_inst_run_action",
+            "summary": "Will\u0020handle\u0020an\u0020api\u0020instanciable\u0020action\u0020call",
+            "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_run_action"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadSynchronisable",
+            "name": "ApiFrontHeadSynchronisable",
+            "summary": "This\u0020trait\u0020will\u0020allow\u0020Frontend\u0020developers\u0020to\u0020synchronise\u0020theire\u0020front\u0020heads",
+            "url": "classes/WA-Config-Admin-ApiFrontHeadSynchronisable.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadSynchronisable\u003A\u003Aapi_fronthead_sync_rest_init\u0028\u0029",
+            "name": "api_fronthead_sync_rest_init",
+            "summary": "Init\u0020wa\u002Dconfig\u0020fronthead\u0020sync\u0020routings",
+            "url": "classes/WA-Config-Admin-ApiFrontHeadSynchronisable.html#method_api_fronthead_sync_rest_init"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadSynchronisable\u003A\u003Aapi_fronthead_sync_deploy\u0028\u0029",
+            "name": "api_fronthead_sync_deploy",
+            "summary": "Deploy\u0020the\u0020associated\u0020zip\u0020archive\u0020to\u0020wa\u002Dconfig\u0020front\u0020heads\u0020folder",
+            "url": "classes/WA-Config-Admin-ApiFrontHeadSynchronisable.html#method_api_fronthead_sync_deploy"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\Optimisable",
             "name": "Optimisable",

@@ -1,7 +1,7 @@
 <?php
 /*   __________________________________________________
     |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-06-18 03:29:46              |
+    |              on 2022-06-22 18:51:31              |
     |    GitHub: https://github.com/pk-fr/yakpro-po    |
     |__________________________________________________|
 */
@@ -11,6 +11,9 @@
 
 namespace {
     use WA\Config\Core\AppInterface;
+    require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+    require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+    require_once ABSPATH . 'wp-admin/includes/file.php';
     if (!defined('WPINC')) {
         exit;
     }
@@ -78,7 +81,7 @@ namespace WA\Config\Core {
                 }
                 return empty($_SERVER['REMOTE_ADDR']) && !isset($_SERVER['HTTP_USER_AGENT']) && count($_SERVER['argv']) > 0;
             }
-            protected function get_user_ip($anonymize = true)
+            protected function get_user_ip($anonymize = true, $traceLog = false)
             {
                 $ip = "#IP-NOT-FOUND-ERROR#";
                 if ($this->is_cli()) {
@@ -138,19 +141,18 @@ namespace WA\Config\Core {
             protected $shouldDebug = false;
             protected $shouldDebugVerbose = false;
             protected $shouldDebugVeryVerbose = false;
-            protected $throwOnAllError = false;
             protected function _000_debug__bootstrap()
             {
                 if (!$this->shouldDebug) {
                     return;
                 }
-                error_reporting(E_ALL);
+                error_reporting(E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_RECOVERABLE_ERROR | E_STRICT);
                 if (!defined('WC_ABSPATH')) {
                     ini_set("log_errors", 1);
                     $logPath = ABSPATH . "wp-content/debug.log";
                     ini_set("error_log", $logPath);
                 }
-                if ($this->throwOnAllError) {
+                if ($this->shouldDebug && $this->shouldDebugVerbose) {
                     set_error_handler([$this, "debug_exception_error_handler"]);
                 }
                 $default_opts = array('http' => array('notification' => [$this, 'debug_stream_notification_callback']), 'https' => array('notification' => [$this, 'debug_stream_notification_callback']));
@@ -159,6 +161,7 @@ namespace WA\Config\Core {
             }
             public function debug_stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max)
             {
+                $this->debug("Detect {$message_code} HTTP stream Call to : {$message}");
                 if (STREAM_NOTIFY_REDIRECTED === $notification_code) {
                     $this->debug("Detect {$message_code} HTTP stream Call to : {$message}");
                 }
@@ -191,7 +194,22 @@ namespace WA\Config\Core {
             }
             public function debug_exception_error_handler($severity, $message, $file, $line)
             {
-                throw new \ErrorException($message, 0, $severity, $file, $line);
+                $self = $this;
+                $firstFile = "";
+                $stackTrace = $this->debug_trace(true);
+                array_shift($stackTrace);
+                $internalStackTrace = array_filter($stackTrace, function ($t) use($self, &$firstFile) {
+                    $f = $t['file'];
+                    $isFromPlugin = false !== strpos($f, $this->pluginRoot);
+                    if (!strlen($firstFile) && $isFromPlugin) {
+                        $firstFile = "{$t['file']}:{$t['line']}";
+                    }
+                    return $isFromPlugin;
+                });
+                $this->debugVerbose("[{$severity}] {$message} at {$file}:{$line} from {$firstFile}");
+                if (E_WARNING === $severity || E_NOTICE === $severity) {
+                    $this->warn("{$message}", "{$stackTrace[0]['file']}:{$stackTrace[0]['line']}", ["{$stackTrace[1]['function']}" => $stackTrace[1]['args']], $this->debug_trace());
+                }
             }
             public function debug_trace_wp_http_requests($preempt, $parsed_args, $url)
             {
@@ -368,7 +386,7 @@ namespace WA\Config\Core {
             public $waConfigTextDomain = 'wa-config';
             protected function _000_t_scripts__bootstrap()
             {
-                $this->t_loadTextdomains();
+                add_action('plugins_loaded', [$this, 't_loadTextdomains']);
             }
             public function t_loadTextdomains() : void
             {
@@ -415,6 +433,16 @@ namespace WA\Config\Core {
             public static function instance(int $index = 0) : AppInterface
             {
                 return self::$_instances[$index];
+            }
+            public static function allInstances()
+            {
+                return self::$_instances;
+            }
+            public static function decreasePluginLoadOrder(string $pluginName)
+            {
+                $app = AppInterface::instance();
+                $app->debug("Will decreasePluginLoadOrder for '{$pluginName}'");
+                throw new \Exception("Dev in progress...", 404);
             }
             protected static $_uIdxCount = 0;
             public static function uIdx() : int
@@ -959,7 +987,7 @@ namespace WA\Config\Core {
                         $downloadSimpleZipBckupUrl = add_query_arg(['action' => 'wa-e2e-test-action', 'wa-action' => 'download-last-backup', 'wa-backup-type' => $bckUpType], admin_url('admin-ajax.php'));
                         $this->debug("Will redirect download to : {$downloadSimpleZipBckupUrl}");
                         if (wp_redirect($downloadSimpleZipBckupUrl)) {
-                            http_response_code(301);
+                            http_response_code(302);
                             $this->exit();
                             return;
                         }
@@ -1449,6 +1477,9 @@ namespace WA\Config\Admin {
     use Walker_Nav_Menu_Checklist;
     use WP_Error;
     use WP_Filesystem_Direct;
+    use WP_REST_Request;
+    use WP_REST_Response;
+    use ZipArchive;
     use function WA\Config\Utils\_lx;
     if (!class_exists(Notice::class)) {
         class Notice
@@ -1516,10 +1547,6 @@ namespace WA\Config\Admin {
                 $jsFile = "assets/app-admin.js";
                 $jsUrl = plugins_url($jsFile, $this->pluginFile);
                 wp_enqueue_script('wa-admin-js', $jsUrl, ['jquery', 'suggest'], $this->pluginVersion, true);
-                if (false !== strpos(get_current_screen()->id, $this->eAdminConfigReviewPageKey)) {
-                    wp_enqueue_style('thickbox');
-                    wp_enqueue_script('plugin-install');
-                }
             }
         }
     }
@@ -1662,7 +1689,7 @@ namespace WA\Config\Admin {
                 if ($url) {
                     return $url;
                 }
-                return home_url("TODO");
+                return home_url("TODO from translated permalinks ? Or how is wooCommerce having all those links ready ? missing some top config and this check is useless if config found...");
             }
             public function e_mission_post_type_polylang_rewrite_slugs($post_type_translated_slugs)
             {
@@ -1754,7 +1781,11 @@ namespace WA\Config\Admin {
             public function e_mission_post_type_get_meta_from_rest($object = '', $field_name = '', $request = array())
             {
                 $this->warn("Will e_mission_post_type_get_meta_from_rest", $object);
-                return get_post_meta($object['id'], $field_name, true);
+                $value = get_post_meta($object['id'], $field_name, true);
+                if ('wa-mission' === $object['type'] && 'wa_end_date' === $field_name) {
+                    $value = date_i18n("c", strtotime($value));
+                }
+                return $value;
             }
             public function e_mission_post_type_get_the_date($the_date, $d, $post)
             {
@@ -1767,10 +1798,16 @@ namespace WA\Config\Admin {
                     if (!strlen($d)) {
                         $d = get_option('date_format');
                     }
-                    $val = get_post_meta($post_id, 'wa_end_date', true);
-                    $time = wp_date($d, strtotime($val));
-                    $this->debug("Will e_mission_post_type_get_the_date formated as '{$d}' with ", $val);
-                    return $val ? "[ {$the_date} .. " . $time . " ]" : $the_date;
+                    $res = $val = get_post_meta($post_id, 'wa_end_date', true);
+                    if ($val) {
+                        $time = wp_date($d, strtotime($val));
+                        $res = "[ {$the_date} .. " . $time . " ]";
+                    }
+                    if (!$res) {
+                        $res = $the_date;
+                    }
+                    $this->debug("Will e_mission_post_type_get_the_date formated with '{$d}'");
+                    return $res;
                 }
                 return $the_date;
             }
@@ -2006,7 +2043,7 @@ namespace WA\Config\Admin {
                     add_action('parse_request', function () use($self, $staticHeadTarget, $staticHeadTargetSafeWpKeeper) {
                         global $wp;
                         $isSafeWp = strlen($staticHeadTargetSafeWpKeeper) ? !!preg_match($staticHeadTargetSafeWpKeeper, $wp->request) : false;
-                        if (0 !== strpos($wp->request, "wp-admin") && 0 !== strpos($wp->request, "wp-json") && !$isSafeWp) {
+                        if (0 !== strpos($wp->request, "wp-admin") && 0 !== strpos($wp->request, "wp-json") && 0 !== strpos($wp->request, "api-wa-config-nonce-rest") && !$isSafeWp) {
                             $proxy = $this->pluginRoot . "head-proxy.php";
                             $GLOBALS["wa-proxy-url"] = $wp->request;
                             $GLOBALS["wa-front-head"] = $staticHeadTarget;
@@ -2400,12 +2437,13 @@ TEMPLATE;
                     echo "<p> " . __("Cette opération nécessite une page d'administration.", 'wa-config') . "</p>";
                     return;
                 }
-                $pluginTitle = __("Web-agency.app ") . $this->iId;
+                $pluginTitle = __("Web Agency Config ") . $this->iId;
                 $pluginDescription = __("Ce plugin permet d'<strong>optimiser</strong> la <strong>qualité</strong> de votre site web ainsi que les <strong>actions</strong> à mener pour votre <strong>processus métier</strong>.", 'wa-config');
                 echo <<<TEMPLATE
     <h1>{$pluginTitle}</h1>
     <section>{$pluginDescription}</section>
 TEMPLATE;
+                $this->api_inst_print_access_report();
                 if (!current_user_can($this->optAdminEditCabability)) {
                     $this->err("wa-config admin param need '{$this->optAdminEditCabability}' capability");
                     echo "<p> " . __("Pour plus d'informations, nécessite une capacité ou un rôle :", 'wa-config') . " {$this->optAdminEditCabability} </p>";
@@ -2581,9 +2619,6 @@ TEMPLATE;
                     $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = "getReviewOption";
                     update_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
                 }
-                if ('wa_reviews_deleted' === $key) {
-                    $this->debugVerbose("Missing key error ? for {$key}", ['trace' => $this->debug_trace(), 'reviewOpts' => $this->eAdminConfigReviewOpts]);
-                }
                 $value = $this->eAdminConfigReviewOpts[$key];
                 $this->debugVeryVerbose("Did getReviewOption {$key}", $value);
                 return $value;
@@ -2621,22 +2656,8 @@ TEMPLATE;
                     $this->eACChecksByCategorieByTitle[$toCheck['category']][$toCheck['title']] = [];
                 }
                 $checkBulk =& $this->eACChecksByCategorieByTitle[$toCheck['category']][$toCheck['title']];
-                if ($targets = array_filter($checkBulk, function ($c) use(&$keyId) {
-                    $cKey = $this->fetch_review_key_id($c);
-                    return $keyId === $cKey;
-                })) {
-                    $tCount = count($targets);
-                    $tIdx = array_keys($targets)[0];
-                    if (!$this->e_AC_isAccessibleCheck($checkBulk[$tIdx])) {
-                        $this->err("Checkpoint '{$keyId}' is not accessible");
-                        Notice::displayError("[{$keyId}] " . __("Is not accessible", 'wa-config'));
-                    } else {
-                        $this->debug("Will replace '{$keyId}' from e_admin_config_add_check_list_to_review ({$tCount})");
-                        $checkBulk[$tIdx] = $toCheck;
-                    }
-                } else {
-                    $checkBulk[] = $toCheck;
-                }
+                $this->reviewIdsToTrash = array_merge($this->reviewIdsToTrash, [['id' => $keyId, 'not_for_categories' => $toCheck['category'], 'not_for_titles' => $toCheck['title']]]);
+                $checkBulk[] = $toCheck;
                 usort($checkBulk, function ($c1, $c2) {
                     $c1Key = intval(boolVal($c1['is_activated'])) . '-' . intval(!boolVal($c1['is_computed'])) . '-' . $c1['create_time'];
                     $c2Key = intval(boolVal($c2['is_activated'])) . '-' . intval(!boolVal($c2['is_computed'])) . '-' . $c2['create_time'];
@@ -2671,9 +2692,9 @@ TEMPLATE;
             protected function e_AC_accessibleChecksByCategoryByTitle()
             {
                 $checksByCategorieByTitle = [];
-                foreach ($this->eACChecksByCategorieByTitle as $category => $reviewsByTitle) {
-                    foreach ($reviewsByTitle as $title => $reviews) {
-                        foreach ($reviews as $idx => $review) {
+                foreach ($this->eACChecksByCategorieByTitle as $category => &$reviewsByTitle) {
+                    foreach ($reviewsByTitle as $title => &$reviews) {
+                        foreach ($reviews as $idx => &$review) {
                             if ($this->e_AC_isAccessibleCheck($review)) {
                                 if (!array_key_exists($category, $checksByCategorieByTitle)) {
                                     $checksByCategorieByTitle[$category] = [];
@@ -3031,17 +3052,55 @@ TEMPLATE;
                 $this->e_admin_config_add_check_list_to_review(['category' => __('01 - Critique', 'wa-config'), 'title' => __('03 - Compatibilité', 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-universal-access"></span>', 'requirements' => __('Navigateur compatible. Chrome > 102. Firefox > 101.', 'wa-config'), 'value' => $report, 'result' => $result, 'is_activated' => true, 'fixed_id' => "{$this->iId}-check-chrome-version", 'is_computed' => true]);
                 do_action(WPActions::wa_do_base_review_postprocessing, $app);
                 $reviewIdsToTrash = apply_filters(WPFilters::wa_config_reviews_ids_to_trash, $this->reviewIdsToTrash, $this);
-                $deleteds = $this->eAdminConfigReviewOpts[$this->eConfOptReviewsDeleted];
-                foreach ($this->eACChecksByCategorieByTitle as $c => &$checksByTitle) {
-                    foreach ($checksByTitle as $t => &$checks) {
-                        $checks = array_filter($checks, function (&$check) use(&$reviewIdsToTrash, &$deleteds) {
-                            if (in_array($check['fixed_id'], $reviewIdsToTrash)) {
-                                $check['is_deleted'] = true;
-                                $deleteds[] = $check;
-                                return false;
-                            }
-                            return true;
-                        });
+                $deleteds = $this->eAdminConfigReviewOpts[$this->eConfOptReviewsDeleted] ?? [];
+                foreach ($reviewIdsToTrash as $toTrash) {
+                    $trashId = $toTrash['id'] ?? $toTrash;
+                    $this->assert(is_string($trashId), "Missing ID in reviewIdsToTrash for trash operation ?");
+                    $trashSafeCategories = $toTrash['not_for_categories'] ?? null;
+                    $trashSafeTitles = $toTrash['not_for_titles'] ?? null;
+                    if (is_string($trashSafeCategories)) {
+                        $trashSafeCategories = [$trashSafeCategories];
+                    }
+                    if (is_string($trashSafeTitles)) {
+                        $trashSafeTitles = [$trashSafeTitles];
+                    }
+                    $this->assert(!$trashSafeCategories || is_array($trashSafeCategories), "Wrong type for trashSafeCategories", $trashSafeCategories);
+                    $this->assert(!$trashSafeTitles || is_array($trashSafeTitles), "Wrong type for trashSafeTitles", $trashSafeTitles);
+                    if ($trashSafeCategories && !count($trashSafeCategories)) {
+                        $trashSafeCategories = null;
+                    }
+                    if ($trashSafeTitles && !count($trashSafeTitles)) {
+                        $trashSafeTitles = null;
+                    }
+                    foreach ($this->eACChecksByCategorieByTitle as $c => &$checksByTitle) {
+                        $categoryIsSafe = $trashSafeCategories && in_array($c, $trashSafeCategories);
+                        foreach ($checksByTitle as $t => &$checks) {
+                            $titleIsSafe = $categoryIsSafe && $trashSafeTitles && in_array($t, $trashSafeTitles);
+                            $duplicatedIds = [];
+                            $checks = array_filter($checks, function (&$check) use($trashId, $titleIsSafe, &$duplicatedIds, &$deleteds) {
+                                $checkId = $check['fixed_id'];
+                                if (!$this->e_AC_isAccessibleCheck($check)) {
+                                    $this->debug("e_admin_config_add_base_review trash not accessible for : {$checkId}");
+                                    return true;
+                                }
+                                if (!$titleIsSafe && $trashId === $checkId) {
+                                    $check['is_deleted'] = true;
+                                    if (!$check['is_computed']) {
+                                        $deleteds[] = $check;
+                                    }
+                                    return false;
+                                }
+                                if (array_key_exists($checkId, $duplicatedIds)) {
+                                    $check['is_deleted'] = true;
+                                    if (!$check['is_computed']) {
+                                        $deleteds[] = $check;
+                                    }
+                                    return false;
+                                }
+                                $duplicatedIds[$checkId] = true;
+                                return true;
+                            });
+                        }
                     }
                 }
                 $this->reviewIdsToTrash = [];
@@ -3062,6 +3121,9 @@ TEMPLATE;
                 }
                 $user = wp_get_current_user();
                 $userName = $user->user_login;
+                if ($this->shouldDebug || $this->shouldDebugVerbose || $this->shouldDebugVeryVerbose) {
+                    echo "<h1 style='color:red;'>" . __('ATTENTION : Mode débug activé.', 'wa-config') . "</h1>";
+                }
                 $this->e_admin_config_render_review_options(true);
                 $checksByCategorieByTitle = $this->e_AC_accessibleChecksByCategoryByTitle();
                 ?>
@@ -3732,7 +3794,10 @@ TEMPLATE;
 
                 <?php 
                 $this->opti_print_blocked_urls_report();
+                echo "<br /><br />";
                 $this->opti_print_allowed_urls_report();
+                echo "<br /><br />";
+                $this->api_inst_print_access_report();
                 $minimumCapabilityToRun = $this->getWaConfigOption($this->eConfOptATestsRunForCabability, 'administrator');
                 if (!is_admin() || !current_user_can($minimumCapabilityToRun)) {
                     $this->debug("wa-config TEST RUN can be done by {$minimumCapabilityToRun} only.");
@@ -4011,6 +4076,399 @@ TEMPLATE;
             }
         }
     }
+    if (!trait_exists(ApiInstanciable::class)) {
+        trait ApiInstanciable
+        {
+            use Editable;
+            use Identifiable;
+            protected function _020_api_inst__bootstrap()
+            {
+                $self = $this;
+                add_action('rest_api_init', [$this, 'api_inst_rest_init']);
+                add_filter('query_vars', function ($aVars) {
+                    $aVars[] = 'wa_api_pre_fetch_token';
+                    return $aVars;
+                });
+                add_filter('rest_pre_dispatch', function ($result, $server, $request) {
+                    $this->debug("Having rest pre-dispatch : " . $request->get_route());
+                    return $result;
+                }, 10, 3);
+                add_action('parse_request', function () use($self) {
+                    global $wp;
+                    if (0 === strpos($wp->request, "api-wa-config-nonce-rest")) {
+                        $this->api_inst_load_parameters($_REQUEST);
+                        if (is_user_logged_in()) {
+                            http_response_code(200);
+                            $quickCookie = array_filter($_COOKIE, function ($c) {
+                                return in_array($c, [SECURE_AUTH_COOKIE, AUTH_COOKIE, LOGGED_IN_COOKIE, 'PHPSESSID']);
+                            }, ARRAY_FILTER_USE_KEY);
+                            $quickCookieStrings = [];
+                            foreach ($quickCookie as $c => $v) {
+                                $quickCookieStrings[] = "{$c}={$v}";
+                            }
+                            $quickCookieStrings = implode('; ', $quickCookieStrings);
+                            $restNonce = wp_create_nonce('wp_rest');
+                            $this->api_inst_allow_access_id("prefetch-{$this->apiClientPreFetchToken}", $quickCookieStrings, $restNonce);
+                            $successMsg = "Your pre-fetch token '{$this->apiClientPreFetchToken}' have been authenticated, please boot your api with this pre-fetch token.";
+                            if (wp_is_json_request()) {
+                                header("Content-Type: application/json");
+                                echo json_encode(['code' => 'wa_succed_nonce_auth', 'message' => $successMsg, 'data' => ["nonce" => $restNonce, "quick_COOKIE" => $quickCookieStrings, "wa_api_pre_fetch_token" => $this->apiClientPreFetchToken], "info" => ["COOKIE" => $_COOKIE]]);
+                            } else {
+                                echo $successMsg;
+                            }
+                        } else {
+                            $redirectBack = add_query_arg(['wa_api_pre_fetch_token' => $this->apiClientPreFetchToken], home_url("/api-wa-config-nonce-rest"));
+                            $redirectUrl = wp_login_url($redirectBack);
+                            if (wp_is_json_request()) {
+                                header("Content-Type: application/json");
+                                echo json_encode(["error" => "wa_api_login_required", 'wa_api_pre_fetch_token' => $this->apiClientPreFetchToken, "message" => "Need to be logged in, please follow the redirect link location from your web browser", "location" => $redirectUrl]);
+                            } else {
+                                if (!wp_redirect($redirectUrl)) {
+                                    $this->err('Internal server error', $this->debug_trace());
+                                    header("Content-Type: application/json");
+                                    echo json_encode(['error' => 'Internal server error']);
+                                    $self->exit();
+                                    return;
+                                }
+                            }
+                        }
+                        $self->exit();
+                        return;
+                    }
+                });
+            }
+            function api_inst_rest_init()
+            {
+                $self = $this;
+                $this->debug("Will api_inst_rest_init");
+                register_rest_route('wa-config/v1', '/instanciable(?:/(?P<inst_action>.*))?', ['methods' => ['POST', 'GET'], 'callback' => [$this, 'api_inst_run_action'], 'permission_callback' => function () {
+                    return true;
+                }, 'args' => array('inst_action' => array('validate_callback' => function ($instAction, $request, $key) use($self) {
+                    $self->debug("Allowing route wa-config instanciable/{$instAction}");
+                    return true;
+                }))]);
+                add_filter('rest_authentication_errors', [$this, 'api_inst_rest_check_auth_errors'], 101);
+            }
+            function api_inst_rest_check_auth_errors($result)
+            {
+                if (is_wp_error($result)) {
+                    $request = $_REQUEST;
+                    $this->api_inst_load_parameters($request);
+                    $isWa = false;
+                    if (isset($request['wa_api_pre_fetch_token'])) {
+                        $this->debug("Detect auth error for prefetched key '{$this->apiClientPreFetchToken}'," . " will clean it up due to : [" . $result->get_error_code() . "] " . $result->get_error_message());
+                        $this->api_inst_delete_access_id("prefetch-{$this->apiClientPreFetchToken}");
+                        $isWa = true;
+                    }
+                    if (isset($request['wa_access_id'])) {
+                        $this->debug("Detect auth error for prefetched key '{$this->apiClientAccessId}'," . " will clean it up due to : [" . $result->get_error_code() . "] " . $result->get_error_message());
+                        $this->api_inst_delete_access_id($this->apiClientAccessId);
+                        $isWa = true;
+                    }
+                    if ($isWa) {
+                        return $this->api_inst_nonce_redirect("wa_auth_denied_since_wp_auth_denied");
+                    }
+                }
+                return $result;
+            }
+            protected $apiClientPreFetchToken = null;
+            protected $apiClientUserLocation = null;
+            protected $apiClientAccessId = null;
+            protected function api_inst_load_parameters($request)
+            {
+                $f = function ($v) {
+                    return filter_var($v, FILTER_SANITIZE_SPECIAL_CHARS);
+                };
+                $this->apiClientPreFetchToken = $this->api_inst_ensure_access_id($f($request['wa_api_pre_fetch_token']));
+                $this->apiClientUserLocation = $f($request['user_location']);
+                $this->apiClientAccessId = $this->api_inst_ensure_access_id($f($request['wa_access_id']));
+            }
+            protected $apiAccessHashSize = 21;
+            protected function api_inst_ensure_access_id($accessId = '')
+            {
+                $accessId = $accessId ?? "";
+                $accessIdSafe = sanitize_title($accessId);
+                if ($accessId !== $accessIdSafe) {
+                    $this->err("'{$accessIdSafe}' should have been used, reseting access ID to new ID");
+                }
+                if (!strlen($accessId)) {
+                    $accessId = bin2hex(random_bytes($this->apiAccessHashSize / 2));
+                }
+                return $accessId;
+            }
+            protected function api_inst_print_access_report()
+            {
+                if (!current_user_can('administrator')) {
+                    return;
+                }
+                echo "<h1> " . __("Détail des accès API en cours", 'wa-config') . " </h1>";
+                $accessIds = get_transient($this->API_ACCESS_IDS) ?? false;
+                $accessIds = $accessIds ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true) : [];
+                echo "<p style='display: flex; flex-wrap: wrap; justify-content: space-between;'>";
+                foreach ($accessIds as $aId => $payload) {
+                    $date = date("Y/m/d H:i:s O", $payload['start_time']);
+                    echo <<<TEMPLATE
+<span style='padding: 7px; width: 42%;'>
+    [<strong>{$payload['ip']}</strong>]<br />
+    <span>{$date}</span><br />
+    <strong>{$payload['user_location']}</strong>
+    <span>{$aId}</span>
+</span>
+TEMPLATE;
+                }
+                echo "</p>";
+                echo "<p>";
+                echo "Pour supprimer les sessions d'API en cours, il vous suffit de vider le cache objet.";
+                echo "</p>";
+            }
+            protected function api_inst_encryptor($stringToHandle = "", $encryptDecrypt = 'e')
+            {
+                $output = null;
+                $secret_key = NONCE_KEY;
+                $secret_iv = NONCE_SALT;
+                $key = hash('sha256', $secret_key);
+                $iv = substr(hash('sha256', $secret_iv), 0, 16);
+                if ($encryptDecrypt == 'e') {
+                    $output = base64_encode(openssl_encrypt($stringToHandle, "AES-256-CBC", $key, 0, $iv));
+                } else {
+                    if ($encryptDecrypt == 'd') {
+                        $output = openssl_decrypt(base64_decode($stringToHandle), "AES-256-CBC", $key, 0, $iv);
+                    }
+                }
+                return $output;
+            }
+            protected $API_ACCESS_IDS = 'wa_api_a_ids';
+            protected $ApiAccessDuration = 60 * 60 * 1000;
+            protected function api_inst_validate_access_id($accessId = '')
+            {
+                $ip = $this->get_user_ip(true, true);
+                $accessIds = get_transient($this->API_ACCESS_IDS) ?? false;
+                $accessIds = $accessIds ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true) : [];
+                if (!is_array($accessIds)) {
+                    $this->warn("{$accessIds} should be array type, fixing it");
+                    $accessIds = [];
+                }
+                if ($accessIds[$accessId] ?? false) {
+                    $accessPayload = $accessIds[$accessId];
+                    $startTime = $accessPayload['start_time'];
+                    $this->assertLog(time() - $startTime < $this->ApiAccessDuration, "Access did expire");
+                    $this->assertLog($ip === $accessPayload['ip'], "IP mismatch");
+                    $this->assertLog($this->apiClientPreFetchToken === $accessPayload['wa_api_pre_fetch_token'], "wa_api_pre_fetch_token mismatch for {$this->apiClientPreFetchToken} vs {$accessPayload['wa_api_pre_fetch_token']}");
+                    return time() - $startTime < $this->ApiAccessDuration && $ip === $accessPayload['ip'] && $this->apiClientPreFetchToken === $accessPayload['wa_api_pre_fetch_token'] ? $accessPayload : false;
+                }
+                return false;
+            }
+            protected function api_inst_allow_access_id($accessId = '', $quickCookie = '', $restNonce = null)
+            {
+                $ip = $this->get_user_ip(true, true);
+                $accessIds = get_transient($this->API_ACCESS_IDS) ?? false;
+                $accessIds = $accessIds ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true) : [];
+                if (!is_array($accessIds)) {
+                    $this->warn("{$accessIds} should be array type, fixing it");
+                    $accessIds = [];
+                }
+                $preRequest = $this->api_inst_ensure_access_id($this->apiClientPreFetchToken ?? "");
+                $this->apiClientPreFetchToken = $preRequest;
+                $accessIds[$accessId] = ['ip' => $ip, 'start_time' => time(), 'wa_api_pre_fetch_token' => $preRequest, 'nonce' => $restNonce, 'quick_COOKIE' => $quickCookie, 'user_location' => $this->apiClientUserLocation];
+                return set_transient($this->API_ACCESS_IDS, $this->api_inst_encryptor(json_encode($accessIds), 'e'), $this->ApiAccessDuration);
+            }
+            protected function api_inst_delete_access_id($accessId)
+            {
+                $accessIds = get_transient($this->API_ACCESS_IDS) ?? false;
+                $accessIds = $accessIds ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true) : [];
+                if (!is_array($accessIds)) {
+                    $this->warn("{$accessIds} should be array type, fixing it");
+                    $accessIds = [];
+                }
+                if (!$accessId || !strlen($accessId) || !array_key_exists($accessId, $accessIds)) {
+                    return false;
+                }
+                unset($accessIds[$accessId]);
+                return set_transient($this->API_ACCESS_IDS, $this->api_inst_encryptor(json_encode($accessIds), 'e'), $this->ApiAccessDuration);
+            }
+            protected function api_inst_nonce_redirect($authError = 'authentication_needed')
+            {
+                $preRequest = $this->api_inst_ensure_access_id($this->apiClientPreFetchToken ?? "");
+                $getRestNonceUrl = add_query_arg(['wa_api_pre_fetch_token' => $preRequest], home_url("/api-wa-config-nonce-rest"));
+                if (wp_is_json_request()) {
+                    return new WP_Error($authError, 'Authentification redirect needed, please login', ['wa_api_pre_fetch_token' => $this->apiClientPreFetchToken, 'location' => $getRestNonceUrl, 'status' => 302]);
+                }
+                if (wp_redirect($getRestNonceUrl)) {
+                    echo "<a class='{$authError}' href='{$getRestNonceUrl}'> [302] Redirecting to {$getRestNonceUrl}...</a>";
+                    $this->exit();
+                    return;
+                }
+                return new WP_Error('internal_redirect_error', "Internal redirect error for '{$authError}'", array('status' => 404));
+            }
+            protected function api_inst_need_authentification(WP_REST_Request $request)
+            {
+                if (!is_user_logged_in()) {
+                    if ($preFetchPayload = $this->api_inst_validate_access_id("prefetch-{$this->apiClientPreFetchToken}")) {
+                        $accessId = $this->api_inst_ensure_access_id();
+                        $this->api_inst_allow_access_id($accessId);
+                        return new WP_Error('wrong_auth_header_or_cookie', "Pre-fetch OK. Missing X-WP-Nonce header or wordpress_* cookie", ['nonce' => $preFetchPayload['nonce'], 'quick_COOKIE' => $preFetchPayload['quick_COOKIE'], 'wa_access_id' => $accessId, 'wa_api_pre_fetch_token' => $this->apiClientPreFetchToken, 'status' => 404]);
+                    } else {
+                        return $this->api_inst_nonce_redirect();
+                    }
+                }
+                if (!$this->api_inst_validate_access_id($this->apiClientAccessId)) {
+                    return $this->api_inst_nonce_redirect('fail_access_id_validation');
+                }
+                $this->api_inst_delete_access_id($this->apiClientPreFetchToken);
+                return false;
+            }
+            function api_inst_run_action(WP_REST_Request $request)
+            {
+                $self = $this;
+                $instAction = $request['inst_action'];
+                $this->debug("Will api_inst_run_action '{$instAction}'");
+                $openActions = [];
+                if (array_key_exists($instAction, $openActions)) {
+                    return $openActions[$instAction]($this);
+                }
+                if (!current_user_can($this->optAdminEditCabability)) {
+                    return $this->api_inst_nonce_redirect();
+                }
+                $authenticatedActions = ['showPluginsLoadOrder' => function ($app, $instAction) {
+                    $allApps = $app->allInstances();
+                    $dataView = array_map(function ($a) use($app) {
+                        return $app->pluginName === $a->pluginName ? "<strong> [ {$a->pluginName} ] </strong>" : $a->pluginName;
+                    }, $allApps);
+                    return ["action" => $instAction, "wa-plugins" => $dataView, "html" => '<span>' . implode("</span> <span>", $dataView) . '</span>'];
+                }, 'decreasePluginLoadOrder' => function ($app, $instAction) use($request) {
+                    $pluginName = $request['plugin_name'];
+                    $status = AppInterface::decreasePluginLoadOrder($pluginName);
+                    return ["action" => $instAction, "status" => $status];
+                }];
+                if (array_key_exists($instAction, $authenticatedActions)) {
+                    return $authenticatedActions[$instAction]($this, $instAction);
+                }
+                return new WP_Error('wa_unknow_action', "Unknown action '{$instAction}'", ['inst_action' => $instAction, 'status' => 404]);
+            }
+        }
+    }
+    if (!trait_exists(ApiFrontHeadSynchronisable::class)) {
+        trait ApiFrontHeadSynchronisable
+        {
+            use Editable;
+            use Identifiable;
+            use ApiInstanciable;
+            protected function _020_api_fronthead_sync__bootstrap()
+            {
+                add_action('rest_api_init', [$this, 'api_fronthead_sync_rest_init']);
+            }
+            function api_fronthead_sync_rest_init()
+            {
+                $self = $this;
+                $this->debug("Will api_fronthead_sync_rest_init");
+                register_rest_route('wa-config/v1', '/fronthead/sync(?:/(?P<sync_action>[^/]*))?(?:/(?P<user_location>.*))?', ['methods' => ['POST', 'GET'], 'callback' => [$this, 'api_fronthead_sync_deploy'], 'permission_callback' => '__return_true', 'args' => array('sync_action' => ['validate_callback' => '__return_true'], 'user_location' => array('validate_callback' => function ($userLocation, $request, $key) use($self) {
+                    $self->debug("Allowing user_location param for route wa-config fronthead/sync/{$userLocation}");
+                    return true;
+                }), 'head_target' => ['validate_callback' => '__return_true'], 'zip_subpath' => ['validate_callback' => '__return_true'], 'zip_bundle' => ['validate_callback' => '__return_true'], 'wa_access_id' => ['validate_callback' => '__return_true'], 'wa_api_pre_fetch_token' => ['validate_callback' => '__return_true'])]);
+            }
+            function api_fronthead_sync_deploy(WP_REST_Request $request)
+            {
+                $self = $this;
+                $this->api_inst_load_parameters($request);
+                $fHeadAction = $request['sync_action'];
+                $this->debug("Will api_fronthead_sync_deploy for user : '{$this->apiClientUserLocation}'");
+                $this->debugVeryVerbose("With request", $request);
+                if ($resp = $this->api_inst_need_authentification($request)) {
+                    return $resp;
+                }
+                if (!current_user_can($this->optAdminEditCabability)) {
+                    return $this->api_inst_nonce_redirect("need_caps_{$this->optAdminEditCabability}");
+                }
+                $authenticatedActions = ['publish' => function ($app, $instAction) use($request) {
+                    $fs = new WP_Filesystem_Direct(null);
+                    $headTarget = trim($request['head_target'] ?? '', '/');
+                    $zipSubPath = $request['zip_subpath'] ?? '';
+                    $zipBundle = $request->get_file_params()["zip_bundle"] ?? [];
+                    if (!count($zipBundle)) {
+                        $zipBundle = null;
+                    }
+                    $zipBundleB64 = $zipBundle ? null : $request['zip_bundle_b64'] ?? null;
+                    if (!$zipBundle && !$zipBundleB64) {
+                        return new WP_Error('missing_zip_bundle', "Fail to access 'zip_bundle' file param or 'zip_bundle_b64' param.", ['sync_action' => $instAction, 'status' => 404]);
+                    }
+                    $zipSource = $zipBundle['tmp_name'] ?? null;
+                    $zipName = $zipBundle['name'] ?? null;
+                    if (!$zipSource && $zipBundleB64) {
+                        $zipSource = wp_tempnam();
+                        $written = file_put_contents($zipSource, base64_decode($zipBundleB64));
+                        $zipName = 'zip_bundle_b64';
+                    }
+                    $this->debugVeryVerbose("With zip_bundle : ", $zipBundle);
+                    $avoidBackup = $request['avoid_backup'];
+                    $status = [];
+                    $headsFolder = rtrim(realpath($this->pluginRoot . "heads"), '/');
+                    $zipTargetPath = "{$headsFolder}/{$headTarget}";
+                    $didCreateDir = false;
+                    if (!$fs->exists($zipTargetPath)) {
+                        $didCreateDir = $fs->mkdir($zipTargetPath);
+                    }
+                    $zipTargetPath = realpath($zipTargetPath);
+                    if (false === strpos($zipTargetPath, $headsFolder)) {
+                        if ($didCreateDir) {
+                            $fs->rmdir($zipTargetPath);
+                        }
+                        return new WP_Error('wrong_head_target', "Fail to access target head : '{$headsFolder}/{$headTarget}'", ['sync_action' => $instAction, 'status' => 404]);
+                    }
+                    if (!$avoidBackup) {
+                    }
+                    $fs->rmdir($zipTargetPath, true);
+                    $fs->mkdir($zipTargetPath);
+                    $zip = new ZipArchive();
+                    if (true !== ($err = $zip->open($zipSource))) {
+                        $err = print_r($err, true);
+                        $zipStatus = $zip->getStatusString();
+                        if (!file_exists($zipSource)) {
+                            $err = 404;
+                            $zipStatus = "Internal Server Error. Missing file.";
+                        }
+                        return new WP_Error('wrong_zip_file', "Err [{$err} - {$zipStatus}] : Fail to open zip file : '{$zipName}'", ['sync_action' => $instAction, 'src' => $zipSource, 'status' => 404]);
+                    }
+                    if ($zipSubPath) {
+                        $zipSubPath = trim($zipSubPath, "/") . '/';
+                        for ($i = 0; $i < $zip->numFiles; $i++) {
+                            $filename = $zip->getNameIndex($i);
+                            $targetFilename = str_replace($zipSubPath, '', $filename);
+                            if (!strlen($targetFilename)) {
+                                continue;
+                            }
+                            $targetFilename = "{$zipTargetPath}/{$targetFilename}";
+                            $dirname = dirname($targetFilename);
+                            $zipSrcFile = "zip://" . $zipSource . "#" . $filename;
+                            if (!is_dir($dirname)) {
+                                mkdir($dirname, 0755, true);
+                            }
+                            if (strrpos($targetFilename, '/') == strlen($targetFilename) - 1) {
+                                if (!is_dir($targetFilename)) {
+                                    mkdir($targetFilename, 0755, true);
+                                }
+                            } else {
+                                if (!copy($zipSrcFile, $targetFilename)) {
+                                    $status[] = ["error" => "Fail to copy zip file", "src" => $zipSrcFile, "dst" => $targetFilename];
+                                }
+                            }
+                        }
+                    } else {
+                        $zip->extractTo($zipTargetPath);
+                    }
+                    $zip->close();
+                    if ($zipBundleB64) {
+                        unlink($zipSource);
+                    }
+                    $status[] = ["end-status" => "OK"];
+                    return new WP_REST_Response(["action" => $instAction, "head_target" => $headTarget, "head_path" => $zipTargetPath, "status" => $status], 200);
+                }];
+                if (array_key_exists($fHeadAction, $authenticatedActions)) {
+                    return $authenticatedActions[$fHeadAction]($this, $fHeadAction);
+                }
+                return new WP_Error('wa_unknow_action', "Unknown action '{$fHeadAction}'", ['sync_action' => $fHeadAction, 'status' => 404]);
+            }
+        }
+    }
     if (!class_exists(OptiLvl::class)) {
         class OptiLvl
         {
@@ -4062,6 +4520,10 @@ TEMPLATE;
                     return;
                 }
                 $this->blockedUrlReviewReport = get_transient($this->BLOCKED_URL_REVIEW_REPORT) ?? $this->blockedUrlReviewReport;
+                if (!$this->blockedUrlReviewReport) {
+                    $this->warn("opti_add_url_to_blocked_review_report detect wrong saved report, reseting it to [] from ", $this->blockedUrlReviewReport);
+                    $this->blockedUrlReviewReport = [];
+                }
                 if (!is_array($this->blockedUrlReviewReport)) {
                     $this->warn("opti_add_url_to_blocked_review_report 'blockedUrlReviewReport' have wrong type, should be 'array'", $this->blockedUrlReviewReport);
                     $this->blockedUrlReviewReport = [];
@@ -4094,7 +4556,7 @@ TEMPLATE;
                     $this->warn("opti_add_url_to_allowed_review_report 'allowedUrlReviewReport' have wrong type, should be 'array'", $this->allowedUrlReviewReport);
                     $this->allowedUrlReviewReport = [];
                 }
-                $this->debugVerbose("Will opti_add_url_to_blocked_review_report with '{$url}'");
+                $this->debugVerbose("Will opti_add_url_to_allowed_review_report with '{$url}'");
                 $report =& $this->allowedUrlReviewReport;
                 $currentTime = time();
                 if (!array_key_exists($url, $report)) {
@@ -4298,7 +4760,7 @@ TEMPLATE;
                 $this->debugVerbose("Will opti_common_review");
                 $self = $this;
                 $urlBuilder = function ($pluginSlug) {
-                    return admin_url("plugin-install.php?tab=plugin-information&plugin={$pluginSlug}&TB_iframe=true&width=640&height=500");
+                    return admin_url("plugin-install.php?tab=plugin-information&plugin={$pluginSlug}");
                 };
                 $plugins = get_option('active_plugins', []);
                 $plugins = array_map(function ($p) {
@@ -4325,9 +4787,9 @@ TEMPLATE;
                             }
                         }
                         $extraUrl = $urlBuilder($extraPluginSlug);
-                        $extras .= "<p><a\n                        class='thickbox open-plugin-details-modal'\n                        data-title='{$extraPluginData['title']}'\n                        href='{$extraUrl}'>\n                          {$extraPluginData['title']}\n                        </a></p>";
+                        $extras .= "<p><a\n                        data-title='{$extraPluginData['title']}'\n                        target='_blank'\n                        href='{$extraUrl}'>\n                          {$extraPluginData['title']}\n                        </a></p>";
                     }
-                    $this->e_admin_config_add_check_list_to_review(['category' => __('02 - Maintenance', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>', 'title' => __("01 - Plugin : ", 'wa-config') . $localPluginBase, 'title_icon' => '<span class="dashicons dashicons-dashboard"></span>', 'requirements' => "{$pluginRequest} <a class='thickbox open-plugin-details-modal' data-title='{$pluginLinkTitle}' href='{$url}'>{$pluginLinkTitle}</a> {$extras}", 'value' => $isPluginActivated ? $activationReport : __('Validation humaine requise.', 'wa-config'), 'result' => $isPluginActivated, 'is_activated' => true, 'fixed_id' => "{$this->iId}-check-plugin-{$localPluginBase}", 'is_computed' => true]);
+                    $this->e_admin_config_add_check_list_to_review(['category' => __('02 - Maintenance', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>', 'title' => __("01 - Plugin : ", 'wa-config') . $localPluginBase, 'title_icon' => '<span class="dashicons dashicons-dashboard"></span>', 'requirements' => "{$pluginRequest} <a target='_blank' data-title='{$pluginLinkTitle}' href='{$url}'>{$pluginLinkTitle}</a> {$extras}", 'value' => $isPluginActivated ? $activationReport : __('Validation humaine requise.', 'wa-config'), 'result' => $isPluginActivated, 'is_activated' => true, 'fixed_id' => "{$this->iId}-check-plugin-{$localPluginBase}", 'is_computed' => true]);
                 };
                 $pluginReviewer(__('Internationalisation continue de votre contenu web en activant le plugin :', 'wa-config'), __('Polylang', 'wa-config'), 'polylang', ['loco-translate' => __('Bonus : Loco Translate', 'wa-config'), 'automatic-translator-addon-for-loco-translate' => __('Bonus : Automatic Translate Addon For Loco Translate', 'wa-config'), 'translatepress-multilingual' => ['type' => 'alternative', 'title' => __('Alternative : TranslatePress - Multilingual', 'wa-config')], 'automatic-translate-addon-for-translatepress' => __('Bonus : Automatic Translate Addon For TranslatePress', 'wa-config'), 'gtranslate' => ['type' => 'alternative', 'title' => __('Alternative : Translate WordPress with GTranslate', 'wa-config')]]);
                 $pluginReviewer(__('Mise en cache et optimisations en activant le plugin :', 'wa-config'), __('LiteSpeed Cache', 'wa-config'), 'litespeed-cache', ['w3-total-cache' => ['type' => 'alternative', 'title' => __('Alternative : W3 Total Cache', 'wa-config')], 'wp-optimize' => ['type' => 'alternative', 'title' => __('Alternative : WP-Optimize', 'wa-config')], 'wp-super-cache' => ['type' => 'alternative', 'title' => __('Alternative : WP Super Cache', 'wa-config')], 'sg-cachepress' => ['type' => 'alternative', 'title' => __('Alternative : SiteGround Optimizer', 'wa-config')], 'use-memcached' => __("Bonus : Utiliser 'Use Memcached' avec d'autres caches ne faisant pas de cache objet (Ex : SiteGround Optimizer).", 'wa-config')]);
@@ -4402,6 +4864,9 @@ namespace WA\Config\Frontend {
             use EditableWaConfigOptions, Debugable;
             protected function _010_e_footer__load()
             {
+                if (wp_is_json_request() || is_admin()) {
+                    return;
+                }
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_footer__load')) {
                     return;
                 }
@@ -4615,6 +5080,8 @@ TEMPLATE;
     }
 }
 namespace WA\Config {
+    use WA\Config\Admin\ApiFrontHeadSynchronisable;
+    use WA\Config\Admin\ApiInstanciable;
     use WA\Config\Core\AppInterface;
     use WA\Config\Admin\EditableConfigPanels;
     use WA\Config\Admin\EditableMissionPost;
@@ -4652,6 +5119,8 @@ namespace WA\Config {
             use ExtendablePluginDescription;
             use Optimisable;
             use TranslatableProduct;
+            use ApiFrontHeadSynchronisable;
+            use ApiInstanciable;
             public function __construct(string $siteBaseHref, string $pluginFile, string $iPrefix, $shouldDebug)
             {
                 if (is_array($shouldDebug)) {

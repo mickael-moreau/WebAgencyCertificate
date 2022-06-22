@@ -22,7 +22,7 @@
  * It will also show you how to use the saved wa-config options
  * from the admin "WA Config" "Parameters" sub menu.
  *
- * @link https://www.web-agency.app/e-commerce/produit/wa-config-codeception-testings/ wa-config by Monwoo
+ * @link https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo wa-config by Monwoo
  * @since 0.0.1
  * @package
  * @filesource

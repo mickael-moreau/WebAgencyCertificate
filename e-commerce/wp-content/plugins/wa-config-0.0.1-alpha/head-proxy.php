@@ -7,7 +7,37 @@
  */
 
 $proxyUrl = $GLOBALS["wa-proxy-url"];
-$frontHead = $GLOBALS["wa-front-head"];
+$frontHead = trim($GLOBALS["wa-front-head"], "/");
+$frontHead = "heads/$frontHead";
+
+if (false === strpos(
+    realpath($this->pluginRoot . $frontHead),
+    realpath($this->pluginRoot . 'heads')
+)) {
+    // echo "<notice>404 : head config issue. '$proxyUrl' Not found.</notice>";
+    $this->err("head-proxy.php : Head folder not found inside plugin ./heads, wrong path for : '$frontHead'");
+    $this->opti_add_url_to_blocked_review_report($this->iId . '-head-proxy-404', $proxyUrl);
+    // https://wordpress.stackexchange.com/questions/91900/how-to-force-a-404-on-wordpress
+    global $wp_query;
+    $wp_query->set_404();
+    status_header( 404 );
+    nocache_headers();
+    // add_filter( 'the_content', function ($c) use ($proxyUrl, $frontHead) { // No content in some 404...
+    // add_action( 'get_header', function ($file, $args) use ($proxyUrl, $frontHead) {
+    //     $msg = __("Tête de rendue non trouvée.", /*📜*/ 'wa-config'/*📜*/);
+    //     $c = "<!-- <notice> '$frontHead' : $msg </notice> -->";
+    //     // return $c;
+    //     echo $c;
+    // }, 1 ); // TODO : why no effect ?
+    $msg = __("Tête de rendue non trouvée.", /*📜*/ 'wa-config'/*📜*/);
+    $c = "<!-- <notice> '$frontHead' : $msg </notice> -->";
+    echo $c;
+    // exit;
+    include( get_query_template( '404' ) );
+    // get_template_part( 404 ); 
+    $this->exit(); return;
+}
+
 $proxyBaseUrl = explode('#', $proxyUrl)[0];
 $proxyBasePath = explode('?', $proxyBaseUrl)[0];
 $proxyBasePath = trim($proxyBasePath, "/");
@@ -15,6 +45,7 @@ $proxyBasePath = "$frontHead/$proxyBasePath";
 $proxyBasePath = trim($proxyBasePath, "/");
 
 $realPath = realpath( $this->pluginRoot . $proxyBasePath);
+
 if (is_dir($realPath)) {
     $this->debugVerbose("head-proxy.php : Directory access attempt detected for $proxyUrl");
     $realPath = null; // We do not target dir, will check index.html inside this dir on next call if null
@@ -38,17 +69,29 @@ if (!$realPath) {
 $realPath = $realPath ? $realPath
 : realpath( $htmlPath );
 
+$homeUrl = home_url();
+
 if (!$realPath) {
-    echo "404 : Missing ressource for '$proxyUrl'";
+    // TODO : filter or 404 error page ?
+    // echo "404 : Missing ressource for '$proxyUrl'";
     $this->warn("head-proxy.php : Missing ressource for '$proxyUrl' in '$frontHead'");
     $this->opti_add_url_to_blocked_review_report($this->iId . '-head-proxy-404', $proxyUrl);
-    http_response_code(404);
+    // http_response_code(404);
+    global $wp_query;
+    $wp_query->set_404();
+    status_header( 404 );
+    nocache_headers();
+    $msg = __("Ressource frontend manquante.", /*📜*/ 'wa-config'/*📜*/);
+    $c = "<!-- <notice> '$frontHead' : $msg </notice> -->";
+    echo $c;
+    include( get_query_template( '404' ) );
+    // get_template_part( 404 ); 
     $this->exit(); return;
 }
 
 wp_ob_end_flush_all(); // Flush all, ensuring memory free up from there => NO MORE LAKING MEMORY with this optim only...
 $file_parts = pathinfo($realPath);
-
+// exit();
 // var_dump($file_parts['extension']); exit;
 switch($file_parts['extension'])
 {

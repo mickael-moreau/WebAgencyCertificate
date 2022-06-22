@@ -17,7 +17,7 @@ modules:
         - \Helper\Acceptance
         - Asserts
         - REST:
-            url: api/v1/
+            url: /wp-json
             depends: PhpBrowser
             part: Json
 step_decorators: ~

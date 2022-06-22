@@ -16,7 +16,7 @@
  * - Repeat with other user roles. Best directly by using the links/query string parameters.
  * - Repeat things for multisite. Once for a single site in the network, once sitewide.
  *
- * @link              https://www.web-agency.app/e-commerce/produit/wa-config-codeception-testings/
+ * @link              https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo
  * @since             0.0.1
  * @package
  * @filesource

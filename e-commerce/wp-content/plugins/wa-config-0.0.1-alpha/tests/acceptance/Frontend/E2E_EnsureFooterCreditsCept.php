@@ -15,7 +15,7 @@
  * 
  * It will show you how to simply test the open Frontend.
  *
- * @link https://www.web-agency.app/e-commerce/produit/wa-config-codeception-testings/ wa-config by Monwoo
+ * @link https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo wa-config by Monwoo
  * @since 0.0.1
  * @package
  * @filesource
@@ -41,9 +41,10 @@ namespace WA\Config\E2E\Frontend {
      * @author service@monwoo.com
      */   
     class E2E_EnsureFooterCreditsCept {
-        // const FOOTER_CREDIT = '© Web-Agency.app 2022';
+        // const FOOTER_CREDIT = '© Monwoo 2022';
         // TODO : Lang sync translations test ? __(...) ?
         const FOOTER_CREDIT = 'Build by Monwoo and autre';
+        // const FOOTER_CREDIT = __("Build by Monwoo and", /*📜*/ 'wa-config'/*📜*/);
     }
 
     $I = new AcceptanceTester($scenario);
