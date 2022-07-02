@@ -72,20 +72,6 @@
     <a href="packages/waConfig.html" class="">waConfig</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerceTemplates.html" class="">WooCommerceTemplates</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerce.html" class="">WooCommerce</a>
-</h4>
-    <ul class="phpdocumentor-list">
-                    <li>
-                <a href="packages/WooCommerce-Templates.html" class="">Templates</a>
-                
-            </li>
-            </ul>
-
                         </section>
             
     <section class="phpdocumentor-sidebar__category">
@@ -124,9 +110,9 @@
     </h2>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">129</span>
+    <span class="phpdocumentor-element-found-in__line">102</span>
 
     </aside>
 
@@ -170,16 +156,23 @@
 
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_config_e_footer_render">wa_config_e_footer_render</a>
+    <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_e_footer_render">wa_e_footer_render</a>
     <span>
-        &nbsp;= &#039;wa_config_e_footer_render&#039;                            </span>
+        &nbsp;= &#039;wa_e_footer_render&#039;                            </span>
 </dt>
 <dd>Filters the HTML Editable footer rendered by wa-config package</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_config_reviews_ids_to_trash">wa_config_reviews_ids_to_trash</a>
+    <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_get_ip">wa_get_ip</a>
     <span>
-        &nbsp;= &#039;wa_config_reviews_ids_to_trash&#039;                            </span>
+        &nbsp;= &#039;wa_get_ip&#039;                            </span>
+</dt>
+<dd>Filters the IP used by protected functions of wa-config</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_review_ids_to_trash">wa_review_ids_to_trash</a>
+    <span>
+        &nbsp;= &#039;wa_review_ids_to_trash&#039;                            </span>
 </dt>
 <dd>Filters the reviews fixed_id to trash at the end of the base review</dd>
 
@@ -194,15 +187,15 @@
             <a href="classes/WA-Config-Core-WPFilters.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_wa_config_e_footer_render">
-        wa_config_e_footer_render
-        <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_config_e_footer_render" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_wa_e_footer_render">
+        wa_e_footer_render
+        <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_e_footer_render" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">141</span>
+    <span class="phpdocumentor-element-found-in__line">117</span>
 
     </aside>
 
@@ -211,14 +204,70 @@
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">wa_config_e_footer_render</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;wa_config_e_footer_render&#039;</span>
+    <span class="phpdocumentor-signature__name">wa_e_footer_render</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;wa_e_footer_render&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"><p><strong>@param string</strong>      $htmlFooter  The HTML that will be rendered for the footer</p>
-<p><strong>@param AppInterface</strong> $instance    The <a href="classes/WA-Config-Core-AppInterface.html"><abbr title="\WA\Config\Core\AppInterface">AppInterface</abbr></a>
+        <section class="phpdocumentor-description"><p><strong>@param</strong> <em>string</em>        <strong>$htmlFooter</strong>  The HTML that will be rendered
+for the footer</p>
+<p><strong>@param</strong> <em><a href="classes/WA-Config-Core-AppInterface.html"><abbr title="\WA\Config\Core\AppInterface">AppInterface</abbr></a></em>   <strong>$instance</strong>    The <a href="classes/WA-Config-Core-AppInterface.html"><abbr title="\WA\Config\Core\AppInterface">AppInterface</abbr></a>
 that is currently configuring the footer to render.</p>
+<p><strong>@return</strong> <em>string</em>       The HTML that will be rendered</p>
+</section>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-Frontend-EditableFooter.html#method_e_footer_render"><abbr title="\WA\Config\Frontend\EditableFooter::e_footer_render()">EditableFooter::e_footer_render()</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">0.0.1</span>
+                                                                                
+                                             
+                                    </dd>
+                        </dl>
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_wa_get_ip">
+        wa_get_ip
+        <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_get_ip" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">142</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Filters the IP used by protected functions of wa-config</p>
+
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">wa_get_ip</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;wa_get_ip&#039;</span>
+</code>
+
+
+        <section class="phpdocumentor-description"><p><strong>@param</strong> <em>string</em>    <strong>$ip</strong>  The computed IP</p>
+<p><strong>@return</strong> <em>string</em>   The filtered IP</p>
 </section>
 
         <section class="phpdocumentor-description"></section>
@@ -237,27 +286,19 @@ that is currently configuring the footer to render.</p>
                                                                                 
                                              
                                     </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">see</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-Frontend-EditableFooter.html#method_e_footer_render"><abbr title="\WA\Config\Frontend\EditableFooter::e_footer_render()">EditableFooter::e_footer_render()</abbr></a></span>
-                                        
-                                             
-                                    </dd>
                         </dl>
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_wa_config_reviews_ids_to_trash">
-        wa_config_reviews_ids_to_trash
-        <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_config_reviews_ids_to_trash" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_wa_review_ids_to_trash">
+        wa_review_ids_to_trash
+        <a href="classes/WA-Config-Core-WPFilters.html#constant_wa_review_ids_to_trash" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">152</span>
+    <span class="phpdocumentor-element-found-in__line">132</span>
 
     </aside>
 
@@ -266,12 +307,18 @@ that is currently configuring the footer to render.</p>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">wa_config_reviews_ids_to_trash</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;wa_config_reviews_ids_to_trash&#039;</span>
+    <span class="phpdocumentor-signature__name">wa_review_ids_to_trash</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;wa_review_ids_to_trash&#039;</span>
 </code>
 
 
-    
+        <section class="phpdocumentor-description"><p><strong>@param</strong> <em>string[]</em>      <strong>$idsToTrash</strong>  The 'fixed_id' that will be
+trashed if present</p>
+<p><strong>@param</strong> <em><a href="classes/WA-Config-Core-AppInterface.html"><abbr title="\WA\Config\Core\AppInterface">AppInterface</abbr></a></em>  <strong>$instance</strong>    The <a href="classes/WA-Config-Core-AppInterface.html"><abbr title="\WA\Config\Core\AppInterface">AppInterface</abbr></a>
+plugin instance</p>
+<p><strong>@return</strong> <em>string[]</em>     The 'fixed_id' that will be trashed</p>
+</section>
+
         <section class="phpdocumentor-description"></section>
 
     
@@ -281,19 +328,19 @@ that is currently configuring the footer to render.</p>
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-Admin-EditableReview.html#method_e_review_data_add_base_review"><abbr title="\WA\Config\Admin\EditableReview::e_review_data_add_base_review()">EditableReview::e_review_data_add_base_review()</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">since</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                             <span class="phpdocumentor-tag-link">0.0.1</span>
                                                                                 
-                                             
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">see</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_add_base_review"><abbr title="\WA\Config\Admin\EditableConfigPanels::e_admin_config_add_base_review()">EditableConfigPanels::e_admin_config_add_base_review()</abbr></a></span>
-                                        
                                              
                                     </dd>
                         </dl>

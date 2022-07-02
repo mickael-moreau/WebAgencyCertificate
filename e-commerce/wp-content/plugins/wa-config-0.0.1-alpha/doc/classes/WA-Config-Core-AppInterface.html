@@ -72,20 +72,6 @@
     <a href="packages/waConfig.html" class="">waConfig</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerceTemplates.html" class="">WooCommerceTemplates</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerce.html" class="">WooCommerce</a>
-</h4>
-    <ul class="phpdocumentor-list">
-                    <li>
-                <a href="packages/WooCommerce-Templates.html" class="">Templates</a>
-                
-            </li>
-            </ul>
-
                         </section>
             
     <section class="phpdocumentor-sidebar__category">
@@ -127,9 +113,9 @@
     </h2>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1240</span>
+    <span class="phpdocumentor-element-found-in__line">981</span>
 
     </aside>
 
@@ -195,7 +181,14 @@
 </dt>
 <dd></dd>
 
-                        <dt class="phpdocumentor-table-of-contents__entry -method -public">
+                    <dt class="phpdocumentor-table-of-contents__entry -property -public">
+    <a href="classes/WA-Config-Core-Translatable.html#property_waConfigTextDomain">$waConfigTextDomain</a>
+    <span>
+                        &nbsp;: string            </span>
+</dt>
+<dd>Plugin text domain, used to load plugin translations from ./languages folder</dd>
+
+                <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-AppInterface.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: void    </span>
@@ -252,11 +245,18 @@
 <dd>Error Handler used with native PHP set_error_handler()</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Core-Debugable.html#method_debug_routes">debug_routes()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;|string    </span>
+</dt>
+<dd>Return the current routes</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-Debugable.html#method_debug_stream_notification_callback">debug_stream_notification_callback()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
+<dd>Dev in progress, not ready yet</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-Debugable.html#method_debug_trace">debug_trace()</a>
@@ -285,13 +285,6 @@
                                 &nbsp;: void    </span>
 </dt>
 <dd>Log a very verbose debug message and it&#039;s optionnal context.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Core-AppInterface.html#method_decreasePluginLoadOrder">decreasePluginLoadOrder()</a>
-    <span>
-                                &nbsp;: int    </span>
-</dt>
-<dd>Decrease the plugin load order, to handle multiple plugins class load orderings</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_test_action">e2e_test_action()</a>
@@ -340,28 +333,28 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
+<dd>Dev in progress, not ready yet</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_access_hash_close">e2e_tests_access_hash_close()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: void    </span>
 </dt>
-<dd></dd>
+<dd>Close an e2e test access and restore the regular website access</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_access_hash_open">e2e_tests_access_hash_open()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: string    </span>
 </dt>
-<dd></dd>
+<dd>Open an e2e test access and return the corresponding access hash</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_emails_middleware">e2e_tests_emails_middleware()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
+<dd>Email middleware to prevent email expedition if requested by configuration</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_filter_wp_die_callback">e2e_tests_filter_wp_die_callback()</a>
@@ -373,9 +366,9 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_validate_access_hash">e2e_tests_validate_access_hash()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: false|array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
+<dd>Validate an e2e test access</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-Debugable.html#method_err">err()</a>
@@ -383,6 +376,13 @@
                                 &nbsp;: void    </span>
 </dt>
 <dd>Log an error message and it&#039;s optionnal context.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Core-AppInterface.html#method_exit">exit()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-AppInterface.html#method_getCompatibilityReports">getCompatibilityReports()</a>
@@ -420,7 +420,7 @@
 <dd>Get App instance by registred App Identifiable Identifier</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Core-AppInterface.html#method_instanceByRelativePath">instanceByRelativePath()</a>
+    <a href="classes/WA-Config-Core-AppInterface.html#method_instanceByRelativeFile">instanceByRelativeFile()</a>
     <span>
                                 &nbsp;: <a href="classes/WA-Config-Core-AppInterface.html"><abbr title="\WA\Config\Core\AppInterface">AppInterface</abbr></a>    </span>
 </dt>
@@ -507,9 +507,9 @@ WordPress load_plugin_textdomain function</dd>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1444</span>
+    <span class="phpdocumentor-element-found-in__line">1148</span>
 
     </aside>
 
@@ -536,9 +536,9 @@ WordPress load_plugin_textdomain function</dd>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1445</span>
+    <span class="phpdocumentor-element-found-in__line">1149</span>
 
     </aside>
 
@@ -565,9 +565,9 @@ WordPress load_plugin_textdomain function</dd>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1246</span>
+    <span class="phpdocumentor-element-found-in__line">984</span>
 
     </aside>
 
@@ -590,6 +590,50 @@ WordPress load_plugin_textdomain function</dd>
             </section>
 
         
+    <section class="phpdocumentor-properties">
+        <h3 class="phpdocumentor-elements__header" id="properties">
+            Properties
+            <a href="classes/WA-Config-Core-AppInterface.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+        </h3>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="property_waConfigTextDomain">
+        $waConfigTextDomain
+        <a href="classes/WA-Config-Core-Translatable.html#property_waConfigTextDomain" class="headerlink"><i class="fas fa-link"></i></a>
+        <span class="phpdocumentor-element__modifiers">
+                                </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">945</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Plugin text domain, used to load plugin translations from ./languages folder</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">string</span>
+    <span class="phpdocumentor-signature__name">$waConfigTextDomain</span>
+     = <span class="phpdocumentor-signature__default-value">&#039;wa-config&#039;</span></code>
+
+        <section class="phpdocumentor-description"><p><a href="https://wordpress.org/support/topic/using-constant-as-a-text-domain"><abbr title="https://wordpress.org/support/topic/using-constant-as-a-text-domain">https://wordpress.org/support/topic/using-constant-as-a-text-domain</abbr></a>
+would like to suggest you to avoid using constant as a text domain
+within your plugin. It makes strings
+untranslatable by WPML or Loco translate.</p>
+</section>
+
+    
+    
+
+</article>
+            </section>
 
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
@@ -607,9 +651,9 @@ WordPress load_plugin_textdomain function</dd>
         <a href="classes/WA-Config-Core-AppInterface.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2807</span>
+    <span class="phpdocumentor-element-found-in__line">2147</span>
 
     </aside>
 
@@ -655,9 +699,9 @@ after child initialisation of instances properties</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_addCompatibilityReport" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1261</span>
+    <span class="phpdocumentor-element-found-in__line">997</span>
 
     </aside>
 
@@ -668,8 +712,8 @@ after child initialisation of instances properties</p>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">addCompatibilityReport</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$level</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$msg</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
         <section class="phpdocumentor-description"><p>Reports are shown for admin user only, under the
-&quot;Parameter&quot; sub menu of &quot;WA Config&quot;
-<a href="classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_render_param_section"><abbr title="\WA\Config\Admin\EditableConfigPanels::e_admin_config_render_param_section()">EditableConfigPanels::e_admin_config_render_param_section()</abbr></a></p>
+&quot;Parameters&quot; sub menu of &quot;WA Config&quot;
+<a href="classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_param_render_panel"><abbr title="\WA\Config\Admin\EditableConfigPanels::e_config_param_render_panel()">EditableConfigPanels::e_config_param_render_panel()</abbr></a></p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -714,9 +758,9 @@ like : information / warning / CRITICAL / etc...</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_allInstances" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1345</span>
+    <span class="phpdocumentor-element-found-in__line">1069</span>
 
     </aside>
 
@@ -747,9 +791,9 @@ like : information / warning / CRITICAL / etc...</p>
         <a href="classes/WA-Config-Core-Debugable.html#method_assert" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">682</span>
+    <span class="phpdocumentor-element-found-in__line">599</span>
 
     </aside>
 
@@ -789,6 +833,22 @@ with the corresponding message.</p>
             </dl>
 
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\Exception">Exception</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>Throw exception if shouldDebug is enabled</p>
+</section>
+
+                                    </dd>
+                        </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">bool</span>
@@ -809,9 +869,9 @@ with the corresponding message.</p>
         <a href="classes/WA-Config-Core-Debugable.html#method_assertLog" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">701</span>
+    <span class="phpdocumentor-element-found-in__line">618</span>
 
     </aside>
 
@@ -819,7 +879,7 @@ with the corresponding message.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">assertLog</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$test</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$msg</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__variadic-operator">...</span><span class="phpdocumentor-signature__argument__name">$ctx</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+                    <span class="phpdocumentor-signature__name">assertLog</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$test</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$msg</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__variadic-operator">...</span><span class="phpdocumentor-signature__argument__name">$ctx</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
         <section class="phpdocumentor-description"><p>Only doing warning log on failure</p>
 </section>
@@ -828,7 +888,7 @@ with the corresponding message.</p>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$test</span>
-                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -854,7 +914,9 @@ with the corresponding message.</p>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">bool</span>
             &mdash;
-        
+            <section class="phpdocumentor-description"><p>$ctx</p>
+</section>
+
     
 </article>
                     <article
@@ -868,9 +930,9 @@ with the corresponding message.</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_bootstrap" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2838</span>
+    <span class="phpdocumentor-element-found-in__line">2162</span>
 
     </aside>
 
@@ -904,9 +966,9 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <a href="classes/WA-Config-Core-Debugable.html#method_debug" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">638</span>
+    <span class="phpdocumentor-element-found-in__line">557</span>
 
     </aside>
 
@@ -954,9 +1016,9 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <a href="classes/WA-Config-Core-Debugable.html#method_debug_exception_error_handler" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">529</span>
+    <span class="phpdocumentor-element-found-in__line">447</span>
 
     </aside>
 
@@ -1017,24 +1079,86 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_debug_routes">
+        debug_routes()
+        <a href="classes/WA-Config-Core-Debugable.html#method_debug_routes" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">511</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Return the current routes</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">debug_routes</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$full</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|string</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$full</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>array with full informations will be returned if true</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">global</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>$wp_rewrite Read rewrite rules from it</p>
+</section>
+
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|string</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>The debug trace in full or simple mode</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_debug_stream_notification_callback">
         debug_stream_notification_callback()
         <a href="classes/WA-Config-Core-Debugable.html#method_debug_stream_notification_callback" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">486</span>
+    <span class="phpdocumentor-element-found-in__line">412</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Dev in progress, not ready yet</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">debug_stream_notification_callback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$notification_code</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$severity</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$message</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$message_code</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bytes_transferred</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bytes_max</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1106,9 +1230,9 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <a href="classes/WA-Config-Core-Debugable.html#method_debug_trace" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">592</span>
+    <span class="phpdocumentor-element-found-in__line">500</span>
 
     </aside>
 
@@ -1153,9 +1277,9 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <a href="classes/WA-Config-Core-Debugable.html#method_debug_trace_wp_http_requests" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">572</span>
+    <span class="phpdocumentor-element-found-in__line">483</span>
 
     </aside>
 
@@ -1218,9 +1342,9 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <a href="classes/WA-Config-Core-Debugable.html#method_debugVerbose" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">651</span>
+    <span class="phpdocumentor-element-found-in__line">569</span>
 
     </aside>
 
@@ -1268,9 +1392,9 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <a href="classes/WA-Config-Core-Debugable.html#method_debugVeryVerbose" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">664</span>
+    <span class="phpdocumentor-element-found-in__line">581</span>
 
     </aside>
 
@@ -1311,52 +1435,6 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         class="phpdocumentor-element
             -method
             -public
-                                    -static                    "
->
-    <h4 class="phpdocumentor-element__name" id="method_decreasePluginLoadOrder">
-        decreasePluginLoadOrder()
-        <a href="classes/WA-Config-Core-AppInterface.html#method_decreasePluginLoadOrder" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">1355</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Decrease the plugin load order, to handle multiple plugins class load orderings</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">decreasePluginLoadOrder</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pluginName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$pluginName</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>$status 0 if fail, 1 if succed</p>
-</section>
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
                                                         "
 >
     <h4 class="phpdocumentor-element__name" id="method_e2e_test_action">
@@ -1364,9 +1442,9 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_test_action" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1692</span>
+    <span class="phpdocumentor-element-found-in__line">1352</span>
 
     </aside>
 
@@ -1379,11 +1457,32 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <section class="phpdocumentor-description"><p>Curl test</p>
 <pre class="prettyprint"><code class="language-bash">curl -v -d &quot;wa-action=wa-e2e-test-action&quot; &quot;https://web-agency.local.dev/e-commerce/wp-admin/admin-ajax.php?action=wa-e2e-test-action&quot;
 </code></pre>
-<p>cf e2e tests for usage examples on 'wa-e2e-test-action'</p>
+<p>To launch it for real, connect to wp-admin as administrator,
+go in Wa-config Review sub panel and click on the test launch link.</p>
+<p><strong>Be careful</strong> with <strong>test launch</strong>, always ensure your backup strategies
+since failling tests <strong>might mess</strong> up your website data or file or ...</p>
+<p>Indeed, all possible side effects depends of the tests you choose to write.</p>
+<p>cf e2e tests for some usage examples on 'wa-e2e-test-action'</p>
 </section>
 
     
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-E2E-E2E-EnsureAdminConfigPanelCest.html"><abbr title="\WA\Config\E2E\E2E_EnsureAdminConfigPanelCest">E2E_EnsureAdminConfigPanelCest</abbr></a></span>
+                                        
+                                                 <section class="phpdocumentor-description"><p>E2E_EnsureAdminConfigPanelCest</p>
+</section>
+
+                                    </dd>
+                        </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">void</span>
@@ -1402,9 +1501,9 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_test_authenticateTestUser" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1459</span>
+    <span class="phpdocumentor-element-found-in__line">1163</span>
 
     </aside>
 
@@ -1480,9 +1579,9 @@ we MUST call logoutTestUser on end</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_test_clean_and_restore_test_users" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1999</span>
+    <span class="phpdocumentor-element-found-in__line">1585</span>
 
     </aside>
 
@@ -1519,9 +1618,9 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_test_do_backup" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2284</span>
+    <span class="phpdocumentor-element-found-in__line">1763</span>
 
     </aside>
 
@@ -1587,9 +1686,9 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_test_download_last_backup" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2054</span>
+    <span class="phpdocumentor-element-found-in__line">1617</span>
 
     </aside>
 
@@ -1639,9 +1738,9 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_test_logoutTestUser" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1611</span>
+    <span class="phpdocumentor-element-found-in__line">1273</span>
 
     </aside>
 
@@ -1692,19 +1791,19 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_test_stream_notification_callback" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2700</span>
+    <span class="phpdocumentor-element-found-in__line">2057</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Dev in progress, not ready yet</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">e2e_test_stream_notification_callback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$notification_code</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$severity</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$message</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$message_code</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bytes_transferred</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bytes_max</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1776,27 +1875,28 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_access_hash_close" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1921</span>
+    <span class="phpdocumentor-element-found-in__line">1516</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Close an e2e test access and restore the regular website access</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e2e_tests_access_hash_close</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$accessHash</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e2e_tests_access_hash_close</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$accessHash</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$accessHash</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>Access hash used for test mode autentification</p>
+</section>
 
             </dd>
             </dl>
@@ -1804,7 +1904,7 @@ fails to restore users by themselves</p>
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type">void</span>
             &mdash;
         
     
@@ -1820,27 +1920,29 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_access_hash_open" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1818</span>
+    <span class="phpdocumentor-element-found-in__line">1443</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Open an e2e test access and return the corresponding access hash</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e2e_tests_access_hash_open</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doNotSendEmail</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e2e_tests_access_hash_open</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doNotSendEmail</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$doNotSendEmail</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>Optional, if true, will
+avoid real email expedition for all mailings, default true.</p>
+</section>
 
             </dd>
             </dl>
@@ -1848,9 +1950,11 @@ fails to restore users by themselves</p>
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type">string</span>
             &mdash;
-        
+            <section class="phpdocumentor-description"><p>Access hash used for test mode autentification</p>
+</section>
+
     
 </article>
                     <article
@@ -1864,27 +1968,32 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_emails_middleware" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1891</span>
+    <span class="phpdocumentor-element-found-in__line">1497</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Email middleware to prevent email expedition if requested by configuration</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e2e_tests_emails_middleware</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$email</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e2e_tests_emails_middleware</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$email</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
+        <section class="phpdocumentor-description"><p>We avoid email expedition if requested by the 'wa_e_config_e2e_tests_opts' option.</p>
+<p>We break the 'to' field to avoid expedition and
+allow regular logger to notify some emails activity</p>
+</section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$email</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>Incoming email that will be send</p>
+</section>
 
             </dd>
             </dl>
@@ -1908,9 +2017,9 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_filter_wp_die_callback" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1871</span>
+    <span class="phpdocumentor-element-found-in__line">1475</span>
 
     </aside>
 
@@ -1918,35 +2027,17 @@ fails to restore users by themselves</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e2e_tests_filter_wp_die_callback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$message</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$title</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$args</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e2e_tests_filter_wp_die_callback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">callable&nbsp;</span><span class="phpdocumentor-signature__argument__name">$function</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$message</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                <span class="phpdocumentor-signature__argument__name">$function</span>
+                : <span class="phpdocumentor-signature__argument__return-type">callable</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Error message.</p>
-</section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$title</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Optional. Error title (unused). Default empty.</p>
-</section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$args</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">array()</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Optional. Arguments to control behavior. Default empty array.</p>
+                    <section class="phpdocumentor-description"><p>Callback function name.</p>
 </section>
 
             </dd>
@@ -1994,27 +2085,28 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_e2e_tests_validate_access_hash" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1958</span>
+    <span class="phpdocumentor-element-found-in__line">1553</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Validate an e2e test access</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e2e_tests_validate_access_hash</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$accessHash</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e2e_tests_validate_access_hash</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$accessHash</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$accessHash</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>Access hash used for test mode autentification</p>
+</section>
 
             </dd>
             </dl>
@@ -2022,9 +2114,12 @@ fails to restore users by themselves</p>
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;</span>
             &mdash;
-        
+            <section class="phpdocumentor-description"><p>Access informations if $accessHash authorised,
+false otherwise</p>
+</section>
+
     
 </article>
                     <article
@@ -2038,9 +2133,9 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-Debugable.html#method_err" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">614</span>
+    <span class="phpdocumentor-element-found-in__line">537</span>
 
     </aside>
 
@@ -2081,6 +2176,39 @@ fails to restore users by themselves</p>
         class="phpdocumentor-element
             -method
             -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_exit">
+        exit()
+        <a href="classes/WA-Config-Core-AppInterface.html#method_exit" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">1478</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">exit</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
                                     -static                    "
 >
     <h4 class="phpdocumentor-element__name" id="method_getCompatibilityReports">
@@ -2088,9 +2216,9 @@ fails to restore users by themselves</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_getCompatibilityReports" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1292</span>
+    <span class="phpdocumentor-element-found-in__line">1025</span>
 
     </aside>
 
@@ -2101,8 +2229,8 @@ fails to restore users by themselves</p>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getCompatibilityReports</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;int, array&lt;string, string&gt;&gt;</span></code>
 
         <section class="phpdocumentor-description"><p>Reports are shown for admin user only, under the
-&quot;Parameter&quot; sub menu of &quot;WA Config&quot;
-<a href="classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_render_param_section"><abbr title="\WA\Config\Admin\EditableConfigPanels::e_admin_config_render_param_section()">EditableConfigPanels::e_admin_config_render_param_section()</abbr></a></p>
+&quot;Parameters&quot; sub menu of &quot;WA Config&quot;
+<a href="classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_param_render_panel"><abbr title="\WA\Config\Admin\EditableConfigPanels::e_config_param_render_panel()">EditableConfigPanels::e_config_param_render_panel()</abbr></a></p>
 </section>
 
     
@@ -2137,9 +2265,9 @@ Compatibility report</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_getMethodStatistics" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1437</span>
+    <span class="phpdocumentor-element-found-in__line">1142</span>
 
     </aside>
 
@@ -2190,9 +2318,9 @@ The method call counts statistics by iId</p>
         <a href="classes/WA-Config-Core-Debugable.html#method_info" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">603</span>
+    <span class="phpdocumentor-element-found-in__line">527</span>
 
     </aside>
 
@@ -2240,9 +2368,9 @@ The method call counts statistics by iId</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_instance" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1331</span>
+    <span class="phpdocumentor-element-found-in__line">1060</span>
 
     </aside>
 
@@ -2288,9 +2416,9 @@ called after children intitialisation of internal attributes</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_instanceByIId" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1412</span>
+    <span class="phpdocumentor-element-found-in__line">1119</span>
 
     </aside>
 
@@ -2342,14 +2470,14 @@ called after children intitialisation of internal attributes</p>
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_instanceByRelativePath">
-        instanceByRelativePath()
-        <a href="classes/WA-Config-Core-AppInterface.html#method_instanceByRelativePath" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_instanceByRelativeFile">
+        instanceByRelativeFile()
+        <a href="classes/WA-Config-Core-AppInterface.html#method_instanceByRelativeFile" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1394</span>
+    <span class="phpdocumentor-element-found-in__line">1102</span>
 
     </aside>
 
@@ -2357,7 +2485,7 @@ called after children intitialisation of internal attributes</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">instanceByRelativePath</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$index</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/WA-Config-Core-AppInterface.html"><abbr title="\WA\Config\Core\AppInterface">AppInterface</abbr></a></span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">instanceByRelativeFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$index</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/WA-Config-Core-AppInterface.html"><abbr title="\WA\Config\Core\AppInterface">AppInterface</abbr></a></span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -2401,9 +2529,9 @@ called after children intitialisation of internal attributes</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_isFirstMethodCall" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2759</span>
+    <span class="phpdocumentor-element-found-in__line">2103</span>
 
     </aside>
 
@@ -2462,9 +2590,9 @@ called after children intitialisation of internal attributes</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_lastInstance" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1381</span>
+    <span class="phpdocumentor-element-found-in__line">1091</span>
 
     </aside>
 
@@ -2495,9 +2623,9 @@ called after children intitialisation of internal attributes</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_loadPlugin" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2946</span>
+    <span class="phpdocumentor-element-found-in__line">2198</span>
 
     </aside>
 
@@ -2531,9 +2659,9 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
         <a href="classes/WA-Config-Core-Debugable.html#method_log" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">731</span>
+    <span class="phpdocumentor-element-found-in__line">646</span>
 
     </aside>
 
@@ -2598,9 +2726,9 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
         <a href="classes/WA-Config-Core-AppInterface.html#method_methodeCalledFrom" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2778</span>
+    <span class="phpdocumentor-element-found-in__line">2121</span>
 
     </aside>
 
@@ -2657,9 +2785,9 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
         <a href="classes/WA-Config-Core-Parallelizable.html#method_p_higherThanOneCallAchievedSentinel" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">353</span>
+    <span class="phpdocumentor-element-found-in__line">335</span>
 
     </aside>
 
@@ -2710,9 +2838,9 @@ to ajust method call counts.</p>
         <a href="classes/WA-Config-Core-Translatable.html#method_t_loadTextdomains" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1196</span>
+    <span class="phpdocumentor-element-found-in__line">956</span>
 
     </aside>
 
@@ -2726,6 +2854,20 @@ WordPress load_plugin_textdomain function</p>
     
     
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-Core-Translatable.html#property_waConfigTextDomain"><abbr title="\WA\Config\Core\Translatable::$waConfigTextDomain">Translatable::$waConfigTextDomain</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                        </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">void</span>
@@ -2744,9 +2886,9 @@ WordPress load_plugin_textdomain function</p>
         <a href="classes/WA-Config-Core-AppInterface.html#method_uIdx" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1371</span>
+    <span class="phpdocumentor-element-found-in__line">1082</span>
 
     </aside>
 
@@ -2782,9 +2924,9 @@ but will hold a progressive order number per call</p>
         <a href="classes/WA-Config-Core-Debugable.html#method_warn" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">626</span>
+    <span class="phpdocumentor-element-found-in__line">547</span>
 
     </aside>
 

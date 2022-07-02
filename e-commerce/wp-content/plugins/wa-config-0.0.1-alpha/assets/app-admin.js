@@ -5,10 +5,12 @@
 var jQuery;
 
 (function(window, document, $, undefined){
+    var iid = $('#wa_e_review_settings_form_key_wa_instance_iid').val();
     function suggestFactory(selector, query, defaultOpts = {}) {
         // TODO unit speed test bench with ? : https://code.tutsplus.com/tutorials/enhancing-the-search-form-with-typeaheadjs--wp-30844
         var target = $(selector);
-        return target.length ? target.suggest(window.ajaxurl + query, {
+        return target.length ? target.suggest(window.ajaxurl
+        + query + "&wa-iid=" + iid, {
             // https://stackoverflow.com/questions/30128805/is-is-possible-to-override-a-suggest-js-function-in-wordpress
             delay: 500, minchars: 1,
             // onSelect: function() { do_something(this.value);},
@@ -18,6 +20,7 @@ var jQuery;
 
     var waConfigAdmin = {
         init: function() {
+            // TODO : find a way to remove those 'ID' targeting, and be generic on form model...
             suggestFactory(
                 '.wa-suggest-blog-category',
                 "?action=ajax-tag-search&tax=category",
@@ -49,13 +52,18 @@ var jQuery;
                 {multiple:false}
             );
             suggestFactory(
-                '#wa_config_e_admin_config_review_opts_wa_review_requirements',
+                '#wa_e_config_review_opts_wa_review_requirements',
                 "?action=wa-list-review-data-by-key&key=requirements",
                 {multiple:false}
             );
             suggestFactory(
                 '.wa-suggest-list-review-data-by-value',
                 "?action=wa-list-review-data-by-key&key=value",
+                {multiple:false}
+            );
+            suggestFactory(
+                '.wa-suggest-list-api-frontheads',
+                "?action=wa-suggest-frontheads",
                 {multiple:false}
             );
             
@@ -70,6 +78,10 @@ var jQuery;
                 };
             });
             
+            // Hide hidden fields
+            $('[name^=wa_e_review][type=hidden], '
+            + '[name^=wa_e_config][type=hidden]')
+            .parents('tr').hide();
         }
     };
     

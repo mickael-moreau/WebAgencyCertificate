@@ -72,20 +72,6 @@
     <a href="packages/waConfig.html" class="">waConfig</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerceTemplates.html" class="">WooCommerceTemplates</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerce.html" class="">WooCommerce</a>
-</h4>
-    <ul class="phpdocumentor-list">
-                    <li>
-                <a href="packages/WooCommerce-Templates.html" class="">Templates</a>
-                
-            </li>
-            </ul>
-
                         </section>
             
     <section class="phpdocumentor-sidebar__category">
@@ -114,13 +100,13 @@
     </h2>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8678</span>
+    <span class="phpdocumentor-element-found-in__line">6989</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">This trait will allow to move wa-config plugins load orders</p>
+            <p class="phpdocumentor-summary">This trait will instanciate the &#039;wa-config&#039; REST API and the related auth system</p>
 
 
 
@@ -176,6 +162,27 @@
 
 <dl class="phpdocumentor-table-of-contents">
                         <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_admin_delete_all_api_access">api_inst_admin_delete_all_api_access()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Delete all access tokens for wa-config rest api access</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_load_parameters">api_inst_load_parameters()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Load ApiInstanciable parameters from the targeted $request</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_parse_request">api_inst_parse_request()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Adding root secu request &#039;/api-wa-config-nonce-rest&#039; to website base url</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_rest_check_auth_errors">api_inst_rest_check_auth_errors()</a>
     <span>
                                 &nbsp;: <abbr title="\WP_Error">WP_Error</abbr>|mixed|bool    </span>
@@ -185,16 +192,16 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_rest_init">api_inst_rest_init()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: void    </span>
 </dt>
 <dd>Init wa-config instanciable routings</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_run_action">api_inst_run_action()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: <abbr title="\WP_REST_Response">WP_REST_Response</abbr>|<abbr title="\WP_Error">WP_Error</abbr>    </span>
 </dt>
-<dd>Will handle an api instanciable action call</dd>
+<dd>Will run an api instanciable action call</dd>
 
         </dl>
 
@@ -213,14 +220,167 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_api_inst_admin_delete_all_api_access">
+        api_inst_admin_delete_all_api_access()
+        <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_admin_delete_all_api_access" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">7102</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Delete all access tokens for wa-config rest api access</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">api_inst_admin_delete_all_api_access</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+        <section class="phpdocumentor-description"><p>Usable as an Ajax call from wp-admin js scripts</p>
+</section>
+
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_api_inst_load_parameters">
+        api_inst_load_parameters()
+        <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_load_parameters" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">7232</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Load ApiInstanciable parameters from the targeted $request</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">api_inst_load_parameters</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|<abbr title="\WP_REST_Request">WP_REST_Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+        <section class="phpdocumentor-description"><p>Load class members [</p>
+<ul>
+<li>
+<strong>apiClientPreFetchToken</strong>
+</li>
+<li>
+<strong>apiClientUserLocation</strong>
+</li>
+<li>
+<strong>apiClientAccessId</strong>
+</li>
+</ul>
+<p>] From :</p>
+<ul>
+<li>
+<strong>wa_api_pre_fetch_token</strong> : Token used for the pre-fetch
+authentification system</li>
+<li>
+<strong>wa_user_location</strong> : A text string written by the API
+end user describing it's localisation</li>
+<li>
+<strong>wa_access_id</strong> : Access id used to validate authenticated
+REST API calls to wa-config</li>
+</ul>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$request</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|<abbr title="\WP_REST_Request">WP_REST_Request</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Request to check. Rest request
+or $_REQUEST object or similar</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_api_inst_parse_request">
+        api_inst_parse_request()
+        <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_parse_request" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">7027</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Adding root secu request &#039;/api-wa-config-nonce-rest&#039; to website base url</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">api_inst_parse_request</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\WP">WP</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$wp</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+        <section class="phpdocumentor-description"><p>REQUEST parameters <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_load_parameters"><abbr title="\WA\Config\Admin\ApiInstanciable::api_inst_load_parameters()">ApiInstanciable::api_inst_load_parameters()</abbr></a> :</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$wp</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\WP">WP</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Current WordPress environment instance (passed by reference).</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_api_inst_rest_check_auth_errors">
         api_inst_rest_check_auth_errors()
         <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_rest_check_auth_errors" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8905</span>
+    <span class="phpdocumentor-element-found-in__line">7187</span>
 
     </aside>
 
@@ -266,9 +426,9 @@ null if we should handle it, or another value if not.</p>
         <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_rest_init" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8851</span>
+    <span class="phpdocumentor-element-found-in__line">7129</span>
 
     </aside>
 
@@ -276,30 +436,30 @@ null if we should handle it, or another value if not.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">api_inst_rest_init</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">api_inst_rest_init</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"><p>Will add wa-config instanciable endpoints :</p>
-<ul>
-<li>'wp-json/wa-config/v1/instanciable/&lt; inst_action &gt;'
-Could be called like :
-<pre class="prettyprint"><code class="language-bash"># alias wa-curl=&quot;\curl -H 'X-WP-Nonce: a694f6566f' -A 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36' --cookie 'wp-settings-1=libraryContent=browse&amp;amp;ampampampampampampampampampampampampampampeditor=tinymce; wp-settings-time-1=1653178494; pll_language=fr; wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_0817c4fe6cb20c659452290ed095d268=demo@monwoo.com|1655702630|HTrDRKbZuXoJrZAATwedh0gu2ztxCiER6O1peWKPvEo|cf3011c0c80ccf2b9b9b3154b2cde50261c1bfdeb0c2ce2ddfc3287232814406; tk_ai=woo:75mVrf9kFRnlebYCmoJ+FxY/; __stripe_mid=53e6f721-e26d-49f0-8b4e-b226a03897b65dac6f; gt_auto_switch=1; intercom-id-r70azrgx=734e3279-ecd1-43e6-b33f-667eb66f061f; _ga=GA1.1.1262641617.1655360327; _ga_GY36PXDBHQ=GS1.1.1655360327.1.1.1655360666.0; PHPSESSID=hjt07ig3864k85td09gs86vfeh'&quot;
-alias wa-curl=&quot;\curl -H 'X-WP-Nonce: a694f6566f' --cookie 'wordpress_logged_in_0817c4fe6cb20c659452290ed095d268=demo@monwoo.com|1655702630|HTrDRKbZuXoJrZAATwedh0gu2ztxCiER6O1peWKPvEo|cf3011c0c80ccf2b9b9b3154b2cde50261c1bfdeb0c2ce2ddfc3287232814406; PHPSESSID=hjt07ig3864k85td09gs86vfeh'&quot;
-wa-curl &quot;https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/instanciable/showPluginsLoadOrder&quot;
-wa-curl &quot;https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/instanciable?inst_action=showPluginsLoadOrder&quot;
-wa-curl -d &quot;inst_action=showPluginsLoadOrder&quot; &quot;https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/instanciable/&quot;
-wa-curl &quot;https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/instanciable/decreasePluginLoadOrder?plugin_name=wa-config&quot;
-wa-curl -d &quot;inst_action=decreasePluginLoadOrder&quot; -d &quot;plugin_name=wa-config&quot; &quot;https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/instanciable&quot;
-wa-curl &quot;https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/instanciable/decreasePluginLoadOrder?plugin_name=wa-config&quot;
-</code></pre>
-</li>
-</ul>
+        <section class="phpdocumentor-description"><p>Will add wa-config instanciable endpoints and logs.</p>
 </section>
 
     
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_run_action"><abbr title="\WA\Config\Admin\ApiInstanciable::api_inst_run_action()">ApiInstanciable::api_inst_run_action()</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                        </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type">void</span>
             &mdash;
         
     
@@ -315,19 +475,21 @@ wa-curl &quot;https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/insta
         <a href="classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_run_action" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9258</span>
+    <span class="phpdocumentor-element-found-in__line">7471</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Will handle an api instanciable action call</p>
+        <p class="phpdocumentor-summary">Will run an api instanciable action call</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">api_inst_run_action</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\WP_REST_Request">WP_REST_Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">api_inst_run_action</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\WP_REST_Request">WP_REST_Request</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\WP_REST_Response">WP_REST_Response</abbr>|<abbr title="\WP_Error">WP_Error</abbr></span></code>
 
-    
+        <section class="phpdocumentor-description"><p>Nothing special for now. May be for next versions...</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -344,9 +506,11 @@ wa-curl &quot;https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/insta
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type"><abbr title="\WP_REST_Response">WP_REST_Response</abbr>|<abbr title="\WP_Error">WP_Error</abbr></span>
             &mdash;
-        
+            <section class="phpdocumentor-description"><p>Result of the action</p>
+</section>
+
     
 </article>
             </section>

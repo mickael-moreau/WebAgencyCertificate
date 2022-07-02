@@ -1,9 +1,19 @@
 <?php
 /**
+ * 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
+ * service@monwoo.com.
+ * 
+ * Template Name: wa-mission single page rendering
+ * 
  * The template for displaying all single posts.
  *
  * @see storefront
+ * 
+ * @since 0.0.1
+ * @package
+ * @author service@monwoo.com
  */
+//  waConfig\templates\themes
 
 get_header(); ?>
 

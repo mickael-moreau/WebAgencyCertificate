@@ -16,11 +16,12 @@
  * - Repeat with other user roles. Best directly by using the links/query string parameters.
  * - Repeat things for multisite. Once for a single site in the network, once sitewide.
  *
- * @link              https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo
- * @since             0.0.1
+ * @link 	https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en
+ * @link 	https://miguel.monwoo.com Miguel Monwoo R&D
+ * @link 	https://www.monwoo.com/don Author Donate link
+ * @since	0.0.1
  * @package
- * @filesource
- * @author service@monwoo.com
+ * @author 	service@monwoo.com
  **/
 
 // If uninstall not called from WordPress, then exit.

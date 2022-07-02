@@ -1,45 +1,90 @@
 <?php
-/*   __________________________________________________
-    |  Obfuscated by YAK Pro - Php Obfuscator  2.0.13  |
-    |              on 2022-06-22 18:51:31              |
-    |    GitHub: https://github.com/pk-fr/yakpro-po    |
-    |__________________________________________________|
-*/
-/*
-🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo, service@monwoo.com
-*/
-
+/**
+ * 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
+ * service@monwoo.com.
+ * 
+ * Build from researches and developpements done by Miguel Monwoo from 2011 to 2022.
+ *
+ * Wa-config is a Web Agency plugin ready
+ * to run **parrallel programming**
+ * with **advanced debug** and **end to end testing** tools.
+ * 
+ * {@see WA\Config\App} come with :
+ * - **Skills and missions** concepts ready to use as taxonomy and custom post type
+ * - **Internaionalisation** and **WooCommerce** integration
+ * - A **securised REST API** to deploy custom static front head
+ * - A **commonJS deploy script** to easyliy deploy your static frontend 
+ * - A **review system** for all team members using this plugin
+ * - **Codeception** as end to end test tool
+ * - **PhpDocumentor output** as an easy up to date documentation
+ * - **Pdf.js** for quick display of main documentation files
+ * - results of **Miguel Monwoo R&D** for **parallel programmings** and **advanced integrations**
+ * 
+ * {@link https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en Product owner}
+ *
+ * {@link https://codeception.com/docs/03-AcceptanceTests End to end test documentation}
+ *
+ * {@link https://github.com/mozilla/pdf.js PDF viewer lib}
+ * 
+ * @global *{@see \WA\Config\Core\AppInterface AppInterface}* **$_wa_fetch_instance**
+ *    Function to get the first wa-config instance
+ * 
+ *    **@param** *int* **$idx** Optional, wa-config instance index, **default to 0**
+ *    {@example
+ *    ```php
+ *    $app = $_wa_fetch_instance();
+ *    ```}
+ * 
+ * @link    https://miguel.monwoo.com Miguel Monwoo R&D
+ * @link    https://www.monwoo.com/don Author Donate link
+ * @since   0.0.1
+ * @package
+ * @author  service@monwoo.com
+ */
 namespace {
     use WA\Config\Core\AppInterface;
     require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
     require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
     require_once ABSPATH . 'wp-admin/includes/file.php';
     if (!defined('WPINC')) {
-        exit;
+        exit; 
     }
-    global $_wa_fetch_instance;
-    $_wa_fetch_instance = function () {
-        return AppInterface::instance();
-    };
     if (!function_exists(_wa_e2e_tests_wp_die_handler::class)) {
-        function _wa_e2e_tests_wp_die_handler($message, $title = '', $args = array())
-        {
+        /**
+         * Avoid WordPress killing execution for end to end test run
+         *
+         * @since 0.0.1
+         * @access private
+         *
+         * @param string       $message Error message.
+         * @param string       $title   Optional. Error title (unused). Default empty.
+         * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
+         */
+        function _wa_e2e_tests_wp_die_handler( $message, $title = '', $args = array() ) {
             $inst = AppInterface::instance();
-            $inst->debug("Will _wa_e2e_tests_wp_die_handler '{$message}' {$title}");
-            $inst->debugVeryVerbose("At :", $inst->debug_trace());
+            $inst->debug(
+                "Will _wa_e2e_tests_wp_die_handler '$message' $title",
+            );
+            $inst->debug(
+                "At :",
+                $inst->debug_trace(),
+            );
             $inst->debugVeryVerbose(" with :", $args);
         }
     }
 }
 namespace WA\Config\Core {
     use function WA\Config\Utils\strEndsWith;
+    use function WA\Config\Utils\wa_filesystem;
     use Exception;
+    use QueryMonitor;
     use RecursiveDirectoryIterator;
     use RecursiveIteratorIterator;
     use WA\Config\Admin\Notice;
     use WA\Config\Admin\EditableConfigPanels;
-    use WA\Config\Admin\OptiLvl;
-    use WA\Config\Frontend\EditableFooter;
+    use WA\Config\Admin\OptiLvl; 
+    use WA\Config\Admin\EditableReview; 
+    use WA\Config\Frontend\EditableFooter; 
     use WA\Config\Utils\DumpGzip;
     use WA\Config\Utils\DumpPlainTxt;
     use WA\Config\Utils\InsertSqlStatement;
@@ -47,71 +92,218 @@ namespace WA\Config\Core {
     use WP_Filesystem_Direct;
     use wpdb;
     use ZipArchive;
-    if (!class_exists(WPFilters::class)) {
-        class WPFilters
-        {
-            const wa_config_e_footer_render = 'wa_config_e_footer_render';
-            const wa_config_reviews_ids_to_trash = 'wa_config_reviews_ids_to_trash';
+    if (!class_exists(WPFilters::class)) { 
+        /**
+         * This class register all wa-config WordPress filters like an ENUM
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        class WPFilters {
+            /**
+             * Filters the HTML Editable footer rendered by wa-config package 
+             *
+             * **@param** *string*        **$htmlFooter**  The HTML that will be rendered 
+             * for the footer
+             * 
+             * **@param** *{@see AppInterface}*   **$instance**    The {@see AppInterface} 
+             * that is currently configuring the footer to render.
+             * 
+             * **@return** *string*       The HTML that will be rendered
+             * 
+             * @see EditableFooter::e_footer_render()
+             * @since 0.0.1
+             */
+            const wa_e_footer_render = 'wa_e_footer_render';
+            /**
+             * Filters the reviews fixed_id to trash at the end of the base review
+             *
+             * **@param** *string[]*      **$idsToTrash**  The 'fixed_id' that will be 
+             * trashed if present
+             * 
+             * **@param** *{@see AppInterface}*  **$instance**    The {@see AppInterface} 
+             * plugin instance
+             * 
+             * **@return** *string[]*     The 'fixed_id' that will be trashed
+             * 
+             * @see EditableReview::e_review_data_add_base_review()
+             * @since 0.0.1
+             */
+            const wa_review_ids_to_trash = 'wa_review_ids_to_trash';
+            /**
+             * Filters the IP used by protected functions of wa-config
+             *
+             * **@param** *string*    **$ip**  The computed IP
+             * 
+             * **@return** *string*   The filtered IP
+             *
+             * @since 0.0.1
+             */
+            const wa_get_ip = 'wa_get_ip';
         }
     }
-    if (!class_exists(WPActions::class)) {
-        class WPActions
-        {
-            const wa_ac_render_after_parameters = 'wa_ac_render_after_parameters';
+    if (!class_exists(WPActions::class)) { 
+        /**
+         * This class register all wa-config WordPress actions like an ENUM
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        class WPActions {
+            /**
+             * Fire after admin config parameters panel renderings.
+             *
+             * @since 0.0.1
+             * @see EditableConfigPanels::e_config_param_render_panel()
+             *
+             * @param AppInterface $app the plugin instance.
+             */
+            const wa_ecp_render_after_parameters = 'wa_ecp_render_after_parameters';
+            /**
+             * Fire **before** base review is computed for the review panel.
+             * 
+             * This action can be used to add more 
+             * e_review_data_check_insert to the base review.
+             *
+             * @since 0.0.1
+             * @see EditableReview::e_review_data_add_base_review()
+             * 
+             * @param AppInterface $app the plugin instance.
+             */
             const wa_do_base_review_preprocessing = 'wa_do_base_review_preprocessing';
+            /**
+             * Fire **after** base review is computed for the review panel.
+             * 
+             * This action can be used to add more 
+             * e_review_data_check_insert to the base review.
+             *
+             * @since 0.0.1
+             * @see EditableReview::e_review_data_add_base_review()
+             *
+             * @param AppInterface $app the plugin instance.
+             */
             const wa_do_base_review_postprocessing = 'wa_do_base_review_postprocessing';
         }
     }
-    if (!trait_exists(Identifiable::class)) {
+    if (!trait_exists(Identifiable::class)) { 
+        /**
+         * This trait will provide the loaded plugin information 
+         * and instance identifiers
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         trait Identifiable
         {
+            /**
+             * Current instance prefix
+             * @var string
+             */
             public $iPrefix = "wa-i";
+            /**
+             * Current instance id
+             * @var string
+             */
             public $iId = null;
+            /**
+             * Current instance index (follow class constructor calls order)
+             * @var int
+             */
             public $iIndex = null;
+            /**
+             * Current instance index for current pluginRelativeFile
+             * 
+             * Follow class constructor calls order indexed by pluginRelativeFile value
+             * 
+             * @var int
+             */
+            public $iRelativeIndex = null;            
+            /**
+             * Plugin name only
+             * @var string
+             */
             public $pluginName = "";
-            public $pluginRelativePath = "";
+            /**
+             * Plugin relative path from WordPress root folder
+             * @var string
+             */
+            public $pluginRelativeFile = "";
+            /**
+             * Current plugin version
+             * @var string
+             */
             public $pluginVersion = "";
+            /**
+             * Current site base url for this plugin instance
+             * @var string
+             */
             protected $siteBaseHref = "";
+            /**
+             * Full plugin file path of this plugin instance
+             * @var string
+             */
             protected $pluginFile = "";
+            /**
+             * Full plugin root folder path of this plugin instance
+             * @var string
+             */
             public $pluginRoot = "";
+            /**
+             * Test if current script is called from Comand Line Interface
+             * @return bool True if command is launched from cli
+             */
             function is_cli()
             {
-                if (defined('STDIN')) {
+                if( defined('STDIN') ) {
                     return true;
                 }
-                return empty($_SERVER['REMOTE_ADDR']) && !isset($_SERVER['HTTP_USER_AGENT']) && count($_SERVER['argv']) > 0;
+                return empty($_SERVER['REMOTE_ADDR'])
+                && !isset($_SERVER['HTTP_USER_AGENT'])
+                && count($_SERVER['argv']) > 0;
             }
-            protected function get_user_ip($anonymize = true, $traceLog = false)
-            {
+            /**
+             * @see WPFilters::wa_get_ip
+             */
+            protected function get_user_ip($anonymize = true, $traceLog = false) {
                 $ip = "#IP-NOT-FOUND-ERROR#";
-                if ($this->is_cli()) {
-                    $ip = $_SERVER['SERVER_ADDR'] ?? $_SERVER['REMOTE_ADDR'] ?? $_SERVER['argv'][0];
+                if ( $this->is_cli() ) {
+                    $ip = $_SERVER['SERVER_ADDR'] 
+                    ?? $_SERVER['REMOTE_ADDR'] ?? 
+                    $_SERVER['argv'][0];
                 }
-                if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+                if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
                     $ip = $_SERVER['HTTP_CLIENT_IP'];
-                } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                } elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
                     $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
                 } else {
                 }
                 if ($anonymize) {
-                    $ip = preg_replace(['/\\.\\d*$/', '/[\\da-f]*:[\\da-f]*$/'], ['.XXX', 'XXXX:XXXX'], $ip);
+                    $ip = preg_replace(
+                        ['/\.\d*$/', '/[\da-f]*:[\da-f]*$/'],
+                        ['.XXX', 'XXXX:XXXX'],
+                        $ip
+                    );
                 }
-                return apply_filters('wa_get_ip', $ip);
+                /**
+                 * @see WPFilters::wa_get_ip
+                 */
+                return apply_filters( WPFilters::wa_get_ip, $ip );
             }
-            protected function fetch_review_key_id(&$checkpoint)
-            {
+            /**
+             * Will return the key id and set the 'fixed_id' attribut if not already fixed
+             */
+            protected function fetch_review_key_id( & $checkpoint) {
                 if ($checkpoint['fixed_id']) {
                     return $checkpoint['fixed_id'];
                 }
                 $catSlug = sanitize_title($checkpoint['category']);
                 $titleSlug = sanitize_title($checkpoint['title']);
-                $keyId = "{$catSlug}-{$titleSlug}-{$checkpoint['created_by']}-{$checkpoint['create_time']}";
+                $keyId = "$catSlug-$titleSlug-{$checkpoint['created_by']}-{$checkpoint['create_time']}";
                 $checkpoint['fixed_id'] = $keyId;
                 return $keyId;
             }
-            protected function get_backup_folder()
-            {
-                $bckupFolder = wp_upload_dir()['basedir'] . "/plugins/{$this->pluginName}";
+            protected function get_backup_folder() {
+                $bckupFolder = wp_upload_dir()['basedir'] . "/plugins/{$this->pluginName}" ;
                 if (!file_exists($bckupFolder)) {
                     mkdir($bckupFolder, 0777, true);
                 }
@@ -119,54 +311,111 @@ namespace WA\Config\Core {
             }
         }
     }
-    if (!trait_exists(Parallelizable::class)) {
+    if (!trait_exists(Parallelizable::class)) { 
+        /**
+         * This trait will provide sentinels
+         * to handle parallelizable loads 
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         trait Parallelizable
         {
+            /**
+             * Sentinel will return false if aim is not reached, true otherwise.
+             * 
+             * This sentinel will also call {@see AppInterface::methodeCalledFrom()}
+             * to ajust method call counts.
+             * 
+             * @param string $methodeName A methode name to test and update 
+             * @return boolean
+             * - return true for first call
+             * - return false for all next ones
+             */
             public function p_higherThanOneCallAchievedSentinel($methodeName)
             {
                 $isFirstCall = $this->isFirstMethodCall($methodeName);
                 $this->methodeCalledFrom($methodeName);
                 $sentinelAdvice = !$isFirstCall;
                 if ($sentinelAdvice) {
-                    $this->debugVerbose("Sentinel higherThanOneCallAchieved reached for {$methodeName} called by {$this->iId}");
+                    $this->debugVerbose(
+                        "higherThanOneCallAchievedSentinel reached for '$methodeName' called by {$this->iId}"
+                    );
                 }
                 return $sentinelAdvice;
             }
         }
     }
-    if (!trait_exists(Debugable::class)) {
+    if (!trait_exists(Debugable::class)) { 
+        /**
+         * This trait will provide log output method
+         * ready to debug parallel loads of same plugin
+         * 
+         * Ready to use as ($msg, ...$ctx) :
+         * - info, warn, err
+         * - debug, debugVerbose, debugVeryVerbose
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Parallelizable
+         * @uses Identifiable
+         */
         trait Debugable
         {
+            use Parallelizable;
             use Identifiable;
             protected $shouldDebug = false;
             protected $shouldDebugVerbose = false;
             protected $shouldDebugVeryVerbose = false;
-            protected function _000_debug__bootstrap()
-            {
+            protected function _000_debug__bootstrap() {
                 if (!$this->shouldDebug) {
                     return;
                 }
-                error_reporting(E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_RECOVERABLE_ERROR | E_STRICT);
+                error_reporting( 
+                    E_CORE_ERROR |
+                    E_CORE_WARNING |
+                    E_COMPILE_ERROR |
+                    E_ERROR |
+                    E_WARNING |
+                    E_PARSE |
+                    E_USER_ERROR |
+                    E_USER_WARNING |
+                    E_RECOVERABLE_ERROR |
+                    E_STRICT
+                );
                 if (!defined('WC_ABSPATH')) {
                     ini_set("log_errors", 1);
                     $logPath = ABSPATH . "wp-content/debug.log";
                     ini_set("error_log", $logPath);
                 }
-                if ($this->shouldDebug && $this->shouldDebugVerbose) {
+                if ($this->shouldDebug
+                && $this->shouldDebugVerbose) {
                     set_error_handler([$this, "debug_exception_error_handler"]);
                 }
-                $default_opts = array('http' => array('notification' => [$this, 'debug_stream_notification_callback']), 'https' => array('notification' => [$this, 'debug_stream_notification_callback']));
+                $default_opts = array(
+                    'http'=>array(
+                        'notification' => [$this, 'debug_stream_notification_callback'] 
+                    ),
+                    'https'=>array(
+                        'notification' => [$this, 'debug_stream_notification_callback'] 
+                    )
+                );
                 $default = stream_context_set_default($default_opts);
+                if ($this->p_higherThanOneCallAchievedSentinel('_000_debug__bootstrap')) {
+                    return; 
+                }
                 add_filter('pre_http_request', [$this, 'debug_trace_wp_http_requests'], 10, 3);
             }
-            public function debug_stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max)
-            {
-                $this->debug("Detect {$message_code} HTTP stream Call to : {$message}");
+            /**
+             * Dev in progress, not ready yet
+             */
+            public function debug_stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max) {
+                $this->debug("Detect {$message_code} HTTP stream Call to : $message");
                 if (STREAM_NOTIFY_REDIRECTED === $notification_code) {
-                    $this->debug("Detect {$message_code} HTTP stream Call to : {$message}");
+                    $this->debug("Detect {$message_code} HTTP stream Call to : $message");
                 }
                 return;
-                switch ($notification_code) {
+                switch($notification_code) {
                     case STREAM_NOTIFY_RESOLVE:
                     case STREAM_NOTIFY_AUTH_REQUIRED:
                     case STREAM_NOTIFY_COMPLETED:
@@ -192,69 +441,162 @@ namespace WA\Config\Core {
                 }
                 echo "\n";
             }
-            public function debug_exception_error_handler($severity, $message, $file, $line)
-            {
+            /**
+             * Error Handler used with native PHP set_error_handler()
+             */
+            public function debug_exception_error_handler($severity, $message, $file, $line) {
                 $self = $this;
                 $firstFile = "";
                 $stackTrace = $this->debug_trace(true);
                 array_shift($stackTrace);
-                $internalStackTrace = array_filter($stackTrace, function ($t) use($self, &$firstFile) {
-                    $f = $t['file'];
+                $internalStackTrace = array_filter($stackTrace, function($t)
+                use ($self, & $firstFile) {
+                    $f = $t['file'] ?? "Unknown file";
+                    $l = $t['line'] ?? "--";
                     $isFromPlugin = false !== strpos($f, $this->pluginRoot);
                     if (!strlen($firstFile) && $isFromPlugin) {
-                        $firstFile = "{$t['file']}:{$t['line']}";
+                        $firstFile = "$f:$l";
                     }
                     return $isFromPlugin;
                 });
-                $this->debugVerbose("[{$severity}] {$message} at {$file}:{$line} from {$firstFile}");
-                if (E_WARNING === $severity || E_NOTICE === $severity) {
-                    $this->warn("{$message}", "{$stackTrace[0]['file']}:{$stackTrace[0]['line']}", ["{$stackTrace[1]['function']}" => $stackTrace[1]['args']], $this->debug_trace());
+                $this->debugVerbose("[$severity] $message at $file:$line from $firstFile"); 
+                if ((E_WARNING === $severity || E_NOTICE === $severity)
+                ) {
+                    $file = ($stackTrace[0]['file'] ?? "Unknow file")
+                    . ":" . ($stackTrace[0]['line'] ?? "--");
+                    $this->warn(
+                        "$message",
+                        "$file",
+                        ["{$stackTrace[1]['function']}" => $stackTrace[1]['args']],
+                        $this->debug_trace()
+                    );
                 }
             }
-            public function debug_trace_wp_http_requests($preempt, $parsed_args, $url)
-            {
-                $this->debug("Detect {$parsed_args['method']} HTTP Call to : {$url}");
+            /**
+             * Add debug log about WordPress PHP internal HTTP requests
+             * 
+             * @param false|array|WP_Error  $preempt     A preemptive return value of an HTTP request. Default false.
+             * @param array                 $parsed_args HTTP request arguments.
+             * @param string                $url         The request URL.
+             * @return false|array|WP_Error The new preemptive return value
+             */
+            public function debug_trace_wp_http_requests($preempt, $parsed_args, $url) {
+                $this->debug("Detect {$parsed_args['method']} HTTP Call to : $url");
                 $e = new Exception("debug_trace_wp_http_requests trace callstack");
                 $this->debugVeryVerbose("debug_trace_wp_http_requests Call stack", "\n" . $e->getTraceAsString());
-                $this->debugVeryVerbose("debug_trace_wp_http_requests details {$url}", ["preempt" => $preempt, "http_args" => $parsed_args, "full_trace" => $e->getTrace()]);
+                $this->debugVeryVerbose("debug_trace_wp_http_requests details $url", [
+                    "preempt" => $preempt,
+                    "http_args" => $parsed_args,
+                    "full_trace" => $e->getTrace(),
+                ]);
                 return $preempt;
             }
-            public function debug_trace($full = false)
-            {
+            /**
+             * Return the current debug trace
+             * 
+             * @param bool  $full  array with full informations will be returned if true
+             * @return array|string The debug trace in full or simple mode
+             */
+            public function debug_trace($full = false) {
                 $e = new Exception("debug_trace callstack");
                 return $full ? $e->getTrace() : "\n" . $e->getTraceAsString();
             }
-            public function info(string $msg, ...$ctx) : void
+            /**
+             * Return the current routes
+             * 
+             * @param bool  $full  array with full informations will be returned if true
+             * @return array|string The debug trace in full or simple mode
+             * @global $wp_rewrite Read rewrite rules from it
+             */
+            public function debug_routes($full = false) {
+                global $wp_rewrite; 
+                return "[REST]" . implode(
+                    "\n[REST] ",
+                    array_keys(rest_get_server()->get_routes() ?? [])
+                ) . "\n[WP]" . implode(
+                    "\n[WP] ",
+                    array_keys($wp_rewrite->rules ?? [])
+                );
+            }
+            /**
+             * Log an info message and it's optionnal context.
+             * 
+             * @param string $msg
+             * @param mixed $ctx
+             */
+            public function info(string $msg, ...$ctx): void
             {
                 $this->log('info', $msg, ...$ctx);
             }
-            public function err(string $msg, ...$ctx) : void
+            /**
+             * Log an error message and it's optionnal context.
+             * 
+             * @param string $msg
+             * @param mixed $ctx
+             */
+            public function err(string $msg, ...$ctx): void
             {
                 $this->log('error', $msg, ...$ctx);
             }
-            public function warn(string $msg, ...$ctx) : void
+            /**
+             * Log a warning message and it's optionnal context.
+             * 
+             * @param string $msg
+             * @param mixed $ctx
+             */
+            public function warn(string $msg, ...$ctx): void
             {
                 $this->log('warning', $msg, ...$ctx);
             }
-            public function debug(string $msg, ...$ctx) : void
+            /**
+             * Log a debug message and it's optionnal context.
+             * 
+             * @param string $msg
+             * @param mixed $ctx
+             */
+            public function debug(string $msg, ...$ctx): void
             {
                 if ($this->shouldDebug) {
                     $this->log('debug', $msg, ...$ctx);
                 }
             }
-            public function debugVerbose(string $msg, ...$ctx) : void
+            /**
+             * Log a verbose debug message and it's optionnal context.
+             * 
+             * @param string $msg
+             * @param mixed $ctx
+             */
+            public function debugVerbose(string $msg, ...$ctx): void
             {
                 if ($this->shouldDebugVerbose) {
                     $this->debug($msg, ...$ctx);
                 }
             }
-            public function debugVeryVerbose(string $msg, ...$ctx) : void
+            /**
+             * Log a very verbose debug message and it's optionnal context.
+             * 
+             * @param string $msg
+             * @param mixed $ctx
+             */
+            public function debugVeryVerbose(string $msg, ...$ctx): void
             {
                 if ($this->shouldDebugVeryVerbose) {
                     $this->debug($msg, ...$ctx);
                 }
             }
-            public function assert(bool $test, string $msg, ...$ctx) : bool
+            /**
+             * Assert a test is valid and log correponding message if not.
+             * 
+             * If shouldDebug is true, it will throw an \Exception()
+             * with the corresponding message.
+             * 
+             * @param boolean $test
+             * @param string $msg
+             * @param mixed $ctx
+             * @return bool Test result if did not throw
+             * @throws \Exception Throw exception if shouldDebug is enabled
+             */
+            public function assert(bool $test, string $msg, ...$ctx): bool
             {
                 if (!$this->assertLog($test, $msg, ...$ctx)) {
                     if ($this->shouldDebug) {
@@ -263,16 +605,45 @@ namespace WA\Config\Core {
                 }
                 return $test;
             }
-            public function assertLog(bool $test, string $msg, ...$ctx) : bool
-            {
+            /**
+             * Assert a test is valid and log correponding message if not.
+             * 
+             * Only doing warning log on failure
+             * 
+             * @param mixed $test
+             * @param string $msg
+             * @param mixed $ctx
+             * @return bool $ctx
+             */
+            public function assertLog($test, string $msg, ...$ctx): bool {
                 if (!$test) {
-                    $this->warn("[Assert FAIL] {$msg}", ...$ctx);
+                    $this->warn("[Assert FAIL] $msg", ...$ctx);
                 }
-                return $test;
+                return !!$test;
             }
-            protected $pIdSuffix = ["-", "^", "*", "!", "?", "&", "@"];
-            protected static $_pIdToSuffix = [];
-            public function log($tags, string $msg, ...$ctx) : void
+            protected $pIdSuffix = [
+                "-",
+                "^",
+                "*",
+                "!",
+                "?",
+                "&",
+                "@",
+            ];
+            static protected $_pIdToSuffix = []; 
+            /**
+             * Log message and context by tags.
+             * 
+             * 
+             * @param string|array<int, string> $tags
+             * Tags can be :
+             * - one tag string
+             * - string list of tags with commas separator
+             * - and array of string tags
+             * 
+             * @param string $msg Message to log 
+             */
+            public function log($tags, string $msg, ...$ctx): void
             {
                 if (is_string($tags)) {
                     $tags = explode(',', $tags);
@@ -288,216 +659,539 @@ namespace WA\Config\Core {
                     $pSuffix = $randL() . $randL();
                     self::$_pIdToSuffix[$pId] = $pSuffix;
                 }
-                $msg = "#{$pId}{$pSuffix}[{$this->iId}]{$tagsPrompt} {$msg}";
-                if (defined('WC_ABSPATH')) {
+                $msg = "#$pId{$pSuffix}[{$this->iId}]$tagsPrompt $msg";
+                if (defined('WC_ABSPATH') && function_exists( 'wp_hash' )) {
                     if (!function_exists('wc_get_logger')) {
+                        /**
+                         * Require missing wc_get_logger function
+                         */
                         include_once WC_ABSPATH . 'includes/wc-core-functions.php';
                     }
-                    $logger = wc_get_logger();
+                    $logger = wc_get_logger(); 
                     $logger->log($tags[0], $msg, $ctx);
                 }
-                $logPath = ABSPATH . "wp-content/debug.log";
-                $timePrompt = date_i18n('m-d-Y @ H:i:s');
-                $msg = "[{$timePrompt}] {$msg}";
-                if (count($ctx)) {
-                    error_log($msg . " " . print_r($ctx, true) . "\n", 3, $logPath);
-                } else {
-                    error_log($msg . "\n", 3, $logPath);
+                { 
+                    $logPath = ABSPATH . "wp-content/debug.log";
+                    $timePrompt = date_i18n( 'Y-m-d @O H:i:s' );
+                    $msg = "[$timePrompt] $msg"; 
+                    if (count($ctx)) {
+                        error_log($msg . " " . print_r($ctx, true) . "\n", 3, $logPath);
+                    } else {
+                        error_log($msg . "\n", 3, $logPath);
+                    }
+                }
+                if (class_exists(QueryMonitor::class)) {
+                    $tagMapToQM = [
+                        'info' => 'qm/info',
+                        'error' => 'qm/error',
+                        'warning' => 'qm/warning',
+                        'debug' => 'qm/debug',
+                    ];
+                    foreach (count($tags) ? $tags : [ 'qm/debug' ] as $tag) {
+                        $QMAction = $tagMapToQM[$tag] ?? 'qm/debug';
+                        do_action($QMAction, $msg, $ctx);
+                    }
                 }
             }
         }
     }
-    if (!trait_exists(Editable::class)) {
+    if (!trait_exists(Editable::class)) { 
+        /**
+         * This trait will provide common end user editable options for WA Config.
+         * 
+         * All WA Config options are registred under the prefixed $eConfOpt attributes
+         * 
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         trait Editable
         {
+            /**
+             * Should we enable the footer
+             */
             protected $eConfOptEnableFooter = 'wa_enable_footer';
+            /**
+             * Footer template to use
+             */
             protected $eConfOptFooterTemplate = 'wa_footer_template';
+            /**
+             * Footer credit to use if no footer_template provided
+             */
             protected $eConfOptFooterCredit = 'wa_footer_credit';
-            protected $eConfStaticHeadTarget = 'wa_static_head_target';
-            protected $eConfStaticHeadSafeWpKeeper = 'wa_static_head_target_safe_keeper';
+            /**
+             * Static head target folder for frontend renderigns
+             * 
+             * {@see EditableConfigPanels::_010_e_config__bootstrap()}
+             */
+            protected $eConfStaticHeadTarget = 'wa_static_wa_head_target';
+            /**
+             * Regular Expression used to keep some wordpress url safe from the rendered static front head
+             * 
+             * {@see EditableConfigPanels::_010_e_config__bootstrap()}
+             * 
+             */
+            protected $eConfStaticHeadSafeWpKeeper = 'wa_static_wa_head_target_safe_keeper';
+            /**
+             * Prefix to prepend to woo commerce order numbers rendering for billings etc...
+             */
             protected $eConfWooCommerceOrderPrefix = 'wa_woo_com_order_prefix';
+            /**
+             * Use plugin basic frontend style for frontend renderings
+             */
             protected $eConfShouldRenderFrontendScripts = 'wa_should_render_frontend_scripts';
+            /**
+             * Comma separated list of optimisation levels to use.
+             * {@see OptiLvl}
+             */
             protected $eConfOptOptiLevels = 'wa_optimisable_levels';
+            /**
+             * Regular Expression used to block WordPress HTTP Requests
+             * {@see Optimisable::opti_filter_wp_http_requests()}
+             * 
+             */
             protected $eConfOptOptiWpRequestsFilter = 'wa_optimisable_wp_http_request_filter';
+            /**
+             * Regular Expression used to whitelist WordPress HTTP Requests
+             * {@see Optimisable::opti_filter_wp_http_requests()}
+             * 
+             */
             protected $eConfOptOptiWpRequestsSafeFilter = 'wa_optimisable_wp_http_request_safe_filter';
-            protected $E_DEFAULT_OPTIMISABLE_SAFE_FILTER = '$(^https://)((web-agency.local.dev/)|(api.wordpress.org/(plugins)|(themes/info))|(downloads.wordpress.org/(plugin)|(theme)|(translation))|(translate.wordpress.com)|(woocommerce.com/wp-json/))$';
+            public $E_DEFAULT_OPTIMISABLE_SAFE_FILTER = '$(^https://)((web-agency.local.dev/)|(api.wordpress.org/(plugins)|(themes/info))|(downloads.wordpress.org/(plugin)|(theme)|(translation))|(translate.wordpress.com)|(woocommerce.com/wp-json/))$';
+            /**
+             * Should we send and admin notice on each blocked HTTP Requests
+             */
             protected $eConfOptOptiEnableBlockedHttpNotice = 'wa_optimisable_enable_blocked_http_notice';
+            /**
+             * Will enable a review report on each blocked HTTP Requests or frontend proxy 404 of the last 30 minutes
+             */
             protected $eConfOptOptiEnableBlockedReviewReport = 'wa_optimisable_enable_blocked_review_report';
+            /**
+             * List of acceptance test users
+             */
             protected $eConfOptATestsUsers = 'wa_acceptance_tests_users';
-            protected $E_DEFAULT_A_TESTS_USERS_LIST = "demo@monwoo.com,editor-wa@monwoo.com,client-wa@monwoo.com,demo-wrong@monwoo.com'demo-wrong@monwoo.com'";
+            public $E_DEFAULT_A_TESTS_USERS_LIST = "demo@monwoo.com,editor-wa@monwoo.com,client-wa@monwoo.com,demo-wrong@monwoo.com'demo-wrong@monwoo.com'";
+            /**
+             * Base url to test during the end to end test process
+             */
             protected $eConfOptATestsBaseUrl = 'wa_acceptance_tests_base_url';
+            /**
+             * Default config is 'administrator' level to launch test
+             * but you can change it if your tests are safe to use by
+             * others
+             */
             protected $eConfOptATestsRunForCabability = 'wa_acceptance_tests_r_capability';
+            /**
+             * Review category of the new checkpoint (review report) to add to review
+             */
             protected $eConfOptReviewCategory = 'wa_review_category';
+            /**
+             * Review category icon of the new checkpoint (review report) to add to review
+             */
             protected $eConfOptReviewCategoryIcon = 'wa_review_category_icon';
+            /**
+             * Review title of the new checkpoint (review report) to add to review
+             */
             protected $eConfOptReviewTitle = 'wa_review_title';
+            /**
+             * Review title icon of the new checkpoint (review report) to add to review
+             */
             protected $eConfOptReviewTitleIcon = 'wa_review_title_icon';
+            /**
+             * Review requirements of the new checkpoint (review report) to add to review
+             */
             protected $eConfOptReviewRequirements = 'wa_review_requirements';
+            /**
+             * Review value of the new checkpoint (review report) to add to review
+             */
             protected $eConfOptReviewValue = 'wa_review_value';
+            /**
+             * Review result of the new checkpoint (review report) to add to review
+             */
             protected $eConfOptReviewResult = 'wa_review_result';
+            /**
+             * Review access capability or role of the new checkpoint (review report) to add to review
+             */
             protected $eConfOptReviewAccessCapOrRole = 'wa_review_access_cap_or_role';
-            protected $eConfOptReviewIsActivated = 'wa_review_is_activated';
+            /**
+             * Review is activated status of the new checkpoint (review report) to add to review
+             */
+            protected $eConfOptReviewIsActivated = 'wa_review_is_activated';            
+            /**
+             * list of deleted reviews
+             */
             protected $eConfOptReviewsDeleted = 'wa_reviews_deleted';
+            /**
+             * list of current reviews by category by title
+             */
             protected $eConfOptReviewsByCategorieByTitle = 'wa_reviews_by_category_by_title';
-            protected $eConfOptReviewsInternalPreUpdateAction = 'wa_reviews_internal_pre_update_action';
         }
     }
-    if (!trait_exists(EditableWaConfigOptions::class)) {
+    if (!trait_exists(EditableWaConfigOptions::class)) { 
+        /**
+         * This trait will handle our wa-config options.
+         * 
+         * @see EditableWaConfigOptions::$eConfigOptsKey
+         *      Key used for WordPress get_option
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         trait EditableWaConfigOptions
         {
-            public $eAdminConfigOptsKey = 'wa_config_e_admin_config_opts';
-            public $eAdminConfigReviewOptsKey = 'wa_config_e_admin_config_review_opts';
-            public $eAdminConfigE2ETestsOptsKey = 'wa_config_e_admin_config_e2e_tests_opts';
-            public $oPluginLoadsMasterPathOptKey = 'wa_config_master_load_plugin_path_opt';
-            protected $eAdminConfigPageKey = 'wa-config-e-admin-config-param-page';
-            protected $eAdminConfigParamPageKey = 'wa-config-e-admin-config-param-page';
-            protected $eAdminConfigReviewPageKey = 'wa-config-e-admin-config-review-page';
-            protected $eAdminConfigDocPageKey = 'wa-config-e-admin-config-doc-page';
-            protected $eAdminConfigParamSettingsKey = 'wa-config-e-admin-config-param-section';
-            protected $eAdminConfigReviewSettingsKey = 'wa-config-e-admin-config-review-section';
-            protected $eAdminConfigOptsGroupKey = 'wa_config_e_admin_config_opts_group';
-            protected $eAdminConfigOptsReviewGroupKey = 'wa_config_e_admin_config_opts_review_group';
-            protected $eAdminConfigOpts = [];
+            /**
+             * eAdminConfigOptsKey is our main store key
+             * used for WordPress get_option and admin panel configs
+             * 
+             * @since 0.0.1
+             * @property-read $eConfigOptsKey the wa-config option Key for get_option
+             * @author service@monwoo.com
+             */
+            public $eConfigOptsKey = 'wa_e_config_opts';
+            /**
+             * eReviewSettingsFormKey is our admin panel 
+             * form input option key used for the review panel in wa-config
+             * 
+             * @since 0.0.1
+             * @property-read $eReviewSettingsFormKey the wa-config option Key for get_option
+             * @author service@monwoo.com
+             */
+            public $eReviewSettingsFormKey = 'wa_e_review_settings_form_key';
+            /**
+             * eAdminConfigE2ETestsOptsKey is our end to end tests
+             * store key for internal options and security
+             * 
+             * @since 0.0.1
+             * @property-read $eConfigE2ETestsOptsKey the wa-config option Key for get_option
+             * @author service@monwoo.com
+             */
+            public $eConfigE2ETestsOptsKey = 'wa_e_config_e2e_tests_opts';
+            /**
+             * oPluginLoadsMasterPathOptKey will store the path to the first plugin to load in case of // loads
+             * 
+             * @since 0.0.1
+             * @property-read $oPluginLoadsMasterPathOptKey the wa-config option Key for get_option
+             * @author service@monwoo.com
+             */
+            public $oPluginLoadsMasterPathOptKey = 'wa_orderable_plugin_load_master_path_opt';
+            protected $eConfigPageKey = 'wa-e-admin-config-param-page'; 
+            protected $eConfigParamPageKey = 'wa-e-admin-config-param-page';
+            protected $eConfigDocPageKey = 'wa-e-admin-config-doc-page';
+            protected $eConfigParamSettingsKey = 'wa-e-admin-config-param-section';
+            protected $eConfigOptsGroupKey = 'wa_e_config_opts_group'; 
+            protected $eConfigOpts = [];
+            /**
+             * Will get the saved option for $key and default to $default if none.
+             * 
+             * @param string $key     
+             * @param string $default A methode name to test and update 
+             *
+             * @return mixed the value of saved option of $default if none available.
+             * @see EditableWaConfigOptions::$eConfigOptsKey
+             *      Key used for WordPress get_option
+             */
             public function getWaConfigOption($key, $default)
             {
-                $this->debugVeryVerbose("Will getWaConfigOption {$key}");
-                $this->eAdminConfigOpts = get_option($this->eAdminConfigOptsKey, array_merge([$key => $default], $this->eAdminConfigOpts));
-                if (!is_array($this->eAdminConfigOpts)) {
-                    $this->warn("Having wrong datatype saved for {$key}", $this->eAdminConfigOpts);
-                    $this->eAdminConfigOpts = [$key => $default];
+                $this->debugVeryVerbose("Will getWaConfigOption $key");
+                $this->eConfigOpts = get_option($this->eConfigOptsKey, array_merge([
+                    $key => $default,
+                ], $this->eConfigOpts));
+                if (!is_array($this->eConfigOpts)) {
+                    $this->warn("Having wrong datatype saved for $key", $this->eConfigOpts);
+                    $this->eConfigOpts = [];
                 }
-                if (!key_exists($key, $this->eAdminConfigOpts)) {
-                    $this->eAdminConfigOpts[$key] = $default;
-                    $this->assert(update_option($this->eAdminConfigOptsKey, $this->eAdminConfigOpts), "Fail to update option {$this->eAdminConfigOptsKey}");
+                if (!key_exists($key, $this->eConfigOpts)) {
+                    $this->eConfigOpts[$key] = $default;
+                    $this->assert(
+                        update_option($this->eConfigOptsKey, $this->eConfigOpts),
+                        "Fail to update option {$this->eConfigOptsKey}"
+                    );
                 }
-                $value = $this->eAdminConfigOpts[$key];
-                $this->debugVeryVerbose("Did getWaConfigOption {$key}", $value);
+                $value = $this->eConfigOpts[$key];
+                $this->debugVeryVerbose("Did getWaConfigOption $key", $value);
                 return $value;
             }
+            /**
+             * @ignore Comming Soon... or not, not needed for now
+             * only update and delete seem enough (pre-update filter way)
+             */
             public function setWaConfigOption($key, $value)
             {
                 throw new \Exception("TODO in dev");
             }
         }
     }
-    if (!trait_exists(Translatable::class)) {
+    if (!trait_exists(Translatable::class)) { 
+        /**
+         * This trait will load the i18n plugin text domain international translations.
+         * i18n translations files are located in "./languages" plugin subfolder.
+         * 
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         * @uses Identifiable
+         */
         trait Translatable
         {
             use Editable, Identifiable;
-            public $waConfigTextDomain = 'wa-config';
+            /**
+             * Plugin text domain, used to load plugin translations from ./languages folder
+             * 
+             * {@see https://wordpress.org/support/topic/using-constant-as-a-text-domain}
+             * would like to suggest you to avoid using constant as a text domain 
+             * within your plugin. It makes strings
+             * untranslatable by WPML or Loco translate.
+             * 
+             * @var string
+             */
+            public $waConfigTextDomain =  'wa-config';
             protected function _000_t_scripts__bootstrap()
             {
-                add_action('plugins_loaded', [$this, 't_loadTextdomains']);
+                add_action( 'plugins_loaded', [$this, 't_loadTextdomains'] );
             }
-            public function t_loadTextdomains() : void
+            /**
+             * Will load the text domain translations with 
+             * WordPress load_plugin_textdomain function
+             * 
+             * @see Translatable::$waConfigTextDomain
+             */
+            public function t_loadTextdomains(): void
             {
                 $this->debugVerbose("Will t_loadTextdomains from plugin {$this->pluginName}");
                 $langFolder = $this->pluginName . '/languages';
-                $this->assertLog(load_plugin_textdomain('wa-config', false, $langFolder), "Fail to load textdomain /*📜*/'wa-config'/*📜*/ for " . get_locale() . " at path {$langFolder}");
+                $this->assertLog(
+                    load_plugin_textdomain(
+                        $this->waConfigTextDomain,
+                        false,
+                        $langFolder
+                    ),
+                    "Fail to load textdomain '{$this->waConfigTextDomain}' for ["
+                    . get_locale() . "] at path $langFolder"
+                );
             }
         }
     }
-    if (!class_exists(AppInterface::class)) {
+    if (!class_exists(AppInterface::class)) { 
+        /**
+         * This abstract class will hold the basic plugin features
+         * 
+         * It helps with parallel programmings and plugin lifecycle
+         * 
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         abstract class AppInterface
         {
             use Debugable, Parallelizable, Translatable;
             const PLUGIN_VERSION = "0.0.1-alpha";
             protected static $_compatibilityReports = [];
-            public static function addCompatibilityReport($level, $msg) : void
+            /**
+             * Will add compatibility report about current package parallel loads
+             * 
+             * Reports are shown for admin user only, under the
+             * "Parameters" sub menu of "WA Config"
+             * {@see EditableConfigPanels::e_config_param_render_panel()}
+             * 
+             * @param string $level Level of the compatibility report, 
+             *                      like : information / warning / CRITICAL / etc...    
+             * @param string $msg Content of the compatibility report
+             */
+            public static function addCompatibilityReport($level, $msg): void
             {
                 self::$_compatibilityReports[] = ['level' => $level, 'msg' => $msg];
                 usort(self::$_compatibilityReports, function ($cr1, $cr2) {
                     return strnatcasecmp($cr1['level'], $cr2['level']);
                 });
             }
+            /**
+             * Will get all available compatibility reports
+             * 
+             * Reports are shown for admin user only, under the
+             * "Parameters" sub menu of "WA Config"
+             * {@see EditableConfigPanels::e_config_param_render_panel()}
+             * 
+             * @return array<int, array<string, string>> {
+             *    The compatibility report logs
+             *
+             *    @type int $key Log index, 0 being the first written log.
+             * 
+             *    @type array $value {
+             *        Compatibility report
+             *
+             *        @type string $key Compatibility report level.
+             * 
+             *        @type string $value Compatibility report message.
+             *    }
+             * }
+             */
             public static function getCompatibilityReports()
             {
                 return self::$_compatibilityReports;
             }
             protected static $_instances = [];
-            protected static $_iByRelativePath = [];
+            protected static $_iByRelativeFile = [];
             protected static $_iByIId = [];
+            /**
+             * Add an App instance to this package
+             * 
+             * @param AppInterface $inst App instance, added from {@see __construct()}
+             */
             protected static function addInstance(AppInterface $inst)
             {
                 $inst->iIndex = count(self::$_instances);
-                $inst->iId = $inst->iPrefix . "-" . $inst->iIndex;
+                $inst->iId = $inst->iPrefix . "-"
+                    . $inst->iIndex;
                 self::$_instances[] = $inst;
-                if (!key_exists($inst->pluginRelativePath, self::$_iByRelativePath)) {
-                    self::$_iByRelativePath[$inst->pluginRelativePath] = [];
+                $inst->debug("🌖🌖 new instance from '$inst->pluginRelativeFile' \n"); 
+                if (!key_exists($inst->pluginRelativeFile, self::$_iByRelativeFile)) {
+                    self::$_iByRelativeFile[$inst->pluginRelativeFile] = [];
                 }
-                self::$_iByRelativePath[$inst->pluginRelativePath][] = $inst;
-                if (!key_exists($inst->iId, self::$_iByIId)) {
-                    self::$_iByIId[$inst->iId] = [];
-                }
-                self::$_iByIId[$inst->iId][] = $inst;
+                $inst->iRelativeIndex = count(self::$_iByRelativeFile[$inst->pluginRelativeFile]);
+                self::$_iByRelativeFile[$inst->pluginRelativeFile][] = $inst;
+                self::$_iByIId[$inst->iId] = $inst;
             }
-            public static function instance(int $index = 0) : AppInterface
+            /**
+             * Get App instance by index
+             * 
+             * Instances are registred from the parent constructor,
+             * called after children intitialisation of internal attributes
+             * 
+             * @param int $index App index to fetch, 0 being the first instance created
+             * @return AppInterface
+             */
+            public static function instance(int $index = 0): AppInterface
             {
                 return self::$_instances[$index];
             }
+            /**
+             * Get All registred App instance by index
+             * 
+             * @return AppInterface[]
+             */
             public static function allInstances()
             {
                 return self::$_instances;
             }
-            public static function decreasePluginLoadOrder(string $pluginName)
-            {
-                $app = AppInterface::instance();
-                $app->debug("Will decreasePluginLoadOrder for '{$pluginName}'");
-                throw new \Exception("Dev in progress...", 404);
-            }
             protected static $_uIdxCount = 0;
-            public static function uIdx() : int
+            /**
+             * Get a unique index counter shared by all App instance
+             * 
+             * May not be continous since act like a shared counter,
+             * but will hold a progressive order number per call
+             * 
+             * @return int A unique progressive index
+             */
+            public static function uIdx(): int
             {
                 return self::$_uIdxCount++;
             }
-            public static function lastInstance() : AppInterface
+            /**
+             * Get last registred App instance
+             * 
+             * @return AppInterface
+             */
+            public static function lastInstance(): AppInterface
             {
                 return end(self::$_instances);
             }
-            public static function instanceByRelativePath($path, $index = 0) : ?AppInterface
+            /**
+             * Get App instance by relative plugin path and plugin instance index
+             * 
+             * @param string $path Relative plugin path
+             * @param int $index App index to fetch, 0 being the first instance created
+             * @return AppInterface
+             */
+            public static function instanceByRelativeFile($path, $index = 0): ?AppInterface
             {
-                if (!key_exists($path, self::$_iByRelativePath)) {
+                if (!key_exists($path, self::$_iByRelativeFile)) {
                     return null;
                 }
                 if ($index < 0) {
-                    $index += count(self::$_iByRelativePath[$path]);
+                    $index += count(self::$_iByRelativeFile[$path]);
                 }
-                return self::$_iByRelativePath[$path][$index];
+                return self::$_iByRelativeFile[$path][$index];
             }
-            public static function instanceByIId($iId) : ?AppInterface
+            /**
+             * Get App instance by registred App Identifiable Identifier
+             * 
+             * @see Identifiable::$iId
+             * @param string $iId App instance Identifiable Identifier
+             * @return AppInterface
+             */
+            public static function instanceByIId($iId): ?AppInterface
             {
-                if (!key_exists($iId, self::$_iByIId)) {
+                if (!$iId || !key_exists($iId, self::$_iByIId)) {
                     return null;
                 }
                 return self::$_iByIId[$iId];
             }
             protected static $_methodes = [];
             protected static $_statsCountKey = '__count__';
+            /**
+             * Get statistics about methods calls by iId
+             * 
+             * With total of {@see AppInterface::methodeCalledFrom()} under ```__count__``` key
+             * 
+             * @param string $methodeName Name of the method to fetch statistics from
+             * @return array<string, int> {
+             *    The method call counts statistics by iId
+             * 
+             *    @type string $key Identifiable Identifier or ```__count__``` key
+             * 
+             *    @type int $value Numbers of $methodeName call done by the target $key App instance
+             * }
+             */
             public static function getMethodStatistics(string $methodeName)
             {
-                return key_exists($methodeName, self::$_methodes) ? self::$_methodes[$methodeName] : null;
+                return key_exists($methodeName, self::$_methodes)
+                    ? self::$_methodes[$methodeName]
+                    : null;
             }
             const ERR_AUTH_TEST_USER_FAIL_USERNAME = 1;
             const ERR_AUTH_TEST_USER_FAIL_USERNAME_UPDATE = 2;
-            public function e2e_test_authenticateTestUser($userLoginName, $accessHash, $emailTarget = null, $shouldClone = false)
+            /**
+             * Authenticate and get test user
+             * 
+             * WARNING : to ensure tests roolback and
+             *           tests traking actions vs real user action
+             *           we MUST call logoutTestUser on end
+             * 
+             * @param string $userLoginName Real user login name to use as test source
+             * @param string $accessHash Access hash to ensure capability of requested action
+             * @param string $emailTarget Real of fake login name to use as test duplicated name
+             * @param string $shouldClone If true, will clone user instead of only tagging as test mode (Dev in progress, not available yet)
+             * @return false|\WP_User The resulting test user or false if fail
+             */
+            public function e2e_test_authenticateTestUser(
+                $userLoginName,
+                $accessHash,
+                $emailTarget = null,
+                $shouldClone = false
+            )
             {
                 $anonimizedIp = $this->get_user_ip();
                 if (!($aInfo = $this->e2e_tests_validate_access_hash($accessHash))) {
-                    $this->err("Invalid authenticateTestUser access for '{$accessHash}' by {$anonimizedIp}");
-                    echo json_encode(["error" => "[{$anonimizedIp}][{$accessHash}] " . __("IP enregistrée suite à accès invalid", 'wa-config')]);
+                    $this->err("Invalid authenticateTestUser access for '$accessHash' by $anonimizedIp");
+                    echo json_encode([
+                        "error" => "[$anonimizedIp][$accessHash] "
+                        . __("IP enregistrée suite à accès invalid", 'wa-config'),
+                    ]);
                     http_response_code(401);
                     return false || wp_die();
                 }
                 $dateStamp = time();
                 $emailTarget = trim($emailTarget);
-                if (!strlen($emailTarget ?? "")) {
-                    $emailTarget = null;
-                }
-                $emailTarget = $emailTarget ?? "test-{$dateStamp}-{$userLoginName}";
-                $this->debugVerbose("Will e2e_test_authenticateTestUser from '{$userLoginName}' to '{$emailTarget}'");
-                $user = get_user_by('login', $userLoginName);
-                if (!$user || is_wp_error($user)) {
-                    $this->err("[{$anonimizedIp}][{$userLoginName}] " . __("N'est pas un utilisateur enregistré", 'wa-config'));
-                    echo json_encode(["error" => "[{$anonimizedIp}][{$userLoginName}] " . __("N'est pas un utilisateur enregistré", 'wa-config')]);
+                if (!strlen($emailTarget ?? "")) $emailTarget = null; 
+                $emailTarget = $emailTarget ?? "test-$dateStamp-$userLoginName";
+                $this->debugVerbose("Will e2e_test_authenticateTestUser from '$userLoginName' to '$emailTarget'");
+                $user = get_user_by('login', $userLoginName );
+                if ( !$user || is_wp_error( $user ) ){
+                    $this->err(
+                        "[$anonimizedIp][$userLoginName] "
+                        . __("N'est pas un utilisateur enregistré", 'wa-config')
+                    );    
+                    echo json_encode([
+                        "error" => "[$anonimizedIp][$userLoginName] "
+                        . __("N'est pas un utilisateur enregistré", 'wa-config'),
+                    ]);
                     http_response_code(404);
                     return false || wp_die();
                 }
@@ -506,120 +1200,198 @@ namespace WA\Config\Core {
                 }
                 $realUserName = $user->user_login;
                 $realUserEmail = $user->user_email;
-                $testMeta = get_user_meta($user->ID, 'wa-e2e-test');
+                $testMeta = get_user_meta( $user->ID, 'wa-e2e-test' );
                 $previousTestRealUserName = $testMeta[0]['real-username'] ?? false;
                 $previousTestRealUserEmail = $testMeta[0]['real-user-email'] ?? false;
                 if (count($testMeta)) {
-                    $this->info("[{$anonimizedIp}] Test user already logged in...", $testMeta);
+                    $this->info("[$anonimizedIp] Test user already logged in...", $testMeta);
                     $emailTarget = $user->user_login;
                 } else {
-                    wp_cache_delete("alloptions", "options");
-                    $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
+                    wp_cache_delete("alloptions", "options"); 
+                    $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
                     $testUsers = $E2ETestsOptions['test-users'] ?? [];
                     $user->user_login = $emailTarget;
                     $user->user_email = $emailTarget;
+                    /** @var wpdb $wpdb*/
                     global $wpdb;
-                    if (false === $wpdb->update($wpdb->users, ['user_login' => $user->user_login, 'user_email' => $user->user_email], ['ID' => $user->ID])) {
-                        $this->err("[{$userLoginName}][=> {$user->user_login}] " . __("Echec de la mise à jour du nom utilisateur", 'wa-config'));
+                    if (false === $wpdb->update(
+                        $wpdb->users, 
+                        [
+                            'user_login' => $user->user_login,
+                            'user_email' => $user->user_email,
+                        ], 
+                        ['ID' => $user->ID],      
+                    )) {
+                        $this->err(
+                            "[$userLoginName][=> {$user->user_login}] "
+                            . __("Echec de la mise à jour du nom utilisateur", 'wa-config')
+                        );
                         return false;
                     }
-                    if (!update_user_meta($user->ID, 'wa-e2e-test', ["real-username" => $realUserName, "real-user-email" => $realUserEmail])) {
-                        $this->err("[{$userLoginName}][=> {$user->user_login}] " . __("Echec de la mise à jour des méta de test de l'utilisateur", 'wa-config'));
+                    if (!update_user_meta( $user->ID, 'wa-e2e-test', [
+                        "real-username" => $realUserName,
+                        "real-user-email" => $realUserEmail,
+                    ])) {
+                        $this->err(
+                            "[$userLoginName][=> {$user->user_login}] "
+                            . __("Echec de la mise à jour des méta de test de l'utilisateur", 'wa-config')
+                        );
                         $user->user_login = $realUserName;
                         $user->user_email = $realUserEmail;
-                        if (false === $wpdb->update($wpdb->users, ['user_login' => $user->user_login, 'user_email' => $user->user_email], ['ID' => $user->ID])) {
-                            $this->err("[{$userLoginName}][=> {$user->user_login}] " . __("Echec du rollback de l'utilisateur", 'wa-config'));
-                        }
+                        if (false === $wpdb->update(
+                            $wpdb->users, 
+                            [
+                                'user_login' => $user->user_login,
+                                'user_email' => $user->user_email,
+                            ], 
+                            ['ID' => $user->ID],      
+                        )) {
+                            $this->err(
+                                "[$userLoginName][=> {$user->user_login}] "
+                                . __("Echec du rollback de l'utilisateur", 'wa-config')
+                            );    
+                        };
                         return false;
-                    }
+                    };
                     $testUsers[$emailTarget] = $user;
                     $E2ETestsOptions['test-users'] = $testUsers;
-                    update_option($this->eAdminConfigE2ETestsOptsKey, $E2ETestsOptions);
+                    update_option($this->eConfigE2ETestsOptsKey, $E2ETestsOptions);
                 }
                 wp_clear_auth_cookie();
                 global $current_user;
                 $current_user = null;
-                wp_set_current_user($user->user_login);
-                wp_set_auth_cookie($user->ID);
-                $this->info("[{$anonimizedIp}] Succed to login test user from '{$userLoginName}' to '{$user->user_login}' with hash [{$accessHash}]");
+                wp_set_current_user ( $user->user_login );
+                wp_set_auth_cookie  ( $user->ID );
+                $this->info("[$anonimizedIp] Succed to login test user from '$userLoginName' to '$user->user_login' with hash [$accessHash]");
                 return $user;
             }
-            public function e2e_test_logoutTestUser($userLoginName, $accessHash) : string
+            /**
+             * Logout a test user and bring back account to real user
+             * 
+             * @param string $userLoginName The test user login name to logout
+             */
+            public function e2e_test_logoutTestUser(
+                $userLoginName,
+                $accessHash
+            ): string
             {
                 $this->debugVerbose("Will e2e_test_logoutTestUser");
                 $anonimizedIp = $this->get_user_ip();
                 if (!($aInfo = $this->e2e_tests_validate_access_hash($accessHash))) {
-                    $this->err("Invalid e2e_test_logoutTestUser access for '{$accessHash}' by {$anonimizedIp}");
+                    $this->err("Invalid e2e_test_logoutTestUser access for '$accessHash' by $anonimizedIp");
                     http_response_code(401);
-                    return json_encode(["error" => "[{$anonimizedIp}][{$accessHash}] " . __("IP enregistrée suite à accès invalid", 'wa-config')]);
+                    return json_encode([
+                        "error" => "[$anonimizedIp][$accessHash] "
+                        . __("IP enregistrée suite à accès invalid", 'wa-config'),
+                    ]);
                 }
-                $user = get_user_by('login', $userLoginName);
+                $user = get_user_by('login', $userLoginName );
                 if (!$user) {
-                    $this->err("Utilisateur '{$userLoginName}' non existant from '{$accessHash}' by {$anonimizedIp}");
+                    $this->err("Utilisateur '$userLoginName' non existant from '$accessHash' by $anonimizedIp");
                     http_response_code(404);
-                    return json_encode(["error" => "[{$anonimizedIp}][{$accessHash}] {$userLoginName} " . __("Utilisateur non existant ou déjà déconnecté", 'wa-config')]);
+                    return json_encode([
+                        "error" => "[$anonimizedIp][$accessHash] $userLoginName "
+                        . __("Utilisateur non existant ou déjà déconnecté", 'wa-config'),
+                    ]);
                 }
-                $testMeta = get_user_meta($user->ID, 'wa-e2e-test');
-                $this->debugVeryVerbose("[{$user->ID}] Meta 'wa-e2e-test' : ", $testMeta);
+                $testMeta = get_user_meta( $user->ID, 'wa-e2e-test' );
+                $this->debugVeryVerbose("[$user->ID] Meta 'wa-e2e-test' : ", $testMeta);
                 $realUserName = $testMeta[0]['real-username'] ?? $user->user_login;
                 $realUserEmail = $testMeta[0]['real-user-email'] ?? $user->user_email;
+                /** @var wpdb $wpdb*/
                 global $wpdb;
                 $user->user_login = $realUserName;
                 $user->user_email = $realUserEmail;
-                if (false === $wpdb->update($wpdb->users, ['user_login' => $user->user_login, 'user_email' => $user->user_email], ['ID' => $user->ID])) {
-                    $this->err("Fail to restore test user from '{$userLoginName}' to '{$user->user_login}'");
+                if (false === $wpdb->update(
+                    $wpdb->users, 
+                    [
+                        'user_login' => $user->user_login,
+                        'user_email' => $user->user_email,
+                    ], 
+                    ['ID' => $user->ID], 
+                )) {
+                    $this->err("Fail to restore test user from '$userLoginName' to '{$user->user_login}'");
                     http_response_code(404);
-                    return json_encode(["error" => "[{$anonimizedIp}][{$accessHash}] {$userLoginName} " . __("Erreur de restauration d'utilisateur", 'wa-config')]);
+                    return json_encode([
+                        "error" => "[$anonimizedIp][$accessHash] $userLoginName "
+                        . __("Erreur de restauration d'utilisateur", 'wa-config'),
+                    ]);
                 } else {
-                    if (!delete_user_meta($user->ID, 'wa-e2e-test')) {
-                        $this->err("Fail to clean user 'wa-e2e-test' meta from '{$userLoginName}' to '{$user->user_login}'");
+                    if (!delete_user_meta( $user->ID, 'wa-e2e-test' )) {
+                        $this->err("Fail to clean user 'wa-e2e-test' meta from '$userLoginName' to '{$user->user_login}'");
                     }
                 }
                 wp_clear_auth_cookie();
-                $this->info("Succed to logout test user from '{$userLoginName}' to '{$user->user_login}'");
+                $this->info("Succed to logout test user from '$userLoginName' to '{$user->user_login}'");
                 http_response_code(200);
-                return json_encode(["status" => "OK", "end_date" => date("Y/m/d H:i:s O ")]);
+                return json_encode([
+                    "status" => "OK",
+                    "end_date" => date("Y/m/d H:i:s O "),
+                ]);
             }
-            public function e2e_test_action() : void
+            /**
+             * Launch the end to end test action received by post contents.
+             * 
+             * Curl test
+             * ```bash
+             * curl -v -d "wa-action=wa-e2e-test-action" "https://web-agency.local.dev/e-commerce/wp-admin/admin-ajax.php?action=wa-e2e-test-action"
+             * ```
+             * 
+             * To launch it for real, connect to wp-admin as administrator,
+             * go in Wa-config Review sub panel and click on the test launch link.
+             * 
+             * **Be careful** with **test launch**, always ensure your backup strategies
+             * since failling tests **might mess** up your website data or file or ... 
+             * 
+             * Indeed, all possible side effects depends of the tests you choose to write.
+             * 
+             * cf e2e tests for some usage examples on 'wa-e2e-test-action'
+             * 
+             * @see \WA\Config\E2E\E2E_EnsureAdminConfigPanelCest E2E_EnsureAdminConfigPanelCest
+             */
+            public function e2e_test_action(): void
             {
                 $anonimizedIp = $this->get_user_ip();
                 $action = '';
-                if (isset($_REQUEST['wa-action'])) {
-                    $action = filter_var($_REQUEST['wa-action'], FILTER_SANITIZE_SPECIAL_CHARS);
+                if ( isset( $_REQUEST['wa-action'] ) ) {
+                    $action = filter_var( $_REQUEST['wa-action'], FILTER_SANITIZE_SPECIAL_CHARS );
                 } else {
-                    $this->err("Missing action parameter for e2e_test_action by {$anonimizedIp}");
-                    echo json_encode(["error" => "[{$anonimizedIp}] " . __("Paramétre 'wa-action' manquant.", 'wa-config')]);
+                    $this->err("Missing action parameter for e2e_test_action by $anonimizedIp");
+                    echo json_encode([
+                        "error" => "[$anonimizedIp] "
+                        . __("Paramétre 'wa-action' manquant.", 'wa-config'),
+                    ]);
                     http_response_code(404);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
-                $this->debug("Will e2e_test_action '{$action}' by '{$anonimizedIp}'");
+                $this->debug("Will e2e_test_action '$action' by '$anonimizedIp'");
                 if ('force-clean-and-restore-users' === $action) {
                     echo $this->e2e_test_clean_and_restore_test_users();
                     http_response_code(200);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
                 if ('download-last-backup' === $action) {
-                    $bckUpType = filter_var($_REQUEST['wa-backup-type'], FILTER_SANITIZE_SPECIAL_CHARS);
+                    $bckUpType = filter_var( $_REQUEST['wa-backup-type'], FILTER_SANITIZE_SPECIAL_CHARS );
                     echo $this->e2e_test_download_last_backup($bckUpType);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
                 if ('do-backup' === $action) {
-                    $bckUpType = filter_var($_REQUEST['wa-backup-type'], FILTER_SANITIZE_SPECIAL_CHARS);
-                    $compressionType = filter_var($_REQUEST['wa-compression-type'] ?? null, FILTER_SANITIZE_SPECIAL_CHARS);
+                    $bckUpType = filter_var( $_REQUEST['wa-backup-type'], FILTER_SANITIZE_SPECIAL_CHARS );
+                    $compressionType = filter_var(
+                        $_REQUEST['wa-compression-type']?? null, FILTER_SANITIZE_SPECIAL_CHARS
+                    );
                     echo $this->e2e_test_do_backup($bckUpType, $compressionType);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
                 $aHash = filter_input(INPUT_POST, 'wa-access-hash', FILTER_SANITIZE_SPECIAL_CHARS);
                 if (!($aInfo = $this->e2e_tests_validate_access_hash($aHash))) {
-                    $this->err("Invalid access for '{$aHash}' by {$anonimizedIp}");
-                    echo json_encode(["error" => "[{$anonimizedIp}][{$aHash}] " . __("IP enregistrée suite à accès invalid", 'wa-config')]);
+                    $this->err("Invalid access for '$aHash' by $anonimizedIp");
+                    echo json_encode([
+                        "error" => "[$anonimizedIp][$aHash] "
+                        . __("IP enregistrée suite à accès invalid", 'wa-config'),
+                    ]);
                     http_response_code(401);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
                 $user = wp_get_current_user();
                 $userName = $user->user_login;
@@ -627,315 +1399,416 @@ namespace WA\Config\Core {
                 $dataJson = base64_decode($dataPOST);
                 $data = json_decode($dataJson, true);
                 switch ($action) {
-                    case 'authenticate-user':
+                    case 'authenticate-user': {
                         $emailTarget = null;
-                        @([$email, $emailTarget] = filter_input(INPUT_POST, 'wa-data', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY));
-                        $test_user = $this->e2e_test_authenticateTestUser($email, $aHash, $emailTarget);
+                        @[$email, $emailTarget] = filter_input(INPUT_POST, 'wa-data', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
+                        $test_user = $this->e2e_test_authenticateTestUser(
+                            $email, $aHash, $emailTarget
+                        );
                         if ($test_user) {
-                            echo json_encode(["status" => "OK", "test_user" => $test_user, "end_date" => date("Y/m/d H:i:s O ")]);
+                            echo json_encode([
+                                "status" => "OK",
+                                "test_user" => $test_user, 
+                                "end_date" => date("Y/m/d H:i:s O "),
+                            ]);
                             http_response_code(200);
                         }
-                        wp_die();
-                        return;
-                        break;
-                    case 'logout-user':
+                        wp_die(); return;                            
+                    } break;
+                    case 'logout-user': {
                         $email = filter_input(INPUT_POST, 'wa-data', FILTER_SANITIZE_SPECIAL_CHARS);
-                        echo $this->e2e_test_logoutTestUser($email, $aHash);
-                        wp_die();
-                        return;
-                        break;
-                    default:
-                        $this->warn("Unknow action '{$action}'");
-                        break;
+                        echo $this->e2e_test_logoutTestUser(
+                            $email, $aHash
+                        );
+                        wp_die(); return;
+                    } break;
+                    default: {
+                        $this->warn("Unknow action '$action'");
+                    } break;
                 }
-                echo json_encode(["status" => "OK", "end_date" => date("Y/m/d H:i:s O ")]);
+                echo json_encode([
+                    "status" => "OK",
+                    "end_date" => date("Y/m/d H:i:s O "),
+                ]);
                 http_response_code(200);
-                wp_die();
-                return;
+                wp_die(); return;
             }
-            public function e2e_tests_access_hash_open($doNotSendEmail = true)
-            {
+            /**
+             * Open an e2e test access and return the corresponding access hash
+             * 
+             * @param bool $doNotSendEmail Optional, if true, will
+             * avoid real email expedition for all mailings, default true.
+             * @return string Access hash used for test mode autentification
+             */
+            public function e2e_tests_access_hash_open($doNotSendEmail = true) {
                 global $argv;
                 $serverIP = $this->get_user_ip(false);
-                $hSize = 6;
-                $h = bin2hex(random_bytes($hSize / 2));
-                $accessHash = base64_encode("e2e-tests-{$serverIP}-" . time() . "-{$h}");
-                wp_cache_delete("alloptions", "options");
-                $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
+                $hSize = 6; 
+                $h = bin2hex(random_bytes($hSize/2));
+                $accessHash = base64_encode("e2e-tests-$serverIP-" . time() . "-$h");
+                wp_cache_delete("alloptions", "options"); 
+                $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
                 $E2ETestsOptions['access-open'] = time();
-                $E2ETestsOptions["tests-in-progress"] = array_merge($E2ETestsOptions["tests-in-progress"] ?? [], [$accessHash => ['access-hash' => $accessHash, 'started_at' => time(), 'started_by' => $serverIP]]);
+                $E2ETestsOptions["tests-in-progress"] = array_merge(
+                    $E2ETestsOptions["tests-in-progress"] ?? [], [
+                        $accessHash => [
+                            'access-hash' => $accessHash,
+                            'started_at' => time(),
+                            'started_by' => $serverIP,
+                        ]
+                    ]
+                );
                 $E2ETestsOptions['emails-sended'] = [];
                 $E2ETestsOptions['do-not-send-email'] = $doNotSendEmail;
-                update_option($this->eAdminConfigE2ETestsOptsKey, $E2ETestsOptions);
-                $this->debugVerbose("Openning e2e test hash '{$accessHash}' by {$serverIP}");
+                update_option($this->eConfigE2ETestsOptsKey, $E2ETestsOptions);
+                $this->debugVerbose("Openning e2e test hash '$accessHash' by $serverIP");
                 return $E2ETestsOptions["tests-in-progress"][$accessHash];
             }
-            public function e2e_tests_filter_wp_die_callback($message, $title = '', $args = array())
-            {
+            /**
+             * Soft kill wordpress, to allow end to end tests to keep going without COMMAND DID NOT FINISH PROPERLY error.
+             *
+             * @since 0.0.1
+             * @access private
+             *
+    		 * @param callable $function Callback function name.
+             */
+            public function e2e_tests_filter_wp_die_callback( $function ) {
                 return '_wa_e2e_tests_wp_die_handler';
             }
-            protected function exit()
-            {
-                wp_cache_delete("alloptions", "options");
-                $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
+            public function exit() {
+                wp_cache_delete("alloptions", "options"); 
+                $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
                 if ($E2ETestsOptions['access-open'] ?? false) {
                     $this->debugVerbose("Custom soft exit for test mode", $this->debug_trace());
                 } else {
-                    exit;
+                    exit();
                 }
             }
-            public function e2e_tests_emails_middleware($email)
-            {
+            /**
+             * Email middleware to prevent email expedition if requested by configuration
+             * 
+             * We avoid email expedition if requested by the 'wa_e_config_e2e_tests_opts' option.
+             * 
+             * We break the 'to' field to avoid expedition and
+             * allow regular logger to notify some emails activity
+             * 
+             * @param array $email Incoming email that will be send
+             */
+            public function e2e_tests_emails_middleware( $email ) {
                 $this->debugVerbose("Sending email :" . $email["subject"]);
                 $this->debugVeryVerbose("Sending email :", $email);
-                wp_cache_delete("alloptions", "options");
-                $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
+                wp_cache_delete("alloptions", "options"); 
+                $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
                 $E2ETestsOptions['emails-sended'] = $E2ETestsOptions['emails-sended'] ?? [];
                 $E2ETestsOptions['emails-sended'][] = $email;
-                update_option($this->eAdminConfigE2ETestsOptsKey, $E2ETestsOptions);
+                update_option($this->eConfigE2ETestsOptsKey, $E2ETestsOptions);
                 if ($E2ETestsOptions['do-not-send-email'] ?? false) {
                     $email['to'] = "#e2e#{$email['to']}#e2e#";
                     $this->debug("Avoid mail send from test adjusted OK for {$email['to']}");
                 }
                 return $email;
             }
-            public function e2e_tests_access_hash_close($accessHash)
-            {
+            /**
+             * Close an e2e test access and restore the regular website access
+             * 
+             * @param string $accessHash Access hash used for test mode autentification
+             */
+            public function e2e_tests_access_hash_close($accessHash) : void {
                 $anonimizedIp = $this->get_user_ip();
                 if (!($aInfo = $this->e2e_tests_validate_access_hash($accessHash))) {
-                    $this->err("Invalid hash close access for '{$accessHash}' by {$anonimizedIp}");
-                    echo json_encode(["error" => "[{$anonimizedIp}][{$accessHash}] " . __("IP enregistrée suite à accès invalid", 'wa-config')]);
+                    $this->err("Invalid hash close access for '$accessHash' by $anonimizedIp");
+                    echo json_encode([
+                        "error" => "[$anonimizedIp][$accessHash] "
+                        . __("IP enregistrée suite à accès invalid", 'wa-config'),
+                    ]);
                     http_response_code(401);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
-                wp_cache_delete("alloptions", "options");
-                $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
-                $E2ETestsOptions["tests-in-progress"][$accessHash] = array_merge($E2ETestsOptions["tests-in-progress"][$accessHash], ['ended_at' => time()]);
-                $E2ETestsOptions["tests-in-progress"] = array_filter($E2ETestsOptions["tests-in-progress"], function ($testMeta) {
-                    return time() - $testMeta['started_at'] < 1000 * 60 * 60;
-                });
+                wp_cache_delete("alloptions", "options"); 
+                $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
+                $E2ETestsOptions["tests-in-progress"][$accessHash] = array_merge(
+                    $E2ETestsOptions["tests-in-progress"][$accessHash], [
+                        'ended_at' => time(),
+                    ]
+                );
+                $E2ETestsOptions["tests-in-progress"] = array_filter(
+                    $E2ETestsOptions["tests-in-progress"],
+                    function($testMeta) {
+                        return time() - $testMeta['started_at'] < 1000 * 60 * 60;
+                    }
+                );
                 $E2ETestsOptions['access-open'] = false;
                 $E2ETestsOptions['emails-sended'] = [];
-                update_option($this->eAdminConfigE2ETestsOptsKey, $E2ETestsOptions);
+                update_option($this->eConfigE2ETestsOptsKey, $E2ETestsOptions);
                 $serverIP = $this->get_user_ip(false);
-                $this->debugVerbose("Closing e2e test hash '{$accessHash}' by {$serverIP}");
+                $this->debugVerbose("Closing e2e test hash '$accessHash' by $serverIP");
             }
-            public function e2e_tests_validate_access_hash($accessHash)
-            {
-                wp_cache_delete("alloptions", "options");
-                $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
-                $this->debugVerbose("e2e_tests_validate_access_hash '{$accessHash}'" . $E2ETestsOptions["tests-in-progress"][$accessHash]['started_by'] ?? 'TEST HASH NOT FOUND');
-                if (!$accessHash || !strlen($accessHash) || !array_key_exists($accessHash, $E2ETestsOptions["tests-in-progress"] ?? [])) {
-                    return false;
-                }
+            /**
+             * Validate an e2e test access
+             * 
+             * @param string $accessHash Access hash used for test mode autentification
+             * @return false|array Access informations if $accessHash authorised,
+             * false otherwise
+             */
+            public function e2e_tests_validate_access_hash($accessHash) {
+                wp_cache_delete("alloptions", "options"); 
+                $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
+                $this->debugVerbose(
+                    "e2e_tests_validate_access_hash '$accessHash'"
+                    . $E2ETestsOptions["tests-in-progress"][$accessHash]['started_by'] ?? 'TEST HASH NOT FOUND'
+                );
+                if (!$accessHash || !strlen($accessHash)
+                || !array_key_exists(
+                    $accessHash,
+                    $E2ETestsOptions["tests-in-progress"] ?? []
+                )) { return false; }
                 $accessInfos = $E2ETestsOptions["tests-in-progress"][$accessHash];
                 $requestIP = $this->get_user_ip(false);
-                if (time() - $accessInfos['started_at'] < 1000 * 60 * 60 && !array_key_exists('ended_at', $accessInfos) && $requestIP === $accessInfos['started_by']) {
+                if ((time() - $accessInfos['started_at']) < (1000 * 60 * 60)
+                && !array_key_exists('ended_at', $accessInfos)
+                && $requestIP === $accessInfos['started_by']) {
                     return $accessInfos;
-                }
+                };
                 return false;
             }
-            public function e2e_test_clean_and_restore_test_users()
-            {
+            /**
+             * Check pending tests users and restore them
+             * 
+             * Usefull if you have buggy tests launch that 
+             * fails to restore users by themselves
+             * 
+             * Curl test
+             * ```bash
+             * curl "https://web-agency.local.dev/e-commerce/wp-admin/admin-ajax.php?action=wa-e2e-test-action&wa-action=force-clean-and-restore-users"
+             * ```
+             */
+            public function e2e_test_clean_and_restore_test_users() {
                 $anonimizedIp = $this->get_user_ip();
-                wp_cache_delete("alloptions", "options");
-                $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
+                wp_cache_delete("alloptions", "options"); 
+                $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
                 $testUsers = $E2ETestsOptions['test-users'] ?? [];
                 $testUsersCount = count($testUsers);
-                $this->debug("[{$anonimizedIp}] Will e2e_test_clean_and_restore_test_users for {$testUsersCount} users.");
+                $this->debug(
+                    "[$anonimizedIp] Will e2e_test_clean_and_restore_test_users for $testUsersCount users."
+                );
                 if ($testUsersCount) {
                     $aInfo = $this->e2e_tests_access_hash_open();
                     $aHash = $aInfo['access-hash'];
                     foreach ($testUsers as $test_name => $user) {
-                        $this->debug("[{$anonimizedIp}] Will e2e_test logout", $test_name);
+                        $this->debug("[$anonimizedIp] Will e2e_test logout", $test_name);
                         $this->debugVeryVerbose(" for user :", $user);
-                        $this->e2e_test_logoutTestUser($test_name, $aHash);
+                        $this->e2e_test_logoutTestUser( $test_name, $aHash );
                     }
                     unset($E2ETestsOptions['test-users']);
-                    update_option($this->eAdminConfigE2ETestsOptsKey, $E2ETestsOptions);
+                    update_option($this->eConfigE2ETestsOptsKey, $E2ETestsOptions);
                     $this->e2e_tests_access_hash_close($aHash);
                 }
-                return json_encode(["did_update" => "E2ETestsOptions 'test-users' with clean_and_restore", "caller" => "[{$anonimizedIp}][{$this->iId}]", "update_count" => $testUsersCount, "end_date" => date("Y/m/d H:i:s O ")]);
+                return json_encode([
+                    "did_update" => "E2ETestsOptions 'test-users' with clean_and_restore",
+                    "caller" => "[$anonimizedIp][{$this->iId}]",
+                    "update_count" => $testUsersCount,
+                    "end_date" => date("Y/m/d H:i:s O "),
+                ]);
             }
-            public function e2e_test_download_last_backup(string $bckUpType, $compressionType = null)
-            {
+            /**
+             * Download the targeted backup type
+             * 
+             */
+            public function e2e_test_download_last_backup(string $bckUpType, $compressionType = null) {
                 $anonimizedIp = $this->get_user_ip();
-                if (!current_user_can($this->optAdminEditCabability) || !current_user_can('administrator')) {
-                    $this->err("e2e_test_download_last_backup invalid access for {$anonimizedIp}, need to be {$this->optAdminEditCabability} or administrator to do backups");
-                    echo json_encode(["error" => "Invalid access for {$anonimizedIp} registred"]);
+                if (!current_user_can($this->optAdminEditCabability)
+                || !current_user_can('administrator')) { 
+                    $this->err("e2e_test_download_last_backup invalid access for $anonimizedIp, need to be {$this->optAdminEditCabability} or administrator to do backups");
+                    echo json_encode([
+                        "error" => "Invalid access for $anonimizedIp registred",
+                    ]);
                     http_response_code(401);
-                    wp_die();
-                    return;
-                }
+                    wp_die(); return;
+                }                   
                 if ('sql' === $bckUpType) {
                     ob_start();
-                    $siteSlug = sanitize_title(get_bloginfo('name'));
+                    $siteSlug = sanitize_title(get_bloginfo( 'name' ));
                     $fileExtension = $compressionType ?? '.sql';
-                    $filename = "{$siteSlug}-full-database-backup{$fileExtension}";
-                    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                    header('Content-Description: File Transfer');
-                    header('Content-Type: text/plain; charset=utf-8');
-                    header("Content-Disposition: attachment; filename={$filename}");
-                    header('Expires: 0');
-                    header('Pragma: public');
-                    header("Content-Transfer-Encoding: binary");
+                    $filename = "$siteSlug-full-database-backup$fileExtension";
+                    header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
+                    header( 'Content-Description: File Transfer' );
+                    header( 'Content-Type: text/plain; charset=utf-8' );
+                    header( "Content-Disposition: attachment; filename={$filename}" );
+                    header( 'Expires: 0' );
+                    header( 'Pragma: public' );
+                    header("Content-Transfer-Encoding: binary");            
                     $bckupFolder = $this->get_backup_folder();
-                    $lastBckupPath = "{$bckupFolder}/{$filename}";
-                    $this->debug("Download src : {$lastBckupPath}");
+                    $lastBckupPath = "$bckupFolder/$filename";
+                    $this->debug("Download src : $lastBckupPath");
                     $downloadReport = ob_get_clean();
                     flush();
-                    $fOut = fopen('php://output', 'w');
-                    fwrite($fOut, file_get_contents($lastBckupPath));
-                    fclose($fOut);
+                    $fOut = fopen( 'php://output', 'w' );
+                    fwrite( $fOut, file_get_contents($lastBckupPath));
+                    fclose( $fOut );
                     flush();
-                    $this->debug("Succed to download {$filename}. {$downloadReport}");
+                    $this->debug("Succed to download $filename. $downloadReport");
                     http_response_code(200);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
-                if ('simple-zip' === $bckUpType || 'full-zip' === $bckUpType) {
-                    $siteSlug = sanitize_title(get_bloginfo('name'));
-                    $fileExtension = '.zip';
-                    $filename = "{$siteSlug}-simple-backup{$fileExtension}";
+                if ('simple-zip' === $bckUpType
+                || 'full-zip' === $bckUpType) {
+                    $siteSlug = sanitize_title(get_bloginfo( 'name' ));
+                    $fileExtension = '.zip'; 
+                    $filename = "$siteSlug-simple-backup$fileExtension";
                     if ('full-zip' === $bckUpType) {
-                        $filename = "{$siteSlug}-full-backup{$fileExtension}";
+                        $filename = "$siteSlug-full-backup$fileExtension";
                     }
                     $bckupFolder = $this->get_backup_folder();
-                    $lastBckupPath = "{$bckupFolder}/{$filename}";
+                    $lastBckupPath = "$bckupFolder/$filename";
                     $fileSize = filesize($lastBckupPath);
-                    $this->debug("Download src : {$lastBckupPath}");
-                    header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
-                    header('Content-Description: File Transfer');
+                    $this->debug("Download src : $lastBckupPath");
+                    header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0"); 
+                    header( 'Content-Description: File Transfer' );
                     header('Content-Type: application/zip');
-                    header("Content-Disposition: attachment; filename={$filename}");
-                    header('Expires: 0');
-                    header('Pragma: public');
+                    header( "Content-Disposition: attachment; filename={$filename}" );
+                    header( 'Expires: 0' );
+                    header( 'Pragma: public' );
                     header('Content-Length: ' . $fileSize);
                     header("Content-Transfer-Encoding: binary");
-                    header("Accept-Ranges: bytes");
-                    set_time_limit(25 * 60);
-                    $downloadReport = "";
-                    if (ob_get_level()) {
-                        ob_end_clean();
-                    }
+                    header("Accept-Ranges: bytes"); 
+                    set_time_limit(25*60); 
+                    $downloadReport = ""; 
+                    if (ob_get_level()) ob_end_clean();
                     ob_clean();
                     flush();
-                    $chunkSplit = false;
+                    $chunkSplit = false; 
                     if (!$chunkSplit) {
-                        wp_ob_end_flush_all();
+                        wp_ob_end_flush_all(); 
                         readfile($lastBckupPath);
                     } else {
-                        $simpleChunck = false;
+                        $simpleChunck = false; 
                         if ($simpleChunck) {
-                            $download_rate = 8 * (1024 * 1024);
+                            $download_rate = 8 * (1024 * 1024); 
                             $file = fopen($lastBckupPath, "r");
-                            while (!feof($file)) {
+                            while(!feof($file))
+                            {
                                 print fread($file, round($download_rate));
                                 flush();
                             }
                             fclose($file);
                         } else {
                             $offset = 0;
-                            $length = $fileSize;
-                            if (isset($_SERVER['HTTP_RANGE'])) {
-                                preg_match('/bytes=(\\d+)-(\\d+)?/', $_SERVER['HTTP_RANGE'], $matches);
-                                $offset = intval($matches[1]);
+                            $length = $fileSize; 
+                            if(isset($_SERVER['HTTP_RANGE'])) 
+                            { 
+                                preg_match('/bytes=(\d+)-(\d+)?/', $_SERVER['HTTP_RANGE'], $matches); 
+                                $offset = intval($matches[1]); 
                                 $length = intval($matches[2]) - $offset;
-                                $this->debug("Will offset range of lenght {$length} starting at {$offset} for {$filename}");
-                                $fhandle = fopen($lastBckupPath, 'r');
-                                fseek($fhandle, $offset);
-                                $data = fread($fhandle, $length);
-                                fclose($fhandle);
-                                header('HTTP/1.1 206 Partial Content');
-                                header('Content-Range: bytes ' . $offset . '-' . ($offset + $length) . '/' . $fileSize);
+                                $this->debug("Will offset range of lenght $length starting at $offset for $filename");
+                                $fhandle = fopen($lastBckupPath, 'r'); 
+                                fseek($fhandle, $offset); 
+                                $data = fread($fhandle, $length); 
+                                fclose($fhandle); 
+                                header('HTTP/1.1 206 Partial Content'); 
+                                header('Content-Range: bytes ' . $offset . '-' . ($offset + $length) . '/' . $fileSize); 
                             }
-                            $chunksize = 8 * (1024 * 1024);
-                            $handle = fopen($lastBckupPath, 'rb');
-                            wp_ob_end_flush_all();
-                            $buffer = '';
+                            $chunksize = 8 * (1024 * 1024); 
+                            $handle = fopen($lastBckupPath, 'rb'); 
+                            wp_ob_end_flush_all(); 
+                            $buffer = ''; 
                             $maxAllowedMemory = ini_get('memory_limit');
-                            if (preg_match('/^(\\d+)(.)$/', $maxAllowedMemory, $matches)) {
+                            if (preg_match('/^(\d+)(.)$/', $maxAllowedMemory, $matches)) {
                                 if (strtoupper($matches[2]) == 'G') {
-                                    $maxAllowedMemory = $matches[1] * 1024 * 1024 * 1024;
+                                    $maxAllowedMemory = $matches[1] * 1024 * 1024 * 1024; 
+                                } else if (strtoupper($matches[2]) == 'M') {
+                                    $maxAllowedMemory = $matches[1] * 1024 * 1024; 
+                                } else if (strtoupper($matches[2]) == 'K') {
+                                    $maxAllowedMemory = $matches[1] * 1024; 
                                 } else {
-                                    if (strtoupper($matches[2]) == 'M') {
-                                        $maxAllowedMemory = $matches[1] * 1024 * 1024;
-                                    } else {
-                                        if (strtoupper($matches[2]) == 'K') {
-                                            $maxAllowedMemory = $matches[1] * 1024;
-                                        } else {
-                                            $maxAllowedMemory = $matches[1];
-                                        }
-                                    }
+                                    $maxAllowedMemory = $matches[1]; 
                                 }
                             }
                             $memoryLimit = $maxAllowedMemory - memory_get_usage(true);
-                            $this->debug("Memory limit before downloading {$filename} : " . round($memoryLimit / 1024 / 1024) . " Mb left on " . round($maxAllowedMemory / 1024 / 1024) . " Mb");
-                            while (!feof($handle) && connection_status() === CONNECTION_NORMAL && $memoryLimit > $chunksize * 2) {
-                                $buffer = fread($handle, $chunksize);
-                                print $buffer;
-                                flush();
-                                $memoryLimit = $maxAllowedMemory - memory_get_usage(true);
-                                $this->debug("Memory limit while downloading {$filename} : " . round($memoryLimit / 1024 / 1024) . " Mb");
+                            $this->debug("Memory limit before downloading $filename : "
+                            . round($memoryLimit / 1024 / 1024) . " Mb left on "
+                            . round($maxAllowedMemory  / 1024 / 1024)." Mb");
+                            while (!feof($handle) && (connection_status() === CONNECTION_NORMAL)
+                            && $memoryLimit > ($chunksize * 2))
+                            {
+                              $buffer = fread($handle, $chunksize); 
+                              print $buffer; 
+                              flush();
+                              $memoryLimit = $maxAllowedMemory - memory_get_usage(true);
+                              $this->debug("Memory limit while downloading $filename : "
+                              . round($memoryLimit / 1024 / 1024) . " Mb");
                             }
-                            if (connection_status() !== CONNECTION_NORMAL) {
-                                $this->debug("Having aborted connection for {$filename} : " . connection_status());
-                            }
+                            if(connection_status() !== CONNECTION_NORMAL) 
+                            { 
+                                $this->debug("Having aborted connection for $filename : " . connection_status());
+                            } 
                             fclose($handle);
                         }
                     }
-                    $this->debug("Succed to download {$filename}. {$downloadReport}");
+                    $this->debug("Succed to download $filename. $downloadReport");
                     http_response_code(200);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
-                $this->err("[{$anonimizedIp}] Invalid backup type {$bckUpType}");
-                echo json_encode(["error" => "[{$anonimizedIp}] " . __("Type de backup invalid", 'wa-config')]);
+                $this->err("[$anonimizedIp] Invalid backup type $bckUpType");
+                echo json_encode([
+                    "error" => "[$anonimizedIp] "
+                    . __("Type de backup invalid", 'wa-config'),
+                ]);
                 http_response_code(404);
-                wp_die();
-                return;
+                wp_die(); return;            
             }
-            public function e2e_test_do_backup(string $bckUpType, $compressionType = null, $shouldDownload = true, $shouldServeResponse = true)
-            {
+            /**
+             * Download the targeted backup type
+             * 
+             */
+            public function e2e_test_do_backup(
+                string $bckUpType,
+                $compressionType = null,
+                $shouldDownload = true,
+                $shouldServeResponse = true
+            ) {
                 $anonimizedIp = $this->get_user_ip();
                 $wpRootPath = realpath(ABSPATH);
-                if (!current_user_can($this->optAdminEditCabability) || !current_user_can('administrator')) {
-                    $this->err("e2e_test_do_backup invalid access for {$anonimizedIp}, need to be {$this->optAdminEditCabability} or administrator to do backups");
-                    echo json_encode(["error" => "Invalid access for {$anonimizedIp} registred"]);
+                if (!current_user_can($this->optAdminEditCabability)
+                || !current_user_can('administrator')) { 
+                    $this->err("e2e_test_do_backup invalid access for $anonimizedIp, need to be {$this->optAdminEditCabability} or administrator to do backups");
+                    echo json_encode([
+                        "error" => "Invalid access for $anonimizedIp registred",
+                    ]);
                     http_response_code(401);
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
                 if ('sql' === $bckUpType) {
-                    $siteSlug = sanitize_title(get_bloginfo('name'));
+                    $siteSlug = sanitize_title(get_bloginfo( 'name' ));
                     $fileExtension = $compressionType ?? '.sql';
-                    $filename = "{$siteSlug}-full-database-backup{$fileExtension}";
+                    $filename = "$siteSlug-full-database-backup$fileExtension";
                     $bckupFolder = $this->get_backup_folder();
-                    $lastBckupInfoPath = "{$bckupFolder}/plugins-and-themes.txt";
+                    $lastBckupInfoPath = "$bckupFolder/plugins-and-themes.txt";
                     wp_delete_file($lastBckupInfoPath);
                     $lbip = fopen($lastBckupInfoPath, "w");
-                    $files = glob("{$wpRootPath}/wp-content/plugins/*");
+                    $files = glob("$wpRootPath/wp-content/plugins/*");
                     foreach ($files as $f) {
                         fwrite($lbip, str_replace($wpRootPath, "", $f) . "\n");
                     }
-                    $files = glob("{$wpRootPath}/wp-content/themes/*");
+                    $files = glob("$wpRootPath/wp-content/themes/*");
                     foreach ($files as $f) {
                         fwrite($lbip, str_replace($wpRootPath, "", $f) . "\n");
                     }
                     fclose($lbip);
                     $this->e2e_test_add_in_backup_history($lastBckupInfoPath);
-                    $lastBckupPath = "{$bckupFolder}/{$filename}";
+                    $lastBckupPath = "$bckupFolder/$filename";
                     wp_delete_file($lastBckupPath);
                     $this->e2e_test_load_SQL_in_file($lastBckupPath);
                     $this->e2e_test_add_in_backup_history($lastBckupPath);
-                    $this->debug("Succed to backup sql in {$lastBckupPath}.");
+                    $this->debug("Succed to backup sql in $lastBckupPath.");
                     if ($shouldDownload) {
                         $this->e2e_test_download_last_backup($bckUpType, $compressionType);
                     } else {
                         if ($shouldServeResponse) {
-                            echo json_encode(["status" => "OK", "end_date" => date("Y/m/d H:i:s O ")]);
-                            http_response_code(200);
+                            echo json_encode([
+                                "status" => "OK",
+                                "end_date" => date("Y/m/d H:i:s O "),
+                            ]);
+                            http_response_code(200);    
                         }
                     }
                     if ($shouldServeResponse) {
@@ -943,138 +1816,142 @@ namespace WA\Config\Core {
                     }
                     return;
                 }
-                if ('simple-zip' === $bckUpType || 'full-zip' === $bckUpType) {
-                    set_time_limit(25 * 60);
-                    $siteSlug = sanitize_title(get_bloginfo('name'));
-                    $fileExtension = '.zip';
-                    $filename = "{$siteSlug}-simple-backup{$fileExtension}";
+                if ('simple-zip' === $bckUpType
+                || 'full-zip' === $bckUpType) {
+                    set_time_limit(25*60); 
+                    $siteSlug = sanitize_title(get_bloginfo( 'name' ));
+                    $fileExtension = '.zip'; 
+                    $filename = "$siteSlug-simple-backup$fileExtension";
                     $rootPath = realpath(wp_upload_dir()['basedir']);
                     if ('full-zip' === $bckUpType) {
-                        $filename = "{$siteSlug}-full-backup{$fileExtension}";
+                        $filename = "$siteSlug-full-backup$fileExtension";
                         $rootPath = $wpRootPath;
                     }
                     $bckupFolder = realpath($this->get_backup_folder());
-                    $lastBckupPath = "{$bckupFolder}/{$filename}";
+                    $lastBckupPath = "$bckupFolder/$filename";
                     wp_delete_file($lastBckupPath);
-                    $historyFolder = "{$bckupFolder}/_history";
+                    $historyFolder = "$bckupFolder/_history";
                     if (!file_exists($historyFolder)) {
                         mkdir($historyFolder, 0777, true);
-                    }
+                    } 
                     $historyFolder = realpath($historyFolder);
                     $this->e2e_test_do_backup('sql', '.tar.gz', false, false);
                     $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath), RecursiveIteratorIterator::LEAVES_ONLY);
-                    $zip = new ZipArchive();
-                    $zip->open($lastBckupPath, ZipArchive::CREATE);
+                    $zip = new ZipArchive;
+                    $zip->open($lastBckupPath, ZipArchive::CREATE); 
                     foreach ($files as $file) {
-                        if ($file->isDir()) {
-                            continue;
-                        }
+                        if ($file->isDir()) { continue; }
                         $filePath = $file->getRealPath();
                         $fileName = basename($filePath);
-                        if ("{$siteSlug}-full-backup.zip" === $fileName || "{$siteSlug}-simple-backup.zip" === $fileName || false !== strpos($filePath, $historyFolder)) {
+                        if ("$siteSlug-full-backup.zip" === $fileName
+                        || "$siteSlug-simple-backup.zip" === $fileName
+                        || false !== strpos($filePath, $historyFolder)) {
                             continue;
                         }
                         $relativePath = substr($filePath, strlen($rootPath) + 1);
-                        $this->debugVeryVerbose("Backup {$relativePath} from {$filePath} in {$lastBckupPath}.");
+                        $this->debugVerbose("Backup $relativePath from $filePath in $lastBckupPath.");
                         $zip->addFile($filePath, $relativePath);
                     }
                     $zip->close();
                     if ('simple-zip' === $bckUpType) {
                         $this->e2e_test_add_in_backup_history($lastBckupPath);
                     }
-                    $this->debug("Succed to {$bckUpType} backup to : {$lastBckupPath}");
+                    $this->debug("Succed to $bckUpType backup to : $lastBckupPath");
                     if ($shouldDownload) {
-                        $downloadSimpleZipBckupUrl = add_query_arg(['action' => 'wa-e2e-test-action', 'wa-action' => 'download-last-backup', 'wa-backup-type' => $bckUpType], admin_url('admin-ajax.php'));
-                        $this->debug("Will redirect download to : {$downloadSimpleZipBckupUrl}");
-                        if (wp_redirect($downloadSimpleZipBckupUrl)) {
-                            http_response_code(302);
-                            $this->exit();
-                            return;
+                        $downloadSimpleZipBckupUrl = add_query_arg([
+                            'action' => 'wa-e2e-test-action',
+                            'wa-action' => 'download-last-backup',
+                            'wa-backup-type' => $bckUpType,
+                        ], admin_url( 'admin-ajax.php' ));
+                        $this->debug("Will redirect download to : $downloadSimpleZipBckupUrl");
+                        if ( wp_redirect( $downloadSimpleZipBckupUrl ) ) {
+                            http_response_code(302); $this->exit(); return;
                         }
-                        echo json_encode(["error" => "Fail to redirect to {$downloadSimpleZipBckupUrl}"]);
-                        $this->err("FAIL Download redirect to : {$downloadSimpleZipBckupUrl}");
-                        wp_die();
-                        return;
+                        echo json_encode([
+                            "error" => "Fail to redirect to $downloadSimpleZipBckupUrl",
+                        ]);    
+                        $this->err("FAIL Download redirect to : $downloadSimpleZipBckupUrl");
+                        wp_die(); return;
                     } else {
                         if ($shouldServeResponse) {
-                            echo json_encode(["status" => "OK", "end_date" => date("Y/m/d H:i:s O ")]);
+                            echo json_encode([
+                                "status" => "OK",
+                                "end_date" => date("Y/m/d H:i:s O "),
+                            ]);
                             http_response_code(200);
                         }
                     }
-                    if ($shouldServeResponse) {
-                        wp_die();
-                    }
-                    return;
+                    if ($shouldServeResponse) : wp_die(); endif; return;
                 }
-                $this->err("[{$anonimizedIp}] Invalid backup type {$bckUpType}");
-                echo json_encode(["error" => "[{$anonimizedIp}] " . __("Type de backup invalid", 'wa-config')]);
+                $this->err("[$anonimizedIp] Invalid backup type $bckUpType");
+                echo json_encode([
+                    "error" => "[$anonimizedIp] "
+                    . __("Type de backup invalid", 'wa-config'),
+                ]);
                 http_response_code(404);
-                wp_die();
-                return;
+                wp_die(); return;            
             }
-            protected static $bckupStartTime = null;
-            protected function e2e_test_backup_start_time()
-            {
+            static protected $bckupStartTime = null;
+            protected function e2e_test_backup_start_time() {
                 if (!self::$bckupStartTime) {
-                    self::$bckupStartTime = date("Ymd-His_O");
+                    self::$bckupStartTime = date("Ymd-His_O"); 
                 }
                 return self::$bckupStartTime;
             }
-            protected function e2e_test_add_in_backup_history($filePath, $historySubPath = "")
-            {
-                require_once ABSPATH . '/wp-admin/includes/file.php';
-                WP_Filesystem();
-                $fs = new WP_Filesystem_Direct(null);
+            protected function e2e_test_add_in_backup_history($filePath, $historySubPath = "") {
+                $fs = wa_filesystem();
                 $bckupFolder = $this->get_backup_folder();
-                $bckupHistoryFolder = "{$bckupFolder}/_history/" . $this->e2e_test_backup_start_time();
+                $bckupHistoryFolder = "$bckupFolder/_history/"
+                . $this->e2e_test_backup_start_time() ;
                 if (!file_exists($bckupHistoryFolder)) {
                     mkdir($bckupHistoryFolder, 0777, true);
                 }
-                $historyFilePath = (strlen($historySubPath) ? "{$historySubPath}/" : "") . basename($filePath);
-                $destination = "{$bckupHistoryFolder}/{$historyFilePath}";
+                $historyFilePath = (strlen($historySubPath) ? "$historySubPath/" : "")
+                . basename($filePath);
+                $destination = "$bckupHistoryFolder/$historyFilePath";
                 $fs->copy($filePath, $destination, true);
                 unset($fs);
-                $this->debug("Succed to add backup history from {$filePath} to {$destination}");
+                $this->debug("Succed to add backup history from $filePath to $destination");
             }
-            protected function e2e_test_load_SQL_in_file($filePath)
-            {
+            protected function e2e_test_load_SQL_in_file($filePath) {
+                /** @var wpdb $wpdb*/
                 global $wpdb;
                 assert($wpdb, "Wp DB Not initialized error");
                 $dbName = DB_NAME;
                 $EOL = "</br>\n";
-                $escape = function ($value) {
+                $escape = function($value) {
                     if (is_null($value)) {
                         return "NULL";
                     }
-                    return "'" . esc_sql($value) . "'";
-                };
-                $wa_backup_sql = function () use($dbName, $EOL, $wpdb, $filePath, $escape) {
-                    $tablePrefix = "";
+                    return "'" . esc_sql($value) . "'"; 
+                };  
+                $wa_backup_sql = function () use ($dbName, $EOL, $wpdb, $filePath, $escape) {
+                    $tablePrefix = ""; 
                     $exclude_tables = [];
-                    $sql = "SHOW FULL TABLES WHERE Table_Type = 'BASE TABLE' AND Tables_in_{$dbName} LIKE '{$tablePrefix}%'";
+                    $sql = "SHOW FULL TABLES WHERE Table_Type = 'BASE TABLE' AND Tables_in_$dbName LIKE '$tablePrefix%'";
                     $tables = $wpdb->get_results($sql);
                     $tables_list = array();
                     foreach ($tables as $table_row) {
-                        $table_row = (array) $table_row;
-                        $table_name = array_shift($table_row);
+                        $table_row = (array)$table_row;
+                        $table_name = array_shift($table_row); 
                         if (!in_array($table_name, $exclude_tables)) {
                             $tables_list[] = $table_name;
                         }
                     }
-                    $dump_table = function ($dump_file, $table, $eol) use($wpdb, $escape) {
-                        $INSERT_THRESHOLD = 838860;
-                        $dump_file->write("DROP TABLE IF EXISTS `{$table}`;{$eol}");
+                    $dump_table = function ($dump_file, $table, $eol) use ($wpdb, $escape) {
+                        $INSERT_THRESHOLD = 838860; 
+                        $dump_file->write("DROP TABLE IF EXISTS `$table`;$eol");
                         $create_table = $wpdb->get_results('SHOW CREATE TABLE `' . $table . '`');
-                        $create_table_sql = ((array) $create_table[0])['Create Table'] . ';';
+                        $create_table_sql = ((array)$create_table[0])['Create Table'] . ';';
                         $dump_file->write($create_table_sql . $eol . $eol);
-                        $data = $wpdb->get_results("SELECT * FROM `{$table}`");
+                        $data = $wpdb->get_results("SELECT * FROM `$table`");
                         $insert = new InsertSqlStatement($table);
-                        foreach ($data as $row) {
+                        foreach ($data as $row) {            
                             $row_values = array();
-                            foreach ((array) $row as $value) {
+                            foreach (((array)$row) as $value) {
                                 $row_values[] = $escape($value);
                             }
-                            $insert->add_row($row_values);
+                            $insert->add_row( $row_values );
                             if ($insert->get_length() > $INSERT_THRESHOLD) {
                                 $dump_file->write($insert->get_sql() . $eol);
                                 $insert->reset();
@@ -1086,7 +1963,8 @@ namespace WA\Config\Core {
                         }
                         $dump_file->write($eol . $eol);
                     };
-                    if (preg_match('/\\.sql\\.gz$/', $filePath) || preg_match('/\\.tar\\.gz$/', $filePath)) {
+                    if (preg_match('/\.sql\.gz$/', $filePath)
+                    || preg_match('/\.tar\.gz$/', $filePath)) {
                         $dump_file = new DumpGzip($filePath);
                     } else {
                         $dump_file = new DumpPlainTxt($filePath);
@@ -1096,47 +1974,60 @@ namespace WA\Config\Core {
                     $dump_file->write("-- Host: " . DB_HOST . $eol);
                     $dump_file->write("-- DB name: " . DB_NAME . $eol);
                     $dump_file->write("-- Backup tool author : wa-config, by Miguel Monwoo, service@monwoo.com" . $eol);
-                    $dump_file->write("/*!40030 SET NAMES UTF8 */;{$eol}");
-                    $dump_file->write("/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;{$eol}");
-                    $dump_file->write("/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;{$eol}");
-                    $dump_file->write("/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;{$eol}");
-                    $dump_file->write("/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;{$eol}");
-                    $dump_file->write("/*!40103 SET TIME_ZONE='+00:00' */;{$eol}");
-                    $dump_file->write("/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;{$eol}");
-                    $dump_file->write("/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;{$eol}");
-                    $dump_file->write("/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;{$eol}");
-                    $dump_file->write("/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;{$eol}{$eol}");
+                    $dump_file->write("/*!40030 SET NAMES UTF8 */;$eol");
+                    $dump_file->write("/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;$eol");
+                    $dump_file->write("/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;$eol");
+                    $dump_file->write("/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;$eol");
+                    $dump_file->write("/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;$eol");
+                    $dump_file->write("/*!40103 SET TIME_ZONE='+00:00' */;$eol");
+                    $dump_file->write("/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;$eol");
+                    $dump_file->write("/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;$eol");
+                    $dump_file->write("/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;$eol");
+                    $dump_file->write("/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;$eol$eol");
                     foreach ($tables_list as $table) {
                         $dump_table($dump_file, $table, $eol);
                     }
-                    $dump_file->write("{$eol}{$eol}");
-                    $dump_file->write("/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;{$eol}");
-                    $dump_file->write("/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;{$eol}");
-                    $dump_file->write("/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;{$eol}");
-                    $dump_file->write("/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;{$eol}");
-                    $dump_file->write("/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;{$eol}");
-                    $dump_file->write("/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;{$eol}");
-                    $dump_file->write("/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;{$eol}{$eol}");
+                    $dump_file->write("$eol$eol");
+                    $dump_file->write("/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;$eol");
+                    $dump_file->write("/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;$eol");
+                    $dump_file->write("/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;$eol");
+                    $dump_file->write("/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;$eol");
+                    $dump_file->write("/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;$eol");
+                    $dump_file->write("/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;$eol");
+                    $dump_file->write("/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;$eol$eol");
                     $dump_file->end();
-                    $this->debug("Did backup SQL to :{$EOL}{$dump_file->file_location}");
+                    $this->debug("Did backup SQL to :$EOL{$dump_file->file_location}");
                 };
                 $wa_backup_sql();
             }
-            protected function _000_e2e_test__bootstrap()
+            protected function  _000_e2e_test__bootstrap()
             {
-                wp_cache_delete("alloptions", "options");
-                $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
-                $maxTestDelay = 1000 * 60 * 15;
+                if ($this->p_higherThanOneCallAchievedSentinel('_000_e2e_test__bootstrap')) {
+                    return; 
+                }
+                wp_cache_delete("alloptions", "options"); 
+                $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
+                $maxTestDelay = 1000 * 60 * 15; 
                 if ($E2ETestsOptions['access-open'] ?? false) {
-                    if (time() - $E2ETestsOptions['access-open'] > $maxTestDelay) {
-                        $this->err("MANUAL RESET of e2e access-open, that sound buggy since open for more than 15 minutes");
+                    if ((time() - $E2ETestsOptions['access-open']) > $maxTestDelay) {
+                        $this->err(
+                            "MANUAL RESET of e2e access-open, that sound buggy since open for more than 15 minutes",
+                        );
                         $this->e2e_test_clean_and_restore_test_users();
-                        update_option($this->eAdminConfigE2ETestsOptsKey, []);
+                        update_option($this->eConfigE2ETestsOptsKey, []);
                         return;
                     }
-                    $default_opts = array('http' => array('header' => "wa-e2e-test-mode: wa-config-e2e-tests\r\n" . ""));
+                    $default_opts = array(
+                        'http'=>array(
+                            'header'=>"wa-e2e-test-mode: wa-config-e2e-tests\r\n" .
+                                    "", 
+                        )
+                    );
                     if ($this->shouldDebug) {
-                        $default_opts["ssl"] = array("verify_peer" => false, "verify_peer_name" => false);
+                        $default_opts["ssl"] = array(
+                            "verify_peer"=>false,
+                            "verify_peer_name"=>false,
+                        );
                         $default_opts["notification"] = [$this, "e2e_test_stream_notification_callback"];
                         add_filter('http_request_args', function ($args, $url) {
                             $args['headers']['wa-e2e-test-mode'] = 'wa-config-e2e-tests';
@@ -1146,56 +2037,94 @@ namespace WA\Config\Core {
                     }
                     $default = stream_context_set_default($default_opts);
                     if ('wa-config-e2e-tests' !== ($_SERVER['HTTP_WA_E2E_TEST_MODE'] ?? false)) {
-                        $this->debug("Website under test mode, serving maintenance page for external access");
-                        $this->debugVeryVerbose("Request headers :", array_filter($_SERVER, function ($v, $k) {
-                            return substr($k, 0, 5) === 'HTTP_';
-                        }, ARRAY_FILTER_USE_BOTH));
+                        $this->debug(
+                            "Website under test mode, serving maintenance page for external access",
+                        );
+                        $this->debugVeryVerbose(
+                            "Request headers :",
+                            array_filter($_SERVER, function($v, $k) {
+                                return substr($k, 0, 5) === 'HTTP_';
+                            }, ARRAY_FILTER_USE_BOTH)
+                        );
                         echo "<strong>Tests en cours, merci de revenir plus tard (15 minutes à 2 heures de délais). MAINTENANCE MODE, please come back later.</strong>";
-                        wp_die();
-                        return;
+                        wp_die(); return;
                     }
                 }
             }
-            public function e2e_test_stream_notification_callback($notification_code, $severity, $message, $message_code, $bytes_transferred, $bytes_max)
-            {
-                if (STREAM_NOTIFY_REDIRECTED === $notification_code) {
-                    $this->debug("e2e_test_stream_notification Redirection vers : ", $message);
+            /**
+             * Dev in progress, not ready yet
+             */
+            public function e2e_test_stream_notification_callback(
+                $notification_code, $severity, $message,
+                $message_code, $bytes_transferred, $bytes_max) {
+                if (STREAM_NOTIFY_REDIRECTED === $notification_code)  {
+                    $this->debug(
+                        "e2e_test_stream_notification Redirection vers : ", $message
+                    );
                 } else {
-                    $this->debug("e2e_test_stream_notification [{$notification_code}]");
+                    $this->debug(
+                        "e2e_test_stream_notification [$notification_code]"
+                    );
                 }
             }
-            protected function _000_e2e_test__load()
+            protected function  _000_e2e_test__load()
             {
-                wp_cache_delete("alloptions", "options");
-                $E2ETestsOptions = get_option($this->eAdminConfigE2ETestsOptsKey, []);
-                add_action('wp_ajax_nopriv_wa-e2e-test-action', [$this, 'e2e_test_action']);
-                add_action('wp_ajax_wa-e2e-test-action', [$this, 'e2e_test_action']);
-                if ($E2ETestsOptions['access-open'] ?? false) {
+                if ($this->p_higherThanOneCallAchievedSentinel('_000_e2e_test__load')) {
+                    return; 
+                }
+                wp_cache_delete("alloptions", "options"); 
+                $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
+                add_action(
+                    'wp_ajax_nopriv_wa-e2e-test-action', 
+                    [$this, 'e2e_test_action']
+                );
+                add_action(
+                    'wp_ajax_wa-e2e-test-action', 
+                    [$this, 'e2e_test_action']
+                );
+                if ($E2ETestsOptions['access-open'] ?? false || $this->shouldDebugVeryVerbose) {
                     $dHandler = array($this, 'e2e_tests_filter_wp_die_callback');
-                    add_filter('wp_die_ajax_handler', $dHandler, 100, 3);
-                    add_filter('wp_die_json_handler', $dHandler, 100, 3);
-                    add_filter('wp_die_jsonp_handler', $dHandler, 100, 3);
-                    add_filter('wp_die_xmlrpc_handler', $dHandler, 100, 3);
-                    add_filter('wp_die_xml_handler', $dHandler, 100, 3);
-                    add_filter('wp_die_handler', $dHandler, 100, 3);
-                    add_filter('wp_mail', [$this, 'e2e_tests_emails_middleware'], 10, 1);
+                    add_filter('wp_die_ajax_handler', $dHandler, 100);
+                    add_filter('wp_die_json_handler', $dHandler, 100);
+                    add_filter('wp_die_jsonp_handler', $dHandler, 100);
+                    add_filter('wp_die_xmlrpc_handler', $dHandler, 100);
+                    add_filter('wp_die_xml_handler', $dHandler, 100);
+                    add_filter('wp_die_handler', $dHandler, 100);
+                    add_filter('wp_mail',[$this, 'e2e_tests_emails_middleware'], 10,1);
                 }
             }
+            /**
+             * Check if it's the fisrt time a method is called over all App instances
+             * 
+             * @param string $methodeName The method name to test
+             * @return boolean true if it's the first time the method is called, false otherwise
+             * @see Parallelizable::p_higherThanOneCallAchievedSentinel
+             */
             public function isFirstMethodCall(string $methodeName)
             {
-                $isFirstCall = key_exists($methodeName, self::$_methodes) ? self::$_methodes[$methodeName][self::$_statsCountKey] === 0 : true;
+                $isFirstCall = key_exists($methodeName, self::$_methodes)
+                    ? self::$_methodes[$methodeName][self::$_statsCountKey] === 0
+                    : true;
                 if ($isFirstCall) {
-                    $this->debugVeryVerbose("First call by {$this->iId} for {$methodeName}");
+                    $this->debugVeryVerbose(
+                        "First call by {$this->iId} for $methodeName"
+                    );
                 }
                 return $isFirstCall;
             }
-            public function methodeCalledFrom(string $methodeName) : void
+            /**
+             * Register a method call by it's method name
+             * 
+             * @param string $methodeName The method name to test
+             * @see Parallelizable::p_higherThanOneCallAchievedSentinel()
+             */
+            public function methodeCalledFrom(string $methodeName): void
             {
                 $iId = $this->iId;
                 if (!key_exists($methodeName, self::$_methodes)) {
                     self::$_methodes[$methodeName] = [];
                 }
-                $statistics =& self::$_methodes[$methodeName];
+                $statistics = &self::$_methodes[$methodeName];
                 if (!key_exists(self::$_statsCountKey, $statistics)) {
                     $statistics[self::$_statsCountKey] = 0;
                 }
@@ -1204,55 +2133,79 @@ namespace WA\Config\Core {
                     $statistics[$iId] = 0;
                 }
                 $statistics[$iId]++;
-                $this->debugVeryVerbose("Methode statistics after {$methodeName} call", self::$_methodes);
+                $this->debugVeryVerbose("Methode statistics after $methodeName call", self::$_methodes);
             }
+            /**
+             * AppInterface constructor
+             * 
+             * Should be called in children constructor,
+             * after child initialisation of instances properties
+             * 
+             * @param string $iPrefix The Identifiable prefix name of current App instance
+             * @return void
+             */
             public function __construct(string $iPrefix)
             {
-                add_action('admin_notices', [new Notice(), Notice::class . "::displayNotices"]);
+                add_action('admin_notices', [
+                    new Notice(),
+                    Notice::class . "::displayNotices"
+                ]);
                 $this->iPrefix = $iPrefix;
-                $lastInstance = self::instanceByRelativePath($this->pluginRelativePath, -1);
-                if (!$lastInstance) {
-                }
                 self::addInstance($this);
             }
-            public function bootstrap() : void
+            /**
+             * Call all __bootstrap functions of the plugin.
+             *
+             * Triggered from main plugin file, juste after class constructor.
+             * It will call all owned ```{.*}__bootstrap()``` functions
+             */
+            public function bootstrap(): void
             {
                 global $wp;
-                $this->debug("Bootstraping plugin\n");
+                $this->debug("\n");
                 if ($_SERVER && isset($_SERVER['SERVER_PORT'])) {
-                    $protocole = ($_SERVER["HTTPS"] == "on" ? "https" : "http") ?? "http";
+                    $protocole = (($_SERVER["HTTPS"] == "on") ? "https" : "http") ?? "http";
                     $domain = $_SERVER['HTTP_HOST'];
-                    if ($_SERVER["SERVER_PORT"] != "80" && $_SERVER["SERVER_PORT"] != "443") {
+                    if (
+                        $_SERVER["SERVER_PORT"] != "80"
+                        && $_SERVER["SERVER_PORT"] != "443"
+                    ) {
                         $domain .= ":" . $_SERVER["SERVER_PORT"];
                     }
                     $uri = $_SERVER['REQUEST_URI'];
-                    $url = "{$protocole}://{$domain}{$uri}";
-                    $this->debug("\n\nFrom :\n {$url}");
+                    $url = "$protocole://$domain$uri";
+                    $this->debug("Plugin bootstraping\n\nFrom :\n $url");
                 } else {
                     global $argv;
-                    $this->debug("\n\nFrom :\n {$argv[0]}");
+                    $this->debug("Plugin bootstraping\n\nFrom :\n {$argv[0]}");
                 }
                 $methods = get_class_methods($this);
                 foreach ($methods as $m) {
                     if (strEndsWith($m, "__bootstrap")) {
-                        $this->{$m}();
-                        $this->debugVeryVerbose("Will bootstrap with: {$m}");
+                        $this->$m();
+                        $this->debugVerbose("Bootstrap with: '$m'");
                     }
                 }
                 add_action('plugins_loaded', [$this, 'loadPlugin'], 11);
                 $this->debugVerbose("Did bootstrap plugin");
             }
-            public function loadPlugin() : void
+            /**
+             * Call all __load functions of the plugin.
+             *
+             * Triggered by 'plugins_loaded' action.
+             * It will call all owned ```{.*}__load()``` functions
+             */
+            public function loadPlugin(): void
             {
                 $this->debug("Loading plugin from action 'plugins_loaded'");
                 $methods = get_class_methods($this);
                 foreach ($methods as $m) {
                     if (strEndsWith($m, "__load")) {
-                        $this->debugVeryVerbose("Will Init with: {$m}");
-                        $this->{$m}();
+                        $this->debugVerbose("Load with: '$m'");
+                        $this->$m();
                     }
                 }
-                $this->debugVerbose("Did init plugin");
+                $this->debugVerbose("Did load plugin");
             }
         }
     }
@@ -1260,7 +2213,15 @@ namespace WA\Config\Core {
 namespace WA\Config\Utils {
     use WA\Config\Core\AppInterface;
     use Walker_Nav_Menu_Checklist;
+    use WP_Filesystem_Direct;
     if (!function_exists(strEndsWith::class)) {
+        /**
+         * Check if string $haystack end with $needle
+         * 
+         * @param string $haystack The string to search in
+         * @param string $needle The lookup
+         * @return boolean true if $haystack end with $needle
+         */
         function strEndsWith($haystack, $needle)
         {
             $length = strlen($needle);
@@ -1271,187 +2232,293 @@ namespace WA\Config\Utils {
         }
     }
     if (!function_exists(_l::class)) {
-        function _l($text, $textdomain, $locale)
-        {
+        /**
+         * Get a translated string in the given translated domain
+         * 
+         * @param string $string The string to translate
+         * @param string $textdomain The 'textdomain id' to load the translations from (ex : wa-config)
+         * @param string $locale The locale to load the related local value (ex : fr_FR)
+         */
+        function _l($text, $textdomain, $locale){
             global $l10n;
-            if (isset($l10n[$textdomain])) {
-                $backup = $l10n[$textdomain];
-            }
+            if(isset($l10n[$textdomain])) $backup = $l10n[$textdomain];
             $app = AppInterface::instance();
-            $langFolder = $app->pluginRoot . "languages/{$textdomain}-{$locale}.mo";
-            $app->assertLog(load_textdomain($textdomain, $langFolder), "Fail to load textdomain {$textdomain} for {$locale}" . " at {$langFolder}");
+            $langFolder = $app->pluginRoot . "languages/$textdomain-$locale.mo";
+            $app->assertLog(
+                load_textdomain(
+                    $textdomain,
+                    $langFolder
+                ),
+                "Fail to load textdomain $textdomain for $locale"
+                    . " at $langFolder"
+            );
             $translation = __($text, $textdomain);
-            if (isset($backup)) {
-                $l10n[$textdomain] = $backup;
-            }
+            if(isset($backup)) $l10n[$textdomain] = $backup;
             return $translation;
         }
-        function _lx($text, $context, $textdomain, $locale)
-        {
+        /**
+         * Get a translated string in the given translated domain
+         * 
+         * @param string $text The string to translate
+         * @param string $context The translator context helper (txt advice for translator)
+         * @param string $textdomain The 'textdomain id' to load the translations from (ex : wa-config)
+         * @param string $locale The locale to load the related local value (ex : fr_FR)
+         */
+        function _lx($text, $context, $textdomain, $locale){
             global $l10n;
-            if (isset($l10n[$textdomain])) {
-                $backup = $l10n[$textdomain];
-            }
+            if(isset($l10n[$textdomain])) $backup = $l10n[$textdomain];
             $app = AppInterface::instance();
-            $langFolder = $app->pluginRoot . "languages/{$textdomain}-{$locale}.mo";
-            $app->assertLog(load_textdomain($textdomain, $langFolder), "Fail to load textdomain '{$textdomain}' for '{$locale}'" . " at {$langFolder}");
+            $langFolder = $app->pluginRoot . "languages/$textdomain-$locale.mo";
+            $app->assertLog(
+                load_textdomain(
+                    $textdomain,
+                    $langFolder
+                ),
+                "Fail to load textdomain '$textdomain' for '$locale'"
+                    . " at $langFolder"
+            );
             $translation = _x($text, $context, $textdomain);
-            if (isset($backup)) {
-                $l10n[$textdomain] = $backup;
-            }
+            if(isset($backup)) $l10n[$textdomain] = $backup;
             return $translation;
         }
     }
+    if (!function_exists(wa_filesystem::class)) {
+        /**
+         * Return our wa filesystem (Direct mode)
+         * 
+         * @return WP_Filesystem_Direct initilalized filesystem
+         */
+        function wa_filesystem(){
+            require_once ( ABSPATH . '/wp-admin/includes/file.php' );
+            WP_Filesystem();
+            $fs = new WP_Filesystem_Direct(null);
+            return $fs;
+        }
+    }
+    if (!function_exists(wa_redirect::class)) {
+        /**
+         * Redirect to the targeted url using an optional appHandler.
+         * 
+         * Follow this call by a return statement.
+         * It will exit on regular usage and return in test mode launch.
+         * 
+         * @param string $redirectUrl The url to redirect to
+         * @param AppInterface $appHandler The app used to handle exit and debugs
+         */
+        function wa_redirect($redirectUrl, $appHandler = null){
+            if (!$appHandler) {
+                $appHandler = AppInterface::instance();
+            }
+            if ( wp_redirect( $redirectUrl ) ) {
+                echo "<a href='$redirectUrl'> [302] Redirecting to $redirectUrl...</a>";
+                $appHandler->exit(); return;
+            } else {
+                echo "<a class='fail-wp-redirect' href='$redirectUrl'> [302] Redirecting to $redirectUrl... please click this link.</a>";
+                $appHandler->debug("wa_redirect Fail to redirect to : $redirectUrl");
+            }
+        }
+    }
     if (!trait_exists(PdfToHTMLable::class)) {
+        /**
+         * This trait will load pdf.js script
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         trait PdfToHTMLable
         {
-            protected function _010_pdfAble_scripts__load()
+            protected function  _010_pdfAble_scripts__load()
             {
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_pdfAble_scripts__load')) {
-                    return;
+                    return; 
                 }
             }
-            public function pdfAble_scripts_do_enqueue() : void
+            /**
+             * wp_enqueue_script needed js for pdf.js as 'wa-config-pdf-to-html-js'
+             */
+            public function pdfAble_scripts_do_enqueue(): void
             {
                 $this->debugVerbose("Will pdfAble_scripts_do_enqueue");
                 $jsFile = "assets/pdfjs/build/pdf.js";
-                add_filter('script_loader_tag', [$this, 'apdfAble_scripts_tag'], 10, 3);
-                wp_enqueue_script('wa-config-pdf-to-html-js', plugins_url($jsFile, $this->pluginFile), [], $this->pluginVersion, true);
+                add_filter(
+                    'script_loader_tag',
+                    [$this, 'apdfAble_scripts_tag'],
+                    10,
+                    3
+                );
+                wp_enqueue_script(
+                    'wa-config-pdf-to-html-js',
+                    plugins_url($jsFile, $this->pluginFile),
+                    [],
+                    $this->pluginVersion,
+                    true
+                );
             }
+            /**
+             * Add async script tags feature for 'wa-config-pdf-to-html-js'.
+             *
+             * @param string $tag HTML for the script tag.
+             * @param string $handle Handle of script.
+             * @param string $src Src of script.
+             * @return string the feshly updated script tag
+             */
             public function apdfAble_scripts_tag($tag, $handle, $source)
             {
                 if ('wa-config-pdf-to-html-js' === $handle) {
                     ob_start();
                     echo <<<TEMPLATE
-    <script
-    type="text/javascript"
-    src="{$source}"
-    id="{$handle}"
-    async
-    ></script>
-TEMPLATE;
+                        <script
+                        type="text/javascript"
+                        src="$source"
+                        id="$handle"
+                        async
+                        ></script>
+                    TEMPLATE;
                     $tag = ob_get_clean();
                     $this->debugVerbose("apdfAble_scripts_tag", $tag);
                 } else {
-                    $this->debugVerbose("script_loader_tag {$handle}");
+                    $this->debugVerbose("script_loader_tag $handle");
                 }
                 return $tag;
             }
         }
     }
-    if (!class_exists(DumpInterface::class)) {
-        abstract class DumpInterface
-        {
+    if (!class_exists(DumpInterface::class)) { 
+        /**
+         * This abstract class will define a dump interface
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        abstract class DumpInterface {
             abstract function open();
             abstract function write($string);
             abstract function end();
-            function __construct($file)
-            {
+            function __construct($file) {
                 $this->file_location = $file;
                 $this->fh = $this->open();
                 if (!$this->fh) {
-                    throw new \Exception("Couldn't create DUMP file {$file}");
+                    throw new \Exception("Couldn't create DUMP file $file");
                 }
             }
         }
     }
-    if (!class_exists(DumpPlainTxt::class)) {
-        class DumpPlainTxt extends DumpInterface
-        {
-            function open()
-            {
+    if (!class_exists(DumpPlainTxt::class)) { 
+        /**
+         * This class will dump to a text file
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        class DumpPlainTxt extends DumpInterface {
+            function open() {
                 return fopen($this->file_location, 'w');
             }
-            function write($string)
-            {
+            function write($string) {
                 return fwrite($this->fh, $string);
             }
-            function end()
-            {
+            function end() {
                 return fclose($this->fh);
             }
         }
     }
-    if (!class_exists(DumpGzip::class)) {
-        class DumpGzip extends DumpInterface
-        {
-            function open()
-            {
+    if (!class_exists(DumpGzip::class)) { 
+        /**
+         * This class will dump to a .gz file (gzip compressed)
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        class DumpGzip extends DumpInterface {
+            function open() {
                 return gzopen($this->file_location, 'wb9');
             }
-            function write($string)
-            {
+            function write($string) {
                 return gzwrite($this->fh, $string);
             }
-            function end()
-            {
+            function end() {
                 return gzclose($this->fh);
             }
         }
     }
-    if (!class_exists(InsertSqlStatement::class)) {
-        class InsertSqlStatement
-        {
+    if (!class_exists(InsertSqlStatement::class)) { 
+        /**
+         * This class will help to format a SQL insert statement
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        class InsertSqlStatement {
             private $rows = array();
             private $length = 0;
             private $table;
-            function __construct($table)
-            {
+            function __construct($table) {
                 $this->table = $table;
             }
-            function reset()
-            {
+            function reset() {
                 $this->rows = array();
                 $this->length = 0;
             }
-            function add_row($row)
-            {
+            function add_row($row) {
                 $row = '(' . implode(",", $row) . ')';
                 $this->rows[] = $row;
                 $this->length += strlen($row);
             }
-            function get_sql()
-            {
+            function get_sql() {
                 if (empty($this->rows)) {
                     return false;
                 }
-                return 'INSERT INTO `' . $this->table . '` VALUES ' . implode(",\n", $this->rows) . '; ';
+                return 'INSERT INTO `' . $this->table . '` VALUES ' . 
+                    implode(",\n", $this->rows) . '; ';
             }
-            function get_length()
-            {
+            function get_length() {
                 return $this->length;
             }
         }
     }
-    if (!trait_exists(TranslatableProduct::class)) {
+    if (!trait_exists(TranslatableProduct::class)) { 
+        /**
+         * This trait will add the polylang language feature to WooCommerce product post type
+         * 
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         trait TranslatableProduct
         {
             protected function _010_t_product__load()
             {
+                $this->debugVerbose("Will _010_t_product__load");
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_t_product_post__load')) {
-                    return;
+                    return; 
                 }
-                if (function_exists('pll_count_posts')) {
-                    add_filter('pll_get_post_types', [$this, 't_product_post_type_polylang_register'], 10, 2);
-                    add_filter('pll_get_taxonomies', [$this, 't_product_category_taxo_polylang_register'], 10, 2);
+                if ( function_exists( 'pll_count_posts' ) ) {
+                    add_filter( 'pll_get_post_types', [$this, 't_product_post_type_polylang_register'], 10, 2 );
+                    add_filter( 'pll_get_taxonomies', [$this, 't_product_category_taxo_polylang_register'], 10, 2 );
                 }
             }
-            public function t_product_post_type_polylang_register($post_types, $is_settings)
-            {
+            /**
+             * Register woocommerce product post type with polylang plugin
+             */
+            public function t_product_post_type_polylang_register( $post_types, $is_settings ) {
+                $this->debugVerbose("Will t_product_post_type_polylang_register");
                 $missionCptKey = 'product';
-                if ($is_settings) {
-                    unset($post_types[$missionCptKey]);
+                if ( $is_settings ) {
+                    unset( $post_types[$missionCptKey] );
                 } else {
                     $post_types[$missionCptKey] = $missionCptKey;
                 }
                 return $post_types;
             }
-            public function t_product_category_taxo_polylang_register($taxonomies, $is_settings)
-            {
-                $productTaxoList = ['product_tag', 'product_shipping_class', 'product_type', 'product_visibility', 'product_cat'];
+            /**
+             * Register woocommerce product related taxonomy with polylang plugin
+             */
+            public function t_product_category_taxo_polylang_register( $taxonomies, $is_settings ) {
+                $this->debugVerbose("Will t_product_category_taxo_polylang_register");
+                $productTaxoList = ['product_tag', 'product_shipping_class'
+                , 'product_type', 'product_visibility', 'product_cat'];
                 foreach ($productTaxoList as $taxoKey) {
-                    if ($is_settings) {
-                        unset($taxonomies[$taxoKey]);
+                    if ( $is_settings ) {
+                        unset( $taxonomies[$taxoKey] );
                     } else {
                         $taxonomies[$taxoKey] = $taxoKey;
                     }
@@ -1462,6 +2529,8 @@ TEMPLATE;
     }
 }
 namespace WA\Config\Admin {
+    use ArrayObject;
+    use Exception;
     use PhpParser\Node\Stmt\Foreach_;
     use ReflectionClass;
     use SplPriorityQueue;
@@ -1475,24 +2544,42 @@ namespace WA\Config\Admin {
     use WA\Config\Core\WPFilters;
     use WA\Config\Utils\PdfToHTMLable;
     use Walker_Nav_Menu_Checklist;
+    use WP;
     use WP_Error;
     use WP_Filesystem_Direct;
     use WP_REST_Request;
     use WP_REST_Response;
     use ZipArchive;
     use function WA\Config\Utils\_lx;
-    if (!class_exists(Notice::class)) {
+    use function WA\Config\Utils\wa_filesystem;
+    use function WA\Config\Utils\wa_redirect;
+    if (!class_exists(Notice::class)) { 
+        /**
+         * This class will hold the admin notice that show on WordPress admin panels
+         * 
+         * It can be use from anywhere to add a 120 secondes cached notice message for :
+         * - Error : {@see Notice::displayError()}
+         * - Info : {@see Notice::displayInfo()}
+         * - Warning : {@see Notice::displayWarning()}
+         * - Success : {@see Notice::displaySuccess()}
+         * 
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         class Notice
         {
             const NOTICES_FIELD_ID = 'wa_config_admin_notices';
-            public function displayNotices() : void
+            /**
+             * Echo the Notice report to inject in WA Config admin panels
+             */
+            public function displayNotices(): void
             {
                 $notices = get_transient(self::NOTICES_FIELD_ID);
                 if (!$notices) {
                     return;
                 }
                 foreach ($notices as $idx => $notice) {
-                    $message = isset($notice['message']) ? $notice['message'] : false;
+                    $message     = isset($notice['message']) ? $notice['message'] : false;
                     $noticeLevel = !empty($notice['notice-level']) ? $notice['notice-level'] : 'notice-error';
                     if ($message) {
                         echo "<div class='notice {$noticeLevel} is-dismissible'><p>{$message}</p></div>";
@@ -1500,31 +2587,61 @@ namespace WA\Config\Admin {
                 }
                 delete_transient(self::NOTICES_FIELD_ID);
             }
-            public static function displayError($message) : void
+            /**
+             * Will save an Error Notice to display for 120 seconds.
+             *
+             * @param string $message Content of the notice.
+             */
+            public static function displayError($message): void
             {
                 self::updateOption($message, 'notice-error');
             }
+            /**
+             * Will save a Warning Notice to display for 120 seconds.
+             *
+             * @param string $message Content of the notice.
+             */
             public static function displayWarning($message)
             {
                 self::updateOption($message, 'notice-warning');
             }
+            /**
+             * Will save an Info Notice to display for 120 seconds.
+             *
+             * @param string $message Content of the notice.
+             */
             public static function displayInfo($message)
             {
                 self::updateOption($message, 'notice-info');
             }
+            /**
+             * Will save an Success Notice to display for 120 seconds.
+             *
+             * @param string $message Content of the notice.
+             */
             public static function displaySuccess($message)
             {
                 self::updateOption($message, 'notice-success');
             }
             protected static function updateOption($message, $noticeLevel)
             {
-                $notices = get_transient(self::NOTICES_FIELD_ID) ?? [];
-                $notices[] = ['message' => $message, 'notice-level' => $noticeLevel];
+                $notices = ($notices = get_transient(self::NOTICES_FIELD_ID)) ? $notices : [];
+                $notices[] = [
+                    'message' => $message,
+                    'notice-level' => $noticeLevel
+                ];
                 set_transient(self::NOTICES_FIELD_ID, $notices, 120);
             }
         }
     }
-    if (!trait_exists(EditableAdminScripts::class)) {
+    if (!trait_exists(EditableAdminScripts::class)) { 
+        /**
+         * This trait loads the wa-config administration sytesheet
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         */
         trait EditableAdminScripts
         {
             use Editable;
@@ -1532,99 +2649,361 @@ namespace WA\Config\Admin {
             {
                 if (!is_admin()) {
                     $this->debugVerbose("Will avoid _010_e_admin_scripts__load");
-                    return;
+                    return; 
                 }
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_admin_scripts__load')) {
-                    return;
+                    return; 
                 }
-                add_action('admin_enqueue_scripts', [$this, 'e_admin_scripts_do_enqueue']);
+                add_action(
+                    'admin_enqueue_scripts', 
+                    [$this, 'e_admin_scripts_do_enqueue']
+                );
             }
-            public function e_admin_scripts_do_enqueue() : void
+            /**
+             * Enqueue stylesheet and javascripts for wp-admin customisation by wa-config.
+             * 
+             * wp_enqueue_style the admin assets/styles-admin.css script from plugin directory.
+             * wp_enqueue_script the admin assets/app-admin.js script from plugin directory.
+             */
+            public function e_admin_scripts_do_enqueue(): void
             {
                 $this->debugVerbose("Will e_admin_scripts_do_enqueue for '" . get_current_screen()->id . "'");
                 $cssFile = "assets/styles-admin.css";
-                wp_enqueue_style('wa-config-css-admin', plugins_url($cssFile, $this->pluginFile), [], $this->pluginVersion);
+                wp_enqueue_style(
+                    'wa-config-css-admin',
+                    plugins_url($cssFile, $this->pluginFile),
+                    [],
+                    $this->pluginVersion
+                );
                 $jsFile = "assets/app-admin.js";
                 $jsUrl = plugins_url($jsFile, $this->pluginFile);
-                wp_enqueue_script('wa-admin-js', $jsUrl, ['jquery', 'suggest'], $this->pluginVersion, true);
+                wp_enqueue_script(
+                    'wa-admin-js',
+                    $jsUrl,
+                    [ 'jquery', 'suggest' ],
+                    $this->pluginVersion,
+                    true
+                );
             }
         }
     }
-    if (!trait_exists(EditableMissionPost::class)) {
+    if (!trait_exists(OrderablePluginLoads::class)) { 
+        /**
+         * This trait will ensure that master plugin is loaded first
+         * 
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         */
         trait OrderablePluginLoads
         {
             protected function _000_o_plugin_loads__bootstrap()
             {
-                add_action('activated_plugin', [$this, 'o_plugin_loads_master_first']);
+                if ($this->p_higherThanOneCallAchievedSentinel('_000_o_plugin_loads__bootstrap')) {
+                    return; 
+                }
+                if (is_admin()) {
+                    $this->debug("Will _000_o_plugin_loads__bootstrap");
+                    add_action( 'activated_plugin', [$this, 'o_plugin_loads_master_first']);
+                }
             }
             protected function _000_o_plugin_loads__load()
             {
+                if ($this->p_higherThanOneCallAchievedSentinel('_000_o_plugin_loads__load')) {
+                    return; 
+                }
+                add_action(
+                    'wp_ajax_wa-plugin-loads-do-order-action', 
+                    [$this, 'plugin_loads_admin_do_order_action']
+                );
             }
-            public function o_plugin_loads_master_first() : void
+            /**
+             * Ensure master plugin is loaded first.
+             */
+            public function o_plugin_loads_master_first(): void
             {
-                $masterPlugin = get_option($this->oPluginLoadsMasterPathOptKey, '');
-                if (strlen($masterPlugin) && ($plugins = get_option('active_plugins'))) {
-                    if (false !== ($key = array_search($masterPlugin, $plugins))) {
-                        array_splice($plugins, $key, 1);
-                        array_unshift($plugins, $masterPlugin);
-                        update_option('active_plugins', $plugins);
+                $masterPlugin = get_option( $this->oPluginLoadsMasterPathOptKey, '');
+                if ( strlen($masterPlugin)
+                && $plugins = get_option( 'active_plugins' ) ) {
+                    $plugins = array_unique($plugins); 
+                    if ( false !== ($key = array_search( $masterPlugin, $plugins ) )) {
+                        array_splice( $plugins, $key, 1 );
+                        array_unshift( $plugins, $masterPlugin );
+                        update_option( 'active_plugins', $plugins );
                     }
+                }
+            }
+            /**
+             * Will run the associated order action 'wa_order_action'. (ajax admin request)
+             *  
+             * Available **wa_order_action** :
+             * - [ **move-first** ] : move plugin to first load position
+             *   - **wa_plugin_relative_file** : relative plugin file from plugin folder
+             *   - **wa_plugin_iid** : parallel instance that ask to fulfil the action
+             */
+            public function plugin_loads_admin_do_order_action() : void {
+                $anonimizedIp = $this->get_user_ip();
+                if (!current_user_can('administrator')) { 
+                    $this->err("plugin_loads_admin_do_order_action invalid access for $anonimizedIp, need to be administrator");
+                    echo json_encode([
+                        "error" => "Invalid access for $anonimizedIp registred",
+                    ]);
+                    http_response_code(401);
+                    $this->exit(); return;
+                }
+                $this->debug("Will plugin_loads_admin_do_order_action");
+                $action = filter_var(
+                    $_REQUEST['wa_order_action'],
+                    FILTER_SANITIZE_SPECIAL_CHARS
+                );
+                $isJson = wp_is_json_request();
+                if ($isJson) {
+                    header("Content-Type: application/json");
+                }
+                $authenticatedActions = [
+                    'move-first' => function($app, $action) use ($isJson) {
+                        $masterPlugin = filter_var(
+                            $_REQUEST['wa_plugin_relative_file'],
+                            FILTER_SANITIZE_SPECIAL_CHARS
+                        );
+                        $pluginIId = filter_var(
+                            $_REQUEST['wa_plugin_iid'],
+                            FILTER_SANITIZE_SPECIAL_CHARS
+                        );
+                        update_option( $this->oPluginLoadsMasterPathOptKey, $masterPlugin ); 
+                        $this->o_plugin_loads_master_first();
+                        $app->info("Succed move-first plugin action for : '$masterPlugin'");
+                        if ($isJson) {
+                            return [
+                                "code" => 'ok',
+                                "wa_order_action" => $action,
+                                "data" => [
+                                    'plugin' => $masterPlugin,
+                                ]
+                            ];
+                        } else {
+                            $redirectUrl = admin_url( 'plugins.php' )
+                            . "#wa-plugin-order-list-$pluginIId";
+                            wa_redirect($redirectUrl, $this); return "";
+                        }
+                    },
+                ];
+                $resp = null;
+                if (array_key_exists($action, $authenticatedActions)) {
+                    $resp = $authenticatedActions[$action]($this, $action);
+                } else {
+                    $this->err("Unknow wa_order_action '$action'");
+                    if (!$isJson) {
+                        echo "Unknow wa_order_action '$action'";
+                    }
+                    $resp = [
+                        'code' => 'wa_error',
+                        "error" => 'wa_unknow_order_action',
+                        "data" => [
+                            'wa_order_action' => $action,
+                            'status' => 404
+                        ]
+                    ];
+                }
+                if ($isJson) {
+                    echo $resp ? json_encode($resp) : "wa_order_action '$action' did fail";
                 }
             }
         }
     }
-    if (!trait_exists(EditableMissionPost::class)) {
+    if (!trait_exists(ExtendablePluginDescription::class)) { 
+        /**
+         * This trait will allow to extend the plugin description inside the WordPress plugin list panel
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         * @uses Identifiable
+         * @uses OrderablePluginLoads
+         */
+        trait ExtendablePluginDescription
+        {
+            use Editable;
+            use Identifiable;
+            use OrderablePluginLoads;
+            protected function _020_ext_plugin_description__load()
+            {
+                add_filter(
+                    'plugin_row_meta',
+                    [$this, 'ext_plugin_description_meta'],
+                    10,
+                    2
+                );
+            }
+            /**
+             * Update the plugin description meta with extra informations
+             *
+             * @param array<int, string> $plugin_meta Existing plugin meta.
+             * @param string $plugin_file The plugin file, to check against current instance pluginFile.
+             * @return array<int, string> the feshly updated plugin meta
+             */
+            function ext_plugin_description_meta($plugin_meta, $plugin_file)
+            {
+                if ($plugin_file == plugin_basename($this->pluginFile)) {
+                    $pluginWpPath = $this->pluginRelativeFile;
+                    $moveFirstLink = add_query_arg([
+                        'action' => 'wa-plugin-loads-do-order-action',
+                        'wa_order_action' => 'move-first',
+                        'wa_plugin_relative_file'  => $pluginWpPath,
+                        'wa_plugin_iid' => $this->iId,
+                    ], admin_url( 'admin-ajax.php' ));
+                    $isFirstTitle = __(
+                        "Première instance",
+                         'wa-config'
+                    );
+                    $moveFirstTitle = __(
+                        "Charger en premier",
+                         'wa-config'
+                    );
+                    $actions = "";
+                    $masterPlugin = get_option( $this->oPluginLoadsMasterPathOptKey );
+                    $is2ndOrMore = $pluginWpPath !== $masterPlugin; 
+                    if ($is2ndOrMore) {
+                        $actions .= " (<a href='$moveFirstLink'>$moveFirstTitle</a>)";
+                    } else {
+                        $actions .= " ($isFirstTitle)";
+                    }
+                    $pOrderList = <<<TEMPLATE
+                        <span class="wa-link-anchor" id="wa-plugin-order-list-{$this->iId}"></span>
+                        <strong>$this->pluginName</strong>
+                        $actions
+                    TEMPLATE;
+                    $plugin_meta[] = $pOrderList;
+                    $plugin_meta[] = $this->iId;
+                }
+                return $plugin_meta;
+            }
+        }
+    }
+    if (!trait_exists(EditableMissionPost::class)) { 
+        /**
+         * This trait will add the wa-mission post type
+         * 
+         * You could use it frontend side with the REST API or this kind of plugin :
+         * 
+         * {@link https://fr.wordpress.org/plugins/custom-post-type-widget-blocks/
+         * Custom Post Type Widget Blocks by thingsym }
+         * 
+         * {@see https://developer.wordpress.org/rest-api/reference/posts
+         * REST API Handbook for POST (equivalent of wa-mission)}
+         * 
+         * ```js
+         * // JS ES6 usage example to fecth skill taxonomies :
+         * // You can copy/past below code in your Chrome console to test it :
+         * // (A Console opened by inspecting the same domain name to
+         * // avoid fetch errors)
+         * async function getMissions() {
+         *     const WpV2ApiBaseUrl = "https://web-agency.local.dev/e-commerce/wp-json/wp/v2";
+         *     let response = await fetch(`${WpV2ApiBaseUrl}/wa-mission`, {
+         *         method: 'GET',
+         *         mode: 'no-cors',
+         *         withCredentials: false,
+         *         headers: {
+         *             'Content-type': 'application/json; charset=UTF-8'
+         *         },
+         *     });
+         *     let missions = await response.json();
+         *     return missions;
+         * }
+         * getMissions().then(data => console.log(data) && data);
+         * ```
+         * 
+         * ```bash
+         * # curl example to fecth skill taxonomies :
+         * WP_V2API_BASEURL="https://web-agency.local.dev/e-commerce/wp-json/wp/v2"
+         * curl "$WP_V2API_BASEURL/wa-mission"
+         * ```
+         *
+         * 
+         * @see https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types
+         * @see https://developer.wordpress.org/rest-api/reference
+         * @see https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         */
         trait EditableMissionPost
         {
             use Editable;
-            protected function _010_e_mission_post__load()
+            protected function _010_e_mission_CPT__load()
             {
-                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_mission_post__load')) {
-                    return;
+                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_mission_CPT__load')) {
+                    return; 
                 }
-                add_action('init', [$this, 'e_mission_post_type_register']);
-                add_action('admin_menu', [$this, 'e_mission_post_type_admin_menu']);
-                add_action('get_the_date', [$this, 'e_mission_post_type_get_the_date'], 10, 3);
-                add_filter('template_include', [$this, 'e_mission_post_type_load_template_includes'], 1);
-                add_filter('woocommerce_order_number', [$this, 'e_mission_post_type_change_woocommerce_order_number'], 1, 2);
-                add_filter('ocean_main_metaboxes_post_types', [$this, 'e_mission_post_type_oceanwp_metabox'], 20);
-                add_filter('ocean_post_layout_class', [$this, 'e_mission_post_type_layout_class'], 20);
-                if (function_exists('pll_count_posts')) {
-                    add_filter('pll_get_post_types', [$this, 'e_mission_post_type_polylang_register'], 10, 2);
+                add_action( 'init', [$this, 'e_mission_CPT_register']);
+                add_action( 'admin_menu', [$this, 'e_mission_CPT_admin_menu'], 2);
+                add_action( 'get_the_date', [$this, 'e_mission_CPT_get_the_date'], 10, 3 );
+                add_filter( 'template_include', [$this, 'e_mission_CPT_load_template_includes'], 1 );
+                add_filter( 'woocommerce_order_number', [$this, 'e_mission_CPT_change_woocommerce_order_number'], 1, 2);
+                add_filter( 'ocean_main_metaboxes_post_types', [$this, 'e_mission_CPT_oceanwp_metabox'], 20 );
+                add_filter( 'ocean_post_layout_class', [$this, 'e_mission_CPT_layout_class'], 20 );
+                if ( function_exists( 'pll_count_posts' ) ) {
+                    add_filter( 'pll_get_post_types', [$this, 'e_mission_CPT_polylang_register'], 10, 2 );
                 }
+                add_action( 'admin_head-nav-menus.php', [$this, 'e_mission_CPT_do_template_nav_menus'] );
+                add_filter( 'wp_get_nav_menu_items', [$this, 'e_mission_CPT_do_template_nav_menus_filter'], 10, 3 );
             }
-            public function e_mission_post_type_layout_class($class)
-            {
+            /**
+             * Alter your post layouts
+             * 
+             * @return string class : [ **full-width** ], full-screen, left-sidebar, right-sidebar or both-sidebars
+             */
+            public function  e_mission_CPT_layout_class($class ) {
+                $this->debugVerbose("Will e_mission_CPT_layout_class");
                 $pType = 'wa-mission';
-                if (is_singular($pType) || is_post_type_archive($pType)) {
+                if ( is_singular( $pType )
+                || is_post_type_archive( $pType )) {
                     $class = 'full-width';
                 }
                 return $class;
             }
-            public function e_mission_post_type_oceanwp_metabox($types)
-            {
+            /**
+             * Add the OceanWP Settings metabox in your CPT
+             * 
+             */
+            public function  e_mission_CPT_oceanwp_metabox( $types ) {
+                $this->debugVerbose("Will e_mission_CPT_oceanwp_metabox");
                 $types[] = 'wa-mission';
                 return $types;
             }
-            public function e_mission_post_type_change_woocommerce_order_number($order_id, $order)
-            {
-                $prefix = $this->getWaConfigOption($this->eConfWooCommerceOrderPrefix, "");
-                $suffix = '';
+            /**
+             * Add prefix to woocommerce order numbers
+             * 
+             */
+            public function  e_mission_CPT_change_woocommerce_order_number( $order_id, $order ) {
+                $prefix = $this->getWaConfigOption(
+                    $this->eConfWooCommerceOrderPrefix,
+                    ""
+                );
+                $suffix = ''; 
                 return $prefix . $order->id . $suffix;
             }
-            public function e_mission_post_type_load_template_includes($template_path)
-            {
-                if (get_post_type() == 'wa-mission') {
-                    if (is_single()) {
-                        if ($theme_file = locate_template(array('single-wa-mission.php'))) {
+            /**
+             * Filter templates to load custom templates if availables
+             * 
+             * @param string $template_path Pre-filtered template path
+             */
+            public function  e_mission_CPT_load_template_includes($template_path) {
+                $this->debugVerbose("Will e_mission_CPT_load_template_includes");
+                if ( get_post_type() == 'wa-mission' ) {
+                    if ( is_single() ) {
+                        if ( $theme_file = locate_template( array ( 'single-wa-mission.php' ) ) ) {
                             $template_path = $theme_file;
                         } else {
                             $theme_file = false;
                             $currentTheme = basename(get_parent_theme_file_path());
                             if ("oceanwp" === $currentTheme) {
-                                $theme_file = realpath($this->pluginRoot . 'templates/themes/oceanwp/singular-wa-mission.php');
+                                $theme_file = realpath($this->pluginRoot
+                                . 'templates/themes/oceanwp/singular-wa-mission.php');
                             }
-                            $theme_file = $theme_file ? $theme_file : realpath($this->pluginRoot . 'templates/single-wa-mission.php');
+                            $theme_file = $theme_file ?  $theme_file : realpath($this->pluginRoot
+                            . 'templates/single-wa-mission.php');
                             if ($theme_file) {
                                 $template_path = $theme_file;
                             }
@@ -1633,224 +3012,423 @@ namespace WA\Config\Admin {
                 }
                 return $template_path;
             }
-            public function e_mission_post_type_do_template_nav_menus()
-            {
-                add_meta_box('wa_mission_do_template_nav_menus', __('Missions'), [$this, 'e_mission_post_type_do_template_nav_menu_metabox'], 'nav-menus', 'side', 'default');
+            /**
+             * Add nav menu
+             */
+            public function e_mission_CPT_do_template_nav_menus() {
+                $this->debugVerbose("Will e_mission_CPT_do_template_nav_menus");
+                add_meta_box( 'wa_mission_do_template_nav_menus', __( 'Missions' ), [$this, 'e_mission_CPT_do_template_nav_menu_metabox'], 'nav-menus', 'side', 'default' );
             }
-            public function e_mission_post_type_do_template_nav_menus_filter($items, $menu, $args)
-            {
-                foreach ($items as &$item) {
-                    if ($item->object != 'wa-mission') {
-                        continue;
+            /**
+             * Filter to render our nav menu
+             */
+            public function e_mission_CPT_do_template_nav_menus_filter( $items, $menu, $args ) {
+                $this->debugVerbose("Will e_mission_CPT_do_template_nav_menus_filter");
+                foreach( $items as &$item ){
+                    if( $item->object != 'wa-mission' ) continue;
+                    $item->url = get_post_type_archive_link( $item->type );
+                    if( get_query_var( 'post_type' ) == $item->type ){
+                      $item->classes []= 'current-menu-item';
+                      $item->current = true;
                     }
-                    $item->url = get_post_type_archive_link($item->type);
-                    if (get_query_var('post_type') == $item->type) {
-                        $item->classes[] = 'current-menu-item';
-                        $item->current = true;
-                    }
-                }
-                return $items;
+                  }
+                  return $items;
             }
-            public function e_mission_post_type_do_template_nav_menu_metabox()
-            {
+            /**
+             * Add nav menu admin metabox
+             */
+            public function e_mission_CPT_do_template_nav_menu_metabox() {
+                $this->debugVerbose("Will e_mission_CPT_do_template_nav_menu_metabox");
                 $missionCptKey = 'wa-mission';
-                $post_types = get_post_types(array('show_in_nav_menus' => true, 'has_archive' => true), 'object');
-                if ($post_types) {
-                    foreach ($post_types as $post_type) {
-                        $post_type->classes = array($post_type->name);
-                        $post_type->type = $post_type->name;
-                        $post_type->object_id = $post_type->name;
-                        $post_type->title = $post_type->labels->name;
-                        $post_type->object = $missionCptKey;
-                    }
-                    $walker = new Walker_Nav_Menu_Checklist(array());
-                    ?>
+                $post_types = get_post_types( array( 'show_in_nav_menus' => true, 'has_archive' => true ), 'object' );
+                if( $post_types ){
+                  foreach( $post_types as $post_type ){
+                    $post_type->classes = array( $post_type->name );
+                    $post_type->type = $post_type->name;
+                    $post_type->object_id = $post_type->name;
+                    $post_type->title = $post_type->labels->name;
+                    $post_type->object = $missionCptKey; 
+                  }
+                  $walker = new Walker_Nav_Menu_Checklist( array() );?>
                   <div id="wa-mission-menu" class="posttypediv">
                     <div id="tabs-panel-wa-mission" class="tabs-panel tabs-panel-active">
-                      <ul id="wa-mission-checklist" class="categorychecklist form-no-clear"><?php 
-                    echo walk_nav_menu_tree(array_map('wp_setup_nav_menu_item', $post_types), 0, (object) array('walker' => $walker));
-                    ?>
+                      <ul id="wa-mission-checklist" class="categorychecklist form-no-clear"><?php
+                      echo walk_nav_menu_tree( array_map( 'wp_setup_nav_menu_item', $post_types ), 0, (object) array( 'walker' => $walker ) );?>
                       </ul>
                     </div>
                   </div>
                   <p class="button-controls">
                     <span class="add-to-menu">
-                      <input type="submit"<?php 
-                    disabled($nav_menu_selected_id ?? null, 0);
-                    ?> class="button-secondary submit-add-to-menu" value="<?php 
-                    esc_attr_e('Add to Menu');
-                    ?>" name="add-wa-mission-menu-item" id="submit-wa-mission-menu" />
+                      <input type="submit"<?php disabled( $nav_menu_selected_id ?? null, 0 ); ?> class="button-secondary submit-add-to-menu" value="<?php esc_attr_e( 'Add to Menu' ); ?>" name="add-wa-mission-menu-item" id="submit-wa-mission-menu" />
                     </span>
-                  </p><?php 
+                  </p><?php
+              
                 }
             }
-            public function e_mission_post_type_polylang_lang_link($url, $slug, $locale)
-            {
-                if ($url) {
-                    return $url;
-                }
-                return home_url("TODO from translated permalinks ? Or how is wooCommerce having all those links ready ? missing some top config and this check is useless if config found...");
-            }
-            public function e_mission_post_type_polylang_rewrite_slugs($post_type_translated_slugs)
-            {
+            /**
+             * Register polylang rewrite rule for wa-mission slugs
+             */
+            public function e_mission_CPT_polylang_lang_link( $url, $slug, $locale ) {
+                $this->debugVerbose("Will e_mission_CPT_polylang_lang_link");
+                if ($url) return $url;
+                return home_url( "TODO from translated permalinks ? Or how is wooCommerce having all those links ready ? missing some top config and this check is useless if config found...");
+            }            
+            /**
+             * Register polylang rewrite rule for wa-mission slugs (Dev in progres...)
+             */
+            public function e_mission_CPT_polylang_rewrite_slugs( $post_type_translated_slugs ) {
+                $this->debugVerbose("Will e_mission_CPT_polylang_rewrite_slugs");
                 $pType = "wa-mission";
                 $locals = pll_languages_list();
                 $rules = [];
                 foreach ($locals as $idx => $localeMetas) {
                     $localeSlug = $localeMetas['slug'];
                     $locale = $localeMetas['locale'];
-                    $permalink = _lx('missions', 'wa-mission post slug (url SEO)', 'wa-config', $locale);
-                    $rules[$localeSlug] = ['has_archive' => true, 'rewrite' => ['slug' => $permalink, 'with_front' => false, 'feeds' => true], 'slug' => $permalink];
+                    $permalink = _lx( 'missions',
+                    'wa-mission post slug (url SEO)'
+                    , 'wa-config', $locale);
+                    $rules[$localeSlug] = [
+                        'has_archive' => true,
+                        'rewrite'             => [
+                            'slug'       => $permalink,
+                            'with_front' => false,
+                            'feeds'      => true,
+                        ],
+                        'slug' => $permalink,
+                    ];
                 }
                 $post_type_translated_slugs[$pType] = $rules;
-                $this->debugVeryVerbose("Did e_mission_post_type_polylang_rewrite_slugs for Polylangs : ", $post_type_translated_slugs);
+                $this->debugVeryVerbose("Did e_mission_CPT_polylang_rewrite_slugs for Polylangs : ", $post_type_translated_slugs);
                 return $post_type_translated_slugs;
             }
-            public function e_mission_register_localized_slug()
-            {
-                $permalink = _x('missions', 'wa-mission post slug (url SEO)', 'wa-config');
-                $this->warn("Will e_mission_register_localized_slug {$permalink}");
-                register_post_type('wa-mission', array('rewrite' => array('slug' => $permalink, 'with_front' => true, 'walk_dirs' => false), 'slug' => $permalink));
+            /**
+             * Register polylang localized rewrite rule for wa-mission slugs Polylang 404 page fixes
+             */
+            public function e_mission_register_localized_slug() {
+                $this->debugVerbose("Will e_mission_register_localized_slug");
+                $permalink = _x( 'missions', 'wa-mission post slug (url SEO)'
+                , 'wa-config');
+                $this->warn("Will e_mission_register_localized_slug $permalink");
+                register_post_type( 
+                    'wa-mission', 
+                    array (
+                        'rewrite' => array (
+                            'slug' => $permalink,
+                            'with_front' => true,
+                            'walk_dirs' => false ,                                               
+                        ),
+                        'slug' => $permalink,
+                    )
+                );
+                $this->debugVerbose("Mission routes after localisation : "
+                . $this->debug_routes());
             }
-            public function e_mission_post_type_polylang_register($post_types, $is_settings)
-            {
+            /**
+             * Register wa-mission post type with polylang plugin
+             */
+            public function e_mission_CPT_polylang_register( $post_types, $is_settings ) {
+                $this->debugVerbose("Will e_mission_CPT_polylang_register");
                 $missionCptKey = 'wa-mission';
-                if ($is_settings) {
-                    unset($post_types[$missionCptKey]);
+                if ( $is_settings ) {
+                    unset( $post_types[$missionCptKey] );
                 } else {
                     $post_types[$missionCptKey] = $missionCptKey;
                 }
                 return $post_types;
             }
-            public function e_mission_post_type_admin_menu() : void
+            /**
+             * Register wa-mission admin menu.
+             */
+            public function e_mission_CPT_admin_menu(): void
             {
-                $this->debugVerbose("Will e_mission_post_type_admin_menu");
+                $this->debugVerbose("Will e_mission_CPT_admin_menu"); 
                 $missionCptKey = 'wa-mission';
                 $self = $this;
-                if (!function_exists(\add_submenu_page::class)) {
-                    $this->warn("MISSING add_submenu_page function, 'e_mission_post_type_admin_menu' should be registred with 'admin_menu' hook.");
+                if (!function_exists(\add_submenu_page::class)){
+                    $this->warn("MISSING add_submenu_page function, 'e_mission_CPT_admin_menu' should be registred with 'admin_menu' hook.");
                 }
-                if (is_admin() && function_exists(\add_submenu_page::class)) {
+                if (is_admin()
+                && function_exists(\add_submenu_page::class) 
+                ) {
                     $missionCpt = get_post_type_object($missionCptKey);
                     if (!$missionCpt) {
-                        $this->error("Custom post type '{$missionCptKey}' is not defined.");
+                        $this->err("Custom post type '$missionCptKey' is not defined.");
                     }
-                    add_action('add_meta_boxes_' . $missionCptKey, [$this, 'e_mission_post_end_date_add_metabox']);
-                    add_action("save_post_{$missionCptKey}", [$this, 'e_mission_post_end_date_save_metabox']);
-                    add_filter("manage_{$missionCptKey}_posts_columns", [$this, 'e_mission_post_end_date_add_column']);
-                    add_filter("manage_{$missionCptKey}_posts_custom_column", [$this, 'e_mission_post_end_date_render_column_row'], 10, 2);
-                    add_action('quick_edit_custom_box', [$this, 'e_mission_post_end_date_quick_edit'], 10, 2);
-                    add_action('admin_print_footer_scripts-edit.php', [$this, 'e_mission_post_end_date_quick_edit_js']);
-                    \add_submenu_page($this->eAdminConfigPageKey, $missionCpt->labels->name, "<span class='dashicons {$missionCpt->menu_icon}'></span> " . $missionCpt->labels->menu_name, $missionCpt->cap->edit_posts, 'edit.php?post_type=' . $missionCptKey);
-                    $my_cpt_parent_file = function ($parent_file) use($self, $missionCptKey) {
+                    if (!($missionCpt->menu_icon ?? false)
+                    || !strlen($missionCpt->menu_icon )) {
+                        $this->err("Missing Custom post type 'menu_icon'.", $missionCpt);
+                    }
+                    add_action(
+                        'add_meta_boxes_' . $missionCptKey,
+                        [$this, 'e_mission_CPT_end_date_add_metabox'],
+                    );
+                    add_action("save_post_$missionCptKey", [$this, 'e_mission_CPT_end_date_save_metabox']);
+                    add_filter("manage_{$missionCptKey}_posts_columns",  [$this, 'e_mission_CPT_end_date_add_column']);
+                    add_filter("manage_{$missionCptKey}_posts_custom_column",  [$this, 'e_mission_CPT_end_date_render_column_row'], 10, 2);
+                    add_action('quick_edit_custom_box',  [$this, 'e_mission_CPT_end_date_quick_edit'], 10, 2);
+                    add_action('admin_print_footer_scripts-edit.php', [$this, 'e_mission_CPT_end_date_quick_edit_js']);
+                    \add_submenu_page(
+                        $this->eConfigPageKey,
+                        $missionCpt->labels->name,            
+                        "<span class='dashicons {$missionCpt->menu_icon}'></span> "
+                        . $missionCpt->labels->menu_name,       
+                        $missionCpt->cap->edit_posts,         
+                        'edit.php?post_type=' . $missionCptKey,       
+                        '',  
+                        $this->e_config_count_submenu()
+                    );
+                    /**
+                     * Fix Parent Admin Menu Item
+                     */
+                    $my_cpt_parent_file = function ( $parent_file )
+                    use ($self, $missionCptKey) {
                         global $current_screen;
-                        $self->debugVeryVerbose("Screen for parent_file : ", $current_screen);
-                        if (in_array($current_screen->base, array('term', 'post-tags', 'edit-tags', 'post', 'edit')) && $missionCptKey == $current_screen->post_type) {
-                            $parent_file = $self->eAdminConfigPageKey;
+                        /**
+                         * Add upload.php as parent file/menu if
+                         * it's Post Type list Screen or Edit screen of our post type.
+                         */
+                        if ( in_array( $current_screen->base, array( 'term', 'post-tags', 'edit-tags', 'post', 'edit' ) )
+                        && $missionCptKey == $current_screen->post_type ) {
+                            $parent_file = $self->eConfigPageKey; 
                         }
+                        $self->debugVerbose("e_mission_CPT_admin_menu parent_file : $parent_file "
+                        . "for $current_screen->base");
                         return $parent_file;
                     };
-                    add_filter('parent_file', $my_cpt_parent_file);
-                    $my_cpt_submenu_file = function ($submenu_file) use($self, $missionCptKey) {
+                    add_filter( 'parent_file',  $my_cpt_parent_file);                
+                    /**
+                     * Fix Sub Menu Item Highlights
+                     */
+                    $my_cpt_submenu_file = function ( $submenu_file ) use ($self, $missionCptKey){                
                         global $current_screen;
-                        if (in_array($current_screen->base, array('post-tags', 'edit-tags', 'post', 'edit')) && $missionCptKey == $current_screen->post_type) {
+                        if ( in_array( $current_screen->base, array( 'post-tags', 'edit-tags',  'post', 'edit' ) )
+                        && $missionCptKey == $current_screen->post_type ) {
                             $self->debugVeryVerbose("POST TYPE : ", $current_screen);
                             if (strlen($current_screen->taxonomy ?? "")) {
-                                $submenu_file = "edit-tags.php?post_type={$missionCptKey}" . "&taxonomy={$current_screen->taxonomy}";
+                                $submenu_file = "edit-tags.php?post_type=$missionCptKey"
+                                . "&taxonomy={$current_screen->taxonomy}";
                             } else {
-                                $submenu_file = "edit.php?post_type={$missionCptKey}";
+                                $submenu_file = "edit.php?post_type=$missionCptKey";
                             }
                             $self->debug("Sub menu file : ", $submenu_file);
                         }
+                        $self->debugVerbose("e_mission_CPT_admin_menu submenu_file : $submenu_file for {$current_screen->base}");
                         return $submenu_file;
                     };
-                    add_filter('submenu_file', $my_cpt_submenu_file);
+                    add_filter( 'submenu_file', $my_cpt_submenu_file );
                 }
             }
-            public function e_mission_post_type_register() : void
+            /**
+             * Register wa-mission custom Post type.
+             */
+            public function e_mission_CPT_register(): void
             {
                 $self = $this;
                 $skillTaxoKey = 'wa-skill';
-                $this->debugVerbose("Will e_mission_post_type_register");
                 $missionCptKey = 'wa-mission';
-                $permalink = _x('missions', 'wa-mission post slug (url SEO)', 'wa-config');
-                $missionCpt = register_post_type($missionCptKey, ['label' => __('Missions', 'wa-config'), 'labels' => ['name' => __('Missions', 'wa-config'), 'singular_name' => __('Mission', 'wa-config'), 'all_items' => __('Les missions', 'wa-config'), 'add_new_item' => __('Ajouter une mission', 'wa-config'), 'edit_item' => __('Éditer la mission', 'wa-config'), 'new_item' => __('Nouvelle mission', 'wa-config'), 'view_item' => __('Voir la mission', 'wa-config'), 'search_items' => __('Rechercher parmi les missions', 'wa-config'), 'not_found' => __('Pas de mission trouvée', 'wa-config'), 'not_found_in_trash' => __('Pas de mission dans la corbeille', 'wa-config'), 'menu_name' => __('Missions', 'wa-config')], 'public' => true, 'delete_with_user' => false, 'supports' => ['title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'custom-fields', 'headway-seo', 'date', 'sticky', 'views', 'revisions', 'trackbacks', 'page-attributes', 'post-formats'], 'can_export' => true, 'has_archive' => true, 'exclude_from_search' => false, 'publicly_queryable' => true, 'query_var' => true, 'show_admin_column' => true, 'show_in_rest' => true, 'show_ui' => true, 'show_in_admin_bar' => true, 'show_in_menu' => false, 'menu_icon' => 'dashicons-clipboard', 'taxonomies' => [$skillTaxoKey], 'show_in_nav_menus' => true, 'map_meta_cap' => true, 'hierarchical' => false, 'rewrite' => ['slug' => $permalink], 'slug' => $permalink]);
-                register_rest_field($missionCptKey, 'wa_end_date', array('get_callback' => [$this, 'e_mission_post_type_get_meta_from_rest'], 'schema' => null));
-                flush_rewrite_rules();
+                $locale = get_locale();
+                $permalink = _x( 'missions', 'wa-mission post slug (url SEO)', 'wa-config');
+                $this->debugVerbose("Will e_mission_CPT_register '$missionCptKey' [$locale] $permalink"); 
+                $missionCpt = register_post_type(
+                    $missionCptKey,
+                    [
+                        'label' => __('Missions', 'wa-config'),
+                        'labels' => [
+                            'name' => __('Missions', 'wa-config'),
+                            'singular_name' => __('Mission', 'wa-config'),
+                            'all_items' => __('Les missions', 'wa-config'),
+                            'add_new_item' => __('Ajouter une mission', 'wa-config'),
+                            'edit_item' => __('Éditer la mission', 'wa-config'),
+                            'new_item' => __('Nouvelle mission', 'wa-config'),
+                            'view_item' => __('Voir la mission', 'wa-config'),
+                            'search_items' => __('Rechercher parmi les missions', 'wa-config'),
+                            'not_found' => __('Pas de mission trouvée', 'wa-config'),
+                            'not_found_in_trash'=> __('Pas de mission dans la corbeille', 'wa-config'),
+                            'menu_name' => __('Missions', 'wa-config'), 
+                        ],
+                        'public' => true,
+                        'delete_with_user' => false, 
+                        'supports' => [
+                            'title',
+                            'editor',
+                            'excerpt',
+                            'author',
+                            'thumbnail',
+                            'comments',
+                            'custom-fields',
+                            'headway-seo',
+                            'date',
+                            'sticky',
+                            'views',
+                            'revisions',
+                            'trackbacks',
+                            'page-attributes',
+                            'post-formats',
+                        ],
+                        'can_export'          => true,
+                        'has_archive'         => true,
+                        'exclude_from_search' => false,
+                        'publicly_queryable'  => true,
+                        'query_var' => true,
+                        'show_admin_column' => true,
+                        'show_in_rest'      => true,
+                        'show_ui'           => true,
+                        'show_in_admin_bar'   => true,                
+                        'show_in_menu'      => false, 
+                        'menu_icon'           => 'dashicons-clipboard',
+                        'taxonomies'        => [$skillTaxoKey],
+                        'show_in_nav_menus'     	=> true,
+                        'map_meta_cap'        => true, 
+                        'hierarchical'        => false, 
+                        'rewrite'             => [
+                            'slug'       => $permalink,
+                        ],
+                        'slug' => $permalink,
+                    ]
+                );
+                $missionCpt = get_post_type_object($missionCptKey);
+                if (!($missionCpt->menu_icon ?? false)
+                || !strlen($missionCpt->menu_icon )) {
+                    $this->err("Register CPT : Missing 'menu_icon'.", $missionCpt);
+                } else {
+                    $this->debugVeryVerbose("Registered CPT : ", $missionCpt);
+                }
+                register_rest_field(
+                    $missionCptKey,
+                    'wa_end_date',
+                    array(
+                        'get_callback' => [ $this, 'e_mission_CPT_get_meta_from_rest' ],
+                        'schema'       => null,
+                    )
+                );
             }
-            public function e_mission_post_type_get_meta_from_rest($object = '', $field_name = '', $request = array())
-            {
-                $this->warn("Will e_mission_post_type_get_meta_from_rest", $object);
-                $value = get_post_meta($object['id'], $field_name, true);
-                if ('wa-mission' === $object['type'] && 'wa_end_date' === $field_name) {
+            /**
+             * Get Site URL
+             *
+             * @param  string $object     Rest Object.
+             * @param  string $field_name Rest Field.
+             * @param  array  $request    Rest Request.
+             * @return string             Post Meta.
+             */
+            public function e_mission_CPT_get_meta_from_rest( $object = '', $field_name = '', $request = array() ) {
+                $this->debug("Will e_mission_CPT_get_meta_from_rest");
+                $value = get_post_meta( $object['id'], $field_name, true );
+                if ('wa-mission' === $object['type']
+                && 'wa_end_date' === $field_name) {
                     $value = date_i18n("c", strtotime($value));
                 }
                 return $value;
             }
-            public function e_mission_post_type_get_the_date($the_date, $d, $post)
+            /**
+             * Overwsite post date to show mission date range instead.
+             * 
+             */
+            public function e_mission_CPT_get_the_date( $the_date, $d, $post)
             {
+                $this->debugVerbose("Will e_mission_CPT_get_the_date");
                 $missionCptKey = "wa-mission";
-                if (is_int($post)) {
+                if ( is_int( $post) ) {
                     $post = get_post($post);
                 }
                 $post_id = $post->ID;
                 if ($post->post_type === $missionCptKey) {
                     if (!strlen($d)) {
-                        $d = get_option('date_format');
+                        $d = get_option( 'date_format' );
                     }
-                    $res = $val = get_post_meta($post_id, 'wa_end_date', true);
+                    $res = $val = get_post_meta($post_id,'wa_end_date',true);
                     if ($val) {
-                        $time = wp_date($d, strtotime($val));
-                        $res = "[ {$the_date} .. " . $time . " ]";
+                        $time = wp_date( $d, strtotime($val) );
+                        $res = "[ $the_date .. " . $time . " ]";
                     }
                     if (!$res) {
                         $res = $the_date;
                     }
-                    $this->debug("Will e_mission_post_type_get_the_date formated with '{$d}'");
+                    $this->debug("Will e_mission_CPT_get_the_date formated with '$d'");
                     return $res;
                 }
                 return $the_date;
             }
-            public function e_mission_post_end_date_add_metabox($post) : void
+            /**
+             * Add wa-mission end-date meta box
+             * 
+             * @param $post wa-mission with end-date meta
+             */
+            public function e_mission_CPT_end_date_add_metabox($post): void
             {
-                $post_type = get_post_type($post);
-                add_meta_box('end-date', __('Définir la date de fin', 'wa-config'), [$this, 'e_mission_post_end_date_render_metabox'], $post_type, 'side', 'high');
+                $post_type = get_post_type( $post );
+                add_meta_box(
+                    'end-date',
+                    __('Définir la date de fin', 'wa-config'),
+                    [$this, 'e_mission_CPT_end_date_render_metabox'],
+                    $post_type,
+                    'side', 'high'
+                );
             }
-            public function e_mission_post_end_date_save_metabox($post_ID) : void
+            /**
+             * Save the meta box for end-date meta.
+             * 
+             * @param $post_ID
+             */
+            public function e_mission_CPT_end_date_save_metabox($post_ID): void
             {
-                if (isset($_POST['wa_mission_end_date'])) {
+                if(isset($_POST['wa_mission_end_date'])){
                     $endDate = esc_html($_POST['wa_mission_end_date']);
-                    $this->debug("Will e_mission_post_end_date_save_metabox with end date at {$endDate}");
-                    update_post_meta($post_ID, 'wa_end_date', $endDate);
+                    $this->debug("Will e_mission_CPT_end_date_save_metabox with end date at $endDate");
+                    update_post_meta($post_ID,'wa_end_date', $endDate);
                 }
             }
-            public function e_mission_post_end_date_render_metabox($post) : void
+            /**
+             * Render the meta box for end-date meta.
+             * 
+             * @param $post
+             */
+            public function e_mission_CPT_end_date_render_metabox($post): void
             {
-                $val = $post->ID ?? false ? get_post_meta($post->ID, 'wa_end_date', true) : false;
+                $this->debugVerbose("Will e_mission_CPT_end_date_render_metabox");
+                $val = ($post->ID ?? false) 
+                ? get_post_meta($post->ID,'wa_end_date',true)
+                : false;
                 echo '<label>' . __('Date de fin', 'wa-config') . ' : </label>';
-                echo '<input type="date" name="wa_mission_end_date"' . ($val ? " value='{$val}'" : "") . ' class="wa-mission-end-date" />';
+                echo '<input type="date" name="wa_mission_end_date"'
+                . ($val ? " value='$val'" : "")
+                . ' class="wa-mission-end-date" />';
             }
-            public function e_mission_post_end_date_add_column($columns)
-            {
+            /**
+             * Add the end-date column from end-date meta of wa-mission posts.
+             * 
+             * @param $columns
+             */
+            public function e_mission_CPT_end_date_add_column($columns) {
                 $columns['wa-end-date'] = __('Date de fin', 'wa-config');
                 return $columns;
             }
-            public function e_mission_post_end_date_render_column_row($column, $postId)
-            {
+            /**
+             * Render the column row data for end-date meta of wa-mission posts.
+             * 
+             * @param $columns
+             */
+            public function e_mission_CPT_end_date_render_column_row($column, $postId) {
                 if ('wa-end-date' === $column) {
                     $endDate = get_post_meta($postId, 'wa_end_date', true);
-                    $fmt = "Y-m-d";
-                    echo $endDate ? date($fmt, strtotime($endDate)) : "";
+                    $fmt = "Y-m-d"; 
+                    echo $endDate ? date($fmt, strtotime($endDate)) : ""; 
                 }
             }
-            public function e_mission_post_end_date_quick_edit($column, $postType)
-            {
+            /**
+             * Allow quick edit for end-date meta of wa-mission posts.
+             * 
+             * @param $columns
+             */
+            public function e_mission_CPT_end_date_quick_edit($column, $postType) {
                 if ('wa-end-date' === $column) {
-                    $this->e_mission_post_end_date_render_metabox(null);
+                    $this->e_mission_CPT_end_date_render_metabox(null);
                 }
             }
-            public function e_mission_post_end_date_quick_edit_js()
-            {
+            /**
+             * JS to allow quick edit value sync for end-date meta of wa-mission posts.
+             * 
+             */
+            public function e_mission_CPT_end_date_quick_edit_js() {
                 $missionCptKey = "wa-mission";
                 $current_screen = get_current_screen();
                 if ($current_screen->post_type === $missionCptKey) {
@@ -1904,88 +3482,414 @@ namespace WA\Config\Admin {
             
                         });
                     </script>
-                    <?php 
+                    <?php
                 }
             }
         }
     }
-    if (!trait_exists(EditableSkillsTaxo::class)) {
+    if (!trait_exists(EditableSkillsTaxo::class)) { 
+        /**
+         * This trait will add the wa-skill taxonomy
+         * 
+         * You could use it frontend side with the REST API or this kind of plugin :
+         * 
+         * {@link https://fr.wordpress.org/plugins/custom-post-type-widget-blocks/
+         * Custom Post Type Widget Blocks by thingsym }
+         * 
+         * {@see https://developer.wordpress.org/rest-api/reference/categories/ 
+         * REST API Handbook for Category (wa-skill equivalent)}
+         * 
+         * ```js
+         * // JS ES6 usage example to fecth skill taxonomies :
+         * // You can copy/past below code in your Chrome console to test it :
+         * // (A Console you should open by inspecting the same domain name to
+         * // avoid fetch errors)
+         * async function getSkills() {
+         *     const WpV2ApiBaseUrl = "https://web-agency.local.dev/e-commerce/wp-json/wp/v2";
+         *     let response = await fetch(`${WpV2ApiBaseUrl}/wa-skill`, {
+         *         method: 'GET',
+         *         mode: 'no-cors',
+         *         withCredentials: false,
+         *         headers: {
+         *             'Content-type': 'application/json; charset=UTF-8'
+         *         },
+         *     });
+         *     let skills = await response.json();
+         *     return skills;
+         * }
+         * getSkills().then(data => console.log(data) && data);
+         * ```
+         * 
+         * ```bash
+         * # curl example to fecth skill taxonomies :
+         * WP_V2API_BASEURL="https://web-agency.local.dev/e-commerce/wp-json/wp/v2"
+         * curl "$WP_V2API_BASEURL/wa-skill"
+         * ```
+         *
+         * 
+         * @see https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types/
+         * @see https://developer.wordpress.org/rest-api/reference/
+         * @see https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         */
         trait EditableSkillsTaxo
         {
             use Editable;
             protected function _011_e_skill_taxo__load()
             {
                 if ($this->p_higherThanOneCallAchievedSentinel('_011_e_skill_taxo__load')) {
-                    return;
+                    return; 
                 }
-                add_action('init', [$this, 'e_skill_taxo_register_taxonomy']);
-                add_action('admin_menu', [$this, 'e_skill_taxo_admin_menu']);
-                add_action(WPActions::wa_do_base_review_preprocessing, [$this, 'e_skill_taxo_data_review']);
-                if (function_exists('pll_count_posts')) {
-                    add_filter('pll_get_taxonomies', [$this, 'e_skill_taxo_polylang_register'], 10, 2);
+                add_action( 'init', [$this, 'e_skill_taxo_register_taxonomy'], 8);
+                add_action( 'admin_menu', [$this, 'e_skill_taxo_admin_menu'], 3);
+                add_action(
+                    WPActions::wa_do_base_review_preprocessing,
+                    [$this, 'e_skill_taxo_data_review']
+                );
+                if ( function_exists( 'pll_count_posts' ) ) {
+                    add_filter( 'pll_get_taxonomies', [$this, 'e_skill_taxo_filter_pll_taxonomies'], 10, 2 );
+                } else {
+                    $this->debugVerbose("Polylang not detected. Avoiding 'pll_get_taxonomies' filter to 'e_skill_taxo_filter_pll_taxonomies'.");
                 }
             }
-            public function e_skill_taxo_polylang_register($taxonomies, $is_settings)
-            {
+            /**
+             * Register wa-skill taxonomy with polylang plugin
+             * 
+			 * Filters the list of taxonomies available for translation.
+			 * The default are taxonomies which have the parameter ‘public’ set to true.
+			 * The filter must be added soon in the WordPress loading process:
+			 * in a function hooked to ‘plugins_loaded’ or directly in functions.php for themes.
+			 *
+			 * @param string[] $taxonomies  List of taxonomy names.
+			 * @param bool     $is_settings True when displaying the list of custom taxonomies in Polylang settings.
+			 * @return string[] Filtered list of taxonomy names.
+             */
+            public function e_skill_taxo_filter_pll_taxonomies( $taxonomies, $is_settings ) {
                 $skillTaxoKey = 'wa-skill';
-                if ($is_settings) {
-                    unset($taxonomies[$skillTaxoKey]);
+                if ( $is_settings ) {
+                    unset( $taxonomies[$skillTaxoKey] );
                 } else {
                     $taxonomies[$skillTaxoKey] = $skillTaxoKey;
                 }
                 return $taxonomies;
             }
-            public function e_skill_taxo_admin_menu() : void
+            /**
+             * Register wa-skill admin menu as sub page of Wa-config.
+             */
+            public function e_skill_taxo_admin_menu(): void
             {
+                $this->debugVerbose("Will e_skill_taxo_admin_menu");
                 $missionCptKey = 'wa-mission';
                 $skillTaxoKey = 'wa-skill';
                 $taxo = get_taxonomy($skillTaxoKey);
-                if (!function_exists(\add_submenu_page::class)) {
+                $this->debugVerbose("Will e_skill_taxo_admin_menu.");
+                if (!function_exists(\add_submenu_page::class)){
                     $this->warn("MISSING add_submenu_page function, 'e_skill_taxo_admin_menu' should be registred with 'admin_menu' hook.");
                 }
-                if (is_admin() && function_exists(\add_submenu_page::class)) {
-                    \add_submenu_page($this->eAdminConfigPageKey, $taxo->labels->name, "<span class='dashicons {$taxo->menu_icon}'></span> " . $taxo->labels->name, $taxo->cap->manage_terms, "edit-tags.php?post_type={$missionCptKey}&taxonomy={$skillTaxoKey}");
+                if (is_admin()
+                && function_exists(\add_submenu_page::class) 
+                ) {
+                    \add_submenu_page(
+                        $this->eConfigPageKey,
+                        $taxo->labels->name,
+                        "<span class='dashicons {$taxo->menu_icon}'></span> "
+                        . $taxo->labels->name,
+                        $taxo->cap->manage_terms,
+                        "edit-tags.php?post_type=$missionCptKey&taxonomy=$skillTaxoKey",
+                        "",
+                        $this->e_config_count_submenu(),
+                    );
                 }
             }
-            public function e_skill_taxo_register_taxonomy() : void
+            /**
+             * Register the wa-skill taxonomy used for Mission post and User post
+             */
+            public function e_skill_taxo_register_taxonomy(): void
             {
                 $this->debugVerbose("Will e_skill_taxo_register_taxonomy");
-                $labels = array('name' => _x('Expertises', 'taxonomy general name (plural)', 'wa-config'), 'singular_name' => _x('Expertise', 'taxonomy singular name', 'wa-config'), 'search_items' => __("Recherche d'expertises", 'wa-config'), 'all_items' => __('Toutes les expertises', 'wa-config'), 'parent_item' => __('Expertise parente', 'wa-config'), 'parent_item_colon' => __('Expertise parente:', 'wa-config'), 'edit_item' => __("Editer l'expertise", 'wa-config'), 'update_item' => __("Mettre à jour l'expertise", 'wa-config'), 'add_new_item' => __('Ajouter une nouvelle expertise', 'wa-config'), 'new_item_name' => __('Nom de la nouvelle expertise', 'wa-config'), 'menu_name' => _x('Expertise', 'taxonomy menu name', 'wa-config'));
-                $args = array('public' => true, 'hierarchical' => true, 'labels' => $labels, 'show_ui' => true, 'show_in_rest' => true, 'show_admin_column' => true, 'can_export' => true, 'has_archive' => true, 'exclude_from_search' => false, 'publicly_queryable' => true, 'query_var' => true, 'rewrite' => ['slug' => _x('expertises', 'wa-skill taxonomy slug (url SEO)', 'wa-config')], 'show_in_nav_menus' => true, 'show_tagcloud' => true, 'menu_icon' => 'dashicons-welcome-learn-more', 'show_in_menu' => true);
                 $missionCptKey = 'wa-mission';
                 $skillTaxoKey = 'wa-skill';
-                $taxo = register_taxonomy($skillTaxoKey, [$missionCptKey, 'user'], $args);
-                flush_rewrite_rules();
+                $locale = get_locale();
+                $permalink = _x( 'expertises', 'wa-skill taxonomy slug (url SEO)', 'wa-config');
+                $this->debugVerbose("Will e_skill_taxo_register_taxonomy '$skillTaxoKey' [$locale] $permalink");
+                $labels = array(
+                    'name'              => _x( 'Expertises', 'taxonomy general name (plural)', 'wa-config'),
+                    'singular_name'     => _x( 'Expertise', 'taxonomy singular name', 'wa-config'),
+                    'search_items'      => __( "Recherche d'expertises", 'wa-config'),
+                    'all_items'         => __( 'Toutes les expertises', 'wa-config'),
+                    'parent_item'       => __( 'Expertise parente', 'wa-config'),
+                    'parent_item_colon' => __( 'Expertise parente:', 'wa-config'),
+                    'edit_item'         => __( "Editer l'expertise", 'wa-config'),
+                    'update_item'       => __( "Mettre à jour l'expertise", 'wa-config'),
+                    'add_new_item'      => __( 'Ajouter une nouvelle expertise', 'wa-config'),
+                    'new_item_name'     => __( 'Nom de la nouvelle expertise', 'wa-config'),
+                    'menu_name'         => _x( 'Expertise', 'taxonomy menu name', 'wa-config'),
+                );
+                $args   = array(
+                    'public'            => true,
+                    'hierarchical'      => true, 
+                    'labels'            => $labels,
+                    'show_ui'           => true,
+                    'show_in_rest'      => true, 
+                    'show_admin_column' => true,
+                    'can_export'          => true,
+                    'has_archive'         => true,
+                    'exclude_from_search' => false,
+                    'publicly_queryable'  => true,
+                    'query_var'         => true,
+                    'rewrite'           => [ 'slug' => $permalink ], 
+                    'show_in_nav_menus' => true,
+                    'show_tagcloud' => true,
+                    'menu_icon' => 'dashicons-welcome-learn-more',
+                    'show_in_menu'      => false, 
+                );
+                $taxo = register_taxonomy($skillTaxoKey, [ $missionCptKey, 'user' ], $args );
             }
-            public function e_skill_taxo_data_review($app) : void
+            /**
+             * Review the default base terms used for wa-skill taxonomy
+             * 
+             * @param AppInterface $app the plugin instance.
+             */
+            public function e_skill_taxo_data_review($app): void
             {
                 $this->debugVerbose("Will e_skill_taxo_data_review");
                 $skillsSyncOK = true;
                 $reviewReport = '';
-                $skillsSyncOK = $skillsSyncOK && ($frontendTerm = $this->e_skill_taxo_ensure_term($reviewReport, _x('Frontend', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise web frontend (UI, pages statiques, composant statiques)"), 'slug' => 'frontend')));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Svelte', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise Svelte)"), 'slug' => 'svelte', 'parent' => $frontendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Angular JS', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise Angular JS)"), 'slug' => 'angular-js', 'parent' => $frontendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Angular 2+', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise Angular 2+)"), 'slug' => 'angular-2-etc', 'parent' => $frontendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Vue JS', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise Vue JS)"), 'slug' => 'vue-js', 'parent' => $frontendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('React JS', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise React JS)"), 'slug' => 'react-js', 'parent' => $frontendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('WordPress Theme', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise en frontend WordPress)"), 'slug' => 'wordpress-frontend', 'parent' => $frontendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($backendTerm = $this->e_skill_taxo_ensure_term($reviewReport, _x('Backend', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise web backend (SEO, pages dynamiques, données dynamiques)"), 'slug' => 'backend')));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('WordPress Plugin', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise en backend WordPress)"), 'slug' => 'wordpress-plugin', 'parent' => $backendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Symfony', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise WordPress)"), 'slug' => 'symfony', 'parent' => $backendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Laravel', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise Laravel)"), 'slug' => 'laravel', 'parent' => $backendTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($rEtDTerm = $this->e_skill_taxo_ensure_term($reviewReport, _x('Recherche et développement', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise de recherche et développement (R&D)"), 'slug' => __('r-et-d'))));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('POC', 'wa-skill term'), 'wa-skill', array('description' => __("Proof of concept (Preuve de conception tangible)"), 'slug' => __('poc'), 'parent' => $rEtDTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Etude technique', 'wa-skill term'), 'wa-skill', array('description' => __("Présentation des résultats de veille technologique plus ou moins longues"), 'slug' => __('etude-technique'), 'parent' => $rEtDTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Publication Open Source', 'wa-skill term'), 'wa-skill', array('description' => __("Publication des résultats et outils de mise en oeuvre pour un domaine public ciblée."), 'slug' => __('publication-open-source'), 'parent' => $rEtDTerm['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($healthCare = $this->e_skill_taxo_ensure_term($reviewReport, _x('Bien être', 'wa-skill term', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise en bien-être"), 'slug' => __('health-care'))));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Bien être physiologique', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise en bien être de l'activité de l'organisme humain."), 'slug' => __('physiological-health-care'), 'parent' => $healthCare['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Bien être des relations humaines', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise en bien être relationnel. Team building etc..."), 'slug' => __('relationship-health-care'), 'parent' => $healthCare['term_id'])));
-                $skillsSyncOK = $skillsSyncOK && ($term = $this->e_skill_taxo_ensure_term($reviewReport, _x('Bien être organisationnel', 'wa-skill term'), 'wa-skill', array('description' => __("Expertise organisationnel pour se sentir bien ou améliorer un bien être relationnel ."), 'slug' => __('organisational-health-care'), 'parent' => $healthCare['term_id'])));
-                $this->e_admin_config_add_check_list_to_review(['category' => __('02 - Maintenance', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>', 'title' => __("02 - [wa-skill] Contrôle des données", 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-dashboard"></span>', 'requirements' => __('[wa-skill] Vérification de la présence des expertises de base.<br />', 'wa-config') . $reviewReport, 'value' => strlen($reviewReport) ? $skillsSyncOK ? __('Les expertises sont définies même si certaines différent.') : __('Supprimez les terms wa-skill basique puis rafraichir cette page.') : '', 'result' => $skillsSyncOK, 'is_activated' => true, 'fixed_id' => "{$this->iId}-data-review-taxo-terms-for-wa-skill", 'is_computed' => true]);
+                $skillsSyncOK = $skillsSyncOK
+                && ($frontendTerm = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x( 'Frontend' , 'wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise web frontend (UI, pages statiques, composant statiques)"),
+                    'slug'        => 'frontend'
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Svelte','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise Svelte)"),
+                    'slug'        => 'svelte',
+                    'parent'      => $frontendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Angular JS','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise Angular JS)"),
+                    'slug'        => 'angular-js',
+                    'parent'      => $frontendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Angular 2+','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise Angular 2+)"),
+                    'slug'        => 'angular-2-etc',
+                    'parent'      => $frontendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Vue JS','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise Vue JS)"),
+                    'slug'        => 'vue-js',
+                    'parent'      => $frontendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('React JS','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise React JS)"),
+                    'slug'        => 'react-js',
+                    'parent'      => $frontendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('WordPress Theme','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise en frontend WordPress)"),
+                    'slug'        => 'wordpress-frontend',
+                    'parent'      => $frontendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($backendTerm = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Backend','wa-skill term'),
+                    'wa-skill',
+                    array(
+                      'description' => __("Expertise web backend (SEO, pages dynamiques, données dynamiques)"),
+                      'slug'        => 'backend'
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('WordPress Plugin','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise en backend WordPress)"),
+                    'slug'        => 'wordpress-plugin',
+                    'parent'      => $backendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Symfony','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise WordPress)"),
+                    'slug'        => 'symfony',
+                    'parent'      => $backendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Laravel','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise Laravel)"),
+                    'slug'        => 'laravel',
+                    'parent'      => $backendTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($rEtDTerm = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Recherche et développement','wa-skill term'),
+                    'wa-skill',
+                    array(
+                        'description' => __("Expertise de recherche et développement (R&D)"),
+                        'slug'        => __('r-et-d') 
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('POC','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Proof of concept (Preuve de conception tangible)"),
+                    'slug'        => __('poc'),
+                    'parent'      => $rEtDTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Etude technique','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Présentation des résultats de veille technologique plus ou moins longues"),
+                    'slug'        => __('etude-technique'),
+                    'parent'      => $rEtDTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Publication Open Source','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Publication des résultats et outils de mise en oeuvre pour un domaine public ciblée."),
+                    'slug'        => __('publication-open-source'),
+                    'parent'      => $rEtDTerm['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($healthCare = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Bien être','wa-skill term','wa-skill term'),
+                    'wa-skill',
+                    array(
+                        'description' => __("Expertise en bien-être"),
+                        'slug'        => __('health-care') 
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Bien être physiologique','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise en bien être de l'activité de l'organisme humain."),
+                    'slug'        => __('physiological-health-care'),
+                    'parent'      => $healthCare['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Bien être des relations humaines','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise en bien être relationnel. Team building etc..."),
+                    'slug'        => __('relationship-health-care'),
+                    'parent'      => $healthCare['term_id'],
+                    )
+                ));
+                $skillsSyncOK = $skillsSyncOK
+                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
+                    _x('Bien être organisationnel','wa-skill term'),
+                    'wa-skill',
+                    array(
+                    'description' => __("Expertise organisationnel pour se sentir bien ou améliorer un bien être relationnel ."),
+                    'slug'        => __('organisational-health-care'),
+                    'parent'      => $healthCare['term_id'],
+                    )
+                ));
+                $this->e_review_data_check_insert([
+                    'category' => __('02 - Maintenance',  'wa-config'),
+                    'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>',
+                    'title' => __("02 - [wa-skill] Contrôle des données",  'wa-config'),
+                    'title_icon' => '<span class="dashicons dashicons-dashboard"></span>',
+                    'requirements' => __( '[wa-skill] Vérification de la présence des expertises de base.<br />',
+                     'wa-config' ) . $reviewReport,
+                    'value' => strlen($reviewReport)
+                    ? (
+                        $skillsSyncOK
+                        ? __( 'Les expertises sont définies même si certaines différent.' )
+                        : __( 'Supprimez les terms wa-skill basique puis rafraichir cette page.' )
+                    )
+                    : '',
+                    'result'   => $skillsSyncOK ,
+                    'is_activated'   => true,
+                    'fixed_id' => "{$this->iId}-data-review-taxo-terms-for-wa-skill",
+                    'is_computed' => true,
+                ]);
             }
-            function e_skill_taxo_ensure_term(&$reviewReport, $term, $taxonomy, $args = array())
-            {
-                $this->debug("Will ensure existance of wa-skill term {$term}");
+            /**
+             * Add a new term to the Skill taxonomy.
+             *
+             * @since 0.0.1
+             *
+             * @param string       $reviewReport     Output string to put the review report in.
+             * @param string       $term     The term name to add.
+             * @param string       $taxonomy The taxonomy to which to add the term.
+             * @param array|string $args {
+             *     Optional. Array or query string of arguments for inserting a term.
+             *
+             *     @type string $alias_of    Slug of the term to make this term an alias of.
+             *                               Default empty string. Accepts a term slug.
+             *     @type string $description The term description. Default empty string.
+             *     @type int    $parent      The id of the parent term. Default 0.
+             *     @type string $slug        The term slug to use. Default empty string.
+             * }
+             * @return array|WP_Error {
+             *     An array of the new term data, false otherwise.
+             *
+             *     @type int    $term_id    The new term ID.
+             *     @type WP_Term|array|false    $term_taxonomy_id   The new term taxonomy.
+             * }
+             */
+            function e_skill_taxo_ensure_term( & $reviewReport, $term, $taxonomy, $args = array() ) {
+                $this->debug("Will ensure existance of wa-skill term $term");
                 $termInstance = get_term_by('slug', $args['slug'], $taxonomy, ARRAY_A);
                 $this->debugVeryVerbose("Saved term : ", $termInstance, $term, $taxonomy);
                 if ($termInstance) {
@@ -1995,10 +3899,10 @@ namespace WA\Config\Admin {
                     $args['description'] = wp_unslash(esc_html($args['description']));
                     $args['description'] = str_replace("&#039;", "'", $args['description']);
                     if ($term !== $termInstance['name']) {
-                        $haveDiffs[] = htmlentities("{$term}\n<>\n{$termInstance['name']}");
+                        $haveDiffs[] = htmlentities("$term\n<>\n{$termInstance['name']}");
                     }
                     if ($taxonomy !== $termInstance['taxonomy']) {
-                        $haveDiffs[] = htmlentities("{$taxonomy}\n<>\n{$termInstance['taxonomy']}");
+                        $haveDiffs[] = htmlentities("$taxonomy\n<>\n{$termInstance['taxonomy']}");
                     }
                     if ($args['description'] !== $termInstance['description']) {
                         $haveDiffs[] = htmlentities("{$args['description']}\n<>\n{$termInstance['description']}");
@@ -2007,154 +3911,662 @@ namespace WA\Config\Admin {
                         $haveDiffs[] = htmlentities("{$args['slug']}\n<>\n{$termInstance['slug']}");
                     }
                     if (count($haveDiffs)) {
-                        $reviewReport .= __("<p> L'expertise '{$term}' est différente de la version du plugin : <pre style='overflow:scroll'>\n" . implode(htmlentities("\n && \n"), $haveDiffs) . "\n</pre></p>");
+                        $reviewReport .=
+                        __("<p> L'expertise '$term' est différente de la version du plugin : <pre style='overflow:scroll'>\n"
+                        . implode(htmlentities("\n && \n"), $haveDiffs) . "\n</pre></p>");
                     }
-                    $this->debug("No need to add term {$term} for {$taxonomy} taxonomy since already registred, return loaded one, differ : " . count($haveDiffs));
+                    $this->debug("No need to add term $term for $taxonomy taxonomy since already registred, return loaded one, differ : " . count($haveDiffs));
                     return $termInstance;
                 } else {
-                    $termInstance = wp_insert_term($term, $taxonomy, $args);
-                    if (is_wp_error($termInstance)) {
+                    $termInstance = wp_insert_term(
+                        $term,
+                        $taxonomy,
+                        $args
+                    );
+                    if ( is_wp_error( $termInstance ) ) {
+                        /** @var WP_Error $err  */
                         $err = $termInstance;
-                        $this->err("Fail to add term {$term} for {$taxonomy} taxonomy : " . $err->get_error_message());
-                        $reviewReport .= __("<p>L'ajout de l'expertise '{$term}' a échoué : " . $err->get_error_message() . " </p>");
-                        return false;
+                            $this->err("Fail to add term $term for $taxonomy taxonomy : " . $err->get_error_message(), $err);
+                            $reviewReport .=
+                            __("<p>L'ajout de l'expertise '$term' a échoué : " . $err->get_error_message() . " </p>");
+                            return false;
                     }
                 }
-                if (is_a($termInstance, WP_Error::class) || !count($termInstance)) {
-                    $reviewReport .= __("<p> Echec de l'ajout de l'expertise '{$term}', réponse vide.</p>");
-                    $this->err("Fail to add term {$term} for {$taxonomy} taxonomy", $termInstance);
+                if ( !count($termInstance)) {
+                    $reviewReport .=
+                    __("<p> Echec de l'ajout de l'expertise '$term', réponse vide.</p>");
+                    $this->err("Fail to add term $term for $taxonomy taxonomy", $termInstance);
                     return false;
                 }
                 return $termInstance;
             }
         }
     }
-    if (!trait_exists(EditableConfigPanels::class)) {
+    if (!trait_exists(EditableConfigPanels::class)) { 
+        /**
+         * This trait load the wa-config admin panels
+         * 
+         * - **param** panel : the Parameter panel, sub-menu of WA Config
+         * - **doc** panel : the Documentaion panel, sub-menu of WA Config
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Identifiable
+         * @uses Translatable
+         * @uses Editable
+         * @uses EditableWaConfigOptions
+         * @uses EditableAdminScripts
+         * @uses Parallelizable
+         * @uses PdfToHTMLable
+         */
         trait EditableConfigPanels
         {
-            use Identifiable, Translatable, Editable, EditableWaConfigOptions, EditableAdminScripts, Parallelizable, PdfToHTMLable;
-            protected function _010_e_admin_config__bootstrap()
+            use Identifiable,
+                Translatable,
+                Editable,
+                EditableWaConfigOptions,
+                EditableAdminScripts,
+                Parallelizable,
+                PdfToHTMLable;
+            protected function _010_e_config__bootstrap()
             {
-                $staticHeadTarget = $this->getWaConfigOption($this->eConfStaticHeadTarget, "");
-                $staticHeadTargetSafeWpKeeper = $this->getWaConfigOption($this->eConfStaticHeadSafeWpKeeper, "");
+                if (!is_admin()) {
+                    return; 
+                }
+                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_config__bootstrap')) {
+                    return; 
+                }
+                $self = $this;
+                add_action(WPActions::wa_ecp_render_after_parameters, function () use ($self) {
+                    if (!current_user_can('administrator')) {
+                        return; 
+                    }
+                    $waOptions = [
+                        $this->eReviewDataStoreKey,
+                        $this->eConfigOptsKey,
+                        $this->eConfigE2ETestsOptsKey,
+                        $this->oPluginLoadsMasterPathOptKey,
+                    ];
+                    $shouldClean = filter_input(INPUT_GET, 'should-clean-all-options', FILTER_SANITIZE_SPECIAL_CHARS);
+                    if ($shouldClean) {
+                        $this->debug("_010_e_config__bootstrap will CLEAN all options then redirect");
+                        foreach($waOptions as $optionKey) {
+                            delete_option($optionKey);
+                        }
+                        $back_url = remove_query_arg([
+                            'should-clean-all-options'
+                        ]);
+                        wp_redirect( $back_url ); 
+                        $this->exit(); return;
+                    } else {
+                        $this->debug("_010_e_config__bootstrap will add CLEAN all option for 'wa_ecp_render_after_parameters' action");
+                        $cleanLink = add_query_arg([
+                            'should-clean-all-options' => 'yes'
+                        ]);
+                        $cleanLinkLabel = __('Supprimer toutes les options',  'wa-config');
+                        $confirmLinkLabel = __("Confirmer la remise aux paramêtre d'usine",  'wa-config');
+                        $confirmLinkLabel = str_replace("'", "&#039;", $confirmLinkLabel); 
+                        echo <<<TEMPLATE
+                            <a
+                            href='$cleanLink'
+                            onclick='return confirm("$confirmLinkLabel");'>
+                                $cleanLinkLabel
+                            </a>
+                        TEMPLATE;
+                    }
+                }); 
+                $staticHeadTarget = $this->getWaConfigOption(
+                    $this->eConfStaticHeadTarget,
+                    ""
+                );
+                $staticHeadTargetSafeWpKeeper = $this->getWaConfigOption(
+                    $this->eConfStaticHeadSafeWpKeeper,
+                    ""
+                );
                 $staticHeadTarget = trim($staticHeadTarget, '/');
                 if (strlen($staticHeadTarget) && !is_admin()) {
                     $self = $this;
-                    add_action('parse_request', function () use($self, $staticHeadTarget, $staticHeadTargetSafeWpKeeper) {
-                        global $wp;
-                        $isSafeWp = strlen($staticHeadTargetSafeWpKeeper) ? !!preg_match($staticHeadTargetSafeWpKeeper, $wp->request) : false;
-                        if (0 !== strpos($wp->request, "wp-admin") && 0 !== strpos($wp->request, "wp-json") && 0 !== strpos($wp->request, "api-wa-config-nonce-rest") && !$isSafeWp) {
+                    add_action('parse_request', function ()
+                    use ($self, $staticHeadTarget, $staticHeadTargetSafeWpKeeper) { 
+                        global $wp; 
+                        $isSafeWp = strlen($staticHeadTargetSafeWpKeeper)
+                        ? (!! preg_match($staticHeadTargetSafeWpKeeper, $wp->request))
+                        : false;
+                        if (0 !== strpos($wp->request, "wp-admin")
+                        && 0 !== strpos($wp->request, "wp-json")
+                        && 0 !== strpos($wp->request, "api-wa-config-nonce-rest")
+                        && !$isSafeWp) {
                             $proxy = $this->pluginRoot . "head-proxy.php";
                             $GLOBALS["wa-proxy-url"] = $wp->request;
                             $GLOBALS["wa-front-head"] = $staticHeadTarget;
-                            $this->debugVerbose("EditableConfigPannels proxify Frontend for : '{$wp->request}' at '{$staticHeadTarget}'");
-                            include $proxy;
-                            $self->exit();
-                            return;
+                            $this->debugVerbose("EditableConfigPannels proxify Frontend for : '{$wp->request}' at '$staticHeadTarget'");
+                            include($proxy); 
+                            $self->exit(); return; 
                         }
                         if ($isSafeWp) {
                             $this->debugVerbose("EditableConfigPannels did keep wp url safe for : '{$wp->request}'");
                         }
-                    });
-                    return;
-                }
-                $this->eAdminConfigReviewOptsDefaults = [$this->eConfOptReviewCategory => "", $this->eConfOptReviewCategoryIcon => "", $this->eConfOptReviewTitle => "", $this->eConfOptReviewTitleIcon => "", $this->eConfOptReviewRequirements => "", $this->eConfOptReviewResult => true, $this->eConfOptReviewValue => "", $this->eConfOptReviewIsActivated => true, $this->eConfOptReviewAccessCapOrRole => ""];
-                add_action('activated_plugin', [$this, 'e_admin_config_on_plugins_activated'], 10, 2);
-                if (is_admin()) {
-                    $filter = "pre_update_option_{$this->eAdminConfigReviewOptsKey}";
-                    $this->debugVerbose("Will add '{$filter}' to the e_admin_config_pre_update_review_filter filter for '{$this->eAdminConfigReviewOptsKey}'");
-                    add_filter($filter, [$this, "e_admin_config_pre_update_review_filter"], 10, 3);
-                    add_filter("option_page_capability_{$this->eAdminConfigOptsReviewGroupKey}", [$this, "e_admin_config_review_option_page_capability"]);
+                    }); 
                 }
             }
-            public function e_admin_config_on_plugins_activated($plugin, $network_wide)
-            {
-                $relativePath = basename(dirname($this->pluginFile)) . '/' . basename($this->pluginFile);
-                if ($relativePath === $plugin) {
-                    $this->debug("Will e_admin_config_on_plugins_activated for {$plugin}");
-                    $this->e_admin_config_add_base_review();
-                }
-            }
-            protected function _010_e_admin_config__load()
-            {
-                add_action('admin_menu', [$this, 'e_admin_config_do_admin_menu_review'], 20);
-                add_action('admin_menu', [$this, 'e_admin_config_do_admin_menu_doc'], 20);
-                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_admin_config__load')) {
-                    return;
-                }
-                add_action('admin_menu', [$this, 'e_admin_config_do_admin_menu']);
-                add_action('admin_init', [$this, 'e_admin_config_do_admin_init']);
-                add_action('wp_ajax_wa-list-capabilities-and-roles', [$this, 'e_admin_config_list_capabilities_and_roles']);
-                add_action('wp_ajax_wa-list-review-data-by-key', [$this, 'e_admin_config_list_review_data_by_key']);
-                add_action('wp_ajax_wa-review-action', [$this, 'e_admin_config_review_action']);
-            }
-            protected $baseCabability = 'edit_posts';
-            protected $optAdminEditCabability = 'administrator';
-            protected $optAdminReviewEditCabability = 'edit_posts';
-            public function e_admin_config_do_admin_menu() : void
-            {
-                $this->debugVerbose("Will e_admin_config_do_admin_menu");
-                add_menu_page(null, __('WA Config', 'wa-config'), $this->baseCabability, $this->eAdminConfigPageKey, '', plugins_url('assets/LogoWAConfig-21x21.png', $this->pluginFile), 7);
-                $this->e_admin_config_add_section('<span class="dashicons dashicons-admin-generic"></span> ' . __('Paramètres', 'wa-config'), [$this, 'e_admin_config_render_param_section'], $this->eAdminConfigParamPageKey, 10, $this->baseCabability);
-            }
-            public function e_admin_config_do_admin_menu_review() : void
-            {
-                $suffix = $this->iIndex ? "-{$this->iIndex}" : "";
-                $titleSuffix = $this->iIndex ? " {$this->iIndex}" : "";
-                $this->e_admin_config_add_section('<span class="dashicons dashicons-performance"></span> ' . __('Revue qualité', 'wa-config') . "{$titleSuffix}", [$this, 'e_admin_config_render_review_section'], "{$this->eAdminConfigReviewPageKey}{$suffix}", 20 + $this->iIndex, $this->baseCabability);
-            }
-            public function e_admin_config_do_admin_menu_doc() : void
-            {
-                $suffix = $this->iIndex ? "-{$this->iIndex}" : "";
-                $titleSuffix = $this->iIndex ? " {$this->iIndex}" : "";
-                $this->e_admin_config_add_section('<span class="dashicons dashicons-code-standards"></span> ' . __('Documentation', 'wa-config') . "{$titleSuffix}", [$this, 'e_admin_config_render_doc_section'], "{$this->eAdminConfigDocPageKey}{$suffix}", 30 + $this->iIndex, $this->baseCabability);
-            }
-            public function e_admin_config_do_admin_init() : void
+            protected function _010_e_config__load()
             {
                 if (!is_admin()) {
-                    $this->err("e_admin_config_do_admin_init should be for admin call only");
+                    return; 
+                }
+                $self = $this;
+                add_action('admin_menu', [$this, 'e_config_doc_admin_menu'], 5);
+                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_config__load')) {
+                    return; 
+                }
+                add_action('admin_menu', [$this, 'e_config_param_and_root_admin_menu'], 1); 
+                add_action('admin_init', [$this, 'e_config_param_and_root_admin_init']);
+                add_action(
+                    'wp_ajax_wa-list-capabilities-and-roles', 
+                    [$this, 'e_config_list_capabilities_and_roles']
+                );
+            }
+            protected $baseCabability = 'edit_posts'; 
+            protected $optAdminEditCabability = 'administrator'; 
+            /**
+             * Initialise the WA Config Root admin menu and parameter panel
+             */
+            public function e_config_param_and_root_admin_menu(): void
+            {
+                $this->debugVerbose("Will e_config_param_and_root_admin_menu");
+                add_menu_page(
+                    null, 
+                    __('WA Config',  'wa-config'), 
+                    $this->baseCabability,
+                    $this->eConfigPageKey,
+                    '',
+                    plugins_url('assets/LogoWAConfig-21x21.png', $this->pluginFile),
+                    7
+                ); 
+                $this->e_config_add_section(
+                    '<span class="dashicons dashicons-admin-generic"></span> '
+                    . __('Paramètres',  'wa-config'),
+                    [$this, 'e_config_param_render_panel'],
+                    $this->eConfigParamPageKey,
+                    $this->e_config_count_submenu(),
+                    $this->baseCabability,
+                );
+            }
+            /**
+             * Initialise WA Config root and parameters Admin Settings
+             */
+            public function e_config_param_and_root_admin_init(): void
+            {
+                if (!is_admin()) {
+                    $this->err("e_config_param_and_root_admin_init should be for admin call only");
                     return;
                 }
                 $self = $this;
-                $this->debugVerbose("Will e_admin_config_do_admin_init");
-                $this->eAdminConfigReviewOpts = $this->eAdminConfigReviewOptsDefaults;
-                $this->eAdminConfigReviewOpts = get_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
-                $this->debugVeryVerbose("Admin init WA Review options", $this->eAdminConfigReviewOpts);
-                $this->eACChecksByCategorieByTitle = $this->getReviewOption($this->eConfOptReviewsByCategorieByTitle, []);
-                $pageId = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS);
-                $ajaxActionId = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_SPECIAL_CHARS);
-                if ($pageId === $this->eAdminConfigReviewPageKey || $ajaxActionId === 'wa-review-action') {
-                    $this->e_admin_config_add_base_review();
+                $this->debugVerbose("Will e_config_param_and_root_admin_init");
+                register_setting(
+                    $this->eConfigOptsGroupKey,
+                    $this->eConfigOptsKey,
+                    [ "sanitize_callback" => [$this, 'e_config_param_form_validator']]
+                );
+                add_settings_section(
+                    $this->eConfigParamSettingsKey,
+                    __('Paramètres',  'wa-config'),
+                    '',
+                    $this->eConfigParamPageKey,
+                );
+                $oLvls = implode(",", (
+                    new ReflectionClass(OptiLvl::class)
+                )->getConstants());
+                $is_setting_page = function ($id) {
+                    $pageId = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS);
+                    return $id === $pageId;
+                };
+                extract($this->e_config_form_field_templates());
+                if (current_user_can($this->optAdminEditCabability)
+                && $is_setting_page($this->eConfigParamPageKey)) {
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptEnableFooter,
+                        __("Activer le bas de page",  'wa-config'),
+                        true,
+                        $checkboxTemplate
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptFooterCredit,
+                        __("Copyright de bas de page",  'wa-config'),
+                        $this->e_footer_get_localized_credit(),
+                        $multilLangTemplate,
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptFooterTemplate,
+                        __("Template de bas de page",  'wa-config'),
+                        $this->e_footer_get_localized_template(),
+                        $multilLangTextAreaTemplate,
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfStaticHeadTarget,
+                        __("Redirect du Frontend",  'wa-config'),
+                        "",
+                        [$this, 'api_fronthead_admin_sugestionbox_template'],
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfStaticHeadSafeWpKeeper,
+                        __("Regex pour exclure des url du Frontend",  'wa-config'),
+                        "",
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfWooCommerceOrderPrefix,
+                        __("Prefix pour num de commande WooCommerce",  'wa-config'),
+                        "",
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfShouldRenderFrontendScripts,
+                        __("Scripts frontend",  'wa-config'),
+                        true,
+                        $checkboxTemplate
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptOptiLevels,
+                        __("Axes d'optimisation",  'wa-config')
+                        . " ($oLvls)",
+                        "",
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptOptiWpRequestsFilter,
+                        __("RegEx pour bloquer les requêtes HTTP interne (Ex : /.*/)",  'wa-config'),
+                        "",
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptOptiWpRequestsSafeFilter,
+                        __('RegEx pour autoriser les requêtes HTTP interne (Ex : $wordpress.org$)',  'wa-config'),
+                        $this->E_DEFAULT_OPTIMISABLE_SAFE_FILTER,
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptOptiEnableBlockedHttpNotice,
+                        __("Notifier les requêttes HTTP bloquées",  'wa-config'),
+                        false,
+                        $checkboxTemplate,
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptOptiEnableBlockedReviewReport,
+                        __("Activer le rapport des url bloquées",  'wa-config'),
+                        false,
+                        $checkboxTemplate,
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptATestsBaseUrl,
+                        __("Url de base pour les tests d'acceptance",  'wa-config'),
+                        site_url(),
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptATestsUsers,
+                        __("Liste des utilisateurs de test",  'wa-config'),
+                        $this->E_DEFAULT_A_TESTS_USERS_LIST,
+                    );
+                    $this->e_config_param_add_form_field(
+                        $this->eConfOptATestsRunForCabability,
+                        __("Capacité pour lancer les tests",  'wa-config'),
+                        'administrator',
+                        [$this, 'e_config_capability_suggestionbox_template'],
+                    );
                 }
-                register_setting($this->eAdminConfigOptsGroupKey, $this->eAdminConfigOptsKey, [$this, 'e_admin_config_opts_validate']);
-                add_settings_section($this->eAdminConfigParamSettingsKey, __('Paramètres', 'wa-config'), '', $this->eAdminConfigParamPageKey);
-                register_setting($this->eAdminConfigOptsReviewGroupKey, $this->eAdminConfigReviewOptsKey, [$this, 'e_admin_config_opts_review_validate']);
-                add_settings_section($this->eAdminConfigReviewSettingsKey, __('Ajouter une revue', 'wa-config'), '', $this->eAdminConfigReviewPageKey);
+            }
+            /**
+             * Validator used to validate options saved from parameter admin panel
+             *
+             * @param mixed $input wa-config package option to validate
+             * @return mixed the new input after validator review
+             */
+            public function e_config_param_form_validator($input)
+            {
+                $newinput = $input;
+                $this->debugVerbose("Will e_config_param_form_validator");
+                $regExKey = $this->eConfOptOptiWpRequestsFilter;
+                $newinput[$regExKey] = trim($input[$regExKey]);
+                $regExKeySafe = $this->eConfOptOptiWpRequestsSafeFilter;
+                $newinput[$regExKeySafe] = trim($input[$regExKeySafe]);
+                $eConf = error_reporting(E_ALL); 
+                ob_start();
+                $pMatch = preg_match($newinput[$regExKey], 'hello');
+                $noticeErr = ob_get_clean();
+                ob_start();
+                $pMatchSafe = preg_match($newinput[$regExKeySafe], 'hello');
+                $noticeErrSafe = ob_get_clean();
+                error_reporting($eConf); 
+                if (strlen($newinput[$regExKey])
+                && false === $pMatch) {
+                    Notice::displayError(""
+                    . __("'RegEx pour bloquer les requêtes HTTP interne' NON VALIDE :",
+                    'wa-config') . "<br />\n{$newinput[$regExKey]}<br />\n" . $noticeErr);
+                    $newinput[$regExKey] = '';
+                }
+                $newinput[$regExKeySafe] = trim($input[$regExKeySafe]);
+                if (strlen($newinput[$regExKeySafe])
+                && false === $pMatchSafe) { 
+                    Notice::displayError(""
+                    . __("'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :",
+                    'wa-config') . "<br />\n{$newinput[$regExKeySafe]}<br />\n" . $noticeErrSafe); 
+                    $newinput[$regExKeySafe] = '';
+                }
+                $booleanAdaptor = function($fieldName) use ( & $newinput ) {
+                    $newinput[$fieldName] = boolval( 
+                        array_key_exists($fieldName, $newinput) ? $newinput[$fieldName] : false
+                    );
+                };
+                $booleanAdaptor($this->eConfOptEnableFooter);
+                $booleanAdaptor($this->eConfOptOptiEnableBlockedHttpNotice);
+                $booleanAdaptor($this->eConfOptOptiEnableBlockedReviewReport);
+                if (!$newinput[$this->eConfOptOptiEnableBlockedReviewReport]) {
+                    delete_transient($this->BLOCKED_URL_REVIEW_REPORT);
+                    delete_transient($this->ALLOWED_URL_REVIEW_REPORT);
+                }
+                $booleanAdaptor($this->eConfShouldRenderFrontendScripts);
+                Notice::displaySuccess(__('Enregistrement OK.', 'wa-config'));
+                return $newinput;
+            }
+            protected function e_config_param_add_form_field($key, $title, $default = '', $template = null): void
+            {
+                $this->debugVeryVerbose("Will e_config_param_add_form_field");
+                $fieldId = "{$this->eConfigOptsKey}_$key";
+                $fieldName = "{$this->eConfigOptsKey}[$key]";
+                $value = $this->getWaConfigOption($key, $default);
+                $safeValue = $value;
+                add_settings_field(
+                    $fieldId,
+                    $title,
+                    function () use ($safeValue, $fieldId, $fieldName, $template) {
+                        if ($template) {
+                            echo $template($safeValue, $fieldId, $fieldName);
+                        } else {
+                            echo <<< TEMPLATE
+                                <input id='$fieldId' type='text'
+                                name='$fieldName'
+                                value='$safeValue'
+                                />
+                            TEMPLATE;
+                        }
+                    },
+                    $this->eConfigParamPageKey,
+                    $this->eConfigParamSettingsKey,
+                );
+            }
+            /**
+             * Render the 'WA Config' 'Parameters' panel.
+             * 
+             * @see   WPActions::wa_ecp_render_after_parameters
+             */
+            public function e_config_param_render_panel(): void
+            {
+                $self = $this;
+                if (!is_admin()) {
+                    $this->err("wa-config admin param section is under admin pages only");
+                    echo "<p> "
+                        . __(
+                            "Cette opération nécessite une page d'administration.",
+                            'wa-config'
+                        )
+                        . "</p>";
+                    return;
+                }
+                $pluginTitle = __("Web Agency Config ") . $this->iId;
+                $pluginDescription = __(
+                    "Ce plugin permet d'<strong>optimiser</strong> la <strong>qualité</strong> de votre site web ainsi que les <strong>actions</strong> à mener pour votre <strong>processus métier</strong>.",
+                    'wa-config'
+                );
+                echo <<< TEMPLATE
+                    <h1>$pluginTitle</h1>
+                    <section>$pluginDescription</section>
+                TEMPLATE;
+                if (!current_user_can($this->optAdminEditCabability)) {
+                    $this->err("wa-config admin param need '{$this->optAdminEditCabability}' capability");
+                    echo "<p> " . __(
+                        "Pour plus d'informations, nécessite une capacité ou un rôle :",
+                        'wa-config'
+                    ) . " $this->optAdminEditCabability </p>";
+                    return;
+                }
+                $title = __('Paramètres',  'wa-config');
+                $welcome = __(
+                    'Ici, vous pouvez configurer tous les réglages généraux de wa-config ',
+                    'wa-config'
+                ) . " (" . AppInterface::PLUGIN_VERSION . ")";
+                $formFields = function () use ($self) {
+                    ob_start();
+                    settings_fields($self->eConfigOptsGroupKey);
+                    return ob_get_clean();
+                }; 
+                $sectionFormFields = function () use ($self) {
+                    ob_start();
+                    do_settings_sections($self->eConfigParamPageKey);
+                    return ob_get_clean();
+                };
+                $submitBtn = function () {
+                    ob_start();
+                    submit_button();
+                    return ob_get_clean();
+                };
+                $compatibilityReports = "";
+                $compatibilityReportsData = AppInterface::getCompatibilityReports();
+                foreach ($compatibilityReportsData as $report) {
+                    $compatibilityReports .= "
+                        <p>
+                            <strong>{$report['level']}</strong> {$report['msg']}
+                        </p>
+                    ";
+                }
+                $UIDoc = __('wa-config.admin.panel.param.doc',  'wa-config');
+                echo <<< TEMPLATE
+                    <div class="wrap">
+                        <h1>$title</h1>
+                        <p>$welcome</p>
+                        $compatibilityReports
+                        <div>$UIDoc</div>
+                        <form method="post" action="options.php"> 
+                            {$formFields()}
+                            {$sectionFormFields()}
+                            {$submitBtn()}
+                        </form>
+                    </div>
+                TEMPLATE;
+                $app = $this;
+                /**
+                 * @see   WPActions::wa_ecp_render_after_parameters
+                 */                
+                do_action(WPActions::wa_ecp_render_after_parameters, $app);
+            }
+            /**
+             * Render the 'WA Config' 'Documentation' panel.
+             */
+            public function e_config_doc_render_panel(): void
+            {
+                if( !is_admin() ){
+                    $this->warn("e_config_doc_render_panel need to be called from admin areas.");
+                    return;
+                }
+                echo "<p>[$this->iId] Showing documentation from {$this->pluginName}</p>";
+                $readMePdfUrl = plugins_url("ReadMe.pdf", $this->pluginFile);
+                $readMePdfUrlEncoded = urlencode($readMePdfUrl);
+                $readMeTitle = "<h1>ReadMe.pdf <a href='$readMePdfUrl' target='_blank'>"
+                    . __("Télécharger",  'wa-config')
+                    . '<span class="dashicons dashicons-download"></span>'
+                    . "</a></h1>";
+                $viewerUrl = plugins_url("assets/pdfjs/web/viewer.html", $this->pluginFile)
+                    . '?file=';
+                $readMeDevPdfUrl = plugins_url("ReadMeDev.pdf", $this->pluginFile);
+                $readMeDevPdfUrlEncoded = urlencode($readMeDevPdfUrl);
+                $readMeDevTitle = "<h1>ReadMeDev.pdf <a href='$readMeDevPdfUrl' target='_blank'>"
+                    . __("Télécharger",  'wa-config')
+                    . '<span class="dashicons dashicons-download"></span>'
+                    . "</a></h1>";
+                $extraDocFolder = $this->pluginRoot . 'doc-extra';
+                $docFiles = list_files($extraDocFolder);
+                if ($docFiles) {
+                    usort($docFiles, 'strnatcasecmp');
+                }
+                $extraDocumentation = "<h1>" .  __(
+                    "Documentation supplémentaire",
+                     'wa-config'
+                ) . "</h1>";
+                foreach ($docFiles as $docFile) {
+                    $type = wp_check_filetype($docFile);
+                    if ('pdf' !== $type['ext']) {
+                        continue; 
+                    }
+                    $relativeDocPath = str_replace(
+                        $this->pluginRoot,
+                        "", 
+                        $docFile
+                    );
+                    $docUrl = plugins_url($relativeDocPath, $this->pluginFile);
+                    $docIframe = <<< TEMPLATE
+                        <div>
+                            <iframe
+                            class="wa-pdf-read-me"
+                            src="$viewerUrl$docUrl"
+                            title="webviewer"
+                            frameborder="0"
+                            onload="wa_resizeDocIframe(this)"
+                            width="100%">
+                            </iframe>
+                        </div>
+                    TEMPLATE;
+                    $extraDocumentation .= "<h2>$relativeDocPath"
+                    . "<a href='$docUrl' target='_blank'>"
+                    . __("Télécharger",  'wa-config')
+                    . '<span class="dashicons dashicons-download"></span>'
+                    . "</a></h2>$docIframe";
+                }
+                $docIndex = plugins_url("doc/index.html", $this->pluginFile);
+                echo <<< TEMPLATE
+                <script>
+                    function wa_resizeDocIframe(oFrame) {
+                        var resizeator = function(frame) {
+                            var fMainClass = oFrame.getAttribute("class").split(' ')[0];
+                            if ("wa-php-doc" === fMainClass) {
+                                oFrame.style.height = oFrame.contentWindow.document.documentElement.scrollHeight + 'px';
+                            } else {
+                                // Fail back for specific iframe like pdf etc...
+                                // since previous height check sound fixed to 150px, with page scroll still used inside...
+                                oFrame.style.height = oFrame.contentWindow.outerHeight + 'px'; // document.documentElement.scrollHeight + 'px';
+                            }
+                        }
+                        resizeator(oFrame);
+                        // oFrame.contentWindow.document.onload = function() {
+                        //    resizeator(oFrame); // Already called by above, right ?
+                        // };
+                        oFrame.contentWindow.document.onclick = function() {
+                            resizeator(oFrame);
+                        };
+                    }
+                </script>
+                <div>
+                    <iframe
+                    class="wa-php-doc"
+                    scrolling='no'
+                    src="$docIndex"
+                    title="Php documentation"
+                    frameborder="0"
+                    onload="wa_resizeDocIframe(this)"
+                    width="100%">
+                    </iframe>
+                </div>
+                $readMeTitle
+                <div>
+                    <iframe
+                    class="wa-pdf-read-me"
+                    src="$viewerUrl$readMePdfUrlEncoded"
+                    title="webviewer"
+                    frameborder="0"
+                    onload="wa_resizeDocIframe(this)"
+                    width="100%">
+                    </iframe>
+                </div>
+                $readMeDevTitle
+                <div>
+                    <iframe
+                    class="wa-pdf-read-me-dev"
+                    src="$viewerUrl$readMeDevPdfUrlEncoded"
+                    title="webviewer"
+                    frameborder="0"
+                    onload="wa_resizeDocIframe(this)"
+                    width="100%">
+                    </iframe>
+                </div>
+                $extraDocumentation
+                TEMPLATE;
+            }
+            /**
+             * Add the 'WA Config' 'Documentation' panel.
+             */
+            public function e_config_doc_admin_menu(): void
+            {
+                $this->debugVerbose("Will e_config_doc_admin_menu");
+                $suffix = $this->iIndex ? "-{$this->iIndex}" : "";
+                $titleSuffix = " " . $this->iPrefix
+                . ($this->iRelativeIndex ? " {$this->iRelativeIndex}" : "");
+                $this->e_config_add_section(
+                    '<span class="dashicons dashicons-code-standards"></span> '
+                    . (
+                        $this->iIndex
+                        ? __('Doc',  'wa-config') . "$titleSuffix"
+                        : __('Documentation',  'wa-config')
+                    ),
+                    [$this, 'e_config_doc_render_panel'],
+                    "{$this->eConfigDocPageKey}$suffix",
+                    $this->e_config_count_submenu(),
+                    $this->baseCabability,
+                );
+            }
+            /**
+             * Get available field templates usable with WP Admin Settings API
+             * 
+             * **Templates** : 
+             *  - $checkboxTemplate
+             *  - $textareaTemplate
+             *  - $multilLangTemplate
+             *  - $multilLangTextAreaTemplate
+             *  - $hiddenTemplate
+             * 
+             * 
+             * @return array<string, callable> {
+             *   Available fields templates
+             * 
+             *   @type string **$templateVarName** Name of the template factory ready 
+             *     to extract as PHP variable
+             * 
+             *   @type callable ((string, string, string) => string)  **$templateFactory** {
+             *     Factory usable to render the corresponding form field
+             *
+             *     ($safeValue, $fieldId, $fieldName) => $templateView
+             *   }
+             * }
+             */
+            public function e_config_form_field_templates()
+            {
                 $checkboxTemplate = function ($safeValue, $fieldId, $fieldName) {
                     $checked = boolval($safeValue) ? 'checked' : '';
                     $value = $checked ? '1' : '0';
                     return <<<TEMPLATE
-<div>
-    <input
-    type="checkbox"
-    class="wppd-ui-toggle wa-checkbox"
-    id="{$fieldId}"
-    name="{$fieldName}"
-    value="{$value}"
-    {$checked}
-    ></input>
-</div>
-TEMPLATE;
+                    <div>
+                        <input
+                        type="checkbox"
+                        class="wppd-ui-toggle wa-checkbox"
+                        id="$fieldId"
+                        name="$fieldName"
+                        value="$value"
+                        $checked
+                        ></input>
+                    </div>
+                    TEMPLATE;
                 };
                 $textareaTemplate = function ($safeValue, $fieldId, $fieldName) {
                     return <<<TEMPLATE
-    <textarea
-    rows="5"
-    class="wa-review-textarea-{$fieldId}"
-    id="{$fieldId}"
-    name="{$fieldName}"
-    >{$safeValue}</textarea>
-TEMPLATE;
+                        <textarea
+                        rows="5"
+                        class="wa-review-textarea-$fieldId"
+                        id="$fieldId"
+                        name="$fieldName"
+                        >$safeValue</textarea>
+                    TEMPLATE; 
                 };
                 $multilLangTemplate = function ($safeValue, $fieldId, $fieldName) {
                     $localTranslations = $safeValue;
@@ -2167,14 +4579,14 @@ TEMPLATE;
                     $t = "";
                     foreach ($localTranslations as $locale => $translate) {
                         $t .= <<<TEMPLATE
-<p>
-    <label>{$locale} : </label>
-    <input class='{$fieldId}_{$locale}' type='text'
-    name='{$fieldName}[{$locale}]'
-    value='{$translate}'
-    />
-</p>
-TEMPLATE;
+                        <p>
+                            <label>$locale : </label>
+                            <input class='{$fieldId}_$locale' type='text'
+                            name='{$fieldName}[$locale]'
+                            value='$translate'
+                            />
+                        </p>
+                        TEMPLATE;
                     }
                     return $t;
                 };
@@ -2189,74 +4601,60 @@ TEMPLATE;
                     $t = "";
                     foreach ($localTranslations as $locale => $translate) {
                         $t .= <<<TEMPLATE
-<p>
-    <label>{$locale} : </label>
-    <textarea
-    rows="5"
-    class="{$fieldId}_{$locale}"
-    name="{$fieldName}[{$locale}]"
-    >{$translate}</textarea>
-</p>
-TEMPLATE;
+                        <p>
+                            <label>$locale : </label>
+                            <textarea
+                            rows="5"
+                            class="{$fieldId}_$locale"
+                            name="{$fieldName}[$locale]"
+                            >$translate</textarea>
+                        </p>
+                        TEMPLATE; 
                     }
                     return $t;
                 };
-                $oLvls = implode(",", (new ReflectionClass(OptiLvl::class))->getConstants());
-                if (current_user_can($this->optAdminEditCabability)) {
-                    $this->e_admin_menu_add_param_field($this->eConfOptEnableFooter, __("Activer le bas de page", 'wa-config'), true, $checkboxTemplate);
-                    $this->e_admin_menu_add_param_field($this->eConfOptFooterCredit, __("Copyright de bas de page", 'wa-config'), $this->e_footer_get_localized_credit(), $multilLangTemplate);
-                    $this->e_admin_menu_add_param_field($this->eConfOptFooterTemplate, __("Template de bas de page", 'wa-config'), $this->e_footer_get_localized_template(), $multilLangTextAreaTemplate);
-                    $this->e_admin_menu_add_param_field($this->eConfStaticHeadTarget, __("Redirect du Frontend", 'wa-config'), "");
-                    $this->e_admin_menu_add_param_field($this->eConfStaticHeadSafeWpKeeper, __("Regex pour exclure des url du Frontend", 'wa-config'), "");
-                    $this->e_admin_menu_add_param_field($this->eConfWooCommerceOrderPrefix, __("Prefix pour num de commande WooCommerce", 'wa-config'), "");
-                    $this->e_admin_menu_add_param_field($this->eConfShouldRenderFrontendScripts, __("Scripts frontend", 'wa-config'), true, $checkboxTemplate);
-                    $this->e_admin_menu_add_param_field($this->eConfOptOptiLevels, __("Axes d'optimisation", 'wa-config') . " ({$oLvls})", "");
-                    $this->e_admin_menu_add_param_field($this->eConfOptOptiWpRequestsFilter, __("RegEx pour bloquer les requêtes HTTP interne (Ex : /.*/)", 'wa-config'), "");
-                    $this->e_admin_menu_add_param_field($this->eConfOptOptiWpRequestsSafeFilter, __('RegEx pour autoriser les requêtes HTTP interne (Ex : $wordpress.org$)', 'wa-config'), $this->E_DEFAULT_OPTIMISABLE_SAFE_FILTER);
-                    $this->e_admin_menu_add_param_field($this->eConfOptOptiEnableBlockedHttpNotice, __("Notifier les requêttes HTTP bloquées", 'wa-config'), false, $checkboxTemplate);
-                    $this->e_admin_menu_add_param_field($this->eConfOptOptiEnableBlockedReviewReport, __("Activer le rapport des url bloquées", 'wa-config'), false, $checkboxTemplate);
-                    $this->e_admin_menu_add_param_field($this->eConfOptATestsBaseUrl, __("Url de base pour les tests d'acceptance", 'wa-config'), site_url());
-                    $this->e_admin_menu_add_param_field($this->eConfOptATestsUsers, __("Liste des utilisateurs de test", 'wa-config'), $this->E_DEFAULT_A_TESTS_USERS_LIST);
-                    $this->e_admin_menu_add_param_field($this->eConfOptATestsRunForCabability, __("Capacité pour lancer les tests", 'wa-config'), 'administrator', [$this, 'e_admin_config_capability_suggestionbox_template']);
-                }
-                add_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
-                if (current_user_can($this->optAdminReviewEditCabability)) {
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewCategory, __("Categorie", 'wa-config'), $this->eACDefaultCheckpoint['category'], [$this, 'e_admin_config_review_data_by_key_suggestionbox_template'], 'category');
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewCategoryIcon, __("Icône de categorie", 'wa-config'), $this->eACDefaultCheckpoint['category_icon'], [$this, 'e_admin_config_review_data_by_key_suggestionbox_template'], 'category_icon');
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewTitle, __("Titre", 'wa-config'), $this->eACDefaultCheckpoint['title'], [$this, 'e_admin_config_review_data_by_key_suggestionbox_template'], 'title');
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewTitleIcon, __("Icône de titre", 'wa-config'), $this->eACDefaultCheckpoint['title_icon'], [$this, 'e_admin_config_review_data_by_key_suggestionbox_template'], 'title_icon');
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewRequirements, __("Exigences", 'wa-config'), $this->eACDefaultCheckpoint['requirements'], $textareaTemplate, 'requirements');
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewResult, __("Résultat", 'wa-config'), $this->eACDefaultCheckpoint['result'], $checkboxTemplate, 'result');
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewValue, __("Valeur (optionnel)", 'wa-config'), $this->eACDefaultCheckpoint['value'], [$this, 'e_admin_config_review_data_by_key_suggestionbox_template'], 'value');
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewIsActivated, __("Activer la revue", 'wa-config'), $this->eACDefaultCheckpoint['is_activated'], $checkboxTemplate, 'is_activated');
-                    $this->e_admin_menu_add_review_field($this->eConfOptReviewAccessCapOrRole, __("Limiter l'accès", 'wa-config'), $this->eACDefaultCheckpoint['access_cap_or_role'], [$this, 'e_admin_config_capability_selectbox_template'], 'access_cap_or_role');
-                }
+                $hiddenTemplate = function ($safeValue, $fieldId, $fieldName) {
+                    return <<<TEMPLATE
+                    <input id='$fieldId' type='hidden'
+                    name='$fieldName'
+                    value='$safeValue'
+                    />
+                    TEMPLATE; 
+                };
+                return [
+                    'checkboxTemplate' => $checkboxTemplate,
+                    'textareaTemplate' => $textareaTemplate,
+                    'multilLangTemplate' => $multilLangTemplate,
+                    'multilLangTextAreaTemplate' => $multilLangTextAreaTemplate,
+                    'hiddenTemplate' => $hiddenTemplate,
+                ]; 
             }
             protected $_capAndRolesCacheKey = 'wa_config_admin_capabilities_and_roles';
             protected $_capAndRolesCache = null;
-            protected function e_admin_config_get_capabilities_and_roles()
-            {
+            /**
+             * WARNING, return an SplPriorityQueue => need to be cloned to
+             * iterate more than one time since dequeue value on loop...
+             */
+            protected function e_config_capabilities_and_roles() {
                 delete_transient($this->_capAndRolesCacheKey);
-                if ($this->_capAndRolesCache || ($this->_capAndRolesCache = get_transient($this->_capAndRolesCacheKey))) {
+                if ($this->_capAndRolesCache
+                    || $this->_capAndRolesCache = get_transient($this->_capAndRolesCacheKey)
+                ) {
                     return clone $this->_capAndRolesCache;
                 }
-                $capAndRoles = new class extends SplPriorityQueue
-                {
-                    public function compare($priority1, $priority2) : int
-                    {
-                        return strnatcasecmp(strval($priority2), strval($priority1));
+                $capAndRoles = new class() extends SplPriorityQueue {
+                    public function compare($priority1, $priority2): int {
+                        return strnatcasecmp(strval($priority2),strval($priority1));
                     }
-                    public function __serialize()
-                    {
+                    public function __serialize() {
                         $clone = clone $this;
                         $data = [];
                         foreach ($clone as $item) {
-                            $data[] = $item;
+                          $data[] = $item;
                         }
-                        return $data;
+                        return $data; 
                     }
-                    public function __unserialize($data)
-                    {
+                    public function __unserialize($data) {
                         foreach ($data as $item) {
                             $this->insert($item['data'], $item['priority']);
                         }
@@ -2265,53 +4663,86 @@ TEMPLATE;
                 $capAndRoles->setExtractFlags(SplPriorityQueue::EXTR_BOTH);
                 global $wp_roles;
                 $checkDuplicates = [];
-                $capAndRoles = array_reduce(array_chunk($wp_roles->roles, 1, true), function (SplPriorityQueue $cAndR, $roleDataChunk) use(&$checkDuplicates) {
-                    $r = key($roleDataChunk);
-                    $rData = current($roleDataChunk);
-                    if (!array_key_exists($r, $checkDuplicates)) {
-                        $cAndR->insert("--{$r}--", $r);
-                        $checkDuplicates[$r] = null;
-                    }
-                    array_reduce(array_keys($rData['capabilities']), function (SplPriorityQueue $cAndR, $c) use(&$checkDuplicates) {
-                        if (!array_key_exists($c, $checkDuplicates)) {
-                            $cAndR->insert($c, $c);
-                            $checkDuplicates[$c] = null;
+                $capAndRoles = array_reduce(
+                    array_chunk($wp_roles->roles, 1, true), 
+                    function (SplPriorityQueue $cAndR, $roleDataChunk)
+                    use (&$checkDuplicates) {
+                        $r = key($roleDataChunk);
+                        $rData = current($roleDataChunk);
+                        if (!array_key_exists($r, $checkDuplicates)) {
+                            $cAndR->insert("--$r--", $r);
+                            $checkDuplicates[$r] = null;
                         }
+                        array_reduce(
+                            array_keys($rData['capabilities']),
+                            function (SplPriorityQueue $cAndR, $c)
+                            use (&$checkDuplicates) {
+                                if (!array_key_exists($c, $checkDuplicates)) {
+                                    $cAndR->insert($c, $c);
+                                    $checkDuplicates[$c] = null;
+                                }
+                                return $cAndR;
+                            },
+                            $cAndR
+                        );
                         return $cAndR;
-                    }, $cAndR);
-                    return $cAndR;
-                }, $capAndRoles);
+                    },
+                    $capAndRoles
+                );
                 $this->_capAndRolesCache = $capAndRoles;
-                set_transient($this->_capAndRolesCacheKey, $this->_capAndRolesCache, 15 * 60);
+                set_transient( 
+                    $this->_capAndRolesCacheKey,
+                    $this->_capAndRolesCache,
+                    15 * 60 
+                );
                 return clone $this->_capAndRolesCache;
             }
             protected $_capAndRolesSearchCacheKey = 'wa_config_admin_capabilities_and_roles_search';
             protected $_capAndRolesSearchCache = null;
-            public function e_admin_config_list_capabilities_and_roles()
-            {
+            /**
+             * Output a suggestion list of all available capabilities and roles
+             * 
+             * Used for ajax suggestion lists. Echo one sugestion per line.
+             * 
+             * GET parameters :
+             *  - **q** : The query used to filter the suggestions (end user search input)
+             *
+             * @see https://mwop.net/blog/253-Taming-SplPriorityQueue.html
+             */
+            public function e_config_list_capabilities_and_roles() : void {
                 if (!is_admin()) {
                     $this->err("wa-config admin param section is under admin pages only");
-                    echo "<p> " . __("Cette opération nécessite une page d'administration.", 'wa-config') . "</p>";
+                    echo "<p> "
+                        . __(
+                            "Cette opération nécessite une page d'administration.",
+                            'wa-config'
+                        )
+                        . "</p>";
                     return;
                 }
                 $query = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_SPECIAL_CHARS);
-                $query = wp_unslash($query);
+                $query = wp_unslash( $query );
                 if (!$this->_capAndRolesSearchCache) {
-                    $this->_capAndRolesSearchCache = get_transient($this->_capAndRolesSearchCacheKey);
+                    $this->_capAndRolesSearchCache = get_transient( 
+                        $this->_capAndRolesSearchCacheKey
+                    );
                 }
                 if (!$this->_capAndRolesSearchCache) {
                     $this->_capAndRolesSearchCache = [];
                 }
                 if (array_key_exists($query, $this->_capAndRolesSearchCache)) {
-                    $this->debug("e_admin_config_list_capabilities_and_roles loaded from cache [{$query}]");
+                    $this->debug("e_config_list_capabilities_and_roles loaded from cache [$query]");
                     echo $this->_capAndRolesSearchCache[$query];
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
-                $capAndRoles = $this->e_admin_config_get_capabilities_and_roles();
+                $capAndRoles = $this->e_config_capabilities_and_roles();
                 $isFirstMatch = true;
                 $searchResult = '';
-                while ($capAndRoles->count() && (['data' => $d, 'priority' => $p] = $capAndRoles->extract())) {
+                while (
+                    $capAndRoles->count()
+                    && ['data'=>$d, 'priority'=>$p]
+                    = $capAndRoles->extract()
+                ) {
                     if (strpos(strtolower($p), strtolower($query)) === false) {
                         continue;
                     }
@@ -2324,808 +4755,270 @@ TEMPLATE;
                 }
                 $searchResult .= "\n";
                 $this->_capAndRolesSearchCache[$query] = $searchResult;
-                set_transient($this->_capAndRolesSearchCacheKey, $this->_capAndRolesSearchCache, 24 * 60 * 60);
+                set_transient( 
+                    $this->_capAndRolesSearchCacheKey,
+                    $this->_capAndRolesSearchCache,
+                    24 * 60 * 60 
+                );
                 echo $searchResult;
-                wp_die();
-                return;
+                $this->exit(); return;
             }
-            protected function e_admin_config_capability_suggestionbox_template($safeValue, $fieldId, $fieldName, $placeholder = "")
-            {
+            protected function e_config_capability_suggestionbox_template(
+                $safeValue, $fieldId, $fieldName, $placeholder = ""
+            ) {
                 return <<<TEMPLATE
-    <input
-    type="text"
-    placeholder="{$placeholder}"
-    class="wa-suggest-capabilities-and-roles"
-    id="{$fieldId}"
-    name="{$fieldName}"
-    value="{$safeValue}"
-    />
-TEMPLATE;
+                    <input
+                    type="text"
+                    placeholder="$placeholder"
+                    class="wa-suggest-capabilities-and-roles"
+                    id="$fieldId"
+                    name="$fieldName"
+                    value="$safeValue"
+                    />
+                TEMPLATE;
             }
-            protected function e_admin_config_capability_selectbox_template($safeValue, $fieldId, $fieldName, $placeholder = "")
-            {
-                $options = '<option value = "" >' . __("Non définit.", 'wa-config') . '</option>';
-                $capAndRoles = $this->e_admin_config_get_capabilities_and_roles();
-                while ($capAndRoles->count() && (['data' => $d, 'priority' => $p] = $capAndRoles->extract())) {
-                    $options .= <<<TEMPLATE
-    <option value="{$p}">{$d}</option>
-TEMPLATE;
+            protected function e_config_capability_selectbox_template(
+                $safeValue, $fieldId, $fieldName, $placeholder = ""
+            ) {
+                $options = '<option value = "" >'
+                . __(
+                    "Non définit.",
+                    'wa-config'
+                )
+                . '</option>';
+                $capAndRoles = $this->e_config_capabilities_and_roles();
+                while (
+                    $capAndRoles->count()
+                    && ['data'=>$d, 'priority'=>$p]
+                    = $capAndRoles->extract()
+                ) {
+                    $options .= <<< TEMPLATE
+                        <option value="$p">$d</option>
+                    TEMPLATE;
                 }
                 return <<<TEMPLATE
-    <select
-    class="wa-selectbox-capabilities-and-roles"
-    id="{$fieldId}"
-    name="{$fieldName}"
-    value="{$safeValue}"
-    >
-        {$options}
-    </select>
-TEMPLATE;
+                    <select
+                    class="wa-selectbox-capabilities-and-roles"
+                    id="$fieldId"
+                    name="$fieldName"
+                    value="$safeValue"
+                    >
+                        $options
+                    </select>
+                TEMPLATE;
             }
-            public function e_admin_config_opts_validate($input)
-            {
-                $newinput = $input;
-                $this->debugVerbose("Will e_admin_config_opts_validate");
-                $regExKey = $this->eConfOptOptiWpRequestsFilter;
-                $newinput[$regExKey] = trim($input[$regExKey]);
-                $regExKeySafe = $this->eConfOptOptiWpRequestsSafeFilter;
-                $newinput[$regExKeySafe] = trim($input[$regExKeySafe]);
-                $eConf = error_reporting(E_ALL);
-                ob_start();
-                $pMatch = preg_match($newinput[$regExKey], 'hello');
-                $noticeErr = ob_get_clean();
-                ob_start();
-                $pMatchSafe = preg_match($newinput[$regExKeySafe], 'hello');
-                $noticeErrSafe = ob_get_clean();
-                error_reporting($eConf);
-                if (strlen($newinput[$regExKey]) && false === $pMatch) {
-                    Notice::displayError("" . __("'RegEx pour bloquer les requêtes HTTP interne' NON VALIDE :", 'wa-config') . "<br />\n{$newinput[$regExKey]}<br />\n" . $noticeErr);
-                    $newinput[$regExKey] = '';
-                }
-                $newinput[$regExKeySafe] = trim($input[$regExKeySafe]);
-                if (strlen($newinput[$regExKeySafe]) && false === $pMatchSafe) {
-                    Notice::displayError("" . __("'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :", 'wa-config') . "<br />\n{$newinput[$regExKeySafe]}<br />\n" . $noticeErrSafe);
-                    $newinput[$regExKeySafe] = '';
-                }
-                $booleanAdaptor = function ($fieldName) use(&$newinput) {
-                    $newinput[$fieldName] = boolval(array_key_exists($fieldName, $newinput) ? $newinput[$fieldName] : false);
-                };
-                $booleanAdaptor($this->eConfOptEnableFooter);
-                $booleanAdaptor($this->eConfOptOptiEnableBlockedHttpNotice);
-                $booleanAdaptor($this->eConfOptOptiEnableBlockedReviewReport);
-                if (!$newinput[$this->eConfOptOptiEnableBlockedReviewReport]) {
-                    delete_transient($this->BLOCKED_URL_REVIEW_REPORT);
-                    delete_transient($this->ALLOWED_URL_REVIEW_REPORT);
-                }
-                $booleanAdaptor($this->eConfShouldRenderFrontendScripts);
-                Notice::displaySuccess(__('Enregistrement OK.', 'wa-config'));
-                return $newinput;
+            /**
+             * Helper to count sub menus of eAdminConfigPageKey or other page slug
+             * 
+             * @global array $submenu
+             * 
+             * @param string   $parent_slug The slug name for the parent menu 
+             * (or the file name of a standard WordPress admin page).
+             */
+            protected function e_config_count_submenu($parent_slug = null) {
+                global $submenu;
+                $c = count($submenu[
+                    $parent_slug ?? $this->eConfigPageKey
+                ] ?? []);
+                $this->debugVeryVerbose("Sub menu count for display order : $c");
+                return $c;
             }
-            protected function e_admin_config_add_section($title, $renderClbck, $newPageKey, $position = 1, $capability = null) : void
-            {
-                $this->debugVerbose("Will e_admin_config_add_section {$newPageKey}");
+            protected function e_config_add_section(
+                $title,
+                $renderClbck,
+                $newPageKey,
+                $position = 1,
+                $capability = null
+            ): void {
+                $this->debugVerbose("Will e_config_add_section $newPageKey");
                 $capability = $capability ?? $this->baseCabability;
-                $parentPageKey = $this->eAdminConfigPageKey;
-                \add_submenu_page($parentPageKey, $title, $title, $capability, $newPageKey, $renderClbck, $position);
-                $this->debugVerbose("Did e_admin_config_add_section {$newPageKey}");
+                $parentPageKey = $this->eConfigPageKey;
+                \add_submenu_page(
+                    $parentPageKey,
+                    $title,
+                    $title,
+                    $capability,
+                    $newPageKey,
+                    $renderClbck,
+                    $position
+                );
+                $this->debugVerbose("Did e_config_add_section $newPageKey");
             }
-            protected function e_admin_menu_add_param_field($key, $title, $default = '', $template = null) : void
-            {
-                $this->debugVeryVerbose("Will e_admin_menu_add_param_field");
-                $fieldId = "{$this->eAdminConfigOptsKey}_{$key}";
-                $fieldName = "{$this->eAdminConfigOptsKey}[{$key}]";
-                $value = $this->getWaConfigOption($key, $default);
-                $safeValue = $value;
-                add_settings_field($fieldId, $title, function () use($safeValue, $fieldId, $fieldName, $template) {
-                    if ($template) {
-                        echo $template($safeValue, $fieldId, $fieldName);
-                    } else {
-                        echo <<<TEMPLATE
-    <input id='{$fieldId}' type='text'
-    name='{$fieldName}'
-    value='{$safeValue}'
-    />
-TEMPLATE;
-                    }
-                }, $this->eAdminConfigParamPageKey, $this->eAdminConfigParamSettingsKey);
+        }
+    }
+    if (!trait_exists(AdminParamActivable::class)) { 
+        /**
+         * This trait is under developpement
+         * 
+         * Will be used to generically enable/disable features from code and parameters wa-config panel
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        trait AdminParamActivable
+        {
+            protected function a_p_a_register_feature($featureClass) {
+                throw new Exception("Dev in progress, forseen for next version");
             }
-            public function e_admin_config_render_param_section() : void
-            {
-                $self = $this;
-                if (!is_admin()) {
-                    $this->err("wa-config admin param section is under admin pages only");
-                    echo "<p> " . __("Cette opération nécessite une page d'administration.", 'wa-config') . "</p>";
-                    return;
-                }
-                $pluginTitle = __("Web Agency Config ") . $this->iId;
-                $pluginDescription = __("Ce plugin permet d'<strong>optimiser</strong> la <strong>qualité</strong> de votre site web ainsi que les <strong>actions</strong> à mener pour votre <strong>processus métier</strong>.", 'wa-config');
-                echo <<<TEMPLATE
-    <h1>{$pluginTitle}</h1>
-    <section>{$pluginDescription}</section>
-TEMPLATE;
-                $this->api_inst_print_access_report();
-                if (!current_user_can($this->optAdminEditCabability)) {
-                    $this->err("wa-config admin param need '{$this->optAdminEditCabability}' capability");
-                    echo "<p> " . __("Pour plus d'informations, nécessite une capacité ou un rôle :", 'wa-config') . " {$this->optAdminEditCabability} </p>";
-                    return;
-                }
-                $title = __('Paramètres', 'wa-config');
-                $welcome = __('Ici, vous pouvez configurer tous les réglages généraux de wa-config ', 'wa-config') . " (" . AppInterface::PLUGIN_VERSION . ")";
-                $formFields = function () use($self) {
-                    ob_start();
-                    settings_fields($self->eAdminConfigOptsGroupKey);
-                    return ob_get_clean();
-                };
-                $sectionFormFields = function () use($self) {
-                    ob_start();
-                    do_settings_sections($self->eAdminConfigParamPageKey);
-                    return ob_get_clean();
-                };
-                $submitBtn = function () {
-                    ob_start();
-                    submit_button();
-                    return ob_get_clean();
-                };
-                $compatibilityReports = "";
-                $compatibilityReportsData = AppInterface::getCompatibilityReports();
-                foreach ($compatibilityReportsData as $report) {
-                    $compatibilityReports .= "\n                        <p>\n                            <strong>{$report['level']}</strong> {$report['msg']}\n                        </p>\n                    ";
-                }
-                $UIDoc = __('wa-config.admin.panel.param.doc', 'wa-config');
-                echo <<<TEMPLATE
-    <div class="wrap">
-        <h1>{$title}</h1>
-        <p>{$welcome}</p>
-        {$compatibilityReports}
-        <div>{$UIDoc}</div>
-        <form method="post" action="options.php"> 
-            {$formFields()}
-            {$sectionFormFields()}
-            {$submitBtn()}
-        </form>
-    </div>
-TEMPLATE;
-                $app = $this;
-                do_action(WPActions::wa_ac_render_after_parameters, $app);
+            protected function a_p_a_activate($featureId) {
+                throw new Exception("Dev in progress, forseen for next version");
             }
+            protected function a_p_a_desactivate($featureId) {
+                throw new Exception("Dev in progress, forseen for next version");
+            }
+        }
+    }
+    if (!trait_exists(EditableReview::class)) { 
+        /**
+         * This trait load the wa-config review system and admin panel
+         * 
+         * - **review** : the Review panel, sub-menu of WA Config
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @use Editable
+         */
+        trait EditableReview
+        {
+            use Editable;
+            /**
+             * eReviewDataStoreKey is our 'review' option store key
+             * used to store our reviews
+             * 
+             * TIPS : You can change this eReviewDataStoreKey in your app constructor
+             * to use your own named store instead of 
+             * sharing the main plugin review board.
+             * 
+             * @since 0.0.1
+             * @property-read $eReviewDataStoreKey the Wa-config option Key for get_option
+             * @author service@monwoo.com
+             */
+            public $eReviewDataStoreKey = 'wa_e_review_data_store';
+            protected $eReviewDataStore = []; 
+            protected $eReviewPageKey = 'wa-e-review-page';
+            protected $eReviewSettingsFormSection = 'wa-e-review-settings-form-section';
+            protected $eReviewSettingsFormGroup = 'wa_e_review_settings_form_group'; 
+            protected $eReviewSettingsEditCabability = 'edit_posts';
+            protected $eReviewSettingsForm = [];
+            protected $eReviewSettingsFormDefaults = [];
             protected $_reviewsByKeySearchCacheKey = 'wa_config_admin_review_by_key_search';
-            protected $_reviewsByKeySearchCache = null;
-            public function e_admin_config_list_review_data_by_key()
+            protected $_reviewsByKeySearchCache = null; 
+            protected $_eReviewSettingsPreUpdateSelfSentinel = false;
+            protected $eReviewDefaultCheckpoint = [
+                'category' => null,
+                'category_icon' => '',
+                'title' => null,
+                'title_icon' => '',
+                'requirements' => null,
+                'value' => null,
+                'result' => false,
+                'access_cap_or_role' => null,
+                'is_activated' => true,
+                'is_deleted' => false,
+                'fixed_id' => null,
+                'is_computed' => false,
+                'create_time' => null,
+                'created_by' => null,
+                'import_time' => null,
+                'imported_by' => null,
+            ];
+            protected $eReviewChecksByCategoryByTitle = [];
+            protected $eReviewChecksByKeyId = []; 
+            protected $eReviewIconsByCategory = [];
+            protected $eReviewIdsToTrash = [];
+            protected function _010_e_review__bootstrap()
             {
-                if (!is_admin()) {
-                    $this->err("wa-config admin review section is under admin pages only");
-                    echo "<p> " . __("Cette opération nécessite une page d'administration.", 'wa-config') . "</p>";
-                    return;
+                $this->debug("Will _010_e_review__bootstrap");
+                $this->eReviewSettingsFormDefaults = [ 
+                    $this->eConfOptReviewCategory => "",
+                    $this->eConfOptReviewCategoryIcon => "",
+                    $this->eConfOptReviewTitle => "",
+                    $this->eConfOptReviewTitleIcon => "",
+                    $this->eConfOptReviewRequirements => "",
+                    $this->eConfOptReviewResult => true,
+                    $this->eConfOptReviewValue => "",
+                    $this->eConfOptReviewIsActivated => true,
+                    $this->eConfOptReviewAccessCapOrRole => "",
+                ];
+                $suffix = $this->iIndex ? "-{$this->iIndex}" : "";
+                $this->eReviewPageKey = "{$this->eReviewPageKey}$suffix";
+                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_review__bootstrap')) {
+                    return; 
                 }
-                $key = filter_input(INPUT_GET, 'key', FILTER_SANITIZE_SPECIAL_CHARS);
-                $query = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_SPECIAL_CHARS);
-                $query = wp_unslash($query);
-                if (!$this->_reviewsByKeySearchCache) {
-                    $this->_reviewsByKeySearchCache = get_transient($this->_reviewsByKeySearchCacheKey);
+                add_action( 'activated_plugin', [$this, 'e_review_on_plugins_activated'], 10, 2);
+                if (is_admin()) {
+                    $filter = "pre_update_option_{$this->eReviewSettingsFormKey}";
+                    $this->debugVerbose("Will filter '$filter' with 'e_review_settings_pre_update_filter'");
+                    add_filter($filter,
+                    [$this, "e_review_settings_pre_update_filter"], 10, 3);
+                    $self = $this;
+                    add_filter( "option_page_capability_{$this->eReviewPageKey}",
+                    [$this, "e_review_settings_page_capability"]); 
                 }
-                if (!$this->_reviewsByKeySearchCache) {
-                    $this->_reviewsByKeySearchCache = [];
-                }
-                if (!array_key_exists($key, $this->_reviewsByKeySearchCache)) {
-                    $this->_reviewsByKeySearchCache[$key] = [];
-                }
-                if (array_key_exists($query, $this->_reviewsByKeySearchCache[$key])) {
-                    $this->debug("e_admin_config_list_review_data_by_key loaded from cache [{$key}][{$query}]");
-                    echo $this->_reviewsByKeySearchCache[$key][$query];
-                    wp_die();
-                    return;
-                }
-                $datas = [];
-                foreach ($this->eACChecksByCategorieByTitle as $category => $checksByTitle) {
-                    foreach ($checksByTitle as $title => $checks) {
-                        foreach ($checks as $idx => $check) {
-                            $datas[$check[$key]] = $check[$key];
-                        }
-                    }
-                }
-                usort($datas, 'strnatcasecmp');
-                $isFirstMatch = true;
-                $searchResult = '';
-                foreach ($datas as $d) {
-                    if (strpos(strtolower($d), strtolower($query)) === false) {
-                        continue;
-                    }
-                    if ($isFirstMatch) {
-                        $isFirstMatch = false;
-                    } else {
-                        $searchResult .= "\n";
-                    }
-                    $searchResult .= htmlentities($d);
-                }
-                $searchResult .= "\n";
-                $this->_reviewsByKeySearchCache[$key][$query] = $searchResult;
-                set_transient($this->_reviewsByKeySearchCacheKey, $this->_reviewsByKeySearchCache, 24 * 60 * 60);
-                echo $searchResult;
-                wp_die();
-                return;
             }
-            public function e_admin_config_opts_review_validate($input)
+            protected function _010_e_review__load()
             {
-                $newinput = $input;
-                $this->debugVerbose("Will e_admin_config_opts_review_validate");
-                $booleanAdaptor = function ($fieldName) use(&$newinput) {
-                    $newinput[$fieldName] = intval(array_key_exists($fieldName, $newinput) ? $newinput[$fieldName] : false);
-                };
-                $booleanAdaptor($this->eConfOptReviewIsActivated);
-                $booleanAdaptor($this->eConfOptReviewResult);
-                $this->debugVeryVerbose("Validated e_admin_config_opts_review_validate input", array_keys($input), array_keys($newinput));
-                return $newinput;
-            }
-            public function e_admin_config_review_option_page_capability($capability)
-            {
-                return $this->baseCabability;
-            }
-            protected $_eACPreUpdateReviewSelfSentinel = false;
-            public function e_admin_config_pre_update_review_filter($value, $old_value, $option)
-            {
-                $this->debugVerbose("Will e_admin_config_pre_update_review_filter on {$option}");
-                if (!is_admin()) {
-                    $this->err("wa-config e_admin_config_pre_update_review_filter need admin page.");
-                    echo "<p> " . __("Cette opérations nécessite une page admin", 'wa-config') . "</p>";
-                    return;
+                $this->debug("Will _010_e_review__load");
+                add_action('admin_menu', [$this, 'e_review_settings_do_admin_menu'], 4);
+                $this->eReviewChecksByCategoryByTitle = $this->e_review_data_fetch(
+                    $this->eConfOptReviewsByCategorieByTitle, []
+                );
+                $this->debugVeryVerbose("Admin init WA Review options", $this->eReviewDataStore);
+                add_action('admin_init', [$this, 'e_review_settings_init_form'], 7);
+                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_review__load')) {
+                    return; 
                 }
-                if ($this->_eACPreUpdateReviewSelfSentinel) {
-                    $this->warn('Sentinel still needed ? // TODO : refactor code to avoid _eACPreUpdateReviewSelfSentinel ?');
-                    return $value;
+                $pageId = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS);
+                $ajaxActionId = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_SPECIAL_CHARS);
+                if ($pageId === $this->eReviewPageKey
+                || $ajaxActionId === 'wa-review-action') {
+                    add_action( 'init', [$this, 'e_review_data_add_base_review']);
                 }
-                $this->_eACPreUpdateReviewSelfSentinel = true;
-                $this->debugVerbose("Will e_admin_config_pre_update_review_filter on {$option}");
-                $this->debugVeryVerbose("e_admin_config_pre_update_review_filter From", $old_value, $value);
-                if (!key_exists($this->eConfOptReviewsInternalPreUpdateAction, $value)) {
-                    $checkpointValue = ['category' => $value[$this->eConfOptReviewCategory], 'category_icon' => $value[$this->eConfOptReviewCategoryIcon], 'title' => $value[$this->eConfOptReviewTitle], 'title_icon' => $value[$this->eConfOptReviewTitleIcon], 'requirements' => $value[$this->eConfOptReviewRequirements], 'value' => $value[$this->eConfOptReviewValue], 'result' => $value[$this->eConfOptReviewResult], 'access_cap_or_role' => $value[$this->eConfOptReviewAccessCapOrRole], 'is_activated' => $value[$this->eConfOptReviewIsActivated]];
-                    $this->debugVeryVerbose("e_admin_config_pre_update_review_filter will add checkpoint", ['checkpoint' => $checkpointValue, 'value' => $value]);
-                    if (!strlen($checkpointValue['category'])) {
-                        $this->err("WRONG e_admin_config_pre_update_review_filter, missing eConfOptReviewsInternalPreUpdateAction param ? ");
-                        $this->debug("WRONG value : ", $value, $this->debug_trace());
-                        Notice::displayError(__("Echec de l'enregistrement de la revue.", 'wa-config'));
-                        return $value;
-                    }
-                    $this->e_admin_config_add_check_list_to_review($checkpointValue);
-                    $value[$this->eConfOptReviewCategory] = "";
-                    $value[$this->eConfOptReviewCategoryIcon] = "";
-                    $value[$this->eConfOptReviewTitle] = "";
-                    $value[$this->eConfOptReviewTitleIcon] = "";
-                    $value[$this->eConfOptReviewRequirements] = "";
-                    $value[$this->eConfOptReviewValue] = "";
-                    $value[$this->eConfOptReviewResult] = true;
-                    $value[$this->eConfOptReviewAccessCapOrRole] = "";
-                    $value[$this->eConfOptReviewIsActivated] = true;
-                    $value[$this->eConfOptReviewsByCategorieByTitle] = $this->eACChecksByCategorieByTitle;
-                    Notice::displaySuccess(__('Enregistrement de la revue OK.', 'wa-config'));
-                } else {
-                    $action = $value[$this->eConfOptReviewsInternalPreUpdateAction];
-                    unset($value[$this->eConfOptReviewsInternalPreUpdateAction]);
-                    $this->debugVerbose("Will e_admin_config_pre_update_review_filter for {$action}");
-                }
-                delete_transient($this->_reviewsByKeySearchCacheKey);
-                $this->_reviewsByKeySearchCacheKey = null;
-                $this->_eACPreUpdateReviewSelfSentinel = false;
-                return $value;
+                add_action(
+                    'wp_ajax_wa-list-review-data-by-key', 
+                    [$this, 'e_review_list_data_by_key']
+                );
+                add_action(
+                    'wp_ajax_wa-review-action', 
+                    [$this, 'e_review_data_action']
+                );
             }
-            protected $eAdminConfigReviewOptsDefaults = [];
-            protected $eAdminConfigReviewOpts = [];
-            protected function getReviewOption($key, $default)
-            {
-                $this->debugVeryVerbose("Will getReviewOption {$key}");
-                $this->eAdminConfigReviewOpts = get_option($this->eAdminConfigReviewOptsKey, array_merge([$key => $default], $this->eAdminConfigReviewOpts));
-                $this->assert(is_array($this->eAdminConfigReviewOpts), "Having wrong datatype saved for {$key}", $this->eAdminConfigReviewOpts);
-                if (!key_exists($key, $this->eAdminConfigReviewOpts)) {
-                    $this->eAdminConfigReviewOpts[$key] = $default;
-                    $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = "getReviewOption";
-                    update_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
+			/**
+			 * Fires after a plugin has been activated.
+			 *
+			 * If a plugin is silently activated (such as during an update),
+			 * this callback does not fire.
+			 *
+			 * @param string $plugin       Path to the plugin file relative to the plugins directory.
+			 * @param bool   $network_wide Whether to enable the plugin for all sites in the network
+			 *                             or just the current site. Multisite only. Default false.
+			 */
+            public function e_review_on_plugins_activated($plugin, $network_wide) : void {
+                $this->debug("Did activate plugin : $plugin");
+                if ($this->pluginRelativeFile === $plugin) {
+                    $this->debug("Will e_review_on_plugins_activated for $plugin");
+                    $this->e_review_data_add_base_review(); 
                 }
-                $value = $this->eAdminConfigReviewOpts[$key];
-                $this->debugVeryVerbose("Did getReviewOption {$key}", $value);
-                return $value;
             }
-            protected $eACDefaultCheckpoint = ['category' => null, 'category_icon' => '', 'title' => null, 'title_icon' => '', 'requirements' => null, 'value' => null, 'result' => false, 'access_cap_or_role' => null, 'is_activated' => true, 'is_deleted' => false, 'fixed_id' => null, 'is_computed' => false, 'create_time' => null, 'created_by' => null, 'import_time' => null, 'imported_by' => null];
-            protected $eACChecksByCategorieByTitle = [];
-            protected $eACChecksByKeyId = [];
-            protected $iconsByCategory = [];
-            protected function e_admin_config_add_check_list_to_review(array $toCheck, $importMode = false)
+            /**
+             * Render the 'WA Config' 'Review' panel for wp-admin.
+             */
+            public function e_review_render_admin_panel(): void
             {
                 if (!is_user_logged_in()) {
-                    $this->err("wa-config e_admin_config_add_check_list_to_review is under logged users only");
+                    $this->err("wa-config e_review_data_check_insert is under logged users only");
                     wp_loginout();
-                    wp_die();
-                    return;
-                }
-                $user = wp_get_current_user();
-                $userName = $user->user_login;
-                $toCheck = array_merge($this->eACDefaultCheckpoint, $toCheck);
-                if ($importMode) {
-                    $toCheck['import_time'] = time();
-                    $toCheck['imported_by'] = $userName;
-                } else {
-                    $toCheck['create_time'] = time();
-                    $toCheck['created_by'] = $userName;
-                }
-                $keyId = $this->fetch_review_key_id($toCheck);
-                if ("" === $toCheck['category']) {
-                    $this->warn("Empty category should not happen ?", $this->debug_trace());
-                }
-                if (!array_key_exists($toCheck['category'], $this->eACChecksByCategorieByTitle)) {
-                    $this->eACChecksByCategorieByTitle[$toCheck['category']] = [];
-                }
-                if (!array_key_exists($toCheck['title'], $this->eACChecksByCategorieByTitle[$toCheck['category']])) {
-                    $this->eACChecksByCategorieByTitle[$toCheck['category']][$toCheck['title']] = [];
-                }
-                $checkBulk =& $this->eACChecksByCategorieByTitle[$toCheck['category']][$toCheck['title']];
-                $this->reviewIdsToTrash = array_merge($this->reviewIdsToTrash, [['id' => $keyId, 'not_for_categories' => $toCheck['category'], 'not_for_titles' => $toCheck['title']]]);
-                $checkBulk[] = $toCheck;
-                usort($checkBulk, function ($c1, $c2) {
-                    $c1Key = intval(boolVal($c1['is_activated'])) . '-' . intval(!boolVal($c1['is_computed'])) . '-' . $c1['create_time'];
-                    $c2Key = intval(boolVal($c2['is_activated'])) . '-' . intval(!boolVal($c2['is_computed'])) . '-' . $c2['create_time'];
-                    return strnatcasecmp($c2Key, $c1Key);
-                });
-                ksort($this->eACChecksByCategorieByTitle[$toCheck['category']], SORT_NATURAL | SORT_FLAG_CASE);
-                ksort($this->eACChecksByCategorieByTitle, SORT_NATURAL | SORT_FLAG_CASE);
-                if (strlen($toCheck['category_icon'] ?? '')) {
-                    if (!array_key_exists($toCheck['category'], $this->iconsByCategory)) {
-                        $this->iconsByCategory[$toCheck['category']] = [];
-                    }
-                    array_unshift($this->iconsByCategory[$toCheck['category']], $toCheck['category_icon']);
-                }
-                $this->eACChecksByKeyId[$keyId] = $toCheck;
-                $this->eAdminConfigReviewOpts[$this->eConfOptReviewsByCategorieByTitle] = $this->eACChecksByCategorieByTitle;
-                $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = "add_check_list_to_review";
-                update_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
-            }
-            protected function e_AC_isAccessibleCheck(&$check)
-            {
-                $user = wp_get_current_user();
-                $userName = $user->user_login;
-                $canSentinel = $check['access_cap_or_role'] ?? false;
-                return current_user_can('administrator') || $userName === $check['created_by'] || $userName === $check['imported_by'] || !$canSentinel || !strlen($canSentinel) || current_user_can($canSentinel);
-            }
-            protected function e_AC_isEditableCheck(&$check)
-            {
-                $user = wp_get_current_user();
-                $userName = $user->user_login;
-                return current_user_can($this->optAdminEditCabability) || $userName === $check['created_by'] || $userName === $check['imported_by'];
-            }
-            protected function e_AC_accessibleChecksByCategoryByTitle()
-            {
-                $checksByCategorieByTitle = [];
-                foreach ($this->eACChecksByCategorieByTitle as $category => &$reviewsByTitle) {
-                    foreach ($reviewsByTitle as $title => &$reviews) {
-                        foreach ($reviews as $idx => &$review) {
-                            if ($this->e_AC_isAccessibleCheck($review)) {
-                                if (!array_key_exists($category, $checksByCategorieByTitle)) {
-                                    $checksByCategorieByTitle[$category] = [];
-                                }
-                                $checksByTitle =& $checksByCategorieByTitle[$category];
-                                if (!array_key_exists($title, $checksByTitle)) {
-                                    $checksByTitle[$title] = [];
-                                }
-                                $checksBulk =& $checksByTitle[$title];
-                                $checksBulk[] = $review;
-                            } else {
-                            }
-                        }
-                    }
-                }
-                return $checksByCategorieByTitle;
-            }
-            protected function e_admin_menu_add_review_field($key, $title, $default = '', $template = null, ...$tArgs) : void
-            {
-                $this->debugVeryVerbose("Will e_admin_menu_add_review_field");
-                $fieldId = "{$this->eAdminConfigReviewOptsKey}_{$key}";
-                $fieldName = "{$this->eAdminConfigReviewOptsKey}[{$key}]";
-                $value = $this->getReviewOption($key, $default);
-                $safeValue = esc_attr($value);
-                add_settings_field($fieldId, $title, function () use($tArgs, $safeValue, $fieldId, $fieldName, $template) {
-                    if ($template) {
-                        echo $template($safeValue, $fieldId, $fieldName, "", ...$tArgs);
-                    } else {
-                        echo <<<TEMPLATE
-    <input id='{$fieldId}' type='text'
-    name='{$fieldName}'
-    value='{$safeValue}'
-    />
-TEMPLATE;
-                    }
-                }, $this->eAdminConfigReviewPageKey, $this->eAdminConfigReviewSettingsKey);
-            }
-            protected function e_admin_config_review_data_by_key_suggestionbox_template($safeValue, $fieldId, $fieldName, $placeholder, $key)
-            {
-                return <<<TEMPLATE
-    <input
-    type="text"
-    placeholder="{$placeholder}"
-    class="wa-suggest-list-review-data-by-{$key}"
-    id="{$fieldId}"
-    name="{$fieldName}"
-    value="{$safeValue}"
-    />
-TEMPLATE;
-            }
-            public function e_admin_config_review_action() : void
-            {
-                if (!is_user_logged_in()) {
-                    $this->err("wa-config e_admin_config_review_action is under logged users only");
-                    wp_loginout();
-                    wp_die();
-                    return;
-                }
-                $user = wp_get_current_user();
-                $userName = $user->user_login;
-                $anonimizedIp = $this->get_user_ip();
-                $action = filter_input(INPUT_POST, 'wa-action', FILTER_SANITIZE_SPECIAL_CHARS);
-                $checkPOST = filter_input(INPUT_POST, 'wa-data', FILTER_SANITIZE_SPECIAL_CHARS);
-                $checkJson = base64_decode($checkPOST);
-                $check = json_decode($checkJson, true);
-                $checkKey = "";
-                if ($check) {
-                    $checkKey = $this->fetch_review_key_id($check);
-                }
-                $this->debug("Will e_admin_config_review_action '{$action}' from '{$checkKey}' by '{$anonimizedIp}'");
-                if (false === check_ajax_referer("wa-check-nonce-{$checkKey}", 'wa-nonce', false) || !is_admin()) {
-                    $this->err("Invalid access for {$anonimizedIp}");
-                    echo json_encode(["error" => "[{$anonimizedIp}] " . __("IP enregistrée suite à accès invalid", 'wa-config')]);
-                    http_response_code(401);
-                    wp_die();
-                    return;
-                }
-                switch ($action) {
-                    case 'checkpoint-activate-toggler':
-                        $checksByTitle =& $this->eACChecksByCategorieByTitle[$check['category']];
-                        $checks =& $checksByTitle[$check['title']];
-                        $targets = array_filter($checks, function ($c) use(&$checkKey) {
-                            $cKey = $this->fetch_review_key_id($c);
-                            return $checkKey === $cKey;
-                        });
-                        $tCount = count($targets);
-                        if ($tCount !== 1) {
-                            $this->err("Invalid checkpoint '{$checkKey}' for {$anonimizedIp}");
-                            $this->debug("'{$checkKey}' not found or too much duplicata ({$tCount}) in ", $checks);
-                            echo json_encode(["error" => __("Specific checkpoint not found", 'wa-config'), "wa-data" => $check, "count" => $tCount]);
-                            http_response_code(404);
-                            wp_die();
-                            return;
-                        }
-                        $lookupIdx = array_keys($targets)[0];
-                        $toggeled =& $checks[$lookupIdx];
-                        if (!$this->e_AC_isEditableCheck($toggeled)) {
-                            $this->err("Invalid checkpoint access '{$checkKey}' for {$anonimizedIp}");
-                            $this->debug("'{$checkKey}' not accessible in ", $checks);
-                            echo json_encode(["error" => "[{$checkKey}] " . __("Specific checkpoint not accessible", 'wa-config'), "wa-data" => $check]);
-                            http_response_code(404);
-                            wp_die();
-                            return;
-                        }
-                        $toggeled['is_activated'] = !$toggeled['is_activated'];
-                        $this->eAdminConfigReviewOpts[$this->eConfOptReviewsByCategorieByTitle] = $this->eACChecksByCategorieByTitle;
-                        $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = $action;
-                        update_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
-                        delete_transient($this->_reviewsByKeySearchCacheKey);
-                        $this->_reviewsByKeySearchCacheKey = null;
-                        $this->debugVerbose("Did activate toggle from '{$action}' for '{$checkKey}'");
-                        break;
-                    case 'delete-checkpoint':
-                        $checksByTitle =& $this->eACChecksByCategorieByTitle[$check['category']];
-                        $checks =& $checksByTitle[$check['title']];
-                        $targets = array_filter($checks, function ($c) use(&$checkKey) {
-                            $cKey = $this->fetch_review_key_id($c);
-                            return $checkKey === $cKey;
-                        });
-                        $tCount = count($targets);
-                        if ($tCount !== 1) {
-                            $this->err("Invalid checkpoint '{$checkKey}' for {$anonimizedIp}");
-                            $this->debug("'{$checkKey}' not found or too much duplicata ({$tCount}) in ", $checks);
-                            echo json_encode(["error" => "Specific checkpoint not found", "wa-data" => $check, "count" => $tCount]);
-                            http_response_code(404);
-                            wp_die();
-                            return;
-                        }
-                        $this->debug("Will '{$action}' for '{$checkKey}'");
-                        $deleteds = $this->getReviewOption($this->eConfOptReviewsDeleted, []);
-                        $lookupIdx = array_keys($targets)[0];
-                        if (!$this->e_AC_isEditableCheck($checks[$lookupIdx])) {
-                            $this->err("Invalid checkpoint access '{$checkKey}' for {$anonimizedIp}");
-                            $this->debug("'{$checkKey}' not accessible in ", $checks);
-                            echo json_encode(["error" => "[{$checkKey}] " . __("Specific checkpoint not accessible", 'wa-config'), "wa-data" => $check]);
-                            http_response_code(404);
-                            wp_die();
-                            return;
-                        }
-                        unset($checks[$lookupIdx]);
-                        $this->eAdminConfigReviewOpts[$this->eConfOptReviewsByCategorieByTitle] = $this->eACChecksByCategorieByTitle;
-                        $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = $action;
-                        $check['is_deleted'] = true;
-                        $deleteds[] = $check;
-                        $this->eAdminConfigReviewOpts[$this->eConfOptReviewsDeleted] = $deleteds;
-                        $this->debugVerbose("Review Options before delete", $this->eAdminConfigReviewOpts);
-                        $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = $action;
-                        update_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
-                        delete_transient($this->_reviewsByKeySearchCacheKey);
-                        $this->_reviewsByKeySearchCacheKey = null;
-                        $this->debugVerbose("Did delete checkpoint from '{$action}' for '{$checkKey}'");
-                        break;
-                    case 'clean-all':
-                        if (current_user_can('administrator')) {
-                            $this->eACChecksByCategorieByTitle = [];
-                            $this->eAdminConfigReviewOpts[$this->eConfOptReviewsByCategorieByTitle] = $this->eACChecksByCategorieByTitle;
-                            delete_option($this->eAdminConfigReviewOptsKey);
-                            delete_transient($this->_reviewsByKeySearchCacheKey);
-                            $this->_reviewsByKeySearchCacheKey = null;
-                            $this->debugVerbose("Did clean all review data from '{$action}'");
-                        } else {
-                            $this->err("Invalid access for {$anonimizedIp}, need to be administrator to clean all");
-                            echo json_encode(["error" => "Invalid access for {$anonimizedIp} registred"]);
-                            http_response_code(401);
-                            wp_die();
-                            return;
-                        }
-                        break;
-                    case 'export-csv':
-                        ob_start();
-                        $headerRow = array_keys($this->eACDefaultCheckpoint);
-                        $dataRows = [];
-                        if (current_user_can($this->optAdminEditCabability)) {
-                            $checksByCategorieByTitle = $this->getReviewOption($this->eConfOptReviewsByCategorieByTitle, []);
-                        } else {
-                            $checksByCategorieByTitle = $this->e_AC_accessibleChecksByCategoryByTitle();
-                        }
-                        foreach ($checksByCategorieByTitle as $category => $checksByTitle) {
-                            foreach ($checksByTitle as $title => $checks) {
-                                foreach ($checks as $idx => $check) {
-                                    $row = [];
-                                    foreach ($headerRow as $hIndex) {
-                                        $row[] = mb_convert_encoding($check[$hIndex], 'UTF-8');
-                                    }
-                                    $dataRows[] = $row;
-                                }
-                            }
-                        }
-                        if (current_user_can('administrator')) {
-                            $deleteds = $this->getReviewOption($this->eConfOptReviewsDeleted, []);
-                            foreach ($deleteds as $d) {
-                                $row = [];
-                                foreach ($headerRow as $hIndex) {
-                                    $row[] = mb_convert_encoding($d[$hIndex], 'UTF-8');
-                                }
-                                $dataRows[] = $row;
-                            }
-                        }
-                        $siteSlug = sanitize_title(get_bloginfo('name'));
-                        $date = date("Ymd-His_O");
-                        $filename = "{$siteSlug}-{$this->iId}-{$date}.csv";
-                        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                        header('Content-Description: File Transfer');
-                        header('Content-Type: text/csv; charset=utf-8');
-                        header("Content-Disposition: attachment; filename={$filename}");
-                        header('Expires: 0');
-                        header('Pragma: public');
-                        $fh = fopen('php://output', 'w');
-                        fprintf($fh, chr(0xef) . chr(0xbb) . chr(0xbf));
-                        fputcsv($fh, $headerRow);
-                        foreach ($dataRows as $dataRow) {
-                            fputcsv($fh, $dataRow);
-                        }
-                        fclose($fh);
-                        ob_end_flush();
-                        $this->debugVerbose("Did export reviews data as CSV from '{$action}'");
-                        wp_die();
-                        return;
-                        break;
-                    case 'import-csv':
-                        if (!current_user_can($this->optAdminReviewEditCabability)) {
-                            $this->err("Invalid import access for {$anonimizedIp}");
-                            $this->debug("'import-csv' not accessible");
-                            echo json_encode(["error" => "[{$checkKey}] " . __("'import-csv' not accessible, ip {$anonimizedIp} registred", 'wa-config')]);
-                            http_response_code(404);
-                            wp_die();
-                            return;
-                        }
-                        $csv_file = $_FILES['wa-import-csv-file'];
-                        $csv_to_array = array_map('str_getcsv', file($csv_file['tmp_name']));
-                        $headers = [];
-                        $hIdx = [];
-                        foreach ($csv_to_array as $key => $value) {
-                            if ($key == 0) {
-                                $headers = $value;
-                                foreach ($headers as $idx => $h) {
-                                    $hIdx[$h] = $idx;
-                                }
-                                continue;
-                            }
-                            $checkpointValue = array_map(function ($idx) use(&$headers, &$value) {
-                                $h = $headers[$idx];
-                                return $value[$idx];
-                            }, $hIdx);
-                            $this->debugVerbose("e_admin_config_review_action import-csv will add checkpoint");
-                            $this->debugVeryVerbose("import-csv checkpoint :", ['checkpoint' => $checkpointValue, 'from_value' => $value]);
-                            $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = "{$action}-add-checkpoint";
-                            $user = wp_get_current_user();
-                            $userName = $user->user_login;
-                            if (current_user_can('administrator') || current_user_can($this->optAdminEditCabability) || $userName === ($checkpointValue['created_by'] ?? false)) {
-                                $this->e_admin_config_add_check_list_to_review($checkpointValue, true);
-                            } else {
-                                $this->debugVerbose("Ignore checkpoint import since not accessible");
-                            }
-                        }
-                        $this->debugVeryVerbose("WA Review options", $this->eAdminConfigReviewOpts);
-                        $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = $action;
-                        update_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
-                        delete_transient($this->_reviewsByKeySearchCacheKey);
-                        $this->_reviewsByKeySearchCacheKey = null;
-                        $redirectUrl = admin_url("admin.php?page={$this->eAdminConfigReviewPageKey}");
-                        $this->debugVeryVerbose("After csv-import, will redirect to : {$redirectUrl}");
-                        http_response_code(302);
-                        echo "<a href='{$redirectUrl}'>Imports OK, retour à la revue en cours...</a>";
-                        if (wp_redirect($redirectUrl)) {
-                            wp_die();
-                            return;
-                        } else {
-                            $this->debugVeryVerbose("csv-import Fail to redirect to : {$redirectUrl}");
-                        }
-                        break;
-                    default:
-                        $this->warn("Unknow action '{$action}'");
-                        break;
-                }
-                echo json_encode(["status" => "OK", "end_date" => date("Y/m/d H:i:s O ")]);
-                http_response_code(200);
-                wp_die();
-                return;
-            }
-            protected function e_admin_config_render_review_options($echo = false)
-            {
-                $self = $this;
-                $formFields = function () use($self) {
-                    ob_start();
-                    settings_fields($self->eAdminConfigOptsReviewGroupKey);
-                    return ob_get_clean();
-                };
-                $sectionFormFields = function () use($self) {
-                    ob_start();
-                    do_settings_sections($self->eAdminConfigReviewPageKey);
-                    return ob_get_clean();
-                };
-                $submitBtn = function () {
-                    ob_start();
-                    submit_button(__('Ajouter le checkpoint', 'wa-config') . ' ', 'primary large wa-add-page-btn-icon', 'submit', false);
-                    return ob_get_clean();
-                };
-                $rendering = <<<TEMPLATE
-    <form method="post" action="options.php" id="wa_config_review_add_checkpoint"> 
-        {$formFields()}
-        {$sectionFormFields()}
-        <p class="submit">
-            {$submitBtn()}
-            <!--span class="dashicons dashicons-welcome-add-page"></span-->
-        </p>
-    </form>
-TEMPLATE;
-                if ($echo) {
-                    echo $rendering;
-                }
-                return $rendering;
-            }
-            protected $reviewIdsToTrash = [];
-            public function e_admin_config_add_base_review()
-            {
-                $this->eACChecksByCategorieByTitle = $this->getReviewOption($this->eConfOptReviewsByCategorieByTitle, []);
-                unregister_post_type('wa-config');
-                register_taxonomy('wa-skill', array());
-                $app = $this;
-                do_action(WPActions::wa_do_base_review_preprocessing, $app);
-                $this->e_admin_config_add_check_list_to_review(['category' => __('01 - Critique', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-plugins-checked"></span>', 'title' => __('01 - Version de PHP', 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-shield"></span>', 'requirements' => __('7.4+ (7.4 or higher recommended)', 'wa-config'), 'value' => "PHP " . PHP_VERSION, 'result' => version_compare(PHP_VERSION, '7.4', '>'), 'fixed_id' => "{$this->iId}-check-php-version", 'is_computed' => true]);
-                $htaccessTestsFolder = 'tests';
-                $htaccessTestsBaseUrl = plugins_url($htaccessTestsFolder, $this->pluginFile);
-                require_once $this->pluginRoot . "tests/external/EXT_TEST_htaccessIsEnabled.php";
-                $htaccessOK = \WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::check($htaccessTestsBaseUrl);
-                if (!$htaccessOK) {
-                    foreach (\WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::$errors as $e) {
-                        $this->err($e);
-                    }
-                }
-                $this->e_admin_config_add_check_list_to_review(['category' => __('01 - Critique', 'wa-config'), 'title' => __('02 - Securisations .htaccess', 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-shield"></span>', 'requirements' => __('Activation des redirections .htaccess', 'wa-config'), 'result' => $htaccessOK, 'fixed_id' => "{$this->iId}-check-htaccess-ok", 'is_computed' => true]);
-                $report = "";
-                $result = (function () use(&$report) {
-                    $version = null;
-                    $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
-                    if (strrpos($userAgent, 'firefox') !== false) {
-                        preg_match('/firefox\\/([0-9]+\\.*[0-9]*)/', $userAgent, $matches);
-                        if (!empty($matches)) {
-                            $version = explode('.', $matches[1])[0];
-                            $report .= "Firefox {$version}";
-                            return intval($version) >= 101;
-                        }
-                    }
-                    if (strrpos($userAgent, 'chrome') !== false) {
-                        preg_match('/chrome\\/([0-9]+\\.*[0-9]*)/', $userAgent, $matches);
-                        if (!empty($matches)) {
-                            $version = explode('.', $matches[1])[0];
-                            $report .= "Chrome {$version}";
-                            return intval($version) >= 102;
-                        }
-                    }
-                    return false;
-                })();
-                $this->e_admin_config_add_check_list_to_review(['category' => __('01 - Critique', 'wa-config'), 'title' => __('03 - Compatibilité', 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-universal-access"></span>', 'requirements' => __('Navigateur compatible. Chrome > 102. Firefox > 101.', 'wa-config'), 'value' => $report, 'result' => $result, 'is_activated' => true, 'fixed_id' => "{$this->iId}-check-chrome-version", 'is_computed' => true]);
-                do_action(WPActions::wa_do_base_review_postprocessing, $app);
-                $reviewIdsToTrash = apply_filters(WPFilters::wa_config_reviews_ids_to_trash, $this->reviewIdsToTrash, $this);
-                $deleteds = $this->eAdminConfigReviewOpts[$this->eConfOptReviewsDeleted] ?? [];
-                foreach ($reviewIdsToTrash as $toTrash) {
-                    $trashId = $toTrash['id'] ?? $toTrash;
-                    $this->assert(is_string($trashId), "Missing ID in reviewIdsToTrash for trash operation ?");
-                    $trashSafeCategories = $toTrash['not_for_categories'] ?? null;
-                    $trashSafeTitles = $toTrash['not_for_titles'] ?? null;
-                    if (is_string($trashSafeCategories)) {
-                        $trashSafeCategories = [$trashSafeCategories];
-                    }
-                    if (is_string($trashSafeTitles)) {
-                        $trashSafeTitles = [$trashSafeTitles];
-                    }
-                    $this->assert(!$trashSafeCategories || is_array($trashSafeCategories), "Wrong type for trashSafeCategories", $trashSafeCategories);
-                    $this->assert(!$trashSafeTitles || is_array($trashSafeTitles), "Wrong type for trashSafeTitles", $trashSafeTitles);
-                    if ($trashSafeCategories && !count($trashSafeCategories)) {
-                        $trashSafeCategories = null;
-                    }
-                    if ($trashSafeTitles && !count($trashSafeTitles)) {
-                        $trashSafeTitles = null;
-                    }
-                    foreach ($this->eACChecksByCategorieByTitle as $c => &$checksByTitle) {
-                        $categoryIsSafe = $trashSafeCategories && in_array($c, $trashSafeCategories);
-                        foreach ($checksByTitle as $t => &$checks) {
-                            $titleIsSafe = $categoryIsSafe && $trashSafeTitles && in_array($t, $trashSafeTitles);
-                            $duplicatedIds = [];
-                            $checks = array_filter($checks, function (&$check) use($trashId, $titleIsSafe, &$duplicatedIds, &$deleteds) {
-                                $checkId = $check['fixed_id'];
-                                if (!$this->e_AC_isAccessibleCheck($check)) {
-                                    $this->debug("e_admin_config_add_base_review trash not accessible for : {$checkId}");
-                                    return true;
-                                }
-                                if (!$titleIsSafe && $trashId === $checkId) {
-                                    $check['is_deleted'] = true;
-                                    if (!$check['is_computed']) {
-                                        $deleteds[] = $check;
-                                    }
-                                    return false;
-                                }
-                                if (array_key_exists($checkId, $duplicatedIds)) {
-                                    $check['is_deleted'] = true;
-                                    if (!$check['is_computed']) {
-                                        $deleteds[] = $check;
-                                    }
-                                    return false;
-                                }
-                                $duplicatedIds[$checkId] = true;
-                                return true;
-                            });
-                        }
-                    }
-                }
-                $this->reviewIdsToTrash = [];
-                $this->debugVeryVerbose("Trashed wa-reviews", $deleteds);
-                $this->eAdminConfigReviewOpts[$this->eConfOptReviewsDeleted] = $deleteds;
-                $this->eAdminConfigReviewOpts[$this->eConfOptReviewsByCategorieByTitle] = $this->eACChecksByCategorieByTitle;
-                $this->eAdminConfigReviewOpts[$this->eConfOptReviewsInternalPreUpdateAction] = "add_base_review";
-                update_option($this->eAdminConfigReviewOptsKey, $this->eAdminConfigReviewOpts);
-                flush_rewrite_rules();
-            }
-            public function e_admin_config_render_review_section() : void
-            {
-                if (!is_user_logged_in()) {
-                    $this->err("wa-config e_admin_config_add_check_list_to_review is under logged users only");
-                    wp_loginout();
-                    wp_die();
-                    return;
+                    wp_die(); return;
                 }
                 $user = wp_get_current_user();
                 $userName = $user->user_login;
                 if ($this->shouldDebug || $this->shouldDebugVerbose || $this->shouldDebugVeryVerbose) {
-                    echo "<h1 style='color:red;'>" . __('ATTENTION : Mode débug activé.', 'wa-config') . "</h1>";
+                    echo "<h1 style='color:red;'>"
+                    . __('ATTENTION : Mode débug activé.',  'wa-config')
+                    . "</h1>";
                 }
-                $this->e_admin_config_render_review_options(true);
-                $checksByCategorieByTitle = $this->e_AC_accessibleChecksByCategoryByTitle();
+                $this->e_review_settings_render_form(true);
+                $checksByCategorieByTitle = $this->e_review_data_check_byCategoryByTitle();
                 ?>
                 <a
                 id='wa-expand-all'
@@ -3134,16 +5027,24 @@ TEMPLATE;
                 class='wa-expand-toggler'>
                     <span class='dashicons dashicons-fullscreen-alt'></span>
                 </a>
-                <?php 
+                <?php
+
                 foreach ($checksByCategorieByTitle as $category => $reviewsByTitle) {
-                    $categoryIcon = $this->iconsByCategory[$category][0] ?? '';
+                    $categoryIcon = $this->eReviewIconsByCategory[$category][0] ?? '';
                     $catIdx = sanitize_title($category);
-                    echo "<h1 class='wa-check-category-title'>\n                    <span>\n                    <span>{$category}</span> {$categoryIcon}</span>\n                    <a\n                    id='wa-check-category-title-{$catIdx}'\n                    href='#wa-check-category-title-{$catIdx}'\n                    data-wa-expand-target='#wa-check-list-{$catIdx} .wa-expand'\n                    class='wa-expand-toggler'>\n                        <span class='dashicons dashicons-fullscreen-alt'></span>\n                    </a></h1>";
+                    echo "<h1 class='wa-check-category-title'>
+                    <span>
+                    <span>$category</span> $categoryIcon</span>
+                    <a
+                    id='wa-check-category-title-$catIdx'
+                    href='#wa-check-category-title-$catIdx'
+                    data-wa-expand-target='#wa-check-list-$catIdx .wa-expand'
+                    class='wa-expand-toggler'>
+                        <span class='dashicons dashicons-fullscreen-alt'></span>
+                    </a></h1>";
                     ?>
                     <table
-                    id="<?php 
-                    echo "wa-check-list-{$catIdx}";
-                    ?>"
+                    id="<?php echo "wa-check-list-$catIdx" ?>"
                     class="wa-check-list"
                     cellspacing="0px"
                     cellpadding="0px"
@@ -3151,96 +5052,77 @@ TEMPLATE;
                         <!-- TODO : for print only... will messup with flex...  + Align for A4 thead>
                             <tr>
                                 <th align="left">&nbsp;</th>
-                                <th align="left"><?php 
-                    esc_html_e('Exigence', 'wa-config');
-                    ?></th>
-                                <th align="left"><?php 
-                    esc_html_e('Présent', 'wa-config');
-                    ?></th>
+                                <th align="left"><?php esc_html_e( 'Exigence',  'wa-config' ); ?></th>
+                                <th align="left"><?php esc_html_e( 'Présent',  'wa-config' ); ?></th>
                             </tr>
                         </thead-->
                         <tbody>
                             <tr>
                                 <th class="wa-check-title">&nbsp;</th>
-                                <th class="wa-check-required"><?php 
-                    esc_html_e('Exigence', 'wa-config');
-                    ?></th>
-                                <th class="wa-check-present"><?php 
-                    esc_html_e('Présent', 'wa-config');
-                    ?></th>
+                                <th class="wa-check-required"><?php esc_html_e( 'Exigence',  'wa-config' ); ?></th>
+                                <th class="wa-check-present"><?php esc_html_e( 'Présent',  'wa-config' ); ?></th>
                             </tr>
-                            <?php 
-                    foreach ($reviewsByTitle as $title => $reviews) {
-                        $titleIdx = sanitize_title($title);
-                        foreach ([$reviews[0]] as $idx => $review) {
-                            $rowClass = "wa-check";
-                            if ($review['result']) {
-                                $background = '#7cc038';
-                                $color = 'black';
-                                $rowClass .= ' wa-check-valid';
-                            } elseif (isset($review['fallback'])) {
-                                $background = '#FCC612';
-                                $color = 'black';
-                                $rowClass .= ' wa-check-fallback';
-                            } else {
-                                $background = '#f43';
-                                $color = 'white';
-                                $rowClass .= ' wa-check-fail';
-                            }
-                            $isActif = $review['is_activated'] ?? false;
-                            $rowClass .= $isActif ? '' : ' wa-check-disabled wa-expand wa-expand-collapsed';
-                            $requirementIcon = $review['is_computed'] ? 'superhero' : 'buddicons-buddypress-logo';
-                            ?>
+                            <?php
+                            foreach ($reviewsByTitle as $title => $reviews) {
+                                $titleIdx = sanitize_title($title);
+                                foreach ( [$reviews[0]] as $idx => $review ) {
+                                    $rowClass = "wa-check";
+                                    if ( $review['result'] ) {
+                                        $background = '#7cc038';
+                                        $color      = 'black';
+                                        $rowClass  .= ' wa-check-valid';
+                                    } elseif ( isset( $review['fallback'] ) ) {
+                                        $background = '#FCC612';
+                                        $color      = 'black';
+                                        $rowClass  .= ' wa-check-fallback';
+                                    } else {
+                                        $background = '#f43';
+                                        $color      = 'white';
+                                        $rowClass  .= ' wa-check-fail';
+                                    }
+                                    $isActif = $review['is_activated'] ?? false;
+                                    $rowClass .= $isActif ? '' : ' wa-check-disabled wa-expand wa-expand-collapsed';
+                                    $requirementIcon = $review['is_computed'] ? 'superhero' : 'buddicons-buddypress-logo';
+                                    ?>
                                     <tr
-                                    id='<?php 
-                            echo "wa-check-title-{$catIdx}-{$titleIdx}";
-                            ?>'
-                                    class="<?php 
-                            echo $rowClass;
-                            ?>"
+                                    id='<?php echo "wa-check-title-$catIdx-$titleIdx" ?>'
+                                    class="<?php echo $rowClass ?>"
                                     >
                                         <td class="wa-check-title">
-                                            <?php 
-                            echo wp_kses_post($title);
-                            ?>
+                                            <?php echo wp_kses_post( $title ); ?>
                                             <br />
-                                            <?php 
-                            if ($review['result']) {
-                                echo '<span class="dashicons dashicons-awards wa-color-review-ok"></span> ';
-                            }
-                            ?>
-                                            <?php 
-                            echo wp_kses_post($review['title_icon'] ?? '');
-                            ?>
+                                            <?php
+                                            if ( $review['result'] ) {
+                                                echo '<span class="dashicons dashicons-awards wa-color-review-ok"></span> ';
+                                            }
+                                            ?>
+                                            <?php echo wp_kses_post( $review['title_icon'] ?? '' ); ?>
                                         </td>
                                         <td class="wa-check-required">
                                             <div
                                             class="wa-last-check wa-expand-toggler"
-                                            data-wa-expand-target="<?php 
-                            echo "#wa-check-title-{$catIdx}-{$titleIdx} .wa-expand";
-                            ?>"
+                                            data-wa-expand-target="<?php echo "#wa-check-title-$catIdx-$titleIdx .wa-expand" ?>"
                                             >
                                                 <div>
-                                                    <span class="dashicons dashicons-<?php 
-                            echo $requirementIcon;
-                            ?>"></span>
+                                                    <span class="dashicons dashicons-<?php echo $requirementIcon; ?>"></span>
                                                     <strong>
-                                                        <?php 
-                            echo wp_kses_post($review['requirements'] === true ? esc_html__('Yes', 'wa-config') : $review['requirements']);
-                            ?>
+                                                        <?php echo wp_kses_post( $review['requirements'] === true 
+                                                        ? esc_html__( 'Yes',  'wa-config' ) 
+                                                        : $review['requirements'] ); ?>
                                                     </strong>
                                                 </div><br />
-                                                <?php 
-                            echo "<notice><span class='dashicons dashicons-calendar-alt'></span> " . date("Y/m/d H:i:s O ", $review['create_time']) . ($review['is_computed'] ? "<br />" . $review['fixed_id'] : '') . "</notice>";
-                            ?>
-                                                <?php 
-                            if ($review['created_by'] ?? false) {
-                                echo "<br/><notice>-- {$review['created_by']}</notice> ";
-                            }
-                            if ($review['access_cap_or_role'] ?? false) {
-                                echo "<br/>" . __('Pour :', 'wa-config') . " <notice>{$review['access_cap_or_role']}</notice>";
-                            }
-                            ?>
+                                                <?php echo "<notice><span class='dashicons dashicons-calendar-alt'></span> "
+                                                . date("Y/m/d H:i:s O ", $review['create_time'])
+                                                . ($review['is_computed'] ? "<br />" . $review['fixed_id'] : ''). "</notice>" ?>
+                                                <?php
+                                                    if ($review['created_by'] ?? false) {
+                                                        echo "<br/><notice>-- {$review['created_by']}</notice> ";
+                                                    }
+                                                    if ($review['access_cap_or_role'] ?? false) {
+                                                        echo "<br/>" . __( 'Pour :',  'wa-config' )
+                                                        . " <notice>{$review['access_cap_or_role']}</notice>";
+                                                    }
+                                                ?>
                                             </div>
                                             <table
                                             class="wa-check-list wa-previous-check-list wa-expand wa-expand-collapsed"
@@ -3249,233 +5131,205 @@ TEMPLATE;
                                             style="background-color: white; width:100%;"
                                             >
                                                 <tbody>
-                                                    <?php 
-                            foreach (array_slice($reviews, 0) as $idx => $pReview) {
-                                $pRowClass = "wa-check wa-previous-check";
-                                if ($pReview['result']) {
-                                    $pBackground = '#7cc038';
-                                    $pColor = 'black';
-                                    $pRowClass .= ' wa-check-valid';
-                                } elseif (isset($pReview['fallback'])) {
-                                    $pBackground = '#FCC612';
-                                    $pColor = 'black';
-                                    $pRowClass .= ' wa-check-fallback';
-                                } else {
-                                    $pBackground = '#f43';
-                                    $pColor = 'white';
-                                    $pRowClass .= ' wa-check-fail';
-                                }
-                                $pReviewKey = $this->fetch_review_key_id($pReview);
-                                $pIsActif = $pReview['is_activated'] ?? false;
-                                $pRowClass .= $pIsActif ? '' : ' wa-check-disabled';
-                                $pRequirementIcon = $pReview['is_computed'] ? 'superhero' : 'buddicons-buddypress-logo';
-                                ?>
+                                                    <?php
+                                                    
+                                                    foreach ( array_slice($reviews, 0) as $idx => $pReview ) {
+                                                        $pRowClass = "wa-check wa-previous-check";
+                                                        if ( $pReview['result'] ) {
+                                                            $pBackground = '#7cc038';
+                                                            $pColor      = 'black';
+                                                            $pRowClass  .= ' wa-check-valid';                    
+                                                        } elseif ( isset( $pReview['fallback'] ) ) {
+                                                            $pBackground = '#FCC612';
+                                                            $pColor      = 'black';
+                                                            $pRowClass  .= ' wa-check-fallback';
+                                                        } else {
+                                                            $pBackground = '#f43';
+                                                            $pColor      = 'white';
+                                                            $pRowClass  .= ' wa-check-fail';
+                                                        }
+                                                        $pReviewKey = $this->fetch_review_key_id($pReview);
+                                                        $pIsActif = $pReview['is_activated'] ?? false;
+                                                        $pRowClass .= $pIsActif ? '' : ' wa-check-disabled';
+                                                        $pRequirementIcon = $pReview['is_computed'] ? 'superhero' : 'buddicons-buddypress-logo';
+                                                        ?>
                                                         <tr
-                                                        id='<?php 
-                                echo "wa-check-title-{$catIdx}-{$titleIdx}";
-                                ?>'
-                                                        class="<?php 
-                                echo $pRowClass;
-                                ?>"
+                                                        id='<?php echo "wa-check-title-$catIdx-$titleIdx" ?>'
+                                                        class="<?php echo $pRowClass ?>"
                                                         >
                                                             <td class="wa-check-required">
                                                                 <div
                                                                 class="wa-last-check"
                                                                 >
                                                                     <div>
-                                                                        <?php 
-                                if ($pReview['result']) {
-                                    echo '<span class="dashicons dashicons-awards wa-color-review-ok"></span> ';
-                                }
-                                ?>
-                                                                        <span class="dashicons dashicons-<?php 
-                                echo $pRequirementIcon;
-                                ?>"></span>
+                                                                        <?php
+                                                                        if ( $pReview['result'] ) {
+                                                                            echo '<span class="dashicons dashicons-awards wa-color-review-ok"></span> ';
+                                                                        }
+                                                                        ?>
+                                                                        <span class="dashicons dashicons-<?php echo $pRequirementIcon; ?>"></span>
                                                                         <strong>
-                                                                            <?php 
-                                echo wp_kses_post($pReview['requirements'] === true ? esc_html__('Yes', 'wa-config') : $pReview['requirements']);
-                                ?>
+                                                                            <?php echo wp_kses_post( $pReview['requirements'] === true 
+                                                                            ? esc_html__( 'Yes',  'wa-config' ) 
+                                                                            : $pReview['requirements'] ); ?>
                                                                         </strong>
                                                                     </div><br />
-                                                                    <?php 
-                                echo "<notice><span class='dashicons dashicons-calendar-alt'></span> " . date("Y/m/d H:i:s O ", $pReview['create_time']) . ($pReview['is_computed'] ? "<br />" . $pReview['fixed_id'] : '') . "</notice>";
-                                ?>
-                                                                    <?php 
-                                if ($pReview['created_by'] ?? false) {
-                                    echo "<br /><notice>-- {$pReview['created_by']}</notice>";
-                                }
-                                if ($pReview['access_cap_or_role'] ?? false) {
-                                    echo "<br />" . __('Pour :', 'wa-config') . " <notice>{$pReview['access_cap_or_role']}</notice>";
-                                }
-                                ?>
+                                                                    <?php echo "<notice><span class='dashicons dashicons-calendar-alt'></span> "
+                                                                    . date("Y/m/d H:i:s O ", $pReview['create_time'])
+                                                                    . ($pReview['is_computed'] ? "<br />" . $pReview['fixed_id'] : ''). "</notice>" ?>
+                                                                    <?php
+                                                                        if ($pReview['created_by'] ?? false) {
+                                                                            echo "<br /><notice>-- {$pReview['created_by']}</notice>";
+                                                                        }
+                                                                        if ($pReview['access_cap_or_role'] ?? false) {
+                                                                            echo "<br />" . __( 'Pour :',  'wa-config' )
+                                                                            . " <notice>{$pReview['access_cap_or_role']}</notice>";
+                                                                        }
+                                                                    ?>
                                                                 </div>
                                                             </td>
                                                             <td
                                                             class="wa-check-present"
-                                                            style="background-color:<?php 
-                                echo $pBackground;
-                                ?>; color:<?php 
-                                echo $pColor;
-                                ?>">
-                                                                <?php 
-                                if ($pReview['result']) {
-                                    echo '<span class="dashicons dashicons-yes-alt"></span> ';
-                                } else {
-                                    echo '<span class="dashicons dashicons-marker"></span> ';
-                                }
-                                echo wp_kses_post($pReview['value'] ?? "");
-                                if ($pReview['result'] && !($pReview['value'] ?? false)) {
-                                    echo esc_html__('Validé', 'wa-config');
-                                }
-                                if (!$pReview['result']) {
-                                    if (isset($pReview['fallback'])) {
-                                        printf('<div>%s. %s</div>', esc_html__('Compensé', 'wa-config'), esc_html($pReview['fallback']));
-                                    }
-                                    if (isset($pReview['failure'])) {
-                                        printf('<div>%s</div>', wp_kses_post($pReview['failure']));
-                                    } else {
-                                        printf('<div>%s.</div>', esc_html__('A faire', 'wa-config'));
-                                    }
-                                }
-                                ?>
+                                                            style="background-color:<?php echo $pBackground; ?>; color:<?php echo $pColor; ?>">
+                                                                <?php
+                                                                if ( $pReview['result'] ) {
+                                                                    echo '<span class="dashicons dashicons-yes-alt"></span> ';
+                                                                } else {
+                                                                    echo '<span class="dashicons dashicons-marker"></span> ';
+                                                                }
+                                                                echo wp_kses_post( $pReview['value'] ?? "");
+                                                                if ( $pReview['result'] && ! ($pReview['value'] ?? false) ) {
+                                                                    echo esc_html__( 'Validé',  'wa-config' );
+                                                                }
+                                                                if ( ! $pReview['result'] ) {
+                                                                    if ( isset( $pReview['fallback'] ) ) {
+                                                                        printf( '<div>%s. %s</div>', esc_html__( 'Compensé',  'wa-config' ), esc_html( $pReview['fallback'] ) );
+                                                                    }
+                                                                    if ( isset( $pReview['failure'] ) ) {
+                                                                        printf( '<div>%s</div>', wp_kses_post( $pReview['failure'] ) );
+                                                                    } else {
+                                                                        printf( '<div>%s.</div>', esc_html__( 'A faire',  'wa-config' ) );
+                                                                    }
+                                                                }
+                                                                ?>
                                                             </td>
                                                             <td class="wa-check-actions">
-                                                                <?php 
-                                if (current_user_can($this->optAdminEditCabability) || !($pReview['is_computed'] ?? false)) {
-                                    ?>
-                                                                    <?php 
-                                    if ($this->e_AC_isAccessibleCheck($pReview)) {
-                                        ?>
-                                                                        <?php 
-                                        if ($this->e_AC_isEditableCheck($pReview) && !($pReview['is_computed'] ?? false)) {
-                                            ?>
+                                                                <?php if (current_user_can($this->optAdminEditCabability)
+                                                                || !($pReview['is_computed'] ?? false)) { ?>
+                                                                    <?php if ($this->e_review_data_check_isReadable($pReview)) { ?>
+                                                                        <?php if ($this->e_review_data_check_isWriteable($pReview) && !($pReview['is_computed'] ?? false)) { ?>
                                                                             <a 
                                                                             href="#wa_config_review_add_checkpoint"
                                                                             class="wa-check-activate-toogle"
-                                                                            data-wa-review-activate-src='<?php 
-                                            echo base64_encode(json_encode($pReview));
-                                            ?>'
-                                                                            data-wa-nonce='<?php 
-                                            echo wp_create_nonce("wa-check-nonce-{$pReviewKey}");
-                                            ?>'
+                                                                            data-wa-review-activate-src='<?php echo base64_encode(json_encode($pReview)); ?>'
+                                                                            data-wa-nonce='<?php echo wp_create_nonce("wa-check-nonce-$pReviewKey"); ?>'
                                                                             >
-                                                                                <?php 
-                                            if ($pReview['is_activated'] ?? true) {
-                                                ?>
+                                                                                <?php if (($pReview['is_activated'] ?? true)) { ?>
                                                                                     <span class="dashicons dashicons-hidden"></span>
-                                                                                    <?php 
-                                                _e("Desactiver", 'wa-config');
-                                                ?>
-                                                                                <?php 
-                                            } else {
-                                                ?>
+                                                                                    <?php  _e( "Desactiver",  'wa-config' )  ?>
+                                                                                <?php } else { ?>
                                                                                     <span class="dashicons dashicons-visibility"></span>
-                                                                                    <?php 
-                                                _e("Activer", 'wa-config');
-                                                ?>
-                                                                                <?php 
-                                            }
-                                            ?>
+                                                                                    <?php  _e( "Activer",  'wa-config' )  ?>
+                                                                                <?php } ?>
                                                                             </a>
-                                                                        <?php 
-                                        }
-                                        ?>
-                                                                        <?php 
-                                        if ($this->e_AC_isEditableCheck($pReview)) {
-                                            ?>
+                                                                        <?php } ?>
+                                                                        <?php if ($this->e_review_data_check_isWriteable($pReview)) { ?>
                                                                             <a 
                                                                             href="#wa_config_review_delete_checkpoint"
                                                                             class="wa-check-delete-trigger"
-                                                                            data-wa-review-delete-src='<?php 
-                                            echo base64_encode(json_encode($pReview));
-                                            ?>'
-                                                                            data-wa-nonce='<?php 
-                                            echo wp_create_nonce("wa-check-nonce-{$pReviewKey}");
-                                            ?>'
+                                                                            data-wa-review-delete-src='<?php echo base64_encode(json_encode($pReview)); ?>'
+                                                                            data-wa-nonce='<?php echo wp_create_nonce("wa-check-nonce-$pReviewKey"); ?>'
                                                                             >
                                                                                 <span class="dashicons dashicons-trash"></span>
-                                                                                <?php 
-                                            _e("Supprimer", 'wa-config');
-                                            ?>
+                                                                                <?php  _e( "Supprimer",  'wa-config' )  ?>
                                                                             </a>
-                                                                        <?php 
-                                        }
-                                        ?>
-                                                                    <?php 
-                                    }
-                                    ?>
-                                                                <?php 
-                                }
-                                ?>
+                                                                        <?php } ?>
+                                                                    <?php } ?>
+                                                                <?php } ?>
                                                                 <a 
                                                                 href="#wa_config_review_add_checkpoint"
                                                                 class="wa-check-duplicate-trigger"
-                                                                data-wa-review-duplicate-src='<?php 
-                                echo base64_encode(json_encode($pReview));
-                                ?>'
+                                                                data-wa-review-duplicate-src='<?php echo base64_encode(json_encode($pReview)); ?>'
                                                                 >
                                                                     <span class="dashicons dashicons-admin-page"></span>
-                                                                    <?php 
-                                _e("Dupliquer", 'wa-config');
-                                ?>
+                                                                    <?php  _e( "Dupliquer",  'wa-config' )  ?>
                                                                 </a>
                                                             </td>
                                                         </tr>
-                                                    <?php 
-                            }
-                            ?>
+                                                    <?php } ?>
                                                 </tbody>
                                             </table>
                                         </td>
                                         <td
                                         class="wa-check-present"
-                                        style="background-color:<?php 
-                            echo $background;
-                            ?>; color:<?php 
-                            echo $color;
-                            ?>">
-                                            <?php 
-                            if ($review['result']) {
-                                echo '<span class="dashicons dashicons-yes-alt"></span> ';
-                            } else {
-                                echo '<span class="dashicons dashicons-marker"></span> ';
-                            }
-                            echo wp_kses_post($review['value'] ?? "");
-                            if ($review['result'] && !($review['value'] ?? false)) {
-                                echo esc_html__('Validé', 'wa-config');
-                            }
-                            if (!$review['result']) {
-                                if (isset($review['fallback'])) {
-                                    printf('<div>%s. %s</div>', esc_html__('Compensé', 'wa-config'), esc_html($review['fallback']));
-                                }
-                                if (isset($review['failure'])) {
-                                    printf('<div>%s</div>', wp_kses_post($review['failure']));
-                                } else {
-                                    printf('<div>%s.</div>', esc_html__('A faire', 'wa-config'));
+                                        style="background-color:<?php echo $background; ?>; color:<?php echo $color; ?>">
+                                            <?php
+                                            if ( $review['result'] ) {
+                                                echo '<span class="dashicons dashicons-yes-alt"></span> ';
+                                            } else {
+                                                echo '<span class="dashicons dashicons-marker"></span> ';
+                                            }
+                                            echo wp_kses_post( $review['value'] ?? "");
+                                            if ( $review['result'] && ! ($review['value'] ?? false) ) echo esc_html__( 'Validé',  'wa-config' );
+                                            if ( ! $review['result'] ) {
+                                                if ( isset( $review['fallback'] ) ) {
+                                                    printf( '<div>%s. %s</div>', esc_html__( 'Compensé',  'wa-config' ), esc_html( $review['fallback'] ) );
+                                                }
+                                                if ( isset( $review['failure'] ) ) {
+                                                    printf( '<div>%s</div>', wp_kses_post( $review['failure'] ) );
+                                                } else {
+                                                    printf( '<div>%s.</div>', esc_html__( 'A faire',  'wa-config' ) );
+                                                }
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>
+                                <?php
                                 }
                             }
                             ?>
-                                        </td>
-                                    </tr>
-                                <?php 
-                        }
-                    }
-                    ?>
                         </tbody>
                     </table>
-                    <?php 
+                    <?php
                 }
-                echo "<p>[{$this->iId}] <strong><a\n                href='#wa-check-export-csv'\n                class='wa-check-export-csv-trigger'\n                data-wa-nonce='" . wp_create_nonce("wa-check-nonce-") . "'\n                >" . __("Exporter les checkpoints en CSV", 'wa-config') . "</a></strong></p>";
-                echo "<p>[{$this->iId}] <strong><span\n                class='wa-check-import-csv-trigger'\n                >" . __("Importer les checkpoints depuis un fichier CSV", 'wa-config') . "</span></strong></p>";
-                echo '<form action="' . add_query_arg(['action' => 'wa-review-action'], admin_url('admin-ajax.php')) . '" method="post" enctype="multipart/form-data">';
+                echo "<p>[$this->iId] <strong><a
+                href='#wa-check-export-csv'
+                class='wa-check-export-csv-trigger'
+                data-wa-nonce='" . wp_create_nonce("wa-check-nonce-") . "'
+                >" . __(
+                    "Exporter les checkpoints en CSV",
+                     'wa-config'
+                ) . "</a></strong></p>";        
+                echo "<p>[$this->iId] <strong><span
+                class='wa-check-import-csv-trigger'
+                >" . __(
+                    "Importer les checkpoints depuis un fichier CSV",
+                     'wa-config'
+                ) . "</span></strong></p>";
+                echo '<form action="'
+                . add_query_arg([
+                    'action' => 'wa-review-action',
+                ], admin_url( 'admin-ajax.php' ))
+                .'" method="post" enctype="multipart/form-data">';
+                echo "<input type='hidden' name='wa-iid' value='{$this->iId}'>";
                 echo '<input type="file" name="wa-import-csv-file">';
                 echo '<input type="hidden" name="wa-action" value="import-csv">';
-                echo '<input type="hidden" name="wa-nonce" value="' . wp_create_nonce("wa-check-nonce-") . '">';
+                echo '<input type="hidden" name="wa-nonce" value="'
+                . wp_create_nonce("wa-check-nonce-")
+                .'">';
                 echo '<input type="submit" name="submit" value="submit">';
-                echo '</form>';
-                if (current_user_can($this->optAdminEditCabability)) {
-                    echo "<p>[{$this->iId}] <strong><a\n                    href='#clean-all-need-javascript'\n                    class='wa-check-export-csv-trigger'\n                    data-wa-nonce='" . wp_create_nonce("wa-check-nonce-") . "'\n                    data-wa-clean-after-download='true'\n                    >" . __("Supprimer toutes les données de review (Nettoyage des revues en cours et historique de suppression)", 'wa-config') . "</a></strong></p>";
-                }
+                echo '</form>';  
+                if (current_user_can($this->optAdminEditCabability) ) {
+                    echo "<p>[$this->iId] <strong><a
+                    href='#clean-all-need-javascript'
+                    class='wa-check-export-csv-trigger'
+                    data-wa-nonce='" . wp_create_nonce("wa-check-nonce-") . "'
+                    data-wa-clean-after-download='true'
+                    >" . __(
+                        "Supprimer toutes les données de review (Nettoyage des revues en cours et historique de suppression)",
+                         'wa-config'
+                    ) . "</a></strong></p>";        
+                }                    
                 ?>
                 <script>
                     jQuery(function() {
@@ -3548,23 +5402,23 @@ TEMPLATE;
                                 // $("#gadget_url").val("");
 
                                 // Use configured wa-config dynamic labelings ?
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_category')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_category')
                                 .value = duplicateData.category;
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_category_icon')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_category_icon')
                                 .value = duplicateData.category_icon || '';
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_title')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_title')
                                 .value = duplicateData.title;
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_title_icon')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_title_icon')
                                 .value = duplicateData.title_icon || '';
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_requirements')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_requirements')
                                 .value = duplicateData.requirements;
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_result')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_result')
                                 .checked = duplicateData.result;
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_value')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_value')
                                 .value = duplicateData.value;
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_is_activated')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_is_activated')
                                 .checked = duplicateData.is_activated;
-                                addCheckpointForm.querySelector('#wa_config_e_admin_config_review_opts_wa_review_access_cap_or_role')
+                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_access_cap_or_role')
                                 .value = duplicateData.access_cap_or_role || "";
                             }
                         });
@@ -3596,6 +5450,7 @@ TEMPLATE;
                                 // }).serialize();
                                 var data = { // "action=wa-review-action&" + jQuery({
                                     'wa-action': 'checkpoint-activate-toggler',
+                                    'wa-iid': '<?php echo $this->iId ?>',
                                     'wa-nonce': nonce,
                                     // Wrappers shitting the json, so need another wrapper clean to POST
                                     // 'wa-data': JSON.stringify(checkData),
@@ -3636,6 +5491,7 @@ TEMPLATE;
                                 );
                                 var data = {
                                     'wa-action': 'delete-checkpoint',
+                                    'wa-iid': '<?php echo $this->iId ?>',
                                     'wa-nonce': nonce,
                                     'wa-data': encodedData,
                                 };
@@ -3707,6 +5563,7 @@ TEMPLATE;
                                 );
                                 var data = {
                                     'wa-action': 'export-csv',
+                                    'wa-iid': '<?php echo $this->iId ?>',
                                     'wa-nonce': nonce,
                                 };
                                 console.log(data);
@@ -3714,6 +5571,7 @@ TEMPLATE;
                                 var cleanAll = function () {
                                     var data = {
                                         'wa-action': 'clean-all',
+                                        'wa-iid': '<?php echo $this->iId ?>',
                                         'wa-nonce': nonce,
                                     };
                                     console.log(data);
@@ -3792,136 +5650,273 @@ TEMPLATE;
                     })
                 </script>
 
-                <?php 
+                <?php
+
                 $this->opti_print_blocked_urls_report();
                 echo "<br /><br />";
                 $this->opti_print_allowed_urls_report();
                 echo "<br /><br />";
-                $this->api_inst_print_access_report();
-                $minimumCapabilityToRun = $this->getWaConfigOption($this->eConfOptATestsRunForCabability, 'administrator');
+                $minimumCapabilityToRun = $this->getWaConfigOption(
+                    $this->eConfOptATestsRunForCabability,
+                    'administrator'
+                );
                 if (!is_admin() || !current_user_can($minimumCapabilityToRun)) {
-                    $this->debug("wa-config TEST RUN can be done by {$minimumCapabilityToRun} only.");
-                    echo "<p> " . __("Pour plus d'informations, nécessite une capacité ou un rôle :", 'wa-config') . " {$minimumCapabilityToRun} </p>";
+                    $this->debug("wa-config TEST RUN can be done by $minimumCapabilityToRun only.");
+                    echo "<p> " . __(
+                        "Pour plus d'informations, nécessite une capacité ou un rôle :",
+                        'wa-config'
+                    ) . " $minimumCapabilityToRun </p>";
                     return;
                 }
                 $siteUrl = site_url();
                 global $wp;
                 $current_url = add_query_arg($wp->query_vars, home_url($wp->request));
-                echo "<h1> " . __("CRITIQUE : prevoir un roolback SQL", 'wa-config') . " </h1>";
-                echo "<p> " . __("<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de données en dehors de WordPress pour recharger cette dernière via le backup SQL suivant en cas d'echec de roolback des actions de tests (ex : accès phpmyadmin) : ", 'wa-config') . " </p>";
+                echo "<h1> " . __(
+                    "CRITIQUE : prevoir un roolback SQL",
+                    'wa-config'
+                ) . " </h1>";
+                echo "<p> " . __(
+                    "<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de données en dehors de WordPress pour recharger cette dernière via le backup SQL suivant en cas d'echec de roolback des actions de tests (ex : accès phpmyadmin) : ",
+                    'wa-config'
+                ) . " </p>";
                 if (current_user_can('administrator')) {
-                    echo "<p> " . ("<strong> DB_NAME : '" . DB_NAME . "'</strong> <br />" . "<strong> DB_USER : '" . DB_USER . "'</strong> <br />" . "<strong> DB_PASSWORD : <span class='wa-show-pass-on-hover'>'" . DB_PASSWORD . "'</span></strong> <br />" . "<strong> DB_HOST : '" . DB_HOST . "'</strong> <br />" . "<strong> DB_CHARSET : '" . DB_CHARSET . "'</strong> <br />") . " </p>";
+                    echo "<p> " . (
+                        "<strong> DB_NAME : '" . DB_NAME . "'</strong> <br />"
+                        . "<strong> DB_USER : '" . DB_USER . "'</strong> <br />"
+                        . "<strong> DB_PASSWORD : <span class='wa-show-pass-on-hover'>'"
+                        . DB_PASSWORD . "'</span></strong> <br />"
+                        . "<strong> DB_HOST : '" . DB_HOST . "'</strong> <br />"
+                        . "<strong> DB_CHARSET : '" . DB_CHARSET . "'</strong> <br />"
+                    ) . " </p>";
                 }
-                $bckupSQLUrl = add_query_arg(['action' => 'wa-e2e-test-action', 'wa-action' => 'do-backup', 'wa-backup-type' => 'sql', 'wa-compression-type' => '.sql.gz'], admin_url('admin-ajax.php'));
-                echo "<p>[{$this->iId}] <strong><a\n                href='{$bckupSQLUrl}'\n                >" . __("Cliquer ici pour effectuer et télécharger le backup SQL avant de lancer les tests.", 'wa-config') . "</a></strong></p>";
-                $bckupSimpleZipUrl = add_query_arg(['action' => 'wa-e2e-test-action', 'wa-action' => 'do-backup', 'wa-backup-type' => 'simple-zip'], admin_url('admin-ajax.php'));
-                echo "<p>[{$this->iId}] <strong><a\n                href='{$bckupSimpleZipUrl}'\n                >" . __("Cliquer ici pour effectuer et télécharger le backup Zip simple (SQL + fichiers d'Upload).", 'wa-config') . "</a></strong></p>";
-                $bckupFullZipUrl = add_query_arg(['action' => 'wa-e2e-test-action', 'wa-action' => 'do-backup', 'wa-backup-type' => 'full-zip'], admin_url('admin-ajax.php'));
-                echo "<p>[{$this->iId}] <strong><a\n                href='{$bckupFullZipUrl}'\n                >" . __("Cliquer ici pour effectuer et télécharger le backup Zip complet (SQL + tous les fichiers WordPress depuis la racine du site web).", 'wa-config') . "</a></strong></p>";
-                $bckupATestUrl = add_query_arg(['wa-bckup-a-tests' => true], $current_url);
-                $loadATestBckupUrl = add_query_arg(['wa-load-a-tests-bckup' => true], $current_url);
+                $bckupSQLUrl = add_query_arg([
+                    'action' => 'wa-e2e-test-action',
+                    'wa-action' => 'do-backup',
+                    'wa-iid' => $this->iId,
+                    'wa-backup-type' => 'sql',
+                    'wa-compression-type' => '.sql.gz'
+                ], admin_url( 'admin-ajax.php' ));
+                echo "<p>[$this->iId] <strong><a
+                href='$bckupSQLUrl'
+                >" . __(
+                    "Cliquer ici pour effectuer et télécharger le backup SQL avant de lancer les tests.",
+                     'wa-config'
+                ) . "</a></strong></p>";
+                $bckupSimpleZipUrl = add_query_arg([
+                    'action' => 'wa-e2e-test-action',
+                    'wa-action' => 'do-backup',
+                    'wa-iid' => $this->iId,
+                    'wa-backup-type' => 'simple-zip',
+                ], admin_url( 'admin-ajax.php' ));
+                echo "<p>[$this->iId] <strong><a
+                href='$bckupSimpleZipUrl'
+                >" . __(
+                    "Cliquer ici pour effectuer et télécharger le backup Zip simple (SQL + fichiers d'Upload).",
+                     'wa-config'
+                ) . "</a></strong></p>";
+                $bckupFullZipUrl = add_query_arg([
+                    'action' => 'wa-e2e-test-action',
+                    'wa-action' => 'do-backup',
+                    'wa-iid' => $this->iId,
+                    'wa-backup-type' => 'full-zip',
+                ], admin_url( 'admin-ajax.php' ));
+                echo "<p>[$this->iId] <strong><a
+                href='$bckupFullZipUrl'
+                >" . __(
+                    "Cliquer ici pour effectuer et télécharger le backup Zip complet (SQL + tous les fichiers WordPress depuis la racine du site web).",
+                     'wa-config'
+                ) . "</a></strong></p>";
+                $bckupATestUrl = add_query_arg([
+                    'wa-bckup-a-tests' => true,
+                ], $current_url);
+                $loadATestBckupUrl = add_query_arg([
+                    'wa-load-a-tests-bckup' => true,
+                ], $current_url);
                 $shouldBckupATest = filter_input(INPUT_GET, 'wa-bckup-a-tests', FILTER_SANITIZE_SPECIAL_CHARS);
                 $shouldLoadATestBckup = filter_input(INPUT_GET, 'wa-load-a-tests-bckup', FILTER_SANITIZE_SPECIAL_CHARS);
                 if ($shouldBckupATest && $shouldLoadATestBckup) {
-                    $current_url = remove_query_arg(['wa-bckup-a-tests', 'wa-load-a-tests-bckup']);
-                    Notice::displayError("" . __("Ne peut backuper et charger en même temps, choisissez l'un ou l'autre s.v.p.", 'wa-config'));
-                    wp_redirect($current_url);
-                    wp_die();
-                    return;
+                    $current_url = remove_query_arg([
+                        'wa-bckup-a-tests', 'wa-load-a-tests-bckup'
+                    ]);
+                    Notice::displayError(""
+                    . __("Ne peut backuper et charger en même temps, choisissez l'un ou l'autre s.v.p.",
+                    'wa-config'));
+                    wp_redirect( $current_url );
+                    $this->exit(); return;
                 }
-                echo "<p>[{$this->iId}] <strong><a\n                href='{$bckupATestUrl}'\n                >" . __("Backuper les fichiers de tests dans un dossier upload privé.", 'wa-config') . "</a></strong></p>";
-                echo "<p>[{$this->iId}] <strong><a\n                href='{$loadATestBckupUrl}'\n                >" . __("Charger les fichers de tests depuis le dossier upload.", 'wa-config') . "</a></strong></p>";
-                require_once ABSPATH . '/wp-admin/includes/file.php';
+                echo "<p>[$this->iId] <strong><a
+                href='$bckupATestUrl'
+                >" . __(
+                    "Backuper les fichiers de tests dans un dossier upload privé.",
+                     'wa-config'
+                ) . "</a></strong></p>";
+                echo "<p>[$this->iId] <strong><a
+                href='$loadATestBckupUrl'
+                >" . __(
+                    "Charger les fichers de tests depuis le dossier upload.",
+                     'wa-config'
+                ) . "</a></strong></p>";
+                require_once ( ABSPATH . '/wp-admin/includes/file.php' );
                 WP_Filesystem();
                 $bckupFolder = $this->get_backup_folder();
                 $bckupStructureSrc = $this->pluginRoot . "assets/backup-bootstrap";
-                if (!file_exists("{$bckupFolder}/test-wa-config")) {
-                    copy_dir("{$bckupStructureSrc}", "{$bckupFolder}");
+                if (!file_exists("$bckupFolder/test-wa-config")) {
+                    copy_dir(
+                        "$bckupStructureSrc",
+                        "$bckupFolder"
+                    );
                 }
                 $acceptanceSrcFolder = "{$this->pluginRoot}tests/acceptance";
-                $acceptanceUploadFolder = "{$bckupFolder}/acceptance";
+                $acceptanceUploadFolder = "$bckupFolder/acceptance";
                 if ($shouldBckupATest) {
                     if (file_exists($acceptanceUploadFolder)) {
                         rmdir($acceptanceUploadFolder);
                     }
                     mkdir($acceptanceUploadFolder, 0777, true);
-                    copy_dir("{$acceptanceSrcFolder}", "{$acceptanceUploadFolder}");
-                    Notice::displaySuccess("" . __("Backup des fichiers de test vers le backup upload privé OK", 'wa-config'));
-                    wp_redirect(remove_query_arg(['wa-bckup-a-tests']));
-                    wp_die();
-                    return;
+                    copy_dir(
+                        "$acceptanceSrcFolder",
+                        "$acceptanceUploadFolder"
+                    );
+                    Notice::displaySuccess(""
+                    . __("Backup des fichiers de test vers le backup upload privé OK",
+                    'wa-config'));
+                    wp_redirect( remove_query_arg([
+                        'wa-bckup-a-tests'
+                    ]) );
+                    wp_die(); return;
                 }
                 if ($shouldLoadATestBckup) {
                     if (file_exists($acceptanceUploadFolder)) {
-                        copy_dir("{$acceptanceUploadFolder}", "{$acceptanceSrcFolder}");
-                        Notice::displaySuccess("" . __("Chargement des fichiers de test depuis le backup upload OK", 'wa-config'));
+                        copy_dir(
+                            "$acceptanceUploadFolder",
+                            "$acceptanceSrcFolder"
+                        );
+                        Notice::displaySuccess(""
+                        . __("Chargement des fichiers de test depuis le backup upload OK",
+                        'wa-config'));
                     } else {
-                        Notice::displayError("" . __("Aucun backup de tests dans l'upload privé du site", 'wa-config'));
+                        Notice::displayError(""
+                        . __("Aucun backup de tests dans l'upload privé du site",
+                        'wa-config'));
                     }
-                    wp_redirect(remove_query_arg(['wa-load-a-tests-bckup']));
-                    wp_die();
-                    return;
+                    wp_redirect( remove_query_arg([
+                        'wa-load-a-tests-bckup'
+                    ]) );
+                    wp_die(); return;
                 }
                 $acceptanceTestsFolder = $this->pluginRoot . 'tests/acceptance';
                 $aTests = list_files($acceptanceTestsFolder);
                 $pFile = basename($this->pluginRoot) . "/" . basename($this->pluginFile);
                 $pFileEncoded = urlencode($pFile);
                 foreach ($aTests as $testFile) {
-                    $testFile = str_replace($this->pluginRoot, basename($this->pluginRoot) . "/", $testFile);
+                    $testFile = str_replace(
+                        $this->pluginRoot,
+                        basename($this->pluginRoot) . "/",
+                        $testFile
+                    );
                     $encodedFile = urlencode($testFile);
-                    echo "<p>[{$this->iId}] <a\n                    href='{$siteUrl}/wp-admin/plugin-editor.php?file={$encodedFile}&plugin={$pFileEncoded}'\n                    >Edit <strong>{$testFile}</strong> by clicking this link.</a></p>";
+                    echo "<p>[$this->iId] <a
+                    href='$siteUrl/wp-admin/plugin-editor.php?file=$encodedFile&plugin=$pFileEncoded'
+                    >Edit <strong>$testFile</strong> by clicking this link.</a></p>";
                 }
                 $reportPath = "{$this->pluginRoot}tests/_output/results.html";
                 $reportUrl = plugins_url('tests/_output/results.html', $this->pluginFile);
                 if (file_exists($reportPath)) {
-                    echo "<p>[{$this->iId}] <strong><a\n                    href='{$reportUrl}'\n                    target='_blank'\n                    rel='noopener noreferrer'\n                    >" . __("Cliquer ici pour visualiser le dernier rapport de test effectué", 'wa-config') . "</a></strong></p>";
+                    echo "<p>[$this->iId] <strong><a
+                    href='$reportUrl'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    >" . __(
+                        "Cliquer ici pour visualiser le dernier rapport de test effectué",
+                         'wa-config'
+                    ) . "</a></strong></p>";    
                 }
                 $currentDirectory = getcwd();
                 chdir($this->pluginRoot);
                 $aTestConfigSubPath = 'tests/acceptance.suite.yml';
-                echo "<p>[{$this->iId}] With config file {$aTestConfigSubPath}</p>";
-                $aTestConfigFile = $this->pluginRoot . "{$aTestConfigSubPath}";
-                $aTestBaseUrl = $this->getWaConfigOption($this->eConfOptATestsBaseUrl, site_url());
+                echo "<p>[$this->iId] With config file $aTestConfigSubPath</p>";
+                $aTestConfigFile = $this->pluginRoot . "$aTestConfigSubPath";
+                $aTestBaseUrl = $this->getWaConfigOption(
+                    $this->eConfOptATestsBaseUrl,
+                    site_url()
+                );
                 $updatedConfig = "";
-                $lineFilter = ['matchPreviousLine' => '/- PhpBrowser:/', 'onMatch' => function ($line) use($aTestBaseUrl) {
-                    return "            url: {$aTestBaseUrl}\n";
-                }];
+                $lineFilter = [
+                    'matchPreviousLine' => '/- PhpBrowser:/',
+                    'onMatch' => function ($line) use ($aTestBaseUrl) {
+                        return "            url: $aTestBaseUrl\n";
+                    },
+                ];
                 $handle = fopen($aTestConfigFile, "r");
                 if ($handle) {
                     $didMatchPreviousLine = false;
                     while (($line = fgets($handle)) !== false) {
-                        $updatedConfig .= $didMatchPreviousLine ? $lineFilter['onMatch']($line) : $line;
-                        $didMatchPreviousLine = preg_match($lineFilter['matchPreviousLine'], $line);
+                        $updatedConfig .= $didMatchPreviousLine
+                            ? $lineFilter['onMatch']($line)
+                            : $line;
+                        $didMatchPreviousLine = preg_match(
+                            $lineFilter['matchPreviousLine'],
+                            $line
+                        );
                     }
                     fclose($handle);
                 } else {
-                    $this->err("wa-config fail to load acceptance config test file {$aTestConfigFile}");
-                    echo "<p> " . __("Echec du chargement du fichier de configuration : " . $aTestConfigFile, 'wa-config') . "</p>";
+                    $this->err("wa-config fail to load acceptance config test file $aTestConfigFile");
+                    echo "<p> "
+                        . __(
+                            "Echec du chargement du fichier de configuration : " . $aTestConfigFile,
+                            'wa-config'
+                        )
+                        . "</p>";
                     return;
                 }
-                echo "<pre>{$updatedConfig}</pre>";
+                echo "<pre>$updatedConfig</pre>";
                 file_put_contents($aTestConfigFile, $updatedConfig);
                 $runCodecept = filter_input(INPUT_GET, 'run-codecept', FILTER_SANITIZE_SPECIAL_CHARS);
-                $runLink = add_query_arg(['run-codecept' => true], $current_url);
+                $runLink = add_query_arg([
+                    'run-codecept' => true,
+                ], $current_url);
                 if (!$runCodecept) {
-                    echo "<h1><a href='{$runLink}'>" . __("Cliquer ici pour lancer les tests", 'wa-config') . "</a></h1>";
-                    echo "<p><strong> " . __("ATTENTION : Ces tests sont lancés sur l'url de production : ", 'wa-config') . "<br />{$aTestBaseUrl}" . "</strong></p>";
-                    echo "<h2> " . __("Prenons soin des données de productions. Utilisons une solution de backup ou de rollback dans la mise en oeuvre des tests.", 'wa-config') . "</h2>";
-                    return;
+                    echo "<h1><a href='$runLink'>" . __(
+                        "Cliquer ici pour lancer les tests",
+                        'wa-config'
+                    )
+                        . "</a></h1>";
+                    echo "<p><strong> "
+                        . __(
+                            "ATTENTION : Ces tests sont lancés sur l'url de production : ",
+                            'wa-config'
+                        ) . "<br />$aTestBaseUrl"
+                        . "</strong></p>";
+                    echo "<h2> "
+                        . __(
+                            "Prenons soin des données de productions. Utilisons une solution de backup ou de rollback dans la mise en oeuvre des tests.",
+                            'wa-config'
+                        )
+                        . "</h2>";
+                    return; 
                 }
                 if (!is_admin() || !current_user_can($minimumCapabilityToRun)) {
-                    $this->err("wa-config TEST RUN can be done by {$minimumCapabilityToRun} only.");
-                    echo "<p> " . __("Cette opérations ADMIN nécessite une capacité :", 'wa-config') . " {$minimumCapabilityToRun} </p>";
+                    $this->err("wa-config TEST RUN can be done by $minimumCapabilityToRun only.");
+                    echo "<p> " . __(
+                        "Cette opérations ADMIN nécessite une capacité :",
+                        'wa-config'
+                    ) . " $minimumCapabilityToRun </p>";
                     return;
                 }
-                echo "<p>[{$this->iId}] Running acceptance tests from {$this->pluginName}</p>";
+                echo "<p>[$this->iId] Running acceptance tests from {$this->pluginName}</p>";
                 $pharName = 'codecept.phar';
-                $pharPath = $this->pluginRoot . "tools/{$pharName}";
+                $pharPath = $this->pluginRoot . "tools/$pharName";
                 try {
-                    $p = new \Phar($pharPath, \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME, $pharName);
+                    $p = new \Phar(
+                        $pharPath,
+                        \FilesystemIterator::CURRENT_AS_FILEINFO
+                            | \FilesystemIterator::KEY_AS_FILENAME,
+                        $pharName
+                    );
                 } catch (\UnexpectedValueException $e) {
-                    $this->err("FAIL {$pharName} at {$pharPath}");
-                    die("Could not open {$pharName}");
+                    $this->err("FAIL $pharName at $pharPath");
+                    die("Could not open $pharName");
                 } catch (\BadMethodCallException $e) {
                     echo 'technically, this cannot happen';
                 }
@@ -3929,9 +5924,21 @@ TEMPLATE;
                     rename($this->pluginRoot . "vendor", $this->pluginRoot . "_vendor");
                 }
                 $autoloadFile = 'phar://codecept.phar/vendor/codeception/codeception/autoload.php';
+                /**
+                 * Require codeception autoload from tools/codecept.phar 
+                 */
                 require_once $autoloadFile;
-                set_time_limit(15 * 60);
-                $Codecept = new \Codeception\Codecept(array('steps' => true, 'verbosity' => 1, 'seed' => time(), 'html' => 'results.html', 'colors' => false, 'no-redirect' => true, 'silent' => true, 'interactive' => false));
+                set_time_limit(15*60); 
+                $Codecept = new \Codeception\Codecept(array(
+                    'steps' => true,
+                    'verbosity' => 1,
+                    'seed' => time(), 
+                    'html' => 'results.html',
+                    'colors' => false, 
+                    'no-redirect' => true,
+                    'silent' => true,
+                    'interactive' => false,
+                ));
                 $Codecept->run('acceptance');
                 $Codecept->printResult();
                 if (file_exists($this->pluginRoot . "_vendor")) {
@@ -3952,216 +5959,1245 @@ TEMPLATE;
                         width: 100%;
                     }
                 </style>
-<?php 
-                echo "<iframe src='{$reportUrl}' \n                scrolling='no' marginwidth='0' marginheight='0' vspace='0' hspace='0'\n                frameborder='0' onload='resizeCodeceptIframe(this)'></iframe>";
+                <?php
+
+                echo "<iframe src='$reportUrl' 
+                scrolling='no' marginwidth='0' marginheight='0' vspace='0' hspace='0'
+                frameborder='0' onload='resizeCodeceptIframe(this)'></iframe>";
             }
-            public function e_admin_config_render_doc_section() : void
-            {
+            /**
+             * Output a suggestion list from all available 'review' data key
+             * 
+             * Used for ajax suggestion lists. Echo one sugestion per line.
+             * 
+             * GET parameters :
+             *  - **wa-iid** : The instance identifier requesting the suggest list
+             *  - **key** : The 'review' data key source for the suggestion list
+             *  - **q** : The query used to filter the suggestions (end user search input)
+             *
+             * @see https://mwop.net/blog/253-Taming-SplPriorityQueue.html
+             */
+            public function e_review_list_data_by_key() : void {
+                $selfIid = filter_input(INPUT_GET, 'wa-iid', FILTER_SANITIZE_SPECIAL_CHARS);
+                $selfRequestTarget = self::instanceByIId($selfIid);
+                $this->assertLog($selfRequestTarget, "Wrong 'wa-iid' hidden field", $selfIid);
+                $self = $selfIid ? ($selfRequestTarget ?? $this) : $this;
                 if (!is_admin()) {
-                    $this->warn("e_admin_config_render_doc_section need to be called from admin areas.");
+                    $self->err("wa-config admin review section is under admin pages only");
+                    echo "<p> "
+                        . __(
+                            "Cette opération nécessite une page d'administration.",
+                            'wa-config'
+                        )
+                        . "</p>";
                     return;
                 }
-                echo "<p>[{$this->iId}] Showing documentation from {$this->pluginName}</p>";
-                $readMePdfUrl = plugins_url("ReadMe.pdf", $this->pluginFile);
-                $readMePdfUrlEncoded = urlencode($readMePdfUrl);
-                $readMeTitle = "<h1>ReadMe.pdf <a href='{$readMePdfUrl}' target='_blank'>" . __("Télécharger", 'wa-config') . '<span class="dashicons dashicons-download"></span>' . "</a></h1>";
-                $viewerUrl = plugins_url("assets/pdfjs/web/viewer.html", $this->pluginFile) . '?file=';
-                $readMeDevPdfUrl = plugins_url("ReadMeDev.pdf", $this->pluginFile);
-                $readMeDevPdfUrlEncoded = urlencode($readMeDevPdfUrl);
-                $readMeDevTitle = "<h1>ReadMeDev.pdf <a href='{$readMeDevPdfUrl}' target='_blank'>" . __("Télécharger", 'wa-config') . '<span class="dashicons dashicons-download"></span>' . "</a></h1>";
-                $extraDocFolder = $this->pluginRoot . 'doc-extra';
-                $docFiles = list_files($extraDocFolder);
-                if ($docFiles) {
-                    usort($docFiles, 'strnatcasecmp');
+                $key = filter_input(INPUT_GET, 'key', FILTER_SANITIZE_SPECIAL_CHARS);
+                $query = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_SPECIAL_CHARS);
+                $query = wp_unslash( $query );
+                if (!$self->_reviewsByKeySearchCache) {
+                    $self->_reviewsByKeySearchCache = get_transient( 
+                        $self->_reviewsByKeySearchCacheKey
+                    );
                 }
-                $extraDocumentation = "<h1>" . __("Documentation supplémentaire", 'wa-config') . "</h1>";
-                foreach ($docFiles as $docFile) {
-                    $type = wp_check_filetype($docFile);
-                    if ('pdf' !== $type['ext']) {
+                if (!$self->_reviewsByKeySearchCache) {
+                    $self->_reviewsByKeySearchCache = [];
+                }
+                if (!array_key_exists(
+                    $key,
+                    $self->_reviewsByKeySearchCache
+                )) {
+                    $self->_reviewsByKeySearchCache[$key] = [];
+                }
+                if (array_key_exists($query, $self->_reviewsByKeySearchCache[$key])) {
+                    $self->debug("e_review_list_data_by_key loaded from cache [$key][$query]");
+                    echo $self->_reviewsByKeySearchCache[$key][$query];
+                    wp_die(); return;
+                }
+                $datas = [];
+                foreach ($self->eReviewChecksByCategoryByTitle as $category => $checksByTitle) {
+                    foreach ($checksByTitle as $title => $checks) {
+                        foreach ($checks as $idx => $check) {
+                            $datas[$check[$key]] = $check[$key];
+                        }
+                    }
+                }
+                usort($datas, 'strnatcasecmp');
+                $isFirstMatch = true;
+                $searchResult = '';
+                foreach ($datas as $d) {
+                    if (strpos(strtolower($d), strtolower($query)) === false) {
                         continue;
                     }
-                    $relativeDocPath = str_replace($this->pluginRoot, "", $docFile);
-                    $docUrl = plugins_url($relativeDocPath, $this->pluginFile);
-                    $docIframe = <<<TEMPLATE
-    <div>
-        <iframe
-        class="wa-pdf-read-me"
-        src="{$viewerUrl}{$docUrl}"
-        title="webviewer"
-        frameborder="0"
-        onload="wa_resizeDocIframe(this)"
-        width="100%">
-        </iframe>
-    </div>
-TEMPLATE;
-                    $extraDocumentation .= "<h2>{$relativeDocPath}" . "<a href='{$docUrl}' target='_blank'>" . __("Télécharger", 'wa-config') . '<span class="dashicons dashicons-download"></span>' . "</a></h2>{$docIframe}";
+                    if ($isFirstMatch) {
+                        $isFirstMatch = false;
+                    } else {
+                        $searchResult .= "\n";
+                    }
+                    $searchResult .= htmlentities($d);
                 }
-                $docIndex = plugins_url("doc/index.html", $this->pluginFile);
-                echo <<<TEMPLATE
-<script>
-    function wa_resizeDocIframe(oFrame) {
-        var resizeator = function(frame) {
-            var fMainClass = oFrame.getAttribute("class").split(' ')[0];
-            if ("wa-php-doc" === fMainClass) {
-                oFrame.style.height = oFrame.contentWindow.document.documentElement.scrollHeight + 'px';
-            } else {
-                // Fail back for specific iframe like pdf etc...
-                // since previous height check sound fixed to 150px, with page scroll still used inside...
-                oFrame.style.height = oFrame.contentWindow.outerHeight + 'px'; // document.documentElement.scrollHeight + 'px';
+                $searchResult .= "\n";
+                $self->_reviewsByKeySearchCache[$key][$query] = $searchResult;
+                set_transient( 
+                    $self->_reviewsByKeySearchCacheKey,
+                    $self->_reviewsByKeySearchCache,
+                    24 * 60 * 60 
+                );
+                echo $searchResult;
+                wp_die(); return;
             }
-        }
-        resizeator(oFrame);
-        // oFrame.contentWindow.document.onload = function() {
-        //    resizeator(oFrame); // Already called by above, right ?
-        // };
-        oFrame.contentWindow.document.onclick = function() {
-            resizeator(oFrame);
-        };
-    }
-</script>
-<div>
-    <iframe
-    class="wa-php-doc"
-    scrolling='no'
-    src="{$docIndex}"
-    title="Php documentation"
-    frameborder="0"
-    onload="wa_resizeDocIframe(this)"
-    width="100%">
-    </iframe>
-</div>
-{$readMeTitle}
-<div>
-    <iframe
-    class="wa-pdf-read-me"
-    src="{$viewerUrl}{$readMePdfUrlEncoded}"
-    title="webviewer"
-    frameborder="0"
-    onload="wa_resizeDocIframe(this)"
-    width="100%">
-    </iframe>
-</div>
-{$readMeDevTitle}
-<div>
-    <iframe
-    class="wa-pdf-read-me-dev"
-    src="{$viewerUrl}{$readMeDevPdfUrlEncoded}"
-    title="webviewer"
-    frameborder="0"
-    onload="wa_resizeDocIframe(this)"
-    width="100%">
-    </iframe>
-</div>
-{$extraDocumentation}
-TEMPLATE;
-            }
-        }
-    }
-    if (!trait_exists(ExtendablePluginDescription::class)) {
-        trait ExtendablePluginDescription
-        {
-            use Editable;
-            use Identifiable;
-            protected function _020_ext_plugin_description__load()
-            {
-                add_filter('plugin_row_meta', [$this, 'ext_plugin_description_meta'], 10, 2);
-            }
-            function ext_plugin_description_meta($plugin_meta, $plugin_file)
-            {
-                if ($plugin_file == plugin_basename($this->pluginFile)) {
-                    $plugin_meta[] = $this->pluginName;
-                    $plugin_meta[] = $this->iId;
+            protected function e_review_settings_render_form($echo = false) {
+                $self = $this;
+                $formFields = function () use ($self) {
+                    ob_start(); settings_fields($self->eReviewSettingsFormGroup);
+                    return ob_get_clean();
+                };
+                $sectionFormFields = function () use ($self) {
+                    ob_start(); do_settings_sections($self->eReviewPageKey);
+                    return ob_get_clean();
+                };
+                $submitBtn = function () {
+                    ob_start(); submit_button(
+                        __('Ajouter le checkpoint',  'wa-config')
+                        . ' ', 
+                        'primary large wa-add-page-btn-icon',
+                        'submit',
+                        false
+                    );
+                    return ob_get_clean();
+                };
+                $rendering = <<<TEMPLATE
+                    <form method="post" action="options.php" id="wa_config_review_add_checkpoint"> 
+                        {$formFields()}
+                        {$sectionFormFields()}
+                        <p class="submit">
+                            {$submitBtn()}
+                            <!--span class="dashicons dashicons-welcome-add-page"></span-->
+                        </p>
+                    </form>
+                TEMPLATE;
+                if ($echo) {
+                    echo $rendering;
                 }
-                return $plugin_meta;
+                return $rendering;
+            }
+            /**
+             * Validator used to validate saved 'review' options for wa-config
+             *
+             * @param mixed $input wa-config review option to validate
+             * @return mixed the new input after validator review
+             */
+            public function e_review_settings_validate($input)
+            {
+                if (!$input) {
+                    $this->debug("e_review_settings_validate on null, avoiding validate ...");
+                    return $input;
+                }
+                $selfIid = $input['wa_instance_iid'] ?? false;
+                $selfRequestTarget = self::instanceByIId($selfIid);
+                $this->assertLog($selfRequestTarget, "Wrong 'wa_instance_iid' hidden field", $selfIid);
+                $self = $selfIid ? ($selfRequestTarget ?? $this) : $this;
+                $newinput = $input;
+                $self->debugVerbose("Will e_review_settings_validate");
+                $booleanAdaptor = function($fieldName) use ( & $newinput ) {
+                    $newinput[$fieldName] = intval(
+                        array_key_exists($fieldName, $newinput) ? $newinput[$fieldName] : false
+                    );
+                };
+                $booleanAdaptor($self->eConfOptReviewIsActivated);
+                $booleanAdaptor($self->eConfOptReviewResult);
+                $self->debugVeryVerbose(
+                    "Validated e_review_settings_validate input",
+                    array_keys($input), array_keys($newinput),
+                );
+                return $newinput;
+            }
+            /**
+             * Capability filter for review option page edits
+             *
+             * @param string $capability initial allowed capability
+             * @return string the capability allowed to update review options
+             */
+            public function e_review_settings_page_capability($capability)
+            {
+                return $this->eReviewSettingsEditCabability;
+            }
+            /**
+             * Filters the review form options from our eReviewSettingsForm before it get's updated.
+             *
+             * Used as a data provider for the eReviewChecksByCategoryByTitle
+             * stored in our eReviewDataStore
+             *
+             * @param mixed  $value     The new, unserialized option value.
+             * @param mixed  $old_value The old option value.
+             * @param string $option    Option name.
+             * @return mixed  The new, unserialized option value.
+             */
+            public function e_review_settings_pre_update_filter($value, $old_value, $option) {
+                if (!$value) {
+                    $this->debug("e_review_settings_pre_update_filter on null, avoiding pre_update ...");
+                    return $old_value;
+                }
+                $selfIid = $value['wa_instance_iid'] ?? false;
+                $selfRequestTarget = self::instanceByIId($selfIid);
+                $this->assertLog($selfRequestTarget, "Wrong 'wa_instance_iid' hidden field", $selfIid);
+                $self = $selfIid ? ($selfRequestTarget ?? $this) : $this;
+                $self->debugVerbose("Will e_review_settings_pre_update_filter on $option");
+                if (!is_admin()) { 
+                    $self->err("wa-config e_review_settings_pre_update_filter need admin page.");
+                    echo "<p> " . __(
+                        "Cette opérations nécessite une page admin",
+                        'wa-config'
+                    ) . "</p>";
+                    return;
+                }
+                if ($self->_eReviewSettingsPreUpdateSelfSentinel) {
+                    $self->warn(
+                        'Sentinel still needed ? // TODO : refactor code to avoid _eReviewSettingsPreUpdateSelfSentinel ?'
+                    );
+                    return $value; 
+                }
+                $self->_eReviewSettingsPreUpdateSelfSentinel = true;
+                $self->debugVerbose("Will e_review_settings_pre_update_filter on $option");
+                $self->debugVeryVerbose("e_review_settings_pre_update_filter From", $old_value, $value);
+                $checkpointValue = [
+                    'category' => $value[$self->eConfOptReviewCategory] ?? null,
+                    'category_icon' => $value[$self->eConfOptReviewCategoryIcon] ?? null,
+                    'title' => $value[$self->eConfOptReviewTitle] ?? null,
+                    'title_icon' => $value[$self->eConfOptReviewTitleIcon] ?? null,
+                    'requirements' => $value[$self->eConfOptReviewRequirements] ?? null,
+                    'value' => $value[$self->eConfOptReviewValue] ?? null,
+                    'result' => $value[$self->eConfOptReviewResult] ?? null,
+                    'access_cap_or_role' => $value[$self->eConfOptReviewAccessCapOrRole] ?? null,
+                    'is_activated' => $value[$self->eConfOptReviewIsActivated] ?? null,
+                ];
+                $self->debugVeryVerbose("e_review_settings_pre_update_filter will add checkpoint", [
+                    'checkpoint' => $checkpointValue,
+                    'value' => $value,
+                ]);
+                if (!strlen($checkpointValue['category'])) {
+                    $self->err("WRONG checkpoing, missing 'category'");
+                    $self->debug("WRONG value : ", $value, $self->debug_trace());
+                    Notice::displayError(__("Echec de l'enregistrement de la revue.", 'wa-config'));
+                    return $value; 
+                }
+                $self->e_review_data_check_insert($checkpointValue);
+                $value[$self->eConfOptReviewCategory] = ""; 
+                $value[$self->eConfOptReviewCategoryIcon] = ""; 
+                $value[$self->eConfOptReviewTitle] = "";
+                $value[$self->eConfOptReviewTitleIcon] = "";
+                $value[$self->eConfOptReviewRequirements] = "";
+                $value[$self->eConfOptReviewValue] = "";
+                $value[$self->eConfOptReviewResult] = true;
+                $value[$self->eConfOptReviewAccessCapOrRole] = "";
+                $value[$self->eConfOptReviewIsActivated] = true;
+                $value[$self->eConfOptReviewsByCategorieByTitle]
+                = $self->eReviewChecksByCategoryByTitle;
+                Notice::displaySuccess(__('Enregistrement de la revue OK.', 'wa-config'));
+                delete_transient($self->_reviewsByKeySearchCacheKey);
+                $self->_reviewsByKeySearchCacheKey = null;
+                $self->_eReviewSettingsPreUpdateSelfSentinel = false;
+                return $value;
+            }
+            protected function e_review_settings_fetch_field($key, $default)
+            {
+                $this->debugVeryVerbose("Will e_review_settings_fetch_field $key");
+                $this->eReviewSettingsForm = get_option($this->eReviewSettingsFormKey, array_merge([
+                    $key => $default,
+                ], $this->eReviewSettingsForm));
+                if (!is_array($this->eReviewSettingsForm)){
+                    $this->warn("Having wrong datatype saved for $key, fixing it to empty array", $this->eReviewSettingsForm);
+                    $this->eReviewSettingsForm = [];
+                }
+                if (!key_exists($key, $this->eReviewSettingsForm)) {
+                    $this->eReviewSettingsForm[$key] = $default;
+                    update_option($this->eReviewSettingsFormKey, $this->eReviewSettingsForm)
+                    ;
+                }
+                $value = $this->eReviewSettingsForm[$key]; 
+                $this->debugVeryVerbose("Did e_review_settings_fetch_field $key", $value);
+                return $value;
+            }
+            protected function e_review_settings_add_field($key, $title, $default = '', $template = null, ...$tArgs): void
+            {
+                $this->debugVeryVerbose("Will e_review_settings_add_field");
+                $fieldId = "{$this->eReviewSettingsFormKey}_$key";
+                $fieldName = "{$this->eReviewSettingsFormKey}[$key]";
+                $value = $this->e_review_settings_fetch_field($key, $default);
+                $safeValue = esc_attr($value);
+                add_settings_field(
+                    $fieldId,
+                    $title,
+                    function () use ($tArgs, $safeValue, $fieldId, $fieldName, $template) {
+                        if ($template) {
+                            echo $template($safeValue, $fieldId, $fieldName, "", ...$tArgs);
+                        } else {
+                            echo <<< TEMPLATE
+                                <input id='$fieldId' type='text'
+                                name='$fieldName'
+                                value='$safeValue'
+                                />
+                            TEMPLATE;
+                        }
+                    },
+                    $this->eReviewPageKey,
+                    $this->eReviewSettingsFormSection,
+                );
+            }
+            /**
+             * Add the 'WA Config' 'Review' panel.
+             */
+            public function e_review_settings_do_admin_menu(): void
+            {
+                $titleSuffix = " " . $this->iPrefix
+                . ($this->iRelativeIndex ? " {$this->iRelativeIndex}" : "");
+                $this->e_config_add_section(
+                    '<span class="dashicons dashicons-performance"></span> '
+                    . (
+                        $this->iIndex
+                        ? __('R.Q.',  'wa-config') . "$titleSuffix"
+                        : __('Revue qualité',  'wa-config')
+                    ),
+                    [$this, 'e_review_render_admin_panel'],
+                    $this->eReviewPageKey,
+                    $this->e_config_count_submenu(),
+                    $this->baseCabability,
+                );
+            }
+            /**
+             * Initialise settings section, form fields and options
+             */
+            public function e_review_settings_init_form() : void {
+                $pageId = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_SPECIAL_CHARS);
+                $this->debugVerbose("Will e_review_settings_init_form");
+                extract($this->e_config_form_field_templates());
+                register_setting(
+                    $this->eReviewSettingsFormGroup,
+                    $this->eReviewSettingsFormKey,
+                    [$this, 'e_review_settings_validate']
+                );
+                add_option($this->eReviewSettingsFormKey, $this->eReviewSettingsForm); 
+                add_option($this->eReviewDataStoreKey, $this->eReviewDataStore); 
+                add_settings_section(
+                    $this->eReviewSettingsFormSection,
+                    __('Ajouter une revue',  'wa-config'),
+                    '',
+                    $this->eReviewPageKey,
+                );
+                if (current_user_can($this->eReviewSettingsEditCabability)) {
+                    $fieldId = "{$this->eReviewSettingsFormKey}_wa_instance_iid";
+                    $fieldName = "{$this->eReviewSettingsFormKey}[wa_instance_iid]";
+                    $value = $this->iId;
+                    $safeValue = esc_attr($value);
+                    add_settings_field(
+                        $fieldId,
+                        '', 
+                        function () use ($hiddenTemplate, $safeValue, $fieldId, $fieldName) {
+                            echo $hiddenTemplate($safeValue, $fieldId, $fieldName);
+                        },
+                        $this->eReviewPageKey,
+                        $this->eReviewSettingsFormSection,
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewCategory,
+                        __("Categorie",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['category'],
+                        [$this, 'e_review_settings_suggestionbox_template_by_check_data'],
+                        'category'
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewCategoryIcon,
+                        __("Icône de categorie",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['category_icon'],
+                        [$this, 'e_review_settings_suggestionbox_template_by_check_data'],
+                        'category_icon'
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewTitle,
+                        __("Titre",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['title'],
+                        [$this, 'e_review_settings_suggestionbox_template_by_check_data'],
+                        'title'
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewTitleIcon,
+                        __("Icône de titre",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['title_icon'],
+                        [$this, 'e_review_settings_suggestionbox_template_by_check_data'],
+                        'title_icon'
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewRequirements,
+                        __("Exigences",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['requirements'],
+                        $textareaTemplate,
+                        'requirements'
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewResult,
+                        __("Résultat",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['result'],
+                        $checkboxTemplate,
+                        'result'
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewValue,
+                        __("Valeur (optionnel)",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['value'],
+                        [$this, 'e_review_settings_suggestionbox_template_by_check_data'],
+                        'value'
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewIsActivated,
+                        __("Activer la revue",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['is_activated'],
+                        $checkboxTemplate,
+                        'is_activated'
+                    );
+                    $this->e_review_settings_add_field(
+                        $this->eConfOptReviewAccessCapOrRole,
+                        __("Limiter l'accès",  'wa-config'),
+                        $this->eReviewDefaultCheckpoint['access_cap_or_role'],
+                        [$this, 'e_config_capability_selectbox_template'],
+                        'access_cap_or_role'
+                    );
+                }
+            }
+            protected function e_review_settings_suggestionbox_template_by_check_data(
+                $safeValue, $fieldId, $fieldName, $placeholder, $key
+            ) {
+                return <<<TEMPLATE
+                    <input
+                    type="text"
+                    placeholder="$placeholder"
+                    class="wa-suggest-list-review-data-by-$key"
+                    id="$fieldId"
+                    name="$fieldName"
+                    value="$safeValue"
+                    />
+                TEMPLATE;
+            }
+            protected function e_review_data_fetch($key, $default)
+            {
+                $this->debugVeryVerbose("Will e_review_data_fetch $key");
+                $this->eReviewDataStore = get_option($this->eReviewDataStoreKey, array_merge([
+                    $key => $default,
+                ], $this->eReviewDataStore));
+                if (!is_array($this->eReviewDataStore)){
+                    $this->warn("Having wrong datatype saved for $key, fixing it to empty array", $this->eReviewDataStore);
+                    $this->eReviewDataStore = [];
+                }
+                if (!key_exists($key, $this->eReviewDataStore)) {
+                    $this->eReviewDataStore[$key] = $default;
+                    update_option($this->eReviewDataStoreKey, $this->eReviewDataStore)
+                    ;
+                }
+                $value = $this->eReviewDataStore[$key]; 
+                $this->debugVeryVerbose("Did e_review_data_fetch $key", $value);
+                return $value;
+            }
+            /**
+             * Launch the review action received by HTML-POST contents.
+             * 
+             * REQUEST parameters :
+             *  - **wa-iid** : The instance identifier requesting the action
+             *  - **wa-data** : Associated data for the action
+             *  - **wa-action** : The action to launch
+             *     - **'checkpoint-activate-toggler'** : Toggle activation
+             *     status of the 'is_activated' review data key
+             *     - **'delete-checkpoint'** : Delete the targeted
+             *     check review by 'wa-data'
+             *     - **'clean-all'** : Clean up the whole review datastore.
+             *     Delete all current and deleted review data.
+             *     - **'export-csv'** : Export all available check review data
+             *     - **'import-csv'** : Import all available check review data
+             */
+            public function e_review_data_action(): void
+            {
+                if (!is_user_logged_in()) {
+                    $this->err("wa-config e_review_data_action is under logged users only");
+                    wp_loginout();
+                    wp_die(); return;
+                }
+                $user = wp_get_current_user();
+                $userName = $user->user_login;
+                $anonimizedIp = $this->get_user_ip();
+                $selfIid = filter_var( $_REQUEST['wa-iid'] ?? null, FILTER_SANITIZE_SPECIAL_CHARS );
+                $selfRequestTarget = self::instanceByIId($selfIid);
+                $this->assertLog($selfRequestTarget, "Wrong 'wa-iid' parameter", $selfIid);
+                $self = $selfIid ? ($selfRequestTarget ?? $this) : $this;
+                $action = filter_var( $_REQUEST['wa-action'] ?? null, FILTER_SANITIZE_SPECIAL_CHARS );
+                $checkPOST = filter_var( $_REQUEST['wa-data'] ?? null, FILTER_SANITIZE_SPECIAL_CHARS );
+                $checkJson = base64_decode($checkPOST);
+                $check = json_decode($checkJson, true);
+                $checkKey = "";
+                if ($check) {
+                    $checkKey = $self->fetch_review_key_id($check);
+                }
+                $self->debug("Will e_review_data_action '$action' from '$checkKey' by '$anonimizedIp'");
+                if (false === check_ajax_referer(
+                    "wa-check-nonce-$checkKey",
+                    'wa-nonce',
+                    false
+                ) || !is_admin()) {
+                    $self->err("Invalid access for $anonimizedIp");
+                    echo json_encode([
+                        "error" => "[$anonimizedIp] "
+                        . __("IP enregistrée suite à accès invalid", 'wa-config'),
+                    ]);
+                    http_response_code(401);
+                    wp_die(); return;
+                }
+                $self->eReviewChecksByCategoryByTitle = $self->e_review_data_fetch(
+                    $self->eConfOptReviewsByCategorieByTitle, []
+                );
+                switch ($action) {
+                    case 'checkpoint-activate-toggler': {
+                        $checksByTitle = & $self->eReviewChecksByCategoryByTitle[$check['category']];
+                        $checks = & $checksByTitle[$check['title']];
+                        $targets = array_filter($checks, function ($c) use (&$checkKey, $self) {
+                            $cKey = $self->fetch_review_key_id($c);
+                            return $checkKey === $cKey;
+                        });
+                        $tCount = count($targets);
+                        if ($tCount !== 1) {                            
+                            $self->err("Invalid checkpoint '$checkKey' for $anonimizedIp");
+                            $self->debug("'$checkKey' not found or too much duplicata ($tCount) in ", $checks);
+                            echo json_encode([
+                                "error" => __("Specific checkpoint not found", 'wa-config'),
+                                "wa-data" => $check,
+                                "count" => $tCount,
+                            ]);
+                            http_response_code(404);
+                            wp_die(); return;
+                        }
+                        $lookupIdx = array_keys($targets)[0];
+                        $toggeled = & $checks[$lookupIdx];
+                        if (!$self->e_review_data_check_isWriteable($toggeled)) {
+                            $self->err("Invalid checkpoint access '{$checkKey}' for {$anonimizedIp}");
+                            $self->debug("'{$checkKey}' not accessible in ", $checks);
+                            echo json_encode([
+                                "error" => "[$checkKey] "
+                                . __("Specific checkpoint not accessible", 'wa-config'),
+                                "wa-data" => $check
+                            ]);
+                            http_response_code(404);
+                            wp_die(); return;
+                        }
+                        $toggeled['is_activated'] = !$toggeled['is_activated'];
+                        $self->eReviewDataStore[$self->eConfOptReviewsByCategorieByTitle]
+                        = $self->eReviewChecksByCategoryByTitle;
+                        update_option($self->eReviewDataStoreKey, $self->eReviewDataStore);
+                        delete_transient($self->_reviewsByKeySearchCacheKey);
+                        $self->_reviewsByKeySearchCacheKey = null;
+                        $self->debugVerbose("Did activate toggle from '$action' for '$checkKey'"); 
+                    } break;
+                    case 'delete-checkpoint': {
+                        $cCat = $check['category'] ?? null; $cT = $check['title'] ?? null;
+                        $self->debugVeryVerbose("Will delete checkpoint [$cCat][$cT] ", $check, array_keys($self->eReviewChecksByCategoryByTitle));
+                        $checksByTitle = & $self->eReviewChecksByCategoryByTitle[$cCat];
+                        $checks = & $checksByTitle[$cT] ?? [];
+                        $targets = array_filter($checks, function ($c) use (&$checkKey, $self) {
+                            $cKey = $self->fetch_review_key_id($c);
+                            return $checkKey === $cKey;
+                        });
+                        $tCount = count($targets);
+                        if ($tCount !== 1) {                            
+                            $self->err("Invalid checkpoint '$checkKey' for $anonimizedIp");
+                            $self->debug("'$checkKey' not found or too much duplicata ($tCount) in ", $checks);
+                            echo json_encode([
+                                "error" => "Specific checkpoint not found",
+                                "wa-data" => $check,
+                                "count" => $tCount,
+                            ]);
+                            http_response_code(404);
+                            wp_die(); return;
+                        }
+                        $self->debug("Will '$action' for '$checkKey'");
+                        $deleteds = $self->e_review_data_fetch($self->eConfOptReviewsDeleted, []);
+                        $lookupIdx = array_keys($targets)[0];
+                        if (!$self->e_review_data_check_isWriteable($checks[$lookupIdx])) {
+                            $self->err("Invalid checkpoint access '{$checkKey}' for {$anonimizedIp}");
+                            $self->debug("'{$checkKey}' not accessible in ", $checks);
+                            echo json_encode([
+                                "error" => "[$checkKey] "
+                                . __("Specific checkpoint not accessible", 'wa-config'),
+                                "wa-data" => $check
+                            ]);
+                            http_response_code(404);
+                            wp_die(); return;
+                        }
+                        unset($checks[$lookupIdx]);
+                        $self->eReviewDataStore[$self->eConfOptReviewsByCategorieByTitle]
+                        = $self->eReviewChecksByCategoryByTitle;
+                        $check['is_deleted'] = true;
+                        $deleteds[] = $check;
+                        $self->eReviewDataStore[$self->eConfOptReviewsDeleted] = $deleteds;
+                        $self->debugVerbose("Review Options before delete", $self->eReviewDataStore);
+                        update_option($self->eReviewDataStoreKey, $self->eReviewDataStore);
+                        delete_transient($self->_reviewsByKeySearchCacheKey);
+                        $self->_reviewsByKeySearchCacheKey = null;
+                        $self->debugVerbose("Did delete checkpoint from '$action' for '$checkKey'");
+                    } break;
+                    case 'clean-all': {
+                        if (current_user_can('administrator') ) {
+                            $self->eReviewChecksByCategoryByTitle = [];
+                            $self->eReviewDataStore[$self->eConfOptReviewsByCategorieByTitle]
+                            = $self->eReviewChecksByCategoryByTitle;
+                            delete_option($self->eReviewDataStoreKey);
+                            delete_transient($self->_reviewsByKeySearchCacheKey);
+                            $self->_reviewsByKeySearchCacheKey = null;
+                            $self->debugVerbose("Did clean all review data from '$action'");
+                        } else {
+                            $self->err("Invalid access for $anonimizedIp, need to be administrator to clean all");
+                            echo json_encode([
+                                "error" => "Invalid access for $anonimizedIp registred",
+                            ]);
+                            http_response_code(401);
+                            wp_die(); return;
+                        }
+                    } break;
+                    case 'export-csv': {
+                        ob_start();
+                        $headerRow = array_keys($self->eReviewDefaultCheckpoint);
+                        $dataRows = [];
+                        if (current_user_can($self->optAdminEditCabability)) {
+                            $checksByCategorieByTitle = $self->e_review_data_fetch($self->eConfOptReviewsByCategorieByTitle, []);
+                        } else {
+                            $checksByCategorieByTitle = $self->e_review_data_check_byCategoryByTitle();
+                        }
+                        foreach ( $checksByCategorieByTitle as $category => $checksByTitle ) {
+                            foreach ( $checksByTitle as $title => $checks) {
+                                foreach ($checks as $idx => $check) {
+                                    $row = [];
+                                    foreach ($headerRow as $hIndex) {
+                                        $row[] = mb_convert_encoding($check[$hIndex], 'UTF-8');
+                                    }
+                                    $dataRows[] = $row;
+                                }
+                            }
+                        }
+                        if( current_user_can( 'administrator' ) ){
+                            $deleteds = $self->e_review_data_fetch(
+                                $self->eConfOptReviewsDeleted,
+                                []
+                            );
+                            foreach ($deleteds as $d) {
+                                $row = [];
+                                foreach ($headerRow as $hIndex) {
+                                    $row[] = mb_convert_encoding($d[$hIndex], 'UTF-8');
+                                }
+                                $dataRows[] = $row;
+                            }
+                        }
+                        $siteSlug = sanitize_title(get_bloginfo( 'name' ));
+                        $date = date("Ymd-His_O");
+                        $filename = "$siteSlug-{$self->iId}-$date.csv";
+                        header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
+                        header( 'Content-Description: File Transfer' );
+                        header( 'Content-Type: text/csv; charset=utf-8' );
+                        header( "Content-Disposition: attachment; filename={$filename}" );
+                        header( 'Expires: 0' );
+                        header( 'Pragma: public' );
+                        $fh = fopen( 'php://output', 'w' );
+                        fprintf( $fh, chr(0xEF) . chr(0xBB) . chr(0xBF) ); 
+                        fputcsv( $fh, $headerRow );
+                        foreach ( $dataRows as $dataRow ) {
+                            fputcsv( $fh, $dataRow );
+                        }
+                        fclose( $fh );
+                        ob_end_flush();
+                        $self->debugVerbose("Did export reviews data as CSV from '$action'");
+                        wp_die(); return;
+                    } break;
+                    case 'import-csv': {
+                        if (!current_user_can($self->eReviewSettingsEditCabability) ) {
+                            $self->err("Invalid import access for {$anonimizedIp}");
+                            $self->debug("'import-csv' not accessible");
+                            echo json_encode([
+                                "error" => "[$checkKey] "
+                                . __("'import-csv' not accessible, ip {$anonimizedIp} registred", 'wa-config'),
+                            ]);
+                            http_response_code(404);
+                            $this->exit(); return;
+                        }
+                        $csv_file = $_FILES['wa-import-csv-file'];
+                        $csv_to_array = array_map('str_getcsv', file($csv_file['tmp_name']));
+                        $headers = [];
+                        $hIdx = [];
+                        foreach ($csv_to_array as $key => $value) {
+                            if ($key == 0) {
+                                $headers = $value;
+                                foreach ($headers as $idx => $h) {
+                                    $hIdx[$h] = $idx;
+                                }
+                                continue;                            
+                            }
+                            $checkpointValue = array_map(function ($idx)
+                            use ( & $headers, & $value ) {
+                                $h = $headers[$idx];
+                                return $value[$idx];
+                            }, $hIdx);
+                            $self->debugVerbose("e_review_data_action import-csv will add checkpoint");
+                            $self->debugVeryVerbose("import-csv checkpoint :", [
+                                'checkpoint' => $checkpointValue,
+                                'from_value' => $value,
+                            ]);
+                            $user = wp_get_current_user();
+                            $userName = $user->user_login;
+                            if (current_user_can('administrator')
+                            || current_user_can($self->optAdminEditCabability)
+                            || $userName === ($checkpointValue['created_by'] ?? false)) {
+                                $self->e_review_data_check_insert($checkpointValue, true);
+                            } else {
+                                $self->debugVerbose("Ignore checkpoint import since not accessible");
+                            }
+                        }
+                        $self->debugVeryVerbose("WA Review options", $self->eReviewDataStore);
+                        update_option($self->eReviewDataStoreKey, $self->eReviewDataStore);
+                        delete_transient($self->_reviewsByKeySearchCacheKey);
+                        $self->_reviewsByKeySearchCacheKey = null;
+                        $redirectUrl = admin_url(
+                            "admin.php?page={$self->eReviewPageKey}"
+                        );
+                        $self->debugVeryVerbose("After csv-import, will redirect to : $redirectUrl");
+                        http_response_code(302); 
+                        echo "<a href='$redirectUrl'>Imports OK, retour à la revue en cours...</a>";
+                        if ( wp_redirect( $redirectUrl ) ) { 
+                            $this->exit(); return;
+                        } else {
+                            $self->debugVeryVerbose("csv-import Fail to redirect to : $redirectUrl");
+                        }
+                    } break;
+                    default: {
+                        $self->warn("Unknow action '$action'");
+                    } break;
+                }
+                echo json_encode([
+                    "status" => "OK",
+                    "end_date" => date("Y/m/d H:i:s O "),
+                ]);
+                http_response_code(200);
+                wp_die(); return;
+            }
+            protected function e_review_data_check_insert(array $toCheck, $importMode = false) {
+                if (!is_user_logged_in()) {
+                    $this->err("wa-config e_review_data_check_insert is under logged users only");
+                    wp_loginout();
+                    wp_die(); return;
+                }
+                $user = wp_get_current_user();
+                $userName = $user->user_login;
+                $toCheck = array_merge($this->eReviewDefaultCheckpoint, $toCheck);
+                if ($importMode) {
+                    $toCheck['import_time'] = time();
+                    $toCheck['imported_by'] = $userName;
+                } else {
+                    $toCheck['create_time'] = time();
+                    $toCheck['created_by'] = $userName;    
+                }
+                $keyId = $this->fetch_review_key_id($toCheck);
+                if ("" === $toCheck['category']) {
+                    $this->warn("Empty category should not happen ?", $this->debug_trace());
+                }
+                if (!array_key_exists($toCheck['category'],
+                $this->eReviewChecksByCategoryByTitle)) {
+                    $this->eReviewChecksByCategoryByTitle[$toCheck['category']] = [];
+                }
+                if (!array_key_exists($toCheck['title'],
+                $this->eReviewChecksByCategoryByTitle[$toCheck['category']])) {
+                    $this->eReviewChecksByCategoryByTitle[$toCheck['category']]
+                    [$toCheck['title']] = [];
+                }
+                $checkBulk = & $this->eReviewChecksByCategoryByTitle
+                [$toCheck['category']]
+                [$toCheck['title']];
+                $this->eReviewIdsToTrash = array_merge($this->eReviewIdsToTrash, [
+                    [
+                        'id' => $keyId,
+                        'not_for_categories' => $toCheck['category'],
+                        'not_for_titles' => $toCheck['title'],
+                    ]
+                ]);
+                $checkBulk[] = $toCheck;
+                usort($checkBulk, function ($c1, $c2) {
+                    $c1Key = intval(boolVal($c1['is_activated']))
+                    . '-' . intval(!boolVal($c1['is_computed']))
+                    . '-' . $c1['create_time'];
+                    $c2Key = intval(boolVal($c2['is_activated']))
+                    . '-' . intval(!boolVal($c2['is_computed']))
+                    . '-' . $c2['create_time'];
+                    return strnatcasecmp($c2Key, $c1Key);
+                });
+                ksort(
+                    $this->eReviewChecksByCategoryByTitle[$toCheck['category']],
+                    SORT_NATURAL | SORT_FLAG_CASE
+                );
+                ksort(
+                    $this->eReviewChecksByCategoryByTitle,
+                    SORT_NATURAL | SORT_FLAG_CASE
+                );
+                if (strlen($toCheck['category_icon'] ?? '')) {
+                    if (!array_key_exists($toCheck['category'],
+                    $this->eReviewIconsByCategory)) {
+                        $this->eReviewIconsByCategory[$toCheck['category']] = [];
+                    }
+                    array_unshift(
+                        $this->eReviewIconsByCategory[$toCheck['category']],
+                        $toCheck['category_icon']
+                    );    
+                }
+                $this->eReviewChecksByKeyId[$keyId] = $toCheck;
+                $this->eReviewDataStore[$this->eConfOptReviewsByCategorieByTitle]
+                = $this->eReviewChecksByCategoryByTitle;
+                update_option($this->eReviewDataStoreKey, $this->eReviewDataStore);
+            }
+            protected function e_review_data_check_isReadable( & $check) {
+                $user = wp_get_current_user();
+                $userName = $user->user_login;
+                $canSentinel = $check['access_cap_or_role'] ?? false;
+                return current_user_can('administrator')
+                || $userName === $check['created_by']
+                || $userName === $check['imported_by']
+                || !$canSentinel
+                || !strlen($canSentinel)
+                || current_user_can($canSentinel);
+            }
+            protected function e_review_data_check_isWriteable( & $check) {
+                $user = wp_get_current_user();
+                $userName = $user->user_login;
+                return current_user_can($this->optAdminEditCabability)
+                || $userName === $check['created_by']
+                || $userName === $check['imported_by'];
+            }
+            protected function e_review_data_check_byCategoryByTitle() {
+                $checksByCategorieByTitle = [];
+                foreach ($this->eReviewChecksByCategoryByTitle as $category => & $reviewsByTitle) {
+                    foreach ($reviewsByTitle as $title => & $reviews) {
+                        foreach ( $reviews as $idx => & $review ) {
+                            if ($this->e_review_data_check_isReadable($review)) {
+                                if (!array_key_exists($category, $checksByCategorieByTitle)) {
+                                    $checksByCategorieByTitle[$category] = [];
+                                }
+                                $checksByTitle = & $checksByCategorieByTitle[$category];
+                                if (!array_key_exists($title, $checksByTitle)) {
+                                    $checksByTitle[$title] = [];
+                                }
+                                $checksBulk = & $checksByTitle[$title];
+                                $checksBulk[] = $review;
+                            } else {
+                            }
+                        }
+                    }
+                }
+                return $checksByCategorieByTitle;
+            }
+            /**
+             * Build and add the base review checkpoints, ensuring checked data
+             * 
+             * NEED to be called AFTER init hook (After Taxonomy register, etc...)
+             * 
+             * @see WPFilters::wa_review_ids_to_trash
+             * @see WPActions::wa_do_base_review_preprocessing
+             * @see WPActions::wa_do_base_review_postprocessing
+             */
+            public function e_review_data_add_base_review() : void {
+                $this->debug("Will e_review_data_add_base_review");
+                $this->eReviewChecksByCategoryByTitle = $this->e_review_data_fetch(
+                    $this->eConfOptReviewsByCategorieByTitle, []
+                );
+                $app = $this;
+                /**
+                 * @see WPActions::wa_do_base_review_preprocessing
+                 */
+                do_action(WPActions::wa_do_base_review_preprocessing, $app);
+                $this->e_review_data_check_insert([
+                    'category' => __('01 - Critique',  'wa-config'),
+                    'category_icon' => '<span class="dashicons dashicons-plugins-checked"></span>',
+                    'title' => __('01 - Version de PHP',  'wa-config'),
+                    'title_icon' => '<span class="dashicons dashicons-shield"></span>',
+                    'requirements' => __( '7.4+ (7.4 or higher recommended)',  'wa-config' ),
+                    'value'    => "PHP " . PHP_VERSION,
+                    'result'   => version_compare( PHP_VERSION, '7.4', '>' ),
+                    'fixed_id' => "{$this->iId}-check-php-version",
+                    'is_computed' => true,
+                ]);
+                $htaccessTestsFolder = 'tests';
+                $htaccessTestsBaseUrl = plugins_url($htaccessTestsFolder, $this->pluginFile);
+                require_once($this->pluginRoot . "tests/external/EXT_TEST_htaccessIsEnabled.php");
+                $htaccessOK = \WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::check($htaccessTestsBaseUrl);
+                if (!$htaccessOK) {
+                    foreach (\WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::$errors as $e) {
+                        $this->err($e); 
+                    }
+                }
+                $this->e_review_data_check_insert([
+                    'category' => __('01 - Critique',  'wa-config'),
+                    'title' => __('02 - Securisations .htaccess',  'wa-config'),
+                    'title_icon' => '<span class="dashicons dashicons-shield"></span>',
+                    'requirements' => __( 'Activation des redirections .htaccess',  'wa-config' ),
+                    'result'   => $htaccessOK,
+                    'fixed_id' => "{$this->iId}-check-htaccess-ok",
+                    'is_computed' => true,
+                ]);
+                $report = "";
+                $result = (function () use (& $report) {
+                    $version = null;
+                    $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+                    if (strrpos($userAgent, 'firefox') !== false) {
+                        preg_match('/firefox\/([0-9]+\.*[0-9]*)/', $userAgent, $matches);
+                        if (!empty($matches)) {
+                            $version = explode('.', $matches[1])[0];
+                            $report .= "Firefox $version";
+                            return intval($version) >= 101; 
+                        }
+                    }
+                    if (strrpos($userAgent, 'chrome') !== false) {
+                        preg_match('/chrome\/([0-9]+\.*[0-9]*)/', $userAgent, $matches);
+                        if (!empty($matches)) {
+                            $version = explode('.', $matches[1])[0];
+                            $report .= "Chrome $version";
+                            return intval($version) >= 102; 
+                        }
+                    }
+                    return false;
+                }) ();
+                $this->e_review_data_check_insert([
+                    'category' => __('01 - Critique',  'wa-config'),
+                    'title' => __('03 - Compatibilité',  'wa-config'),
+                    'title_icon' => '<span class="dashicons dashicons-universal-access"></span>',
+                    'requirements' => __( 'Navigateur compatible. Chrome > 102. Firefox > 101.',
+                     'wa-config' ),
+                    'value'    => $report,
+                    'result'   => $result,
+                    'is_activated'   => true,
+                    'fixed_id' => "{$this->iId}-check-chrome-version",
+                    'is_computed' => true,
+                ]);
+                /**
+                 * @see WPActions::wa_do_base_review_postprocessing
+                 */
+                do_action(WPActions::wa_do_base_review_postprocessing, $app);
+                /**
+                 * @see WPFilters::wa_review_ids_to_trash
+                 */
+                $eReviewIdsToTrash = apply_filters(
+                    WPFilters::wa_review_ids_to_trash,
+                    $this->eReviewIdsToTrash,
+                    $this
+                );
+                $deleteds = $this->eReviewDataStore[$this->eConfOptReviewsDeleted] ?? [];
+                foreach ($eReviewIdsToTrash as $toTrash) {
+                    $trashId = $toTrash['id'] ?? $toTrash;
+                    $this->assert(
+                        is_string($trashId),
+                        "Missing ID in eReviewIdsToTrash for trash operation ?"
+                    );
+                    $trashSafeCategories = $toTrash['not_for_categories'] ?? null;
+                    $trashSafeTitles = $toTrash['not_for_titles'] ?? null;
+                    if (is_string($trashSafeCategories)) {
+                        $trashSafeCategories = [$trashSafeCategories];
+                    }
+                    if (is_string($trashSafeTitles)) {
+                        $trashSafeTitles = [$trashSafeTitles];
+                    }
+                    $this->assert(
+                        !$trashSafeCategories || is_array($trashSafeCategories),
+                        "Wrong type for trashSafeCategories", $trashSafeCategories
+                    );
+                    $this->assert(
+                        !$trashSafeTitles || is_array($trashSafeTitles),
+                        "Wrong type for trashSafeTitles", $trashSafeTitles
+                    );
+                    if ($trashSafeCategories && !count($trashSafeCategories)) {
+                        $trashSafeCategories = null;
+                    }
+                    if ($trashSafeTitles && !count($trashSafeTitles)) {
+                        $trashSafeTitles = null;
+                    }
+                    $categoryTrash = [];
+                    foreach ($this->eReviewChecksByCategoryByTitle as $c => & $checksByTitle) {
+                        $categoryIsSafe = $trashSafeCategories && in_array($c, $trashSafeCategories);
+                        $titleTrash = [];
+                        foreach ($checksByTitle as $t => & $checks) {
+                            $titleIsSafe = $categoryIsSafe 
+                            && $trashSafeTitles
+                            && in_array($t, $trashSafeTitles);
+                            $duplicatedIds = [];
+                            $checks = array_filter(
+                                $checks,
+                                function (& $check)
+                                use ($trashId, $titleIsSafe, & $duplicatedIds, & $deleteds) {
+                                    $checkId = $check['fixed_id'];
+                                    if (!$this->e_review_data_check_isReadable($check)) {
+                                        $this->debug("e_review_data_add_base_review trash not accessible for : $checkId");
+                                        return true;
+                                    }
+                                    if (!$titleIsSafe
+                                    && $trashId === $checkId) {
+                                        $check['is_deleted'] = true;
+                                        if (!$check['is_computed']) {
+                                            $deleteds[] = $check;                
+                                        }
+                                        return false;
+                                    }
+                                    if (array_key_exists($checkId, $duplicatedIds)) {
+                                        $check['is_deleted'] = true;
+                                        if (!$check['is_computed']) {
+                                            $deleteds[] = $check; 
+                                        }
+                                        return false;
+                                    }
+                                    $duplicatedIds[$checkId] = true;
+                                    return true;
+                                }
+                            );
+                            if (!count($checks)) {
+                                $titleTrash[] = $t;
+                            }
+                        }
+                        foreach ($titleTrash as $t) {
+                            unset($checksByTitle[$t]);
+                        }
+                        if (!count($checksByTitle)) {
+                            $categoryTrash[] = $c;
+                        }
+                    }
+                    foreach ($categoryTrash as $c) {
+                        unset($this->eReviewChecksByCategoryByTitle[$c]);
+                    }
+                }
+                $this->eReviewIdsToTrash = [];
+                $this->debugVeryVerbose("Trashed wa-reviews", $deleteds);
+                $this->eReviewDataStore[$this->eConfOptReviewsDeleted] = $deleteds;
+                $this->eReviewDataStore[$this->eConfOptReviewsByCategorieByTitle]
+                = $this->eReviewChecksByCategoryByTitle;
+                update_option($this->eReviewDataStoreKey, $this->eReviewDataStore);
+                flush_rewrite_rules();
             }
         }
     }
-    if (!trait_exists(ApiInstanciable::class)) {
+    if (!trait_exists(ApiInstanciable::class)) { 
+        /**
+         * This trait will instanciate the 'wa-config' REST API and the related auth system
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         * @uses Identifiable
+         */
         trait ApiInstanciable
         {
             use Editable;
             use Identifiable;
             protected function _020_api_inst__bootstrap()
             {
-                $self = $this;
-                add_action('rest_api_init', [$this, 'api_inst_rest_init']);
+                if ($this->p_higherThanOneCallAchievedSentinel('_020_api_inst__bootstrap')) {
+                    return; 
+                }
+                add_action( 'rest_api_init', [$this, 'api_inst_rest_init'] );
+                if (is_admin()) {
+                    add_action(
+                        'wp_ajax_wa-delete-all-api-access', 
+                        [$this, 'api_inst_admin_delete_all_api_access']
+                    );
+                    add_action(
+                        WPActions::wa_ecp_render_after_parameters,
+                        [$this, 'api_inst_print_access_report']
+                    );
+                }
                 add_filter('query_vars', function ($aVars) {
                     $aVars[] = 'wa_api_pre_fetch_token';
                     return $aVars;
                 });
-                add_filter('rest_pre_dispatch', function ($result, $server, $request) {
-                    $this->debug("Having rest pre-dispatch : " . $request->get_route());
+                add_filter('rest_pre_dispatch', function($result, $server, $request) {
+                    $this->debug("Having rest pre-dispatch : " . $request->get_route()); 
                     return $result;
                 }, 10, 3);
-                add_action('parse_request', function () use($self) {
-                    global $wp;
-                    if (0 === strpos($wp->request, "api-wa-config-nonce-rest")) {
-                        $this->api_inst_load_parameters($_REQUEST);
-                        if (is_user_logged_in()) {
-                            http_response_code(200);
-                            $quickCookie = array_filter($_COOKIE, function ($c) {
-                                return in_array($c, [SECURE_AUTH_COOKIE, AUTH_COOKIE, LOGGED_IN_COOKIE, 'PHPSESSID']);
-                            }, ARRAY_FILTER_USE_KEY);
-                            $quickCookieStrings = [];
-                            foreach ($quickCookie as $c => $v) {
-                                $quickCookieStrings[] = "{$c}={$v}";
-                            }
-                            $quickCookieStrings = implode('; ', $quickCookieStrings);
-                            $restNonce = wp_create_nonce('wp_rest');
-                            $this->api_inst_allow_access_id("prefetch-{$this->apiClientPreFetchToken}", $quickCookieStrings, $restNonce);
-                            $successMsg = "Your pre-fetch token '{$this->apiClientPreFetchToken}' have been authenticated, please boot your api with this pre-fetch token.";
-                            if (wp_is_json_request()) {
-                                header("Content-Type: application/json");
-                                echo json_encode(['code' => 'wa_succed_nonce_auth', 'message' => $successMsg, 'data' => ["nonce" => $restNonce, "quick_COOKIE" => $quickCookieStrings, "wa_api_pre_fetch_token" => $this->apiClientPreFetchToken], "info" => ["COOKIE" => $_COOKIE]]);
-                            } else {
-                                echo $successMsg;
-                            }
-                        } else {
-                            $redirectBack = add_query_arg(['wa_api_pre_fetch_token' => $this->apiClientPreFetchToken], home_url("/api-wa-config-nonce-rest"));
-                            $redirectUrl = wp_login_url($redirectBack);
-                            if (wp_is_json_request()) {
-                                header("Content-Type: application/json");
-                                echo json_encode(["error" => "wa_api_login_required", 'wa_api_pre_fetch_token' => $this->apiClientPreFetchToken, "message" => "Need to be logged in, please follow the redirect link location from your web browser", "location" => $redirectUrl]);
-                            } else {
-                                if (!wp_redirect($redirectUrl)) {
-                                    $this->err('Internal server error', $this->debug_trace());
-                                    header("Content-Type: application/json");
-                                    echo json_encode(['error' => 'Internal server error']);
-                                    $self->exit();
-                                    return;
-                                }
-                            }
-                        }
-                        $self->exit();
-                        return;
-                    }
-                });
+                add_action('parse_request', [$this, 'api_inst_parse_request'] );
             }
-            function api_inst_rest_init()
-            {
+            /**
+             * 
+             * Adding root secu request '/api-wa-config-nonce-rest' to website base url
+             * 
+             * REQUEST parameters {@see ApiInstanciable::api_inst_load_parameters()} :
+             * 
+    		 * @param WP $wp Current WordPress environment instance (passed by reference).
+             */
+            public function api_inst_parse_request(WP $wp) : void {
+                $self = $this;
+                $this->debug("Will api_inst_parse_request");
+                if (0 === strpos($wp->request, "api-wa-config-nonce-rest")) {
+                    $this->api_inst_load_parameters($_REQUEST);
+                    if (is_user_logged_in()) {
+                        http_response_code(200); 
+                        $quickCookie = array_filter($_COOKIE, function ($c) {
+                            return in_array($c, [
+                                SECURE_AUTH_COOKIE,
+                                AUTH_COOKIE,
+                                LOGGED_IN_COOKIE,
+                                'PHPSESSID',
+                            ]);
+                        }, ARRAY_FILTER_USE_KEY);
+                        $quickCookieStrings = [];
+                        foreach ($quickCookie as $c => $v) {
+                            $quickCookieStrings[] = "$c=$v";
+                        }
+                        $quickCookieStrings = implode('; ', $quickCookieStrings);
+                        $restNonce = wp_create_nonce( 'wp_rest' );
+                        $this->api_inst_allow_access_id(
+                            "prefetch-{$this->apiClientPreFetchToken}",
+                            $quickCookieStrings, $restNonce
+                        );
+                        $successMsg = "Your pre-fetch token '{$this->apiClientPreFetchToken}' have been authenticated, please boot your api with this pre-fetch token.";
+                        if (wp_is_json_request()) {
+                            header("Content-Type: application/json"); 
+                            echo json_encode([
+                                'code' => 'wa_succed_nonce_auth',
+                                'message' => $successMsg,
+                                'data' => [
+                                    "nonce" => $restNonce,
+                                    "quick_COOKIE" => $quickCookieStrings,
+                                    "wa_api_pre_fetch_token" => $this->apiClientPreFetchToken,
+                                ],
+                                "info" => [
+                                    "COOKIE" => $_COOKIE,    
+                                ],
+                            ]);    
+                        } else {
+                            echo $successMsg;
+                        }
+                    } else {
+                        $redirectBack = add_query_arg([
+                            'wa_api_pre_fetch_token' => $this->apiClientPreFetchToken,
+                        ], home_url( "/api-wa-config-nonce-rest"));
+                        $redirectUrl = wp_login_url($redirectBack);
+                        if (wp_is_json_request()) {
+                            header("Content-Type: application/json"); 
+                            echo json_encode([
+                                "error" => "wa_api_login_required",
+                                'wa_api_pre_fetch_token' => $this->apiClientPreFetchToken,
+                                "message" => "Need to be logged in, please follow the redirect link location from your web browser",
+                                "location" => $redirectUrl,
+                            ]);
+                        } else {
+                            if (!wp_redirect($redirectUrl)) {
+                                $this->err('Internal server error', $this->debug_trace());
+                                header("Content-Type: application/json"); 
+                                echo json_encode([
+                                    'error' => 'Internal server error'
+                                ]);
+                                $self->exit(); return; 
+                            };    
+                        }
+                    }
+                    $self->exit(); return; 
+                }
+            }
+            /**
+             * Delete all access tokens for wa-config rest api access
+             * 
+             * Usable as an Ajax call from wp-admin js scripts
+             */
+            function api_inst_admin_delete_all_api_access() : void {
+                $anonimizedIp = $this->get_user_ip();
+                if (!current_user_can('administrator')) { 
+                    $this->err("api_inst_admin_delete_all_api_access invalid access for $anonimizedIp, need to be administrator");
+                    echo json_encode([
+                        "error" => "Invalid access for $anonimizedIp registred",
+                    ]);
+                    http_response_code(401);
+                    $this->exit(); return;
+                }
+                $this->debug("Will api_inst_admin_delete_all_api_access");
+                delete_transient($this->API_ACCESS_IDS);
+                $redirectUrl = add_query_arg([
+                    'page' => $this->eConfigPageKey,
+                ], admin_url( 'admin.php' ))
+                . "#wa-admin-rest-api-access-details";
+                wa_redirect($redirectUrl, $this); return;
+            }
+            /**
+             * 
+             * Init wa-config instanciable routings
+             * 
+             * Will add wa-config instanciable endpoints and logs.
+             * 
+             * @see ApiInstanciable::api_inst_run_action()
+             * 
+             */
+            function api_inst_rest_init() : void {
                 $self = $this;
                 $this->debug("Will api_inst_rest_init");
-                register_rest_route('wa-config/v1', '/instanciable(?:/(?P<inst_action>.*))?', ['methods' => ['POST', 'GET'], 'callback' => [$this, 'api_inst_run_action'], 'permission_callback' => function () {
-                    return true;
-                }, 'args' => array('inst_action' => array('validate_callback' => function ($instAction, $request, $key) use($self) {
-                    $self->debug("Allowing route wa-config instanciable/{$instAction}");
-                    return true;
-                }))]);
-                add_filter('rest_authentication_errors', [$this, 'api_inst_rest_check_auth_errors'], 101);
+                $customCORS = false;
+                if ($customCORS) {
+                    remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
+                    add_filter( 'rest_pre_serve_request', [$this, 'api_inst_rest_init_CORS']);
+                }
+                register_rest_route(
+                    'wa-config/v1',
+                    '/instanciable(?:/(?P<inst_action>.*))?', [
+                        'methods' => ['POST', 'GET'],
+                        'callback' => [ $this, 'api_inst_run_action' ],
+                        'permission_callback' => function () {
+                            return true;
+                        },
+                        'args' => array(
+                            'inst_action' => array(
+                                'validate_callback' => function($instAction, $request, $key) use ($self) {
+                                    $self->debug("Allowing route wa-config instanciable/$instAction");
+                                    return true;
+                                }
+                            ),
+                        ),                  
+                    ],
+                );
+                add_filter( 'rest_authentication_errors', [$this, 'api_inst_rest_check_auth_errors'], 101 );
             }
-            function api_inst_rest_check_auth_errors($result)
-            {
+            /**
+             * Not used yet, might be used if wp basic CORS not enough...
+             */
+            protected function api_inst_rest_init_CORS( $value ) {
+                $this->debug("Will api_inst_rest_init_CORS");
+                $origin_url = '*';
+                header( 'Access-Control-Allow-Origin: ' . $origin_url );
+                header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE' );
+                header( 'Access-Control-Allow-Credentials: true' );
+                if (
+                    isset( $_SERVER['REQUEST_METHOD'] )
+                    && $_SERVER['REQUEST_METHOD'] === 'OPTIONS'
+                ) {
+                    $this->debug("Serving response for CORS Preflight request");
+                    header( 'Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept' );
+                    header( 'Access-Control-Max-Age: 86400' );
+                    header( 'Cache-Control: public, max-age=86400' );
+                    header( 'Vary: origin' );
+                    $this->exit(); return $value;
+                }
+                return $value;
+            }
+            /**
+             * 
+             * Verify errors and invalidate pre-fetch token if wordpress did send regular error event on it.
+             * 
+             * @param WP_Error|mixed $result Error from another authentication handler,
+             *                               null if we should handle it, or another value if not.
+             * @return WP_Error|mixed|bool WP_Error if the cookie is invalid, the $result, otherwise true.
+             */
+            function api_inst_rest_check_auth_errors($result) {
                 if (is_wp_error($result)) {
                     $request = $_REQUEST;
                     $this->api_inst_load_parameters($request);
                     $isWa = false;
-                    if (isset($request['wa_api_pre_fetch_token'])) {
-                        $this->debug("Detect auth error for prefetched key '{$this->apiClientPreFetchToken}'," . " will clean it up due to : [" . $result->get_error_code() . "] " . $result->get_error_message());
+                    if ( isset( $request['wa_api_pre_fetch_token'] ) ) {
+                        $this->debug("Detect auth error for prefetched key '{$this->apiClientPreFetchToken}',"
+                        . " will clean it up due to : [" . $result->get_error_code() . "] " . $result->get_error_message());
                         $this->api_inst_delete_access_id("prefetch-{$this->apiClientPreFetchToken}");
                         $isWa = true;
                     }
-                    if (isset($request['wa_access_id'])) {
-                        $this->debug("Detect auth error for prefetched key '{$this->apiClientAccessId}'," . " will clean it up due to : [" . $result->get_error_code() . "] " . $result->get_error_message());
+                    if ( isset( $request['wa_access_id'] ) ) {
+                        $this->debug("Detect auth error for prefetched key '{$this->apiClientAccessId}',"
+                        . " will clean it up due to : [" . $result->get_error_code() . "] " . $result->get_error_message());
                         $this->api_inst_delete_access_id($this->apiClientAccessId);
                         $isWa = true;
                     }
@@ -4174,204 +7210,446 @@ TEMPLATE;
             protected $apiClientPreFetchToken = null;
             protected $apiClientUserLocation = null;
             protected $apiClientAccessId = null;
-            protected function api_inst_load_parameters($request)
-            {
-                $f = function ($v) {
-                    return filter_var($v, FILTER_SANITIZE_SPECIAL_CHARS);
-                };
+            /**
+             * Load ApiInstanciable parameters from the targeted $request
+             * 
+             * Load class members [
+             *  - **apiClientPreFetchToken**
+             *  - **apiClientUserLocation**
+             *  - **apiClientAccessId**
+             * 
+             * ] From :
+             *  - **wa_api_pre_fetch_token** : Token used for the pre-fetch
+             * authentification system
+             *  - **wa_user_location** : A text string written by the API
+             * end user describing it's localisation
+             *  - **wa_access_id** : Access id used to validate authenticated
+             * REST API calls to wa-config
+             *
+             * @param array|WP_REST_Request $request Request to check. Rest request
+             * or $_REQUEST object or similar
+             */
+            public function api_inst_load_parameters($request) : void {
+                $f = function ($v) { return filter_var(
+                    $v, FILTER_SANITIZE_SPECIAL_CHARS
+                );};
                 $this->apiClientPreFetchToken = $this->api_inst_ensure_access_id($f($request['wa_api_pre_fetch_token']));
-                $this->apiClientUserLocation = $f($request['user_location']);
-                $this->apiClientAccessId = $this->api_inst_ensure_access_id($f($request['wa_access_id']));
+                $this->apiClientUserLocation = $f($request['wa_user_location'] ?? null);
+                $this->apiClientAccessId = $this->api_inst_ensure_access_id($f($request['wa_access_id'] ?? null));
             }
             protected $apiAccessHashSize = 21;
-            protected function api_inst_ensure_access_id($accessId = '')
-            {
-                $accessId = $accessId ?? "";
+            protected function api_inst_ensure_access_id($accessId = '') {
+                $accessId = $accessId ?? ""; 
                 $accessIdSafe = sanitize_title($accessId);
                 if ($accessId !== $accessIdSafe) {
-                    $this->err("'{$accessIdSafe}' should have been used, reseting access ID to new ID");
+                    $this->err("'$accessIdSafe' should have been used, reseting access ID to new ID");
                 }
                 if (!strlen($accessId)) {
-                    $accessId = bin2hex(random_bytes($this->apiAccessHashSize / 2));
+                    $accessId = bin2hex(
+                        random_bytes($this->apiAccessHashSize/2)
+                    );
                 }
                 return $accessId;
             }
-            protected function api_inst_print_access_report()
-            {
+            protected function api_inst_print_access_report($shouldEcho = true) {
                 if (!current_user_can('administrator')) {
-                    return;
+                    $this->err("Only administrator can access this report...");
+                    return false; 
                 }
-                echo "<h1> " . __("Détail des accès API en cours", 'wa-config') . " </h1>";
-                $accessIds = get_transient($this->API_ACCESS_IDS) ?? false;
-                $accessIds = $accessIds ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true) : [];
-                echo "<p style='display: flex; flex-wrap: wrap; justify-content: space-between;'>";
+                $content = "<h1 id='wa-admin-rest-api-access-details'> " . __(
+                    "Détail des accès API en cours",
+                    'wa-config'
+                ) . " </h1>";
+                $accessIds = get_transient(
+                    $this->API_ACCESS_IDS
+                );
+                $accessIds = $accessIds
+                ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true)
+                : [];
+                $content .= "<div class='wa-api-access-list'>";
+                $aContend = "";
                 foreach ($accessIds as $aId => $payload) {
-                    $date = date("Y/m/d H:i:s O", $payload['start_time']);
-                    echo <<<TEMPLATE
-<span style='padding: 7px; width: 42%;'>
-    [<strong>{$payload['ip']}</strong>]<br />
-    <span>{$date}</span><br />
-    <strong>{$payload['user_location']}</strong>
-    <span>{$aId}</span>
-</span>
-TEMPLATE;
+                    $date =  date("Y/m/d", $payload['start_time']);
+                    $time =  date("O H:i:s", $payload['start_time']);
+                    $lastAccess =  date("Y/m/d O H:i:s", $payload['last_access_time']);
+                    $uLoc = $payload['wa_user_location'] ?? null;
+                    $localisation = $uLoc ? "<strong>$uLoc</strong><br />" : "";
+                    $item = <<<TEMPLATE
+                    <div class='wa-api-access-item'>
+                        <strong>$date</strong><br />
+                        $localisation
+                        <strong class="wa-time">$time</strong><br />
+                        <strong class="wa-time">$lastAccess</strong><br />
+                        [<span>{$payload['ip']}</span>]<br />
+                        <span>$aId</span>
+                    </div>
+                    TEMPLATE;
+                    $aContend = "$item $aContend";
                 }
-                echo "</p>";
-                echo "<p>";
-                echo "Pour supprimer les sessions d'API en cours, il vous suffit de vider le cache objet.";
-                echo "</p>";
+                $deleteLink = add_query_arg([
+                    'action' => 'wa-delete-all-api-access',
+                ], admin_url( 'admin-ajax.php' ));
+                $content .= $aContend;
+                $content .= "</div>";
+                $content .= "<p>";
+                if (get_transient($this->API_ACCESS_IDS)) {
+                    $content .= "<a href='$deleteLink'>Clickez ici pour supprimer tous les accès.</a>"; 
+                }
+                $content .= "</p>";
+                if ($shouldEcho) {
+                    echo $content;
+                }
+                return $content;
             }
-            protected function api_inst_encryptor($stringToHandle = "", $encryptDecrypt = 'e')
-            {
+            protected function api_inst_encryptor($stringToHandle = "",$encryptDecrypt = 'e'){
                 $output = null;
-                $secret_key = NONCE_KEY;
-                $secret_iv = NONCE_SALT;
-                $key = hash('sha256', $secret_key);
-                $iv = substr(hash('sha256', $secret_iv), 0, 16);
-                if ($encryptDecrypt == 'e') {
-                    $output = base64_encode(openssl_encrypt($stringToHandle, "AES-256-CBC", $key, 0, $iv));
-                } else {
-                    if ($encryptDecrypt == 'd') {
-                        $output = openssl_decrypt(base64_decode($stringToHandle), "AES-256-CBC", $key, 0, $iv);
-                    }
+                $secret_key = NONCE_KEY; 
+                $secret_iv = NONCE_SALT; 
+                $key = hash('sha256',$secret_key);
+                $iv = substr(hash('sha256',$secret_iv),0,16);
+                if($encryptDecrypt == 'e'){
+                   $output = base64_encode(openssl_encrypt($stringToHandle,"AES-256-CBC",$key,0,$iv));
+                }else if($encryptDecrypt == 'd'){
+                   $output = openssl_decrypt(base64_decode($stringToHandle),"AES-256-CBC",$key,0,$iv);
                 }
                 return $output;
             }
             protected $API_ACCESS_IDS = 'wa_api_a_ids';
-            protected $ApiAccessDuration = 60 * 60 * 1000;
-            protected function api_inst_validate_access_id($accessId = '')
-            {
+            protected $ApiAccessDuration = 60 * 60; 
+            protected function api_inst_validate_access_id($accessId = '') {
                 $ip = $this->get_user_ip(true, true);
-                $accessIds = get_transient($this->API_ACCESS_IDS) ?? false;
-                $accessIds = $accessIds ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true) : [];
+                $accessIds = get_transient(
+                    $this->API_ACCESS_IDS
+                );
+                $accessIds = $accessIds
+                ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true)
+                : [];
                 if (!is_array($accessIds)) {
-                    $this->warn("{$accessIds} should be array type, fixing it");
+                    $this->warn("$accessIds should be array type, fixing it");
                     $accessIds = [];
                 }
                 if ($accessIds[$accessId] ?? false) {
                     $accessPayload = $accessIds[$accessId];
                     $startTime = $accessPayload['start_time'];
-                    $this->assertLog(time() - $startTime < $this->ApiAccessDuration, "Access did expire");
+                    $this->assertLog((time() - $startTime) < $this->ApiAccessDuration, "Access did expire");
                     $this->assertLog($ip === $accessPayload['ip'], "IP mismatch");
-                    $this->assertLog($this->apiClientPreFetchToken === $accessPayload['wa_api_pre_fetch_token'], "wa_api_pre_fetch_token mismatch for {$this->apiClientPreFetchToken} vs {$accessPayload['wa_api_pre_fetch_token']}");
-                    return time() - $startTime < $this->ApiAccessDuration && $ip === $accessPayload['ip'] && $this->apiClientPreFetchToken === $accessPayload['wa_api_pre_fetch_token'] ? $accessPayload : false;
+                    $this->assertLog($this->apiClientPreFetchToken === $accessPayload['wa_api_pre_fetch_token'], "wa_api_pre_fetch_token mismatch for $this->apiClientPreFetchToken vs {$accessPayload['wa_api_pre_fetch_token']}");
+                    $shouldAccess = ((time() - $startTime) < $this->ApiAccessDuration
+                    && $ip === $accessPayload['ip']
+                    && $this->apiClientPreFetchToken === $accessPayload['wa_api_pre_fetch_token'])
+                    ? $accessPayload : false;
+                    if ($shouldAccess) {
+                        $accessPayload['last_access_time'] = time();
+                        $accessIds[$accessId] = $accessPayload;      
+                        set_transient(
+                            $this->API_ACCESS_IDS,
+                            $this->api_inst_encryptor(json_encode($accessIds), 'e'),
+                            $this->ApiAccessDuration
+                        );
+                    }
+                    return $shouldAccess;
                 }
                 return false;
             }
-            protected function api_inst_allow_access_id($accessId = '', $quickCookie = '', $restNonce = null)
-            {
+            protected function api_inst_allow_access_id($accessId = '', $quickCookie = '', $restNonce = null) {
                 $ip = $this->get_user_ip(true, true);
-                $accessIds = get_transient($this->API_ACCESS_IDS) ?? false;
-                $accessIds = $accessIds ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true) : [];
+                $accessIds = get_transient(
+                    $this->API_ACCESS_IDS
+                );
+                $accessIds = $accessIds
+                ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true)
+                : [];
                 if (!is_array($accessIds)) {
-                    $this->warn("{$accessIds} should be array type, fixing it");
+                    $this->warn("$accessIds should be array type, fixing it");
                     $accessIds = [];
                 }
-                $preRequest = $this->api_inst_ensure_access_id($this->apiClientPreFetchToken ?? "");
+                $preRequest = $this->api_inst_ensure_access_id(
+                    $this->apiClientPreFetchToken ?? ""
+                );
                 $this->apiClientPreFetchToken = $preRequest;
-                $accessIds[$accessId] = ['ip' => $ip, 'start_time' => time(), 'wa_api_pre_fetch_token' => $preRequest, 'nonce' => $restNonce, 'quick_COOKIE' => $quickCookie, 'user_location' => $this->apiClientUserLocation];
-                return set_transient($this->API_ACCESS_IDS, $this->api_inst_encryptor(json_encode($accessIds), 'e'), $this->ApiAccessDuration);
+                $time = time();
+                $accessIds[$accessId] = [
+                    'ip' => $ip,
+                    'start_time' => $time,
+                    'last_access_time' => $time,
+                    'wa_api_pre_fetch_token' => $preRequest,
+                    'nonce' => $restNonce, 
+                    'quick_COOKIE' => $quickCookie,
+                    'wa_user_location' => $this->apiClientUserLocation,
+                ];
+                return set_transient(
+                    $this->API_ACCESS_IDS,
+                    $this->api_inst_encryptor(json_encode($accessIds), 'e'),
+                    $this->ApiAccessDuration
+                );
             }
-            protected function api_inst_delete_access_id($accessId)
-            {
-                $accessIds = get_transient($this->API_ACCESS_IDS) ?? false;
-                $accessIds = $accessIds ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true) : [];
+            protected function api_inst_delete_access_id($accessId) {
+                $accessIds = get_transient(
+                    $this->API_ACCESS_IDS
+                );
+                $accessIds = $accessIds
+                ? json_decode($this->api_inst_encryptor($accessIds, 'd'), true)
+                : [];
                 if (!is_array($accessIds)) {
-                    $this->warn("{$accessIds} should be array type, fixing it");
+                    $this->warn("$accessIds should be array type, fixing it");
                     $accessIds = [];
                 }
-                if (!$accessId || !strlen($accessId) || !array_key_exists($accessId, $accessIds)) {
+                if (!$accessId || !strlen($accessId)
+                || !array_key_exists($accessId, $accessIds)) {
                     return false;
                 }
                 unset($accessIds[$accessId]);
-                return set_transient($this->API_ACCESS_IDS, $this->api_inst_encryptor(json_encode($accessIds), 'e'), $this->ApiAccessDuration);
+                return set_transient(
+                    $this->API_ACCESS_IDS,
+                    $this->api_inst_encryptor(json_encode($accessIds), 'e'),
+                    $this->ApiAccessDuration
+                );
             }
-            protected function api_inst_nonce_redirect($authError = 'authentication_needed')
-            {
-                $preRequest = $this->api_inst_ensure_access_id($this->apiClientPreFetchToken ?? "");
-                $getRestNonceUrl = add_query_arg(['wa_api_pre_fetch_token' => $preRequest], home_url("/api-wa-config-nonce-rest"));
+            protected function api_inst_nonce_redirect($authError = 'authentication_needed') {
+                $preRequest = $this->api_inst_ensure_access_id(
+                    $this->apiClientPreFetchToken ?? ""
+                );
+                $getRestNonceUrl = add_query_arg([
+                    'wa_api_pre_fetch_token' => $preRequest,
+                ], home_url( "/api-wa-config-nonce-rest"));
                 if (wp_is_json_request()) {
-                    return new WP_Error($authError, 'Authentification redirect needed, please login', ['wa_api_pre_fetch_token' => $this->apiClientPreFetchToken, 'location' => $getRestNonceUrl, 'status' => 302]);
+                    return new WP_Error(
+                        $authError,
+                        'Authentification redirect needed, please login', [
+                            'wa_api_pre_fetch_token' => $this->apiClientPreFetchToken,
+                            'location' => $getRestNonceUrl,
+                            'status' => 302
+                        ]
+                    );
                 }
-                if (wp_redirect($getRestNonceUrl)) {
-                    echo "<a class='{$authError}' href='{$getRestNonceUrl}'> [302] Redirecting to {$getRestNonceUrl}...</a>";
-                    $this->exit();
-                    return;
+                if ( wp_redirect( $getRestNonceUrl ) ) {
+                    echo "<a class='$authError' href='$getRestNonceUrl'> [302] Redirecting to $getRestNonceUrl...</a>";
+                    $this->exit(); return;
                 }
-                return new WP_Error('internal_redirect_error', "Internal redirect error for '{$authError}'", array('status' => 404));
+                return new WP_Error( 'internal_redirect_error', "Internal redirect error for '$authError'", array( 'status' => 404 ) );
             }
-            protected function api_inst_need_authentification(WP_REST_Request $request)
-            {
+            protected function api_inst_need_authentification(WP_REST_Request $request) {
                 if (!is_user_logged_in()) {
-                    if ($preFetchPayload = $this->api_inst_validate_access_id("prefetch-{$this->apiClientPreFetchToken}")) {
-                        $accessId = $this->api_inst_ensure_access_id();
+                    if ($preFetchPayload = $this->api_inst_validate_access_id(
+                        "prefetch-{$this->apiClientPreFetchToken}"
+                    )) {
+                        $accessId = $this->api_inst_ensure_access_id(); 
                         $this->api_inst_allow_access_id($accessId);
-                        return new WP_Error('wrong_auth_header_or_cookie', "Pre-fetch OK. Missing X-WP-Nonce header or wordpress_* cookie", ['nonce' => $preFetchPayload['nonce'], 'quick_COOKIE' => $preFetchPayload['quick_COOKIE'], 'wa_access_id' => $accessId, 'wa_api_pre_fetch_token' => $this->apiClientPreFetchToken, 'status' => 404]);
-                    } else {
-                        return $this->api_inst_nonce_redirect();
+                        return new WP_Error(
+                            'wrong_auth_header_or_cookie',
+                            "Pre-fetch OK. Missing X-WP-Nonce header or wordpress_* cookie", 
+                            [
+                                'nonce' => $preFetchPayload['nonce'],
+                                'quick_COOKIE' => $preFetchPayload['quick_COOKIE'],
+                                'wa_access_id' => $accessId,
+                                'wa_api_pre_fetch_token' => $this->apiClientPreFetchToken,
+                                'status' => 404 
+                            ]
+                        );        
+                    } else if (!$this->api_inst_validate_access_id($this->apiClientAccessId)) {
+                        $this->apiClientAccessId = null;
+                        $this->apiClientPreFetchToken = $this->api_inst_ensure_access_id();
+                        return $this->api_inst_nonce_redirect('wa_fail_prefetch_access');
                     }
                 }
                 if (!$this->api_inst_validate_access_id($this->apiClientAccessId)) {
+                    $this->apiClientAccessId = null;
+                    $this->apiClientPreFetchToken = $this->api_inst_ensure_access_id();
                     return $this->api_inst_nonce_redirect('fail_access_id_validation');
                 }
-                $this->api_inst_delete_access_id($this->apiClientPreFetchToken);
-                return false;
+                $this->api_inst_delete_access_id("prefetch-{$this->apiClientPreFetchToken}"); 
+                return false; 
             }
+            /**
+             * Will run an api instanciable action call
+             * 
+             * Nothing special for now. May be for next versions...
+             *
+             * @param WP_REST_Request $request The rest request.
+             * @return WP_REST_Response|WP_Error Result of the action
+             */
             function api_inst_run_action(WP_REST_Request $request)
             {
                 $self = $this;
+                /**
+                 * @var string $instAction Instanciable action to launch
+                 */
                 $instAction = $request['inst_action'];
-                $this->debug("Will api_inst_run_action '{$instAction}'");
-                $openActions = [];
+                $this->debug("Will api_inst_run_action '$instAction'");
+                $openActions = [
+                ];
                 if (array_key_exists($instAction, $openActions)) {
                     return $openActions[$instAction]($this);
                 }
                 if (!current_user_can($this->optAdminEditCabability)) {
                     return $this->api_inst_nonce_redirect();
                 }
-                $authenticatedActions = ['showPluginsLoadOrder' => function ($app, $instAction) {
-                    $allApps = $app->allInstances();
-                    $dataView = array_map(function ($a) use($app) {
-                        return $app->pluginName === $a->pluginName ? "<strong> [ {$a->pluginName} ] </strong>" : $a->pluginName;
-                    }, $allApps);
-                    return ["action" => $instAction, "wa-plugins" => $dataView, "html" => '<span>' . implode("</span> <span>", $dataView) . '</span>'];
-                }, 'decreasePluginLoadOrder' => function ($app, $instAction) use($request) {
-                    $pluginName = $request['plugin_name'];
-                    $status = AppInterface::decreasePluginLoadOrder($pluginName);
-                    return ["action" => $instAction, "status" => $status];
-                }];
+                $authenticatedActions = [
+                ];
                 if (array_key_exists($instAction, $authenticatedActions)) {
                     return $authenticatedActions[$instAction]($this, $instAction);
                 }
-                return new WP_Error('wa_unknow_action', "Unknown action '{$instAction}'", ['inst_action' => $instAction, 'status' => 404]);
+                return new WP_Error(
+                    'wa_unknow_action',
+                    "Unknown action '$instAction'", 
+                    [ 'inst_action' => $instAction, 'status' => 404 ]
+                );
             }
         }
     }
-    if (!trait_exists(ApiFrontHeadSynchronisable::class)) {
-        trait ApiFrontHeadSynchronisable
+    if (!trait_exists(ApiFrontHeadable::class)) { 
+        /**
+         * This trait will allow Frontend developers to synchronise front heads
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         * @uses Identifiable
+         * @uses ApiInstanciable
+         */
+        trait ApiFrontHeadable
         {
             use Editable;
             use Identifiable;
             use ApiInstanciable;
-            protected function _020_api_fronthead_sync__bootstrap()
+            protected function _020_api_fronthead__bootstrap()
             {
-                add_action('rest_api_init', [$this, 'api_fronthead_sync_rest_init']);
+                if ($this->p_higherThanOneCallAchievedSentinel('_020_api_fronthead__bootstrap')) {
+                    return; 
+                }
+                add_action( 'rest_api_init', [$this, 'api_fronthead_rest_init'] );
+                if (is_admin()) {   
+                    add_action(
+                        'wp_ajax_wa-suggest-frontheads', 
+                        [$this, 'api_fronthead_admin_sugestion_list']
+                    );
+                }
             }
-            function api_fronthead_sync_rest_init()
-            {
+            /**
+             * 
+             * Init wa-config fronthead API routings
+             * 
+             * WARNING : NO BACKUPS are done of the front head folders
+             * (since you have the static zip backup)
+             * 
+             * That means, in case of network fail or other possible error
+             * the targeted head folder might be erased and empty
+             * (with no server backup to recover the files)
+             * 
+             * Will add wa-config fronthead API endpoints :
+             *  - 'wp-json/wa-config/v1/fronthead/< action >/< userLocation >'
+             *    Could be called like :
+             *    ```bash
+             *    rm tmp.zip
+             *    mkdir my-front-head
+             *    cp readme.txt my-front-head
+             *    zip -r tmp.zip my-front-head
+             *    rm -rf my-front-head
+             * 
+             *    \curl -F "deploy_action=publish" -F "wa_head_target=my-front-head" \
+             *    -F "wa_zip_subpath=my-front-head" -F "wa_user_location=my-dev-publish-location" \
+             *    -F wa_api_pre_fetch_token="qlqjlmsdjlqmsfjqmlsdfjf" \
+             *    -F "wa_zip_bundle=@tmp.zip;type=application/zip" \
+             *    "https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/fronthead"
+             * 
+             *    # DO it again if you get a login redirect on your first try and did auth your prefetch token :
+             *    \curl -F "deploy_action=publish" -F "wa_head_target=my-front-head" \
+             *    -F "wa_zip_subpath=my-front-head" -F "wa_user_location=my-dev-publish-location" \
+             *    -F wa_api_pre_fetch_token="qlqjlmsdjlqmsfjqmlsdfjf" \
+             *    -F "wa_zip_bundle=@tmp.zip;type=application/zip" \
+             *    "https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/fronthead"
+             * 
+             *    # Copy/past right value given by previous call 
+             *    # (add -H 'Accept: application/json' to see json responses):
+             *    alias wa-curl="\curl -H 'X-WP-Nonce: d7682d4b57' \
+             *    -F 'wa_api_pre_fetch_token=qlqjlmsdjlqmsfjqmlsdfjf' \
+             *    --cookie 'wordpress_logged_in_0817c4fe6cb20c659452290ed095d268=demo@monwoo.com|1655933394|HaXijJzKT99LigZx8IwWeW5r3iOvYK5VyAH77swJ3ha|7e0b28a2da2706c94ed3483429e09f30c2ab66f0c504bf13ce2710022da05198; PHPSESSID=hjt07ig3864k85td09gs86vfeh","wa_access_id":"9c35d5b3240104c32c48' \
+             *    -F 'wa_access_id=9c35d5b3240104c32c48' -F 'wa_user_location=my-dev-publish-location' "
+             * 
+             *    wa-curl -F "deploy_action=publish" -F "wa_head_target=my-custom-head" \
+             *    -F "wa_zip_subpath=my-front-head" \
+             *    -F "wa_zip_bundle=@tmp.zip;type=application/zip" \
+             *    "https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/fronthead"
+             * 
+             *    # If your server have error with upload type content, use b64 :
+             *    b64=$(cat tmp.zip | base64)
+             *    wa-curl -F "deploy_action=publish" -F "wa_head_target=my-custom-head" \
+             *    -F "wa_zip_subpath=my-front-head" \
+             *    -F "wa_zip_bundle_b64=$b64" -vvv --trace debug-trace.log \
+             *    "https://web-agency.local.dev/e-commerce/wp-json/wa-config/v1/fronthead"
+             *
+             *    # If you want to use our publish node tool
+             *    # Install dev dependencies
+             *    npm install -D node 'node-fetch@^2.6.7' form-data dotenv \
+             *        cryptr chrome-remote-interface chrome-launcher
+             * 
+             *    # Launch our deploy script
+             *    ( export WA_BACKEND_HOST="https://< wordpress production target >"
+             *    export WA_HEAD_TARGET="my-first-deploy"
+             *    export WA_USER_LOCATION="my-laptop-from-france-in-2022"
+             *    export WA_REST_API_SERVER="$WA_BACKEND_HOST/wp-json/wa-config/v1"
+             *    node tools/wa-deploy.cjs)
+             * 
+             *    # For specific dev plateform with self signed certificate
+             *    ( export WA_FRONTEND_HOST="https://web-agency.local.dev"
+             *    export WA_HEAD_TARGET="my-first-deploy"
+             *    export WA_USER_LOCATION="my-laptop-from-france-in-2022"
+             *    export WA_SSL_ALLOW_SELFSIGNED=true
+             *    export WA_BACKEND_HOST="$WA_FRONTEND_HOST/e-commerce"
+             *    export WA_REST_API_SERVER="$WA_BACKEND_HOST/wp-json/wa-config/v1"
+             *    node tools/wa-deploy.cjs)
+             *    ```
+             * 
+             * {@see https://stackoverflow.com/questions/12667797/using-curl-to-upload-post-data-with-files Upload files with curl command line}
+             */
+            function api_fronthead_rest_init() : void {
                 $self = $this;
-                $this->debug("Will api_fronthead_sync_rest_init");
-                register_rest_route('wa-config/v1', '/fronthead/sync(?:/(?P<sync_action>[^/]*))?(?:/(?P<user_location>.*))?', ['methods' => ['POST', 'GET'], 'callback' => [$this, 'api_fronthead_sync_deploy'], 'permission_callback' => '__return_true', 'args' => array('sync_action' => ['validate_callback' => '__return_true'], 'user_location' => array('validate_callback' => function ($userLocation, $request, $key) use($self) {
-                    $self->debug("Allowing user_location param for route wa-config fronthead/sync/{$userLocation}");
-                    return true;
-                }), 'head_target' => ['validate_callback' => '__return_true'], 'zip_subpath' => ['validate_callback' => '__return_true'], 'zip_bundle' => ['validate_callback' => '__return_true'], 'wa_access_id' => ['validate_callback' => '__return_true'], 'wa_api_pre_fetch_token' => ['validate_callback' => '__return_true'])]);
+                $this->debug("Will api_fronthead_rest_init");
+                register_rest_route(
+                    'wa-config/v1',
+                    '/fronthead(?:/(?P<deploy_action>[^/]*))?(?:/(?P<wa_user_location>.*))?', [
+                        'methods' => ['POST', 'GET'] ,
+                        'callback' => [ $this, 'api_fronthead_deploy' ],
+                        'permission_callback' => '__return_true',
+                        'args' => array(
+                            'deploy_action' => [ 'validate_callback' => '__return_true' ],
+                            'wa_user_location' => array(
+                                'validate_callback' => function($userLocation, $request, $key) use ($self) {
+                                    $self->debug("Allowing wa_user_location param for route wa-config fronthead/$userLocation");
+                                    return true;
+                                }
+                            ),
+                            'wa_head_target' => [ 'validate_callback' => '__return_true' ],
+                            'wa_zip_subpath' => [ 'validate_callback' => '__return_true' ],
+                            'wa_zip_bundle' => [ 'validate_callback' => '__return_true' ],
+                            'wa_access_id' => [ 'validate_callback' => '__return_true' ],
+                            'wa_api_pre_fetch_token' => [ 'validate_callback' => '__return_true' ],
+                        ),                  
+                    ],
+                );
             }
-            function api_fronthead_sync_deploy(WP_REST_Request $request)
+            /**
+             * Run deploy actions of zip archive to wa-config front heads folder
+             * 
+             * REQUEST parameters :
+             *  - {@see ApiInstanciable::api_inst_load_parameters()}
+             *  - **wa-data** : Associated data for the action
+             *  - **deploy_action** : Deploy action to run
+             *     - **'publish'** : Publish action of a ziped front-head
+             *        - **wa_head_target** : Sever side front-head publish path
+             *        - **wa_zip_subpath** : Zip sub path to use when deploying the zip to the server front-head
+             *        - **wa_zip_bundle** : Zip file to deploy (Form multipart binary upload)
+             *        - **wa_zip_bundle_b64** : Zip file to deploy (Base 64 encoded)
+             *
+             * @param WP_REST_Request $request The rest request doing the deploy.
+             * @return WP_REST_Response|WP_Error Result of the deploy
+             */
+            function api_fronthead_deploy(WP_REST_Request $request)
             {
                 $self = $this;
                 $this->api_inst_load_parameters($request);
-                $fHeadAction = $request['sync_action'];
-                $this->debug("Will api_fronthead_sync_deploy for user : '{$this->apiClientUserLocation}'");
+                $fHeadAction = $request['deploy_action'];
+                $this->debug("Will api_fronthead_deploy for user : '{$this->apiClientUserLocation}'");
                 $this->debugVeryVerbose("With request", $request);
                 if ($resp = $this->api_inst_need_authentification($request)) {
                     return $resp;
@@ -4379,147 +7657,388 @@ TEMPLATE;
                 if (!current_user_can($this->optAdminEditCabability)) {
                     return $this->api_inst_nonce_redirect("need_caps_{$this->optAdminEditCabability}");
                 }
-                $authenticatedActions = ['publish' => function ($app, $instAction) use($request) {
-                    $fs = new WP_Filesystem_Direct(null);
-                    $headTarget = trim($request['head_target'] ?? '', '/');
-                    $zipSubPath = $request['zip_subpath'] ?? '';
-                    $zipBundle = $request->get_file_params()["zip_bundle"] ?? [];
-                    if (!count($zipBundle)) {
-                        $zipBundle = null;
-                    }
-                    $zipBundleB64 = $zipBundle ? null : $request['zip_bundle_b64'] ?? null;
-                    if (!$zipBundle && !$zipBundleB64) {
-                        return new WP_Error('missing_zip_bundle', "Fail to access 'zip_bundle' file param or 'zip_bundle_b64' param.", ['sync_action' => $instAction, 'status' => 404]);
-                    }
-                    $zipSource = $zipBundle['tmp_name'] ?? null;
-                    $zipName = $zipBundle['name'] ?? null;
-                    if (!$zipSource && $zipBundleB64) {
-                        $zipSource = wp_tempnam();
-                        $written = file_put_contents($zipSource, base64_decode($zipBundleB64));
-                        $zipName = 'zip_bundle_b64';
-                    }
-                    $this->debugVeryVerbose("With zip_bundle : ", $zipBundle);
-                    $avoidBackup = $request['avoid_backup'];
-                    $status = [];
-                    $headsFolder = rtrim(realpath($this->pluginRoot . "heads"), '/');
-                    $zipTargetPath = "{$headsFolder}/{$headTarget}";
-                    $didCreateDir = false;
-                    if (!$fs->exists($zipTargetPath)) {
-                        $didCreateDir = $fs->mkdir($zipTargetPath);
-                    }
-                    $zipTargetPath = realpath($zipTargetPath);
-                    if (false === strpos($zipTargetPath, $headsFolder)) {
-                        if ($didCreateDir) {
-                            $fs->rmdir($zipTargetPath);
+                $authenticatedActions = [
+                    'publish' => function($app, $instAction) use ($request) {
+                        set_time_limit(25*60); 
+                        $fs = wa_filesystem();
+                        $headTarget = trim($request['wa_head_target'] ?? '', '/');
+                        $zipSubPath = $request['wa_zip_subpath'] ?? '';
+                        $zipBundle = $request->get_file_params()["wa_zip_bundle"] ?? [];
+                        if (!count($zipBundle)) {
+                            $zipBundle = null;
                         }
-                        return new WP_Error('wrong_head_target', "Fail to access target head : '{$headsFolder}/{$headTarget}'", ['sync_action' => $instAction, 'status' => 404]);
-                    }
-                    if (!$avoidBackup) {
-                    }
-                    $fs->rmdir($zipTargetPath, true);
-                    $fs->mkdir($zipTargetPath);
-                    $zip = new ZipArchive();
-                    if (true !== ($err = $zip->open($zipSource))) {
-                        $err = print_r($err, true);
-                        $zipStatus = $zip->getStatusString();
-                        if (!file_exists($zipSource)) {
-                            $err = 404;
-                            $zipStatus = "Internal Server Error. Missing file.";
+                        $zipBundleB64 = $zipBundle ? null : ($request['wa_zip_bundle_b64'] ?? null); 
+                        if (!$zipBundle && !$zipBundleB64) {
+                            return new WP_Error(
+                                'missing_wa_zip_bundle',
+                                "Fail to access 'wa_zip_bundle' file param or 'wa_zip_bundle_b64' param.", 
+                                [ 'deploy_action' => $instAction, 'status' => 404 ]
+                            );            
                         }
-                        return new WP_Error('wrong_zip_file', "Err [{$err} - {$zipStatus}] : Fail to open zip file : '{$zipName}'", ['sync_action' => $instAction, 'src' => $zipSource, 'status' => 404]);
-                    }
-                    if ($zipSubPath) {
-                        $zipSubPath = trim($zipSubPath, "/") . '/';
-                        for ($i = 0; $i < $zip->numFiles; $i++) {
-                            $filename = $zip->getNameIndex($i);
-                            $targetFilename = str_replace($zipSubPath, '', $filename);
-                            if (!strlen($targetFilename)) {
-                                continue;
+                        $zipSource = $zipBundle['tmp_name'] ?? null;
+                        $zipName = $zipBundle['name'] ?? null;
+                        if (!$zipSource && $zipBundleB64) {
+                            $zipSource = wp_tempnam(); 
+                            $written = file_put_contents($zipSource, base64_decode($zipBundleB64));
+                            $zipName = 'wa_zip_bundle_b64';
+                        }
+                        $app->debugVeryVerbose("With wa_zip_bundle : ", $zipBundle);
+                        $avoidBackup = $request['avoid_backup']; 
+                        $status = [];
+                        $headsFolder = rtrim(realpath($app->pluginRoot . "heads"), '/');
+                        $zipTargetPath = "$headsFolder/$headTarget";
+                        $didCreateDir = false;
+                        if (!$fs->exists($zipTargetPath)) {
+                            $didCreateDir = $fs->mkdir($zipTargetPath); 
+                        }
+                        $zipTargetPath = realpath($zipTargetPath);
+                        if (false === strpos($zipTargetPath, $headsFolder)) {
+                            if ($didCreateDir) {
+                                $fs->rmdir($zipTargetPath);
                             }
-                            $targetFilename = "{$zipTargetPath}/{$targetFilename}";
-                            $dirname = dirname($targetFilename);
-                            $zipSrcFile = "zip://" . $zipSource . "#" . $filename;
-                            if (!is_dir($dirname)) {
-                                mkdir($dirname, 0755, true);
+                            return new WP_Error(
+                                'wrong_wa_head_target',
+                                "Fail to access target head : '$headsFolder/$headTarget'", 
+                                [ 'deploy_action' => $instAction, 'status' => 404 ]
+                            );            
+                        }
+                        if (!$avoidBackup) {
+                        }
+                        $fs->rmdir($zipTargetPath, true);
+                        $fs->mkdir($zipTargetPath);
+                        $zip = new ZipArchive;
+                        if (true !== ($err = $zip->open($zipSource))) {
+                            $err = print_r($err, true);
+                            $zipStatus = $zip->getStatusString();
+                            if (!file_exists($zipSource)) {
+                                $err = 404;
+                                $zipStatus = "Internal Server Error. Missing file.";
                             }
-                            if (strrpos($targetFilename, '/') == strlen($targetFilename) - 1) {
-                                if (!is_dir($targetFilename)) {
-                                    mkdir($targetFilename, 0755, true);
+                            return new WP_Error(
+                                'wrong_zip_file',
+                                "Err [$err - $zipStatus] : Fail to open zip file : '{$zipName}'", 
+                                [ 'deploy_action' => $instAction, 'src' => $zipSource, 'status' => 404 ]
+                            );
+                        }
+                        if ($zipSubPath) {
+                            $zipSubPath = trim($zipSubPath, "/") . '/';
+                            for($i = 0; $i < $zip->numFiles; $i++) {
+                                $filename = $zip->getNameIndex($i);
+                                $targetFilename = str_replace($zipSubPath, '', $filename);
+                                if (!strlen($targetFilename)) {
+                                    continue; 
                                 }
-                            } else {
-                                if (!copy($zipSrcFile, $targetFilename)) {
-                                    $status[] = ["error" => "Fail to copy zip file", "src" => $zipSrcFile, "dst" => $targetFilename];
+                                $targetFilename = "$zipTargetPath/$targetFilename";
+                                $dirname = dirname($targetFilename);
+                                $zipSrcFile = "zip://".$zipSource."#".$filename;
+                                if (!is_dir($dirname)) {
+                                    mkdir($dirname, 0755, true); 
                                 }
-                            }
+                                if (strrpos($targetFilename, '/', ) == (strlen($targetFilename) - 1)) {
+                                    if (!is_dir($targetFilename)) {
+                                        mkdir($targetFilename, 0755, true);
+                                    }
+                                } else {
+                                    if (!copy($zipSrcFile, $targetFilename)) {
+                                        $status[] = [
+                                            "error" => "Fail to copy zip file",
+                                            "src" => $zipSrcFile,
+                                            "dst" => $targetFilename,
+                                        ];
+                                    };
+                                }
+                            }                          
+                        } else {
+                            $zip->extractTo($zipTargetPath);
                         }
-                    } else {
-                        $zip->extractTo($zipTargetPath);
-                    }
-                    $zip->close();
-                    if ($zipBundleB64) {
-                        unlink($zipSource);
-                    }
-                    $status[] = ["end-status" => "OK"];
-                    return new WP_REST_Response(["action" => $instAction, "head_target" => $headTarget, "head_path" => $zipTargetPath, "status" => $status], 200);
-                }];
+                        $zip->close();
+                        if ($zipBundleB64) { 
+                            unlink($zipSource);
+                        }
+                        delete_transient($app->_frontheadsSearchCacheKey);
+                        $status[] = ["end-status" => "OK"];
+                        $app->info("Succed wa-api head publish to '$zipTargetPath'"
+                        . " from '{$app->apiClientUserLocation}'");
+                        return new WP_REST_Response([
+                            "code" => 'ok',
+                            "action" => $instAction,
+                            "data" => [
+                                "wa_head_target" => $headTarget,
+                                "head_path" => $zipTargetPath,
+                                "status" => $status,    
+                            ]
+                        ], 200);
+                    },
+                ];
                 if (array_key_exists($fHeadAction, $authenticatedActions)) {
                     return $authenticatedActions[$fHeadAction]($this, $fHeadAction);
                 }
-                return new WP_Error('wa_unknow_action', "Unknown action '{$fHeadAction}'", ['sync_action' => $fHeadAction, 'status' => 404]);
+                return new WP_Error(
+                    'wa_unknow_action',
+                    "Unknown deploy_action '$fHeadAction'", 
+                    [ 'deploy_action' => $fHeadAction, 'status' => 404 ]
+                );
+            }
+            protected $_frontheadsSearchCacheKey = 'wa_config_api_fronthead_search';
+            protected $_frontheadsSearchCache = null;
+            /**
+             * Output a suggestion list of all available front-heads
+             * 
+             * Used for ajax suggestion lists. Echo one sugestion per line.
+             * 
+             * GET parameters :
+             *  - **q** : The query used to filter the suggestions (end user search input)
+             *
+             */
+            public function api_fronthead_admin_sugestion_list() : void {
+                if (!is_admin()) {
+                    $this->err("wa-config admin param section is under admin pages only");
+                    echo "<p> "
+                        . __(
+                            "Cette opération nécessite une page d'administration.",
+                            'wa-config'
+                        )
+                        . "</p>";
+                    return;
+                }
+                $query = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_SPECIAL_CHARS);
+                $query = strtolower(wp_unslash( $query ));
+                if (!$this->_frontheadsSearchCache) {
+                    $this->_frontheadsSearchCache = get_transient( 
+                        $this->_frontheadsSearchCacheKey
+                    );
+                }
+                if (!$this->_frontheadsSearchCache) {
+                    $this->_frontheadsSearchCache = [];
+                }
+                $allowCache = true;
+                if ($allowCache
+                && array_key_exists($query, $this->_frontheadsSearchCache)) {
+                    $this->debug("api_fronthead_admin_sugestion_list loaded from cache [$query]");
+                    echo $this->_frontheadsSearchCache[$query];
+                    $this->exit(); return;
+                }
+                $heads = [];
+                $headsDir = $this->pluginRoot . 'heads';
+                $files = list_files($headsDir, 2); 
+                foreach ($files as $f) {
+                    $d = dirname($f);
+                    $d = trim(str_replace($headsDir, '', $d), '/');
+                    if (strlen($d)) {
+                        $heads[$d] = $d;
+                    }
+                }
+                $heads = array_values($heads);
+                $isFirstMatch = true;
+                $searchResult = '';
+                $it = count($heads) - 1;
+                while (
+                    $it >= 0
+                ) {
+                    $current = $heads[$it];
+                    --$it;
+                    if (strpos(strtolower($current), $query) === false) {
+                        continue;
+                    }
+                    if ($isFirstMatch) {
+                        $isFirstMatch = false;
+                    } else {
+                        $searchResult .= "\n";
+                    }
+                    $searchResult .= $current;
+                }
+                $searchResult .= "\n";
+                if ($isFirstMatch) {
+                    $searchResult .= "<notice class='wa-no-search-result'>[$query] "
+                    . __(" ### Aucune tête de trouvée.",  'wa-config')
+                    . "</notice>";
+                }
+                $this->_frontheadsSearchCache[$query] = $searchResult;
+                set_transient( 
+                    $this->_frontheadsSearchCacheKey,
+                    $this->_frontheadsSearchCache,
+                    24 * 60 * 60 
+                );
+                echo $searchResult;
+                $this->exit(); return;
+            }
+            protected function api_fronthead_admin_sugestionbox_template(
+                $safeValue, $fieldId, $fieldName, $placeholder = ""
+            ) {
+                return <<<TEMPLATE
+                    <input
+                    type="text"
+                    placeholder="$placeholder"
+                    class="wa-suggest-list-api-frontheads"
+                    id="$fieldId"
+                    name="$fieldName"
+                    value="$safeValue"
+                    />
+                TEMPLATE;
             }
         }
     }
-    if (!class_exists(OptiLvl::class)) {
-        class OptiLvl
-        {
+    if (!class_exists(OptiLvl::class)) { 
+        /**
+         * This class register all optimisations levels like an ENUM
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        class OptiLvl {
+            /**
+             * Medium optimisation (Removing CRON)
+             * 
+             * CRON slow down frontend and admin calls, specially if you have lot of plugins
+             * doing lot of heavy (or slow) short period jobs.
+             * 
+             * Indeed, default WP CRON strategy is to run those jobs at same time as client requests
+             * and consume client waiting time loads on simple request that should not consume so much.
+             * 
+             * With this MEDIUM level activated review will test that wp-config.php define :
+             * - **DISABLE_WP_CRON** : to true. Then you should handle CRON
+             * with your website provider or call '/wp-cron.php?doing_wp_cron' purposely
+             * to still run those background jobs (or run them from another
+             * WP instance sharing the same database connection... cf LOCK and parallel DB operations)
+             */
             const MEDIUM = 'medium';
+            /**
+             * Full optimisation (Removing Wordpress and Plugins audo-update)
+             * 
+             * Auto-update can slow down admin calls, and potentially client calls in case
+             * of server overloads due to plugin updates in progress on top of client requests.
+             * 
+             * For maximum optimisation, we will disable those. You can still update plugins from
+             * the regular wordpress update status panel.
+             * 
+             * Please, do the updates and reviews with regularity, since automatic mode have been disabled.
+             * 
+             * Moreover, **automatic** mode **or manual** mode
+             * **dose not** launch the **reviews** and **end to end** tests.
+             * 
+             * You will gain more controle and quality for your website updates by doin thoses.
+             * 
+             * Updates may breaks some plugins or data. We will be pleased to provide some
+             * of our expertise to solve thoses issues : {@see https://moonkiosk.monwoo.com}.
+             * 
+             * We honor paied contracts, and let open source request follow the open source community
+             * 'delay' and 'will' to solve the request.
+             * 
+             * With this FULL level activated, common auto-update hooks will be disabled :
+             * - plugins_auto_update_enabled is filtered to false
+             * - themes_auto_update_enabled is filtered to false
+             * 
+             * Review will also test that wp-config.php define :
+             * - **WP_AUTO_UPDATE_CORE** to false, removing server side Wordpress auto-update calls
+             * - **AUTOMATIC_UPDATER_DISABLED** to true, removing server side Plugins auto-update calls
+             * 
+             */
             const MAX = 'full';
         }
     }
-    if (!trait_exists(Optimisable::class)) {
+    if (!trait_exists(Optimisable::class)) { 
+        /**
+         * This trait will help with speed optimisations
+         *
+         * It will also enable WordPress http request filterings
+         * to help you remove some internal calls.
+         * 
+         * It will optimize wp_http_requests (HTTP Request Filtering) on CRON jobs too
+         * unless you define the WA_SHOULD_NOT_OPTIMIZE_CRON constant to true.
+         * 
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         * @uses Identifiable
+         */
         trait Optimisable
         {
             use Editable;
             use Identifiable;
             protected function _020_opti__bootstrap()
             {
-                add_filter('pre_http_request', [$this, 'opti_filter_wp_http_requests'], 10, 3);
-                if (defined('DOING_CRON')) {
+                if ($this->p_higherThanOneCallAchievedSentinel('_020_opti__bootstrap')) {
+                    return; 
+                }
+                add_filter('pre_http_request', [$this,
+                'opti_filter_wp_http_requests'], 10, 3);
+                if ( defined('DOING_CRON') && constant( 'DOING_CRON' )
+                && defined('WA_SHOULD_NOT_OPTIMIZE_CRON') && constant('WA_SHOULD_NOT_OPTIMIZE_CRON'))
+                {
                     return;
                 }
-                $optiLvls = explode(',', $this->getWaConfigOption($this->eConfOptOptiLevels, ""));
+                $optiLvls = explode(',', $this->getWaConfigOption(
+                    $this->eConfOptOptiLevels,
+                    ""
+                ));
                 $this->debugVeryVerbose('Requesting optimisation levels : ', ["levels" => $optiLvls]);
                 if (false !== array_search(OptiLvl::MAX, $optiLvls)) {
                     $this->opti_setup_for_max_speed();
-                    add_action(WPActions::wa_do_base_review_preprocessing, [$this, 'opti_max_speed_review']);
-                } else {
-                    if (false !== array_search(OptiLvl::MEDIUM, $optiLvls)) {
-                        $this->opti_setup_for_medium_speed();
-                        add_action(WPActions::wa_do_base_review_preprocessing, [$this, 'opti_medium_speed_review']);
-                        if (false === array_search(OptiLvl::MAX, $optiLvls)) {
-                            $this->reviewIdsToTrash = array_merge($this->reviewIdsToTrash, ["{$this->iId}-data-review-opti-full"]);
-                        }
-                    } else {
-                        if (count($optiLvls) > 1) {
-                            $this->warn('Unknown Optimisation levels : ', $optiLvls);
-                        }
-                        add_action(WPActions::wa_do_base_review_preprocessing, [$this, 'opti_disabled_review']);
+                    add_action(
+                        WPActions::wa_do_base_review_preprocessing,
+                        [$this, 'opti_max_speed_review']
+                    );
+                } else if (false !== array_search(OptiLvl::MEDIUM, $optiLvls)) {
+                    $this->opti_setup_for_medium_speed();
+                    add_action(
+                        WPActions::wa_do_base_review_preprocessing,
+                        [$this, 'opti_medium_speed_review']
+                    );
+                    if (false === array_search(OptiLvl::MAX, $optiLvls)) {
+                        $this->eReviewIdsToTrash = array_merge($this->eReviewIdsToTrash, [
+                            "{$this->iId}-data-review-opti-full"
+                        ]);
                     }
+                } else {
+                    if (count($optiLvls) > 1) {
+                        $this->warn('Unknown Optimisation levels : ', $optiLvls);
+                    }
+                    add_action(
+                        WPActions::wa_do_base_review_preprocessing,
+                        [$this, 'opti_disabled_review']
+                    );
                 }
-                add_action(WPActions::wa_do_base_review_preprocessing, [$this, 'opti_common_review']);
+                add_action(
+                    WPActions::wa_do_base_review_preprocessing,
+                    [$this, 'opti_common_review']
+                );
             }
+            /**
+             * @var array<int, array> $BLOCKED_URL_REVIEW_REPORT List of blocked url report
+             */
             protected $blockedUrlReviewReport = [];
+            /**
+             * @var array<int, array> $BLOCKED_URL_REVIEW_REPORT List of allowed url report
+             */
             protected $allowedUrlReviewReport = [];
-            protected $optiBlockedUrlBckupPeriode = 30 * 60 * 1000;
+            protected $optiBlockedUrlBckupPeriode = (30*60*1000); 
+            /**
+             * @var string $BLOCKED_URL_REVIEW_REPORT Transient key for the list of blocked url report
+             */
             public $BLOCKED_URL_REVIEW_REPORT = "wa_blocked_url_review_report";
+            /**
+             * @var string $BLOCKED_URL_REVIEW_REPORT Transient key for the list of allowed url report
+             */
             public $ALLOWED_URL_REVIEW_REPORT = "wa_allowed_url_review_report";
-            public function opti_add_url_to_blocked_review_report($sentinel, $url)
-            {
-                $enableBlockedReviewReport = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedReviewReport, false);
+            /**
+             * Add a 30 minutes backlog review report about blocked url
+             * 
+             * It use transient cache, to keep stuff fast, check the verbose log if you wana to be sur to track all blocked links...
+             * 
+             * @param string    $sentinel   Name of the sentinel that did block this URL.
+             * @param string    $url        The request URL.
+             */
+            public function opti_add_url_to_blocked_review_report($sentinel, $url) : void {
+                $enableBlockedReviewReport = $this->getWaConfigOption(
+                    $this->eConfOptOptiEnableBlockedReviewReport,
+                    false
+                );
                 if (!$enableBlockedReviewReport) {
-                    return;
+                    return; 
                 }
-                $this->blockedUrlReviewReport = get_transient($this->BLOCKED_URL_REVIEW_REPORT) ?? $this->blockedUrlReviewReport;
+                $this->blockedUrlReviewReport = (false === ($ar = get_transient(
+                    $this->BLOCKED_URL_REVIEW_REPORT
+                ))) ? [] : $ar;
                 if (!$this->blockedUrlReviewReport) {
                     $this->warn("opti_add_url_to_blocked_review_report detect wrong saved report, reseting it to [] from ", $this->blockedUrlReviewReport);
                     $this->blockedUrlReviewReport = [];
@@ -4528,281 +8047,592 @@ TEMPLATE;
                     $this->warn("opti_add_url_to_blocked_review_report 'blockedUrlReviewReport' have wrong type, should be 'array'", $this->blockedUrlReviewReport);
                     $this->blockedUrlReviewReport = [];
                 }
-                $this->debugVerbose("Will opti_add_url_to_blocked_review_report with '{$url}'");
-                $report =& $this->blockedUrlReviewReport;
+                $this->debugVerbose("Will opti_add_url_to_blocked_review_report with '$url'");
+                $report = & $this->blockedUrlReviewReport;
                 $currentTime = time();
                 if (!array_key_exists($url, $report)) {
-                    $report[$url] = ['sentinel' => $sentinel, 'access_log' => [], 'first_access' => $currentTime];
+                    $report[$url] = [
+                        'sentinel' => $sentinel,
+                        'access_log' => [],
+                        'first_access' => $currentTime,
+                    ];
                 }
-                $bckupPeriode = $this->optiBlockedUrlBckupPeriode;
+                $bckupPeriode = $this->optiBlockedUrlBckupPeriode; 
                 $report[$url]['last_access'] = $currentTime;
                 $report[$url]['access_log'][] = $currentTime;
-                $report[$url]['access_log'] = array_filter($report[$url]['access_log'], function ($time) use($currentTime, $bckupPeriode) {
-                    return $currentTime - $time < $bckupPeriode;
-                });
-                $report = array_filter($report, function ($log) use($currentTime, $bckupPeriode) {
-                    return $currentTime - $log['last_access'] < $bckupPeriode;
-                });
-                set_transient($this->BLOCKED_URL_REVIEW_REPORT, $this->blockedUrlReviewReport, $this->optiBlockedUrlBckupPeriode / 1000);
+                $report[$url]['access_log'] = array_filter(
+                    $report[$url]['access_log'],
+                    function ($time) use ($currentTime, $bckupPeriode) {
+                        return ($currentTime - $time) < $bckupPeriode;
+                    }
+                );
+                $report = array_filter(
+                    $report, function ($log) use ($currentTime, $bckupPeriode) {
+                        return ($currentTime - $log['last_access']) < $bckupPeriode;
+                    }
+                );
+                set_transient(
+                    $this->BLOCKED_URL_REVIEW_REPORT,
+                    $this->blockedUrlReviewReport,
+                    $this->optiBlockedUrlBckupPeriode / 1000
+                );
             }
-            public function opti_add_url_to_allowed_review_report($sentinel, $url)
-            {
-                $enableBlockedReviewReport = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedReviewReport, false);
+            /**
+             * Add a 30 minutes backlog review report about allowed url
+             * 
+             * It use transient cache, to keep stuff fast, check the verbose log if you wana to be sur to track all followed sub links...
+             * 
+             * @param string    $sentinel   Name of the sentinel that allow this URL.
+             * @param string    $url        The request URL.
+             */
+            public function opti_add_url_to_allowed_review_report($sentinel, $url) : void {
+                $enableBlockedReviewReport = $this->getWaConfigOption(
+                    $this->eConfOptOptiEnableBlockedReviewReport,
+                    false
+                );
                 if (!$enableBlockedReviewReport) {
-                    return;
+                    return; 
                 }
-                $this->allowedUrlReviewReport = get_transient($this->ALLOWED_URL_REVIEW_REPORT) ?? $this->allowedUrlReviewReport;
+                $this->allowedUrlReviewReport = (false === ($ar = get_transient(
+                    $this->ALLOWED_URL_REVIEW_REPORT
+                ))) ? [] : $ar;
                 if (!is_array($this->allowedUrlReviewReport)) {
                     $this->warn("opti_add_url_to_allowed_review_report 'allowedUrlReviewReport' have wrong type, should be 'array'", $this->allowedUrlReviewReport);
                     $this->allowedUrlReviewReport = [];
                 }
-                $this->debugVerbose("Will opti_add_url_to_allowed_review_report with '{$url}'");
-                $report =& $this->allowedUrlReviewReport;
+                $this->debugVerbose("Will opti_add_url_to_allowed_review_report with '$url'");
+                $report = & $this->allowedUrlReviewReport;
                 $currentTime = time();
                 if (!array_key_exists($url, $report)) {
-                    $report[$url] = ['sentinel' => $sentinel, 'access_log' => [], 'first_access' => $currentTime];
+                    $report[$url] = [
+                        'sentinel' => $sentinel,
+                        'access_log' => [],
+                        'first_access' => $currentTime,
+                    ];
                 }
-                $bckupPeriode = $this->optiBlockedUrlBckupPeriode;
+                $bckupPeriode = $this->optiBlockedUrlBckupPeriode; 
                 $report[$url]['last_access'] = $currentTime;
                 $report[$url]['access_log'][] = $currentTime;
-                $report[$url]['access_log'] = array_filter($report[$url]['access_log'], function ($time) use($currentTime, $bckupPeriode) {
-                    return $currentTime - $time < $bckupPeriode;
-                });
-                $report = array_filter($report, function ($log) use($currentTime, $bckupPeriode) {
-                    return $currentTime - $log['last_access'] < $bckupPeriode;
-                });
-                set_transient($this->ALLOWED_URL_REVIEW_REPORT, $this->allowedUrlReviewReport, $this->optiBlockedUrlBckupPeriode / 1000);
+                $report[$url]['access_log'] = array_filter(
+                    $report[$url]['access_log'],
+                    function ($time) use ($currentTime, $bckupPeriode) {
+                        return ($currentTime - $time) < $bckupPeriode;
+                    }
+                );
+                $report = array_filter(
+                    $report, function ($log) use ($currentTime, $bckupPeriode) {
+                        return ($currentTime - $log['last_access']) < $bckupPeriode;
+                    }
+                );
+                set_transient(
+                    $this->ALLOWED_URL_REVIEW_REPORT,
+                    $this->allowedUrlReviewReport,
+                    $this->optiBlockedUrlBckupPeriode / 1000
+                );
             }
-            public function opti_print_blocked_urls_report($shouldEcho = true, $reportOrder = 0)
-            {
-                $enableBlockedReviewReport = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedReviewReport, false);
+            /**
+             * Print the blocked url review report
+             * 
+             * It use transient cache, to keep stuff fast, check the verbose log if you wana to be sur to track all blocked links...
+             * 
+             * @param bool $shouldEcho Will echo if true, default true
+             * @param int  $reportOrder Report position in case of multiple display of same report in same page...
+             * @return string the printed report
+             */
+            public function opti_print_blocked_urls_report($shouldEcho = true, $reportOrder = 0) {
+                $enableBlockedReviewReport = $this->getWaConfigOption(
+                    $this->eConfOptOptiEnableBlockedReviewReport,
+                    false
+                );
                 if (!$enableBlockedReviewReport) {
-                    return;
+                    return; 
                 }
-                echo "<h1> " . __("Détail des urls bloquées", 'wa-config') . " </h1>";
+                echo "<h1> " . __(
+                    "Détail des urls bloquées",
+                    'wa-config'
+                ) . " </h1>";
                 $self = $this;
                 $resp = "";
                 $idx = 0;
-                $dateFormat = "Y/m/d H:i:s O";
-                $this->blockedUrlReviewReport = get_transient($this->BLOCKED_URL_REVIEW_REPORT) ?? $this->blockedUrlReviewReport;
+                $dateFormat = "Y/m/d H:i:s O"; 
+                $this->blockedUrlReviewReport = (false === ($ar = get_transient(
+                    $this->BLOCKED_URL_REVIEW_REPORT
+                ))) ? [] : $ar;
                 if (!is_array($this->blockedUrlReviewReport)) {
                     $this->warn("opti_print_blocked_urls_report 'blockedUrlReviewReport' have wrong type, should be 'array'", $this->blockedUrlReviewReport);
                     $this->blockedUrlReviewReport = [];
                 }
                 $this->debug("Will opti_print_blocked_urls_report");
                 $this->debugVeryVerbose("With : ", $this->blockedUrlReviewReport);
-                $this->blockedUrlReviewReport = array_filter($this->blockedUrlReviewReport, function ($log) use($self) {
-                    return time() - $log['last_access'] < $self->optiBlockedUrlBckupPeriode;
-                });
-                set_transient($this->BLOCKED_URL_REVIEW_REPORT, $this->blockedUrlReviewReport, $this->optiBlockedUrlBckupPeriode / 1000);
+                $this->blockedUrlReviewReport = array_filter(
+                    $this->blockedUrlReviewReport,
+                    function ($log) use ($self) {
+                        return (time() - $log['last_access']) < $self->optiBlockedUrlBckupPeriode;
+                    }
+                );
+                set_transient(
+                    $this->BLOCKED_URL_REVIEW_REPORT,
+                    $this->blockedUrlReviewReport,
+                    $this->optiBlockedUrlBckupPeriode / 1000
+                );
                 foreach ($this->blockedUrlReviewReport as $url => $log) {
-                    $itemId = "wa-blocked-url-{$reportOrder}-{$idx}";
-                    $timeFrame = "<span>" . implode("</span> <span>", array_map(function ($t) use($dateFormat) {
-                        return wp_date($dateFormat, $t);
-                    }, $log['access_log'])) . '</span>';
-                    $lastAccess = wp_date($dateFormat, $log['last_access']);
+                    $itemId = "wa-blocked-url-$reportOrder-$idx";
+                    $timeFrame = "<span>". implode(
+                        "</span> <span>",
+                        array_map(function($t)
+                        use ($dateFormat) {
+                            return wp_date( $dateFormat, $t );
+                        }, $log['access_log'])
+                    ) . '</span>';
+                    $lastAccess = wp_date( $dateFormat, $log['last_access']);
                     $sentinel = $log['sentinel'];
                     $countAccess = count($log['access_log']);
                     $resp .= <<<TEMPLATE
-    <div class="{$itemId}">
-        <p
-        data-wa-expand-target='.{$itemId} .wa-expand'
-        class='wa-expand-toggler'>
-            <span>[{$lastAccess}]</span>
-            <span>[{$sentinel}]</span> <br />
-            <span>[{$countAccess}]</span>
-            <strong>{$url}</strong>
-        </p>
-        <p class="wa-blocked-url-frames wa-expand wa-expand-collapsed">
-            {$timeFrame}
-        </p>
-    </div>
-TEMPLATE;
-                    $idx++;
+                        <div class="$itemId">
+                            <p
+                            data-wa-expand-target='.$itemId .wa-expand'
+                            class='wa-expand-toggler'>
+                                <span>[$lastAccess]</span>
+                                <span>[$sentinel]</span> <br />
+                                <span>[$countAccess]</span>
+                                <strong>$url</strong>
+                            </p>
+                            <p class="wa-blocked-url-frames wa-expand wa-expand-collapsed">
+                                $timeFrame
+                            </p>
+                        </div>
+                    TEMPLATE;
+                    $idx ++;
                 }
                 if ($shouldEcho) {
                     echo $resp;
                 }
                 return $resp;
             }
-            public function opti_print_allowed_urls_report($shouldEcho = true, $reportOrder = 0)
-            {
-                $enableBlockedReviewReport = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedReviewReport, false);
+            /**
+             * Print the allowed url review report
+             * 
+             * It use transient cache, to keep stuff fast, check the verbose log if you wana to be sur to track all allowed links...
+             * 
+             * @param bool $shouldEcho Will echo if true, default true
+             * @param int  $reportOrder Report position in case of multiple display of same report in same page...
+             * @return string the printed report
+             */
+            public function opti_print_allowed_urls_report($shouldEcho = true, $reportOrder = 0) {
+                $enableBlockedReviewReport = $this->getWaConfigOption(
+                    $this->eConfOptOptiEnableBlockedReviewReport,
+                    false
+                );
                 if (!$enableBlockedReviewReport) {
-                    return;
+                    return; 
                 }
-                echo "<h1> " . __("Détail des urls autorisées", 'wa-config') . " </h1>";
+                echo "<h1> " . __(
+                    "Détail des urls autorisées",
+                    'wa-config'
+                ) . " </h1>";
                 $self = $this;
                 $resp = "";
                 $idx = 0;
-                $dateFormat = "Y/m/d H:i:s O";
-                $this->allowedUrlReviewReport = get_transient($this->ALLOWED_URL_REVIEW_REPORT) ?? $this->allowedUrlReviewReport;
+                $dateFormat = "Y/m/d H:i:s O"; 
+                $this->allowedUrlReviewReport = (false === ($ar = get_transient(
+                    $this->ALLOWED_URL_REVIEW_REPORT
+                ))) ? [] : $ar;
                 if (!is_array($this->allowedUrlReviewReport)) {
                     $this->warn("opti_print_blocked_urls_report 'allowedUrlReviewReport' have wrong type, should be 'array'", $this->allowedUrlReviewReport);
                     $this->allowedUrlReviewReport = [];
                 }
                 $this->debug("Will opti_print_blocked_urls_report");
                 $this->debugVeryVerbose("With : ", $this->allowedUrlReviewReport);
-                $this->allowedUrlReviewReport = array_filter($this->allowedUrlReviewReport, function ($log) use($self) {
-                    return time() - $log['last_access'] < $self->optiBlockedUrlBckupPeriode;
-                });
-                set_transient($this->ALLOWED_URL_REVIEW_REPORT, $this->allowedUrlReviewReport, $this->optiBlockedUrlBckupPeriode / 1000);
+                $this->allowedUrlReviewReport = array_filter(
+                    $this->allowedUrlReviewReport,
+                    function ($log) use ($self) {
+                        return (time() - $log['last_access']) < $self->optiBlockedUrlBckupPeriode;
+                    }
+                );
+                set_transient(
+                    $this->ALLOWED_URL_REVIEW_REPORT,
+                    $this->allowedUrlReviewReport,
+                    $this->optiBlockedUrlBckupPeriode / 1000
+                );
                 foreach ($this->allowedUrlReviewReport as $url => $log) {
-                    $itemId = "wa-blocked-url-{$reportOrder}-{$idx}";
-                    $timeFrame = "<span>" . implode("</span> <span>", array_map(function ($t) use($dateFormat) {
-                        return wp_date($dateFormat, $t);
-                    }, $log['access_log'])) . '</span>';
-                    $lastAccess = wp_date($dateFormat, $log['last_access']);
+                    $itemId = "wa-blocked-url-$reportOrder-$idx";
+                    $timeFrame = "<span>". implode(
+                        "</span> <span>",
+                        array_map(function($t)
+                        use ($dateFormat) {
+                            return wp_date( $dateFormat, $t );
+                        }, $log['access_log'])
+                    ) . '</span>';
+                    $lastAccess = wp_date( $dateFormat, $log['last_access']);
                     $sentinel = $log['sentinel'];
                     $countAccess = count($log['access_log']);
                     $resp .= <<<TEMPLATE
-    <div class="{$itemId}">
-        <p
-        data-wa-expand-target='.{$itemId} .wa-expand'
-        class='wa-expand-toggler'>
-            <span>[{$lastAccess}]</span>
-            <span>[{$sentinel}]</span> <br />
-            <span>[{$countAccess}]</span>
-            <strong>{$url}</strong>
-        </p>
-        <p class="wa-blocked-url-frames wa-expand wa-expand-collapsed">
-            {$timeFrame}
-        </p>
-    </div>
-TEMPLATE;
-                    $idx++;
+                        <div class="$itemId">
+                            <p
+                            data-wa-expand-target='.$itemId .wa-expand'
+                            class='wa-expand-toggler'>
+                                <span>[$lastAccess]</span>
+                                <span>[$sentinel]</span> <br />
+                                <span>[$countAccess]</span>
+                                <strong>$url</strong>
+                            </p>
+                            <p class="wa-blocked-url-frames wa-expand wa-expand-collapsed">
+                                $timeFrame
+                            </p>
+                        </div>
+                    TEMPLATE;
+                    $idx ++;
                 }
                 if ($shouldEcho) {
                     echo $resp;
                 }
                 return $resp;
             }
-            public function opti_filter_wp_http_requests($preempt, $parsed_args, $url)
-            {
-                $regExFilter = $this->getWaConfigOption($this->eConfOptOptiWpRequestsFilter, "");
-                if (is_string($regExFilter) && strlen($regExFilter) && preg_match($regExFilter, $url)) {
-                    $this->debug("Will opti_filter_wp_http_requests with {$regExFilter} and BLOCK {$url}");
-                    $safeFilter = $this->getWaConfigOption($this->eConfOptOptiWpRequestsSafeFilter, $this->E_DEFAULT_OPTIMISABLE_SAFE_FILTER);
-                    if (is_string($safeFilter) && strlen($safeFilter) && preg_match($safeFilter, $url)) {
-                        $this->debugVerbose("opti_filter_wp_http_requests whitelisted by {$safeFilter}");
+            /**
+             * Filter internal WP HTTP calls as requested by '' WA Config option
+             * 
+             * @param false|array|WP_Error  $preempt     A preemptive return value of an HTTP request. Default false.
+             * @param array                 $parsed_args HTTP request arguments.
+             * @param string                $url         The request URL.
+             * @return false|array|WP_Error The new preemptive return value
+             */
+            public function opti_filter_wp_http_requests($preempt, $parsed_args, $url) {
+                $regExFilter = $this->getWaConfigOption(
+                    $this->eConfOptOptiWpRequestsFilter,
+                    ""
+                );
+                if (is_string($regExFilter) && strlen($regExFilter)
+                && preg_match($regExFilter, $url)) {
+                    $this->debug("Will opti_filter_wp_http_requests with $regExFilter and BLOCK $url");
+                    $safeFilter = $this->getWaConfigOption(
+                        $this->eConfOptOptiWpRequestsSafeFilter,
+                        $this->E_DEFAULT_OPTIMISABLE_SAFE_FILTER
+                    );
+                    if (is_string($safeFilter) && strlen($safeFilter)
+                    && preg_match($safeFilter, $url)) {
+                        $this->debugVerbose("opti_filter_wp_http_requests whitelisted by $safeFilter");
                         $this->opti_add_url_to_allowed_review_report($this->iId . '-filtered', $url);
                         return $preempt;
                     }
-                    $enableNotice = $this->getWaConfigOption($this->eConfOptOptiEnableBlockedHttpNotice, false);
+                    $enableNotice = $this->getWaConfigOption(
+                        $this->eConfOptOptiEnableBlockedHttpNotice,
+                        false
+                    );
                     if ($enableNotice) {
-                        Notice::displayInfo("{$regExFilter} " . __(" : BLOQUE l'url : ", 'wa-config') . " {$url}");
+                        Notice::displayInfo("$regExFilter ".
+                        __(" : BLOQUE l'url : ",  'wa-config')
+                        ." $url");
                     }
                     $this->opti_add_url_to_blocked_review_report($this->iId . '-filtered', $url);
-                    $this->debugVerbose("opti_filter_wp_http_requests blocked by {$regExFilter}");
-                    return array('headers' => array(), 'body' => '', 'response' => array('code' => false, 'message' => false), 'cookies' => array(), 'http_response' => null);
+                    $this->debugVerbose("opti_filter_wp_http_requests blocked by $regExFilter");
+                    return array(
+                        'headers'       => array(),
+                        'body'          => '',
+                        'response'      => array(
+                            'code'    => false,
+                            'message' => false,
+                        ),
+                        'cookies'       => array(),
+                        'http_response' => null,
+                    );
                 } else {
                     $this->opti_add_url_to_allowed_review_report($this->iId . '-filtered', $url);
                 }
                 return $preempt;
             }
-            protected function opti_setup_for_max_speed() : bool
+            /**
+             * Optimise server external sub call
+             * 
+             * @return bool True on setup success 
+             */
+            protected function opti_setup_for_max_speed(): bool
             {
                 if (!$this->opti_setup_for_medium_speed()) {
-                    return false;
+                    return false; 
                 }
                 $this->debugVerbose("Will opti_setup_for_max_speed");
-                add_filter('plugins_auto_update_enabled', '__return_false');
-                add_filter('themes_auto_update_enabled', '__return_false');
-                $WPAutoUpdateOff = defined('AUTOMATIC_UPDATER_DISABLED') && constant('AUTOMATIC_UPDATER_DISABLED');
-                $WPHostAutoUpdateOff = defined('WP_AUTO_UPDATE_CORE') && !constant('WP_AUTO_UPDATE_CORE');
+                add_filter( 'plugins_auto_update_enabled', '__return_false' );    
+                add_filter( 'themes_auto_update_enabled', '__return_false' );
+                $WPAutoUpdateOff = defined( 'AUTOMATIC_UPDATER_DISABLED')
+                && constant('AUTOMATIC_UPDATER_DISABLED');
+                $WPHostAutoUpdateOff = defined( 'WP_AUTO_UPDATE_CORE')
+                && !constant('WP_AUTO_UPDATE_CORE');
                 return $WPAutoUpdateOff && $WPHostAutoUpdateOff;
             }
-            protected function opti_setup_for_medium_speed() : bool
+            /**
+             * Optimise server self call
+             * 
+             * @return bool True on setup success 
+             */
+            protected function opti_setup_for_medium_speed(): bool
             {
                 $this->debugVerbose("Will opti_setup_for_medium_speed");
                 return defined('DISABLE_WP_CRON');
             }
-            public function opti_max_speed_review($app) : void
+            /**
+             * Add the MAX speed optimisation reviews
+             * 
+             * @param AppInterface $app the plugin instance.
+             */
+            public function opti_max_speed_review($app): void
             {
                 $this->debugVerbose("Will opti_max_speed_review");
-                $skillsSyncOK = true;
+                $isOk = true;
                 $reviewReport = '';
-                $WPAutoUpdateOff = defined('AUTOMATIC_UPDATER_DISABLED') && constant('AUTOMATIC_UPDATER_DISABLED');
+                $WPAutoUpdateOff = defined( 'AUTOMATIC_UPDATER_DISABLED')
+                && constant('AUTOMATIC_UPDATER_DISABLED');
                 if (!$WPAutoUpdateOff) {
-                    $reviewReport .= __("<p> AUTOMATIC_UPDATER_DISABLED doit être définit à 'true' dans wp-config.php.</p>");
+                    $reviewReport .=
+                    __("<p> AUTOMATIC_UPDATER_DISABLED doit être définit à 'true' dans wp-config.php.</p>");
                     $this->warn("Fail to ensure AUTOMATIC_UPDATER_DISABLED is true");
                 }
-                $skillsSyncOK = $skillsSyncOK && $WPAutoUpdateOff;
-                $WPHostAutoUpdateOff = defined('WP_AUTO_UPDATE_CORE') && !constant('WP_AUTO_UPDATE_CORE');
+                $isOk = $isOk && $WPAutoUpdateOff;
+                $WPHostAutoUpdateOff = defined( 'WP_AUTO_UPDATE_CORE')
+                && !constant('WP_AUTO_UPDATE_CORE');
                 if (!$WPHostAutoUpdateOff) {
-                    $reviewReport .= __("<p> WP_AUTO_UPDATE_CORE doit être définit à 'false' dans wp-config.php.</p>");
+                    $reviewReport .=
+                    __("<p> WP_AUTO_UPDATE_CORE doit être définit à 'false' dans wp-config.php.</p>");
                     $this->warn("Fail to ensure WP_AUTO_UPDATE_CORE is defined and falsy");
                 }
-                $skillsSyncOK = $skillsSyncOK && $WPHostAutoUpdateOff;
-                $this->e_admin_config_add_check_list_to_review(['category' => __('02 - Maintenance', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>', 'title' => __("03 - [Optimisations] Niveau maximal", 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-chart-bar"></span>', 'requirements' => __('Vérification de la présence des optimisations maximales.<br />', 'wa-config') . $reviewReport, 'value' => strlen($reviewReport) ? $skillsSyncOK ? null : __('Ajustez les configurations nécessaires puis rafraichir cette page.') : '', 'result' => $skillsSyncOK, 'is_activated' => true, 'fixed_id' => "{$this->iId}-data-review-opti-full", 'is_computed' => true]);
+                $isOk = $isOk && $WPHostAutoUpdateOff;
+                $this->e_review_data_check_insert([
+                    'category' => __('02 - Maintenance',  'wa-config'),
+                    'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>',
+                    'title' => __("03 - [Optimisations] Niveau maximal",  'wa-config'),
+                    'title_icon' => '<span class="dashicons dashicons-chart-bar"></span>',
+                    'requirements' => __( 'Vérification de la présence des optimisations maximales.<br />',
+                     'wa-config' ) . $reviewReport,
+                    'value' => strlen($reviewReport)
+                    ? (
+                        $isOk
+                        ? null
+                        : __( 'Ajustez les configurations nécessaires puis rafraichir cette page.' )
+                    )
+                    : '',
+                    'result'   => $isOk ,
+                    'is_activated'   => true,
+                    'fixed_id' => "{$this->iId}-data-review-opti-full",
+                    'is_computed' => true,
+                ]);
                 $this->opti_medium_speed_review($app);
             }
-            public function opti_medium_speed_review($app) : void
+            /**
+             * Add the MEDIUM speed optimisation reviews
+             * 
+             * @param AppInterface $app the plugin instance.
+             */
+            public function opti_medium_speed_review($app): void
             {
                 $this->debugVerbose("Will opti_medium_speed_review");
-                $skillsSyncOK = true;
+                $isOk = true;
                 $reviewReport = '';
-                $cronDisabled = defined('DISABLE_WP_CRON') && constant('DISABLE_WP_CRON');
+                $cronDisabled = defined( 'DISABLE_WP_CRON')
+                && constant('DISABLE_WP_CRON');
                 if (!$cronDisabled) {
-                    $reviewReport .= __("<p> DISABLE_WP_CRON doit être définit à 'true' dans wp-config.php et vos tache cron géré par un autre service externe.</p>");
+                    $reviewReport .=
+                    __("<p> DISABLE_WP_CRON doit être définit à 'true' dans wp-config.php et vos tache cron géré par un autre service externe.</p>");
                     $this->warn("Fail to ensure DISABLE_WP_CRON is true");
                 }
-                $skillsSyncOK = $skillsSyncOK && $cronDisabled;
-                $this->e_admin_config_add_check_list_to_review(['category' => __('02 - Maintenance', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>', 'title' => __("03 - [Optimisations] Niveau moyen", 'wa-config'), 'title_icon' => '<span class="dashicons dashicons-chart-bar"></span>', 'requirements' => __('Vérification de la présence des optimisations moyennes.<br />', 'wa-config') . $reviewReport, 'value' => strlen($reviewReport) ? $skillsSyncOK ? null : __('Ajustez les configurations nécessaires puis rafraichir cette page.') : '', 'result' => $skillsSyncOK, 'is_activated' => true, 'fixed_id' => "{$this->iId}-data-review-opti-medium", 'is_computed' => true]);
+                $isOk = $isOk && $cronDisabled;
+                $this->e_review_data_check_insert([
+                    'category' => __('02 - Maintenance',  'wa-config'),
+                    'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>',
+                    'title' => __("03 - [Optimisations] Niveau moyen",  'wa-config'),
+                    'title_icon' => '<span class="dashicons dashicons-chart-bar"></span>',
+                    'requirements' => __( 'Vérification de la présence des optimisations moyennes.<br />',
+                     'wa-config' ) . $reviewReport,
+                    'value' => strlen($reviewReport)
+                    ? (
+                        $isOk
+                        ? null
+                        : __( 'Ajustez les configurations nécessaires puis rafraichir cette page.' )
+                    )
+                    : '',
+                    'result'   => $isOk ,
+                    'is_activated'   => true,
+                    'fixed_id' => "{$this->iId}-data-review-opti-medium",
+                    'is_computed' => true,
+                ]);
             }
-            public function opti_disabled_review($app) : void
+            /**
+             * Add the no optimisation reviews (Disabled optimisations)
+             * 
+             * @param AppInterface $app the plugin instance.
+             */
+            public function opti_disabled_review($app): void
             {
                 $this->debugVerbose("Will opti_disabled_review");
-                $this->reviewIdsToTrash = array_merge($this->reviewIdsToTrash, ["{$this->iId}-data-review-opti-medium", "{$this->iId}-data-review-opti-full"]);
+                $this->eReviewIdsToTrash = array_merge($this->eReviewIdsToTrash, [
+                    "{$this->iId}-data-review-opti-medium",
+                    "{$this->iId}-data-review-opti-full"
+                ]);
             }
-            public function opti_common_review($app) : void
+            /**
+             * Add the common optimisation reviews
+             * 
+             * @param AppInterface $app the plugin instance.
+             */
+            public function opti_common_review($app): void
             {
                 $this->debugVerbose("Will opti_common_review");
                 $self = $this;
-                $urlBuilder = function ($pluginSlug) {
-                    return admin_url("plugin-install.php?tab=plugin-information&plugin={$pluginSlug}");
+                $urlBuilder = function($pluginSlug) {
+                    return admin_url(
+                        "plugin-install.php?tab=plugin-information&plugin=$pluginSlug"
+                    );
                 };
-                $plugins = get_option('active_plugins', []);
-                $plugins = array_map(function ($p) {
+                $plugins = get_option( 'active_plugins', []);
+                $plugins = array_map(function($p) {
                     return dirname($p);
                 }, $plugins);
-                $pluginReviewer = function ($pluginRequest, $pluginLinkTitle, $pluginSlug, $extraPlugins = []) use($self, $plugins, $urlBuilder) {
+                $pluginReviewer = function($pluginRequest, $pluginLinkTitle, $pluginSlug, $extraPlugins = []) 
+                use ($self, $plugins, $urlBuilder) {
                     $url = $urlBuilder($pluginSlug);
                     $isPluginActivated = false;
-                    $activationReport = "";
+                    $activationReport = ""; 
                     $localPluginBase = $pluginSlug;
-                    if (false !== ($loadOrder = array_search($localPluginBase, $plugins))) {
+                    if ( false !== ($loadOrder = array_search(
+                        $localPluginBase,
+                        $plugins,
+                    )) ) {
                         $isPluginActivated = true;
                     }
                     $this->debugVeryVerbose("Plugin check : ", $localPluginBase, $plugins);
                     $extras = "";
                     foreach ($extraPlugins as $extraPluginSlug => $extraPluginData) {
                         if (is_string($extraPluginData)) {
-                            $extraPluginData = ['title' => $extraPluginData, 'type' => 'extra'];
+                            $extraPluginData = [
+                                'title' => $extraPluginData,
+                                'type' => 'extra',
+                            ];
                         }
                         if ('alternative' === $extraPluginData['type'] && !$isPluginActivated) {
-                            if (false !== ($loadOrder = array_search($extraPluginSlug, $plugins))) {
+                            if ( false !== ($loadOrder = array_search(
+                                $extraPluginSlug,
+                                $plugins,
+                            )) ) {
                                 $isPluginActivated = true;
-                                $activationReport .= __('Alternative OK :', 'wa-config') . " {$extraPluginSlug}";
+                                $activationReport .= __('Alternative OK :',  'wa-config')
+                                . " $extraPluginSlug";
                             }
                         }
                         $extraUrl = $urlBuilder($extraPluginSlug);
-                        $extras .= "<p><a\n                        data-title='{$extraPluginData['title']}'\n                        target='_blank'\n                        href='{$extraUrl}'>\n                          {$extraPluginData['title']}\n                        </a></p>";
+                        $extras .= "<p><a
+                        data-title='{$extraPluginData['title']}'
+                        target='_blank'
+                        href='$extraUrl'>
+                          {$extraPluginData['title']}
+                        </a></p>";
                     }
-                    $this->e_admin_config_add_check_list_to_review(['category' => __('02 - Maintenance', 'wa-config'), 'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>', 'title' => __("01 - Plugin : ", 'wa-config') . $localPluginBase, 'title_icon' => '<span class="dashicons dashicons-dashboard"></span>', 'requirements' => "{$pluginRequest} <a target='_blank' data-title='{$pluginLinkTitle}' href='{$url}'>{$pluginLinkTitle}</a> {$extras}", 'value' => $isPluginActivated ? $activationReport : __('Validation humaine requise.', 'wa-config'), 'result' => $isPluginActivated, 'is_activated' => true, 'fixed_id' => "{$this->iId}-check-plugin-{$localPluginBase}", 'is_computed' => true]);
+                    $this->e_review_data_check_insert([
+                        'category' => __('02 - Maintenance',  'wa-config'),
+                        'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>',
+                        'title' => __("01 - Plugin : ",  'wa-config') . $localPluginBase,
+                        'title_icon' => '<span class="dashicons dashicons-dashboard"></span>',
+                        'requirements' => "$pluginRequest <a target='_blank' data-title='$pluginLinkTitle' href='$url'>$pluginLinkTitle</a> $extras",
+                        'value'    => $isPluginActivated ? $activationReport : __('Validation humaine requise.',  'wa-config'),
+                        'result'   => $isPluginActivated,
+                        'is_activated'   => true,
+                        'fixed_id' => "{$this->iId}-check-plugin-$localPluginBase",
+                        'is_computed' => true,
+                    ]);
                 };
-                $pluginReviewer(__('Internationalisation continue de votre contenu web en activant le plugin :', 'wa-config'), __('Polylang', 'wa-config'), 'polylang', ['loco-translate' => __('Bonus : Loco Translate', 'wa-config'), 'automatic-translator-addon-for-loco-translate' => __('Bonus : Automatic Translate Addon For Loco Translate', 'wa-config'), 'translatepress-multilingual' => ['type' => 'alternative', 'title' => __('Alternative : TranslatePress - Multilingual', 'wa-config')], 'automatic-translate-addon-for-translatepress' => __('Bonus : Automatic Translate Addon For TranslatePress', 'wa-config'), 'gtranslate' => ['type' => 'alternative', 'title' => __('Alternative : Translate WordPress with GTranslate', 'wa-config')]]);
-                $pluginReviewer(__('Mise en cache et optimisations en activant le plugin :', 'wa-config'), __('LiteSpeed Cache', 'wa-config'), 'litespeed-cache', ['w3-total-cache' => ['type' => 'alternative', 'title' => __('Alternative : W3 Total Cache', 'wa-config')], 'wp-optimize' => ['type' => 'alternative', 'title' => __('Alternative : WP-Optimize', 'wa-config')], 'wp-super-cache' => ['type' => 'alternative', 'title' => __('Alternative : WP Super Cache', 'wa-config')], 'sg-cachepress' => ['type' => 'alternative', 'title' => __('Alternative : SiteGround Optimizer', 'wa-config')], 'use-memcached' => __("Bonus : Utiliser 'Use Memcached' avec d'autres caches ne faisant pas de cache objet (Ex : SiteGround Optimizer).", 'wa-config')]);
-                $pluginReviewer(__('Amélioration du SEO (Search Engine Optimisation) en activant le plugin :', 'wa-config'), __('All in One SEO', 'wa-config'), 'all-in-one-seo-pack', ['wordpress-seo' => ['type' => 'alternative', 'title' => __('Alternative : Yoast SEO', 'wa-config')], 'stockpack' => __("Bonus : StockPack configuré sur Pixabay.", 'wa-config')]);
-                $pluginReviewer(__('Suivi des utilisateurs en activant le plugin :', 'wa-config'), __('History Log by click5', 'wa-config'), 'history-log-by-click5', ['woocommerce' => __("Bonus : Activer WooCommerce.", 'wa-config'), 'woocommerce-pdf-invoices-packing-slips' => __("Bonus : Activer WooCommerce PDF Invoices & Packing Slips.", 'wa-config')]);
-                $pluginReviewer(__('Suivi des emails en activant le plugin :', 'wa-config'), __('Check & Log Email', 'wa-config'), 'check-email');
-                $pluginReviewer(__('Suivi des CRON en activant le plugin :', 'wa-config'), __('WP Crontrol', 'wa-config'), 'wp-crontrol');
-                $pluginReviewer(__('Ajustements divers de la base de données en activant le plugin :', 'wa-config'), __('Better Search Replace', 'wa-config'), 'better-search-replace');
-                $pluginReviewer(__('Ajustements des post et taxonomies personalisées en activant le plugin :', 'wa-config'), __('Pods – Custom Content Types and Fields', 'wa-config'), 'pods', ['custom-post-type-widgets' => __('Bonus : Custom Post Type Widgets', 'wa-config')]);
-                if ($this->shouldDebug || $this->shouldDebugVerbose || $this->shouldDebugVeryVerbose) {
-                    $pluginReviewer(__('ATTENTION : MODE DEBUG activé, non conseillé en production. Cela dis, optimisons les débugs en activant le plugin :', 'wa-config'), __('Query Monitor', 'wa-config'), 'query-monitor');
+                $pluginReviewer(
+                    __( 'Internationalisation continue de votre contenu web en activant le plugin :',  'wa-config' ),
+                    __( 'Polylang',  'wa-config' ),
+                    'polylang',
+                    [
+                        'loco-translate' => __( 'Bonus : Loco Translate',  'wa-config' ),
+                        'automatic-translator-addon-for-loco-translate' => __( 'Bonus : Automatic Translate Addon For Loco Translate',  'wa-config' ),
+                        'translatepress-multilingual' => [
+                            'type' => 'alternative',
+                            'title' => __( 'Alternative : TranslatePress - Multilingual',  'wa-config' ),
+                        ],
+                        'automatic-translate-addon-for-translatepress' => __( 'Bonus : Automatic Translate Addon For TranslatePress',  'wa-config' ),
+                        'gtranslate' => [
+                            'type' => 'alternative',
+                            'title' => __( 'Alternative : Translate WordPress with GTranslate',  'wa-config' ),
+                        ],
+                    ]
+                );
+                $pluginReviewer(
+                    __( 'Mise en cache et optimisations en activant le plugin :',  'wa-config' ),
+                    __( 'LiteSpeed Cache',  'wa-config' ),
+                    'litespeed-cache',
+                    [
+                        'w3-total-cache' => [
+                            'type' => 'alternative',
+                            'title' => __( 'Alternative : W3 Total Cache',  'wa-config' ),
+                        ],
+                        'wp-optimize' => [
+                            'type' => 'alternative',
+                            'title' => __( 'Alternative : WP-Optimize',  'wa-config' ),
+                        ],
+                        'wp-super-cache' => [
+                            'type' => 'alternative',
+                            'title' => __( 'Alternative : WP Super Cache',  'wa-config' ),
+                        ],
+                        'sg-cachepress' => [
+                            'type' => 'alternative',
+                            'title' => __( 'Alternative : SiteGround Optimizer',  'wa-config' ),
+                        ],
+                        'use-memcached' => __( "Bonus : Utiliser 'Use Memcached' avec d'autres caches ne faisant pas de cache objet (Ex : SiteGround Optimizer).",  'wa-config' ),
+                    ]
+                );
+                $pluginReviewer(
+                    __( 'Amélioration du SEO (Search Engine Optimisation) en activant le plugin :',  'wa-config' ),
+                    __( 'All in One SEO',  'wa-config' ),
+                    'all-in-one-seo-pack',
+                    [
+                        'wordpress-seo' => [
+                            'type' => 'alternative',
+                            'title' => __( 'Alternative : Yoast SEO',  'wa-config' ),
+                        ],
+                        'stockpack' => __( "Bonus : StockPack configuré sur Pixabay.",  'wa-config' ),
+                    ]
+                );
+                $pluginReviewer(
+                    __( 'Suivi des utilisateurs en activant le plugin :',  'wa-config' ),
+                    __( 'History Log by click5',  'wa-config' ),
+                    'history-log-by-click5',
+                    [
+                        'woocommerce' => __( "Bonus : Activer WooCommerce.",  'wa-config' ),
+                        'woocommerce-pdf-invoices-packing-slips' => __( "Bonus : Activer WooCommerce PDF Invoices & Packing Slips.",  'wa-config' ),
+                    ]
+                );
+                $pluginReviewer(
+                    __( 'Suivi des emails en activant le plugin :',  'wa-config' ),
+                    __( 'Check & Log Email',  'wa-config' ),
+                    'check-email'
+                );
+                $pluginReviewer(
+                    __( 'Suivi des CRON en activant le plugin :',  'wa-config' ),
+                    __( 'WP Crontrol',  'wa-config' ),
+                    'wp-crontrol'
+                );
+                $pluginReviewer(
+                    __( 'Ajustements divers de la base de données en activant le plugin :',  'wa-config' ),
+                    __( 'Better Search Replace',  'wa-config' ),
+                    'better-search-replace'
+                );
+                $pluginReviewer(
+                    __( 'Ajustements des post et taxonomies personalisées en activant le plugin :',  'wa-config' ),
+                    __( 'Pods – Custom Content Types and Fields',  'wa-config' ),
+                    'pods', [
+                        'custom-post-type-widgets' =>  __( 'Bonus : Custom Post Type Widgets',  'wa-config' ),
+                    ]
+                );
+            if ($this->shouldDebug|| $this->shouldDebugVerbose
+                || $this->shouldDebugVeryVerbose) {
+                    $pluginReviewer(
+                        __( 'ATTENTION : MODE DEBUG activé, non conseillé en production. Cela dis, optimisons les débugs en activant le plugin :',  'wa-config' ),
+                        __( 'Query Monitor',  'wa-config' ),
+                        'query-monitor'
+                    );
                 } else {
-                    $this->reviewIdsToTrash = array_merge($this->reviewIdsToTrash, ["{$this->iId}-check-plugin-query-monitor"]);
+                    $this->eReviewIdsToTrash = array_merge($this->eReviewIdsToTrash, [
+                        "{$this->iId}-check-plugin-query-monitor",
+                    ]);    
                 }
             }
         }
@@ -4814,72 +8644,138 @@ namespace WA\Config\Frontend {
     use WA\Config\Core\EditableWaConfigOptions;
     use WA\Config\Core\WPFilters;
     use function WA\Config\Utils\_lx;
-    if (!trait_exists(EditableScripts::class)) {
+    if (!trait_exists(EditableScripts::class)) { 
+        /**
+         * This trait will load wa-config frontend javascript sources
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         */
         trait EditableScripts
         {
             use Editable;
-            protected function _010_e_scripts__load()
+            protected function  _010_e_scripts__load()
             {
-                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_scripts__load')) {
-                    return;
+                if (wp_is_json_request() || is_admin()) {
+                    return; 
                 }
-                $shouldRender = $this->getWaConfigOption($this->eConfShouldRenderFrontendScripts, true);
+                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_scripts__load')) {
+                    return; 
+                }
+                $shouldRender = $this->getWaConfigOption(
+                    $this->eConfShouldRenderFrontendScripts,
+                    true
+                );
                 if ($shouldRender) {
-                    add_action('wp_enqueue_scripts', [$this, 'e_scripts_do_enqueue']);
+                    add_action(
+                        'wp_enqueue_scripts',
+                        [$this, 'e_scripts_do_enqueue']
+                    );
                 }
             }
-            public function e_scripts_do_enqueue() : void
+            /**
+             * wp_enqueue_script the frontend assets/app.js script from plugin directory.
+             */
+            public function e_scripts_do_enqueue(): void
             {
                 $this->debugVerbose("Will e_scripts_do_enqueue");
                 $jsFile = "assets/app.js";
-                wp_enqueue_script('wa-config-js', plugins_url($jsFile, $this->pluginFile), [], $this->pluginVersion, true);
+                wp_enqueue_script(
+                    'wa-config-js',
+                    plugins_url($jsFile, $this->pluginFile),
+                    [],
+                    $this->pluginVersion,
+                    true
+                );
             }
         }
     }
-    if (!trait_exists(EditableStyles::class)) {
+    if (!trait_exists(EditableStyles::class)) { 
+        /**
+         * This trait will load wa-config frontend stylesheets sources
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses Editable
+         */
         trait EditableStyles
         {
             use Editable;
             protected function _010_e_styles__load()
             {
-                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_styles__load')) {
-                    return;
+                if (wp_is_json_request() || is_admin()) {
+                    return; 
                 }
-                $shouldRender = $this->getWaConfigOption($this->eConfShouldRenderFrontendScripts, true);
+                if ($this->p_higherThanOneCallAchievedSentinel('_010_e_styles__load')) {
+                    return; 
+                }
+                $shouldRender = $this->getWaConfigOption(
+                    $this->eConfShouldRenderFrontendScripts,
+                    true
+                );
                 if ($shouldRender) {
-                    add_action('wp_enqueue_scripts', [$this, 'e_styles_do_enqueue']);
+                    add_action(
+                        'wp_enqueue_scripts',
+                        [$this, 'e_styles_do_enqueue']
+                    );
                 }
             }
-            public function e_styles_do_enqueue() : void
+            /**
+             * wp_enqueue_style the frontend assets/styles.css script from plugin directory.
+             */
+            public function e_styles_do_enqueue(): void
             {
                 $this->debugVerbose("Will e_styles_do_enqueue");
                 $cssFile = "assets/styles.css";
-                wp_enqueue_style('wa-config-css', plugins_url($cssFile, $this->pluginFile), [], $this->pluginVersion);
+                wp_enqueue_style(
+                    'wa-config-css',
+                    plugins_url($cssFile, $this->pluginFile),
+                    [],
+                    $this->pluginVersion
+                );
             }
         }
     }
-    if (!trait_exists(EditableFooter::class)) {
+    if (!trait_exists(EditableFooter::class)) { 
+        /**
+         * This trait will render the frontend footer based on wa-config options
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         * @uses EditableWaConfigOptions
+         * @uses Debugable
+         */
         trait EditableFooter
         {
             use EditableWaConfigOptions, Debugable;
             protected function _010_e_footer__load()
             {
                 if (wp_is_json_request() || is_admin()) {
-                    return;
+                    return; 
                 }
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_footer__load')) {
-                    return;
+                    return; 
                 }
                 $currentTheme = basename(get_parent_theme_file_path());
-                $enableFooter = boolVal($this->getWaConfigOption($this->eConfOptEnableFooter, true));
+                $enableFooter = boolVal($this->getWaConfigOption(
+                    $this->eConfOptEnableFooter,
+                    true
+                ));
                 if ($enableFooter) {
-                    $this->debugVerbose("Will _010_e_footer__load for theme '{$currentTheme}'");
-                    add_filter('storefront_credit_links_output', [$this, 'e_footer_render']);
-                    if ('twentytwenty' === $currentTheme || 'restaurant-food-delivery' === $currentTheme) {
-                        add_action('wp_footer', [$this, 'e_footer_do_wp_footer_twentytwenty'], 20);
+                    $this->debugVerbose("Will _010_e_footer__load for theme '$currentTheme'");
+                    add_filter(
+                        'storefront_credit_links_output',
+                        [$this, 'e_footer_render']
+                    );
+                    if ('twentytwenty' === $currentTheme
+                    || 'restaurant-food-delivery' === $currentTheme) {
+                        add_action('wp_footer',
+                        [$this, 'e_footer_do_wp_footer_twentytwenty'], 20);
                     }
                     if ('oceanwp' === $currentTheme) {
-                        add_action('ocean_after_footer_bottom_inner', [$this, 'e_footer_do_wp_footer_twentytwenty'], 20);
+                        add_action('ocean_after_footer_bottom_inner',
+                        [$this, 'e_footer_do_wp_footer_twentytwenty'], 20);
                     }
                     if ('twentytwentytwo' === $currentTheme) {
                         add_filter('render_block', [$this, 'e_footer_filter_render_block_twentytwentytwo'], null, 3);
@@ -4888,24 +8784,58 @@ namespace WA\Config\Frontend {
                     $this->debugVerbose("_010_e_footer__load not enabled, cf WA Admin configs params");
                 }
             }
-            function e_footer_filter_render_block_twentytwentytwo(string $block_content, array $block, \WP_Block $bInst) : string
-            {
+            /**
+             * Customise the 'footer' 'template part' of 'twentytwentytwo' theme
+             * 
+             * Register with WordPress filter 'render_block' if current theme is 'twentytwentytwo'
+             * 
+             * @param string   $block_content The block content about to be appended.
+             * @param array    $block         The full block, including name and attributes.
+             * @param WP_Block $bInst         The block instance.
+             * @return string The filtered blocks ajusted with the wa-config footer rendering
+             */
+            function e_footer_filter_render_block_twentytwentytwo(
+                string $block_content, 
+                array $block,
+                \WP_Block $bInst
+            ) : string {
                 $blockName = $block['blockName'] ?? "__no-block-name__";
                 $bInnerHTML = $block['innerHTML'];
-                $this->debugVeryVerbose("Will e_footer_filter_render_block_twentytwentytwo for {$blockName}");
-                if ($blockName === 'core/paragraph' && !is_admin() && !wp_is_json_request()) {
-                    $this->debugVeryVerbose($blockName, $bInst->block_type, $bInnerHTML, $bInst->context, $bInst->available_context);
-                    if (strpos($bInnerHTML, '<p class="has-text-align-right">') && strpos($bInnerHTML, 'wordpress.org" rel="nofollow">WordPress</a>')) {
+                $this->debugVeryVerbose("Will e_footer_filter_render_block_twentytwentytwo for $blockName");
+                if (
+                    $blockName === 'core/paragraph' && 
+                    !is_admin() &&
+                    !wp_is_json_request()
+                ) {
+                    $this->debugVeryVerbose($blockName, $bInst->block_type,
+                    $bInnerHTML, $bInst->context, $bInst->available_context);                    
+                    if (strpos($bInnerHTML,
+                    '<p class="has-text-align-right">') && strpos($bInnerHTML,
+                    'wordpress.org" rel="nofollow">WordPress</a>')) {
                         return $this->e_footer_render(false);
                     }
                 }
                 return $block_content;
             }
-            function e_footer_do_wp_footer_twentytwenty()
-            {
-                $enableFooter = boolVal($this->getWaConfigOption($this->eConfOptEnableFooter, true));
+            /**
+             * Hide the template footer and inject WA Admin configured footer
+             * 
+             * Work for 'twentytwenty', 'twentytwentytow','oceanwp'
+             * and 'restaurant-food-delivery' themes
+             * 
+             */
+            function e_footer_do_wp_footer_twentytwenty() : void {
+                $enableFooter = boolVal($this->getWaConfigOption(
+                    $this->eConfOptEnableFooter,
+                    true
+                ));
                 $currentTheme = basename(get_parent_theme_file_path());
-                if ($enableFooter && ('twentytwentytwo' === $currentTheme || 'oceanwp' === $currentTheme || 'restaurant-food-delivery' === $currentTheme)) {
+                if ($enableFooter && (
+                    'twentytwenty' === $currentTheme
+                    || 'twentytwentytwo' === $currentTheme
+                    || 'oceanwp' === $currentTheme
+                    || 'restaurant-food-delivery' === $currentTheme
+                )) {
                     ?>
                     <style>
                         /* twentytwenty */
@@ -4921,58 +8851,65 @@ namespace WA\Config\Frontend {
                             display: none !important;
                         }
                     </style>
-                    <?php 
+                    <?php
                     echo $this->e_footer_render();
                 }
             }
-            private function e_footer_locate_template_NOT_USED_YET($templatePath)
-            {
-                $this->debugVerbose("Will try e_footer_locate_template for {$templatePath}");
+            /**
+             * Modify the twentytwenty footer template to fit our WA Config admin rules
+             * @see {\WA\Config\Templates\}
+             * TODO : not used refactor ? since language switch will faill with current code and css way is faster...
+             */
+            private function e_footer_locate_template_NOT_USED_YET($templatePath) { 
+                $this->debugVerbose("Will try e_footer_locate_template for $templatePath");
                 $originalPath = $templatePath;
                 $templateParts = explode('/', $templatePath);
                 $templateName = end($templateParts);
                 $currentTheme = basename(get_parent_theme_file_path());
                 if ('twentytwenty' === $currentTheme) {
-                    $this->debugVeryVerbose("e_footer_locate_template overloads for {$currentTheme}");
-                    $plugin_template = "{$this->pluginRoot}templates/themes/twentytwenty/{$templatePath}";
-                    if (file_exists($plugin_template)) {
+                    $this->debugVeryVerbose("e_footer_locate_template overloads for $currentTheme");
+                    $plugin_template = "{$this->pluginRoot}templates/themes/twentytwenty/$templatePath";
+                    if (file_exists($plugin_template)) { 
                         $templatePath = $plugin_template;
-                    } else {
-                        if ($theme_template = locate_template("{$templatePath}")) {
-                            $templatePath = $theme_template;
-                        }
+                    }
+                    else 
+                    if ($theme_template = locate_template("$templatePath")) {
+                        $templatePath = $theme_template;
                     }
                 } else {
-                    if ($theme_template = locate_template("{$templatePath}")) {
+                    if ($theme_template = locate_template("$templatePath")) {
                         $templatePath = $theme_template;
                     } else {
-                        $plugin_template = "{$this->pluginRoot}{$templatePath}";
+                        $plugin_template = "{$this->pluginRoot}$templatePath";
                         if (file_exists($plugin_template)) {
                             $templatePath = $plugin_template;
                         }
                     }
                 }
                 if ($templatePath !== $originalPath) {
-                    $this->debugVerbose("e_footer_locate_template update from {$originalPath} to {$templatePath}");
+                    $this->debugVerbose("e_footer_locate_template update from $originalPath to $templatePath");
                 }
                 return $templatePath;
             }
-            private function e_footer_modify_theme_include_file_NOT_USED_YET(string $path, string $file = '') : string
-            {
-                $this->debugVerbose("Will try e_footer_modify_theme_include_file {$file} at {$path}");
+            private function e_footer_modify_theme_include_file_NOT_USED_YET(
+                string $path,
+                string $file = ''
+            ): string {
+                $this->debugVerbose("Will try e_footer_modify_theme_include_file $file at $path");
                 $currentTheme = basename(get_parent_theme_file_path());
                 if ('twentytwenty' === $currentTheme) {
-                    $this->debugVeryVerbose("e_footer_modify_theme_include_file tesing {$file} overloads");
-                    $targetOverload = plugin_dir_path(__FILE__) . "templates/themes/twentytwenty/{$file}";
+                    $this->debugVeryVerbose("e_footer_modify_theme_include_file tesing $file overloads");
+                    $targetOverload = plugin_dir_path(__FILE__) . "templates/themes/twentytwenty/$file";
                     if (file_exists($targetOverload)) {
-                        $this->debugVeryVerbose("Will e_footer_modify_theme_include_file at {$file} with {$targetOverload}");
+                        $this->debugVeryVerbose(
+                            "Will e_footer_modify_theme_include_file at $file with $targetOverload"
+                        );
                         return $targetOverload;
                     }
                 }
                 return $path;
             }
-            protected function e_footer_get_languages()
-            {
+            protected function e_footer_get_languages() {
                 $locals = [get_locale()];
                 if (function_exists('pll_languages_list')) {
                     $locals = pll_languages_list(array('fields' => 'locale'));
@@ -4980,114 +8917,144 @@ namespace WA\Config\Frontend {
                 }
                 return $locals;
             }
-            protected function e_footer_get_empty_string_by_locale()
-            {
+            protected function e_footer_get_empty_string_by_locale() {
                 $locals = $this->e_footer_get_languages();
                 $this->debugVerbose("Will e_footer_get_empty_string_by_locale");
                 $localizedCredit = [];
-                array_walk($locals, function ($l) use(&$localizedCredit) {
+                array_walk($locals, function($l)
+                use (&$localizedCredit) {
                     $localizedCredit[$l] = "";
                 });
                 return $localizedCredit;
             }
-            protected function e_footer_get_default_credit_by_locale()
-            {
+            protected function e_footer_get_default_credit_by_locale() {
                 $locals = $this->e_footer_get_languages();
                 $this->debugVerbose("Will e_footer_get_default_credit_by_locale");
                 $localizedCredit = [];
+                array_walk($locals, function($l)
+                use (&$localizedCredit) {
+                    $localizedCredit[$l] = _lx("autre", "Footer default credit",  'wa-config', $l);
+                    _x("autre", "Footer default credit",  'wa-config');
+                });
                 return $localizedCredit;
             }
-            protected function e_footer_get_localized_credit()
-            {
+            protected function e_footer_get_localized_credit() {
                 $this->debugVerbose("Will e_footer_get_localized_credit");
                 $localizedCredit = $this->e_footer_get_default_credit_by_locale();
-                $waFooterCreditByLocale = $this->getWaConfigOption($this->eConfOptFooterCredit, $localizedCredit);
+                $waFooterCreditByLocale = $this->getWaConfigOption(
+                    $this->eConfOptFooterCredit,
+                    $localizedCredit
+                );
                 if (!is_array($waFooterCreditByLocale)) {
                     $waFooterCreditByLocale = [];
                 }
                 $waFooterCreditByLocale = array_merge($localizedCredit, $waFooterCreditByLocale);
                 $locale = get_locale();
-                $defaultLocale = 'fr_FR';
-                if (function_exists('pll_count_posts')) {
+                $defaultLocale = 'fr_FR'; 
+                if ( function_exists( 'pll_count_posts' ) ) {
                     $defaultLocale = pll_default_language('locale');
                 }
-                $waFooterCredit = $waFooterCreditByLocale[$locale] ?? $waFooterCreditByLocale[$defaultLocale] ?? "";
+                $waFooterCredit = $waFooterCreditByLocale[$locale] ?? 
+                ($waFooterCreditByLocale[$defaultLocale] ?? "");
                 return $waFooterCredit;
             }
-            protected function e_footer_get_localized_template()
-            {
+            protected function e_footer_get_localized_template() {
                 $locals = $this->e_footer_get_languages();
                 $this->debugVerbose("Will e_footer_get_localized_template");
                 $localizedTemplates = [];
-                array_walk($locals, function ($l) use(&$localizedTemplates) {
+                array_walk($locals, function($l)
+                use (&$localizedTemplates) {
                     $localizedTemplates[$l] = "";
                 });
-                $waFooterTemplateByLocale = $this->getWaConfigOption($this->eConfOptFooterTemplate, $localizedTemplates);
+                $waFooterTemplateByLocale = $this->getWaConfigOption(
+                    $this->eConfOptFooterTemplate,
+                    $localizedTemplates
+                );
                 $locale = get_locale();
-                $defaultLocale = 'fr_FR';
-                if (function_exists('pll_count_posts')) {
+                $defaultLocale = 'fr_FR'; 
+                if ( function_exists( 'pll_count_posts' ) ) {
                     $defaultLocale = pll_default_language('locale');
                 }
-                $waFooterTemplate = $waFooterTemplateByLocale[$locale] ?? $waFooterTemplateByLocale[$defaultLocale] ?? "";
+                $waFooterTemplate = $waFooterTemplateByLocale[$locale] ?? 
+                ($waFooterTemplateByLocale[$defaultLocale] ?? "");
                 return $waFooterTemplate;
             }
+            /**
+             * Return the rendered Frontend footer acordingly to wa-config Admin options :
+             * 
+             * - Will not render if footer edit is not enabled from admin
+             * - Will render the full footer template if provided
+             * - Will render wa-config plugin footer template othewise
+             * 
+             * @return string|boolean The rendered html if did render, false otherwise,
+             * false if no footer rendering activated from WA Admin config
+             * 
+             * @see WPFilters::wa_e_footer_render
+             */
             public function e_footer_render()
             {
-                if (!boolVal($this->getWaConfigOption($this->eConfOptEnableFooter, true))) {
+                if (!boolVal($this->getWaConfigOption(
+                    $this->eConfOptEnableFooter,
+                    true
+                ))) {
                     $this->debugVerbose("e_footer_render not enabled");
                     return false;
                 }
                 $this->debugVerbose("Will e_footer_render");
-                $htmlFooter = null;
+                $htmlFooter = null; 
                 $waFooterTemplate = $this->e_footer_get_localized_template();
                 if (strlen($waFooterTemplate) > 0) {
                     $this->debugVeryVerbose("e_footer_render from eConfOptFooterTemplate");
                     $htmlFooter = $waFooterTemplate;
                 } else {
                     $waFooterCredit = $this->e_footer_get_localized_credit();
-                    $mailTarget = get_option('admin_email');
-                    $monwooCredit = __("Build by Monwoo and", 'wa-config');
-                    $htmlFooter = <<<TEMPLATE
-<style>
-  #wa-site-footer {
-    text-align: right;
-    padding: 7px;
-  }
-</style>
-<footer id="wa-site-footer" class="header-footer-group">
-    <div class="section-inner">
-        <div class="footer-credits">
-            <p class="powered-by-monwoo powered-by-web-agency-app">
-                <a href="{$this->siteBaseHref}/credits">
-                    {$monwooCredit} {$waFooterCredit}
-                </a>
-                <br />
-                <a href="mailto:{$mailTarget}">
-                    {$mailTarget}
-                </a>
-            </p>
+                    $mailTarget = get_option( 'admin_email' );
+                    $monwooCredit = __("Build by Monwoo and",  'wa-config');
+                    $htmlFooter = <<< TEMPLATE
+                    <style>
+                      #wa-site-footer {
+                        text-align: right;
+                        padding: 7px;
+                      }
+                    </style>
+                    <footer id="wa-site-footer" class="header-footer-group">
+                        <div class="section-inner">
+                            <div class="footer-credits">
+                                <p class="powered-by-monwoo powered-by-web-agency-app">
+                                    <a href="$this->siteBaseHref/credits">
+                                        $monwooCredit $waFooterCredit
+                                    </a>
+                                    <br />
+                                    <a href="mailto:$mailTarget">
+                                        $mailTarget
+                                    </a>
+                                </p>
 
-        </div>
-    </div>
-</footer>
-TEMPLATE;
+                            </div>
+                        </div>
+                    </footer>
+                    TEMPLATE;
                 }
                 $this->debugVeryVerbose("e_footer_render from eConfOptFooterCredit and custom wa-config template");
-                $htmlFooter = apply_filters(WPFilters::wa_config_e_footer_render, $htmlFooter, $this);
-                return $htmlFooter;
+                /**
+                 * @see WPFilters::wa_e_footer_render
+                 */
+                $htmlFooter = apply_filters( WPFilters::wa_e_footer_render, $htmlFooter, $this );
+                return $htmlFooter;                
             }
         }
     }
 }
 namespace WA\Config {
-    use WA\Config\Admin\ApiFrontHeadSynchronisable;
+    use WA\Config\Admin\ApiFrontHeadable;
     use WA\Config\Admin\ApiInstanciable;
     use WA\Config\Core\AppInterface;
     use WA\Config\Admin\EditableConfigPanels;
+    use WA\Config\Admin\EditableReview;
     use WA\Config\Admin\EditableMissionPost;
     use WA\Config\Admin\EditableSkillsTaxo;
     use WA\Config\Admin\ExtendablePluginDescription;
-    use WA\Config\Admin\Optimisable;
+    use WA\Config\Admin\Optimisable;    
     use WA\Config\Frontend\EditableScripts;
     use WA\Config\Frontend\EditableStyles;
     use WA\Config\Frontend\EditableFooter;
@@ -5098,43 +9065,151 @@ namespace WA\Config {
         $pFolder = basename(plugin_dir_path(__DIR__));
     }
     $pluginSrcPath = "wp-content/plugins/" . $pFolder;
-    if (class_exists(App::class)) {
+    if (class_exists(App::class)) { 
         $existing_WA_Version = AppInterface::PLUGIN_VERSION;
-        $app = AppInterface::instanceByRelativePath($pluginSrcPath, -1);
-        $logMsg = "{$pluginSrcPath} : Will not load WA\\Config\\ since already loaded somewhere else\n        at version {$existing_WA_Version} for requested version {$current_WA_Version}";
-        $waConfigTextDomain = 'wa-config';
+        $app = AppInterface::instanceByRelativeFile($pluginSrcPath, -1);
+        $logMsg = "$pluginSrcPath : Will not load WA\\Config\\ since already loaded somewhere else
+        at version $existing_WA_Version for requested version $current_WA_Version";
+        $waConfigTextDomain =  'wa-config';
         if ($current_WA_Version !== AppInterface::PLUGIN_VERSION) {
-            AppInterface::addCompatibilityReport(__("Avertissement", $waConfigTextDomain), "{$pluginSrcPath} : {$current_WA_Version}. " . __("Version pre-chargé WA\\Config\\ non exacte : ", $waConfigTextDomain) . " {$existing_WA_Version}.");
+            AppInterface::addCompatibilityReport(
+                __("Avertissement", $waConfigTextDomain),
+                "$pluginSrcPath : $current_WA_Version. " . __(
+                    "Version pre-chargé WA\\Config\\ non exacte : ",
+                    $waConfigTextDomain
+                ) . " $existing_WA_Version.",
+            );
         } else {
         }
     } else {
+        /**
+         * This class is the main wa-config App instance class
+         * 
+         * **WA\Config\App** come with :
+         * - **Skills and missions** concepts ready to use as taxonomy and custom post type
+         * - **Internaionalisation** and **WooCommerce** integration
+         * - A **securised REST API** to deploy custom static front head
+         * - A **commonJS deploy script** to easyliy deploy your static frontend 
+         * - A **review system** for all team members using this plugin
+         * - **Codeception** as end to end test tool
+         * - **PhpDocumentor output** as an easy up to date documentation
+         * - **Pdf.js** for quick display of main documentation files
+         * - results of **Miguel Monwoo R&D** for **parallel programmings** and **advanced integrations**
+         *
+         * If you want to use it as a **standalone library**, you will have to :
+         *  - define ```WPINC```
+         *  - define missing WordPress functions (or include ```./wp-load.php```)
+         *  - define optional WooCommerce plugin functions
+         *  - See {@see App::__construct()} for class instanciation usage :
+         *    ```php
+         *    $inst = new \WA\Config\App(...);
+         *    ```
+         *  - run the ```bootstrap``` method of the previously instanciated class :
+         *    ```php
+         *    $inst->bootstrap();
+         *    ```
+         *  - Cf : <a href="files/wa-config.html">wa-config.php</a>
+         * 
+         * WA-Config Monwoo will help with **Web Agency jobs** like :
+         *  - Posting past or current **missions managable by skills**.
+         *  - **Internationalising** content and WooCommerce products (need Polylang plugin).
+         *  - Billings with **order prefix** for WooCommerce.
+         *  - Ensuring human and automatic **plugable reviews**.
+         *  - Deploying custom **static frontend** like Angular/Svelte/Vue.js/JS/HTML/etc....
+         *  - Launching custom authenticated **End to End user tests**
+         *    under production server with existing user accounts (Codeception).
+         *  - **Backuping** and **optimizing** the website 
+         *    (mandatory to ensure safe tests launch under production data).
+         *  - Extending this plugin to **improve those base features**.
+         *  - Runing same **instance** of this plugin **in parallele**.
+         * 
+         * 
+         * {@link https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en Product owner}
+         *
+         * {@link https://codeception.com/docs/03-AcceptanceTests End to end test documentation}
+         *
+         * {@link https://github.com/mozilla/pdf.js PDF viewer lib}
+         *
+         * {@link https://miguel.monwoo.com Miguel Monwoo R&D}
+         * 
+         * {@link https://www.monwoo.com/don Author Donate link}
+         * 
+         * @global *{@see \WA\Config\Core\AppInterface AppInterface}* **$_wa_fetch_instance**
+         *    Function to get the first wa-config instance
+         * 
+         *    **@param** *int* **$idx** Optional, wa-config instance index, **default to 0**
+         *    {@example
+         *    ```php
+         *    $app = $_wa_fetch_instance();
+         *    ```}
+         * 
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
         class App extends AppInterface
         {
             use EditableScripts;
             use EditableStyles;
             use EditableFooter;
             use EditableConfigPanels;
+            use EditableReview;
             use EditableMissionPost;
             use EditableSkillsTaxo;
             use ExtendablePluginDescription;
             use Optimisable;
             use TranslatableProduct;
-            use ApiFrontHeadSynchronisable;
+            use ApiFrontHeadable;
             use ApiInstanciable;
-            public function __construct(string $siteBaseHref, string $pluginFile, string $iPrefix, $shouldDebug)
-            {
+            /**
+             * App constructor.
+             *
+             * @param string $siteBaseHref This web site base URL
+             * @param string $pluginFile The file path of the loaded plugin
+             * @param string $iPrefix The instance prefix to use for iId generations
+             * @param bool|array<int, bool> $shouldDebug True if should debug or Array of 3 boolean for each debug verbosity level
+             * @return void
+             */
+            public function __construct(
+                string $siteBaseHref,
+                string $pluginFile,
+                string $iPrefix,
+                $shouldDebug 
+            ) {
                 if (is_array($shouldDebug)) {
-                    [$this->shouldDebug, $this->shouldDebugVerbose, $this->shouldDebugVeryVerbose] = $shouldDebug;
+                    [$this->shouldDebug, $this->shouldDebugVerbose, $this->shouldDebugVeryVerbose]
+                        = $shouldDebug;
                 } else {
                     $this->shouldDebug = $shouldDebug;
                 }
                 $this->siteBaseHref = $siteBaseHref;
                 $this->pluginFile = $pluginFile;
                 $this->pluginRoot = plugin_dir_path($this->pluginFile);
-                $this->pluginName = basename($this->pluginRoot);
-                $this->pluginRelativePath = "wp-content/plugins/{$this->pluginName}";
+                $this->pluginName = basename($this->pluginRoot); 
+                $this->pluginRelativeFile = "{$this->pluginName}/" . basename($this->pluginFile);
                 $this->pluginVersion = AppInterface::PLUGIN_VERSION;
                 AppInterface::__construct($iPrefix);
+                /**
+                 * @since 0.0.1
+                 * @global *{@see \WA\Config\Core\AppInterface AppInterface}* **$_wa_fetch_instance**
+                 *    Function to get the first wa-config instance
+                 * 
+                 *    **@param** *int* **$idx** Optional, wa-config instance index, **default to 0**
+                 *    {@example
+                 *    ```php
+                 *    $app = $_wa_fetch_instance();
+                 *    ```}
+                 * }
+                 */
+                global $_wa_fetch_instance; 
+                if (!$_wa_fetch_instance) {
+                    $_wa_fetch_instance = function($idx = 0) {
+                        return AppInterface::instance($idx);
+                    };
+                    $firstInstance = $_wa_fetch_instance();
+                    $firstInstance->debug("Did register '\$_wa_fetch_instance' global from "
+                    . "{$firstInstance->pluginRelativeFile}");
+                }
+                $this->debugVeryVerbose("Construct WA\Config\App instance for {$this->pluginRelativeFile}");
             }
         }
     }

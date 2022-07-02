@@ -2,7 +2,7 @@
 # Apache-2.0 Licence. service@monwoo.com.
 msgid ""
 msgstr ""
-"Project-Id-Version: wa-config by Monwoo 0.0.1-alpha\n"
+"Project-Id-Version: WA-Config Monwoo 0.0.1-alpha\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wa-config\n"
 "Last-Translator: Monwoo Service\n"
 "Language-Team: Français\n"
@@ -18,12 +18,12 @@ msgstr ""
 "X-Loco-Version: 2.6.2; wp-5.9.2"
 
 #. Plugin Name of the plugin
-msgid "wa-config by Monwoo"
-msgstr "Wa-config par Monwoo"
+msgid "WA-Config Monwoo"
+msgstr "WA-Config Monwoo"
 
 #. Plugin URI of the plugin
 msgid ""
-"https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo"
+"https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en"
 msgstr ""
 
 #. Description of the plugin

@@ -5,7 +5,7 @@
  *
  * This test will check if '.htaccess' redirect is activated
  *
- * @link https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo wa-config by Monwoo
+ * @link https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en WA-Config Monwoo
  * @since 0.0.1
  * @package
  * @filesource

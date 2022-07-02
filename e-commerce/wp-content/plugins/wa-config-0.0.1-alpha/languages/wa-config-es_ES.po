@@ -2,7 +2,7 @@
 # Apache-2.0 Licence. service@monwoo.com.
 msgid ""
 msgstr ""
-"Project-Id-Version: wa-config by Monwoo 0.0.1-alpha\n"
+"Project-Id-Version: WA-Config Monwoo 0.0.1-alpha\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wa-config\n"
 "Last-Translator: Monwoo Service\n"
 "Language-Team: Spanish (Spain)\n"
@@ -462,7 +462,7 @@ msgid "https://miguel.monwoo.com"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo"
+msgid "https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en"
 msgstr "https://moonkiosk.monwoo.com/es/misiones/wa-config-de-monwoo/"
 
 #: App.php:2419
@@ -757,8 +757,8 @@ msgid "WA Config"
 msgstr ""
 
 #. Plugin Name of the plugin
-msgid "wa-config by Monwoo"
-msgstr "Wa-config de Monwoo"
+msgid "WA-Config Monwoo"
+msgstr "WA-Config Monwoo"
 
 # Double click sur traduction google translate pour avoir la version traduite AVEC les tags HTML, Merci google ;)
 #: App.php:2440
@@ -825,3 +825,7 @@ msgstr "Sí"
 #: App.php:1750
 msgid "Éditer la mission"
 msgstr "Editar misión"
+
+msgctxt "Footer default credit"
+msgid "autre"
+msgstr "otro"

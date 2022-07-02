@@ -1,7 +1,7 @@
 /*
 * Will connect to wa-config rest server and deploy
 *
-* This script demonstrate usages of wa-config-by-monwoo REST deploy API
+* This script demonstrate usages of wa-config-monwoo REST deploy API
 *
 * It's not suited for huge uploads (Upload of 200Mo zip file may fail...)
 *
@@ -23,6 +23,9 @@ const readline = require("readline");
 // const {Base64Encode} = require("base64-stream"); // npm install -D base64-stream // Required: {"node":"18.x"}
 const path = require("path");
 const Cryptr = require('cryptr');
+const CDP = require('chrome-remote-interface');
+const ChromeLauncher = require('chrome-launcher');
+const { info } = require('console');
 
 // https://www.npmjs.com/package/dotenv
 // https://coderrocketfuel.com/article/how-to-load-environment-variables-from-a-.env-file-in-nodejs
@@ -40,6 +43,11 @@ const waApiUserLocation = process.env.WA_USER_LOCATION
 // https://stackoverflow.com/questions/3746725/how-to-create-an-array-containing-1-n
 // for(var i=32;i<127;++i) console.log(String.fromCharCode(i));
 // const ascii = range(32, 126).map((c) => String.fromCharCode(c));
+
+// https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Using_promises#composition
+// Promise.all([func1(), func2(), func3()])
+// [func1, func2].reduce((p, f) => p.then(f), Promise.resolve());
+// Promise.race([promise1, promise2]).then(...)
 
 // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
 function rand_string(length) {
@@ -67,7 +75,7 @@ function toBool(mixed) {
 }
 
 let [
-    head_target, zip_subpath, zip_bundle,
+    wa_head_target, wa_zip_subpath, wa_zip_bundle,
     isDebug, isDebugVerbose, isDebugVeryVerbose,
     allowSslSelfSignedCertificates,
     shouldEncrypt, encryptSalt
@@ -94,7 +102,9 @@ function error(e, ...ctx) {
 function assert(test, msg, ...ctx) {
     if (!test) {
         console.warn(`Assertion failed : ${msg}`, ...ctx);
-        throw new Error(msg);    
+        if (isDebugVeryVerbose) {
+            throw new Error(msg);
+        }
     }
 }
 
@@ -105,6 +115,8 @@ function debug(...ctx) {
         console.debug("");
         console.debug(prompt);
         ctx.forEach(function (log) {
+            // TODO : debugger target this line number, useless, should be the parent call :
+            // tips to do : https://stackoverflow.com/questions/14172455/get-name-and-line-of-calling-function-in-node-js
             console.debug("    ", log);
         });
         console.debug("");
@@ -117,6 +129,12 @@ function debugVerbose(...ctx) {
     }
 }
 
+function debugVeryVerbose(...ctx) {
+    if (isDebugVeryVerbose) {
+        debug(...ctx);
+    }
+}
+
 // Soft assert example :
 // console.assert(waApiBaseUrl, "Missing WA_REST_API_SERVER env, check your .env file.");
 assert(waApiBaseUrl, "Missing WA_REST_API_SERVER env, check your .env file.");
@@ -124,7 +142,7 @@ assert(waApiUserLocation, "Missing WA_USER_LOCATION env, check your .env file.")
 
 debug("Will deploy from : ", waApiBaseUrl, waApiUserLocation)
 
-const deployUrl = `${waApiBaseUrl}/fronthead/sync`;
+const deployUrl = `${waApiBaseUrl}/fronthead`;
 debug("To url : ", deployUrl);
 
 if (!encryptSalt) {
@@ -164,17 +182,17 @@ const defaultHeaders = () => ({
 });
 
 const defaultPostData = () => ({
-    sync_action: 'publish',
-    user_location: waApiUserLocation,
+    deploy_action: 'publish',
+    wa_user_location: waApiUserLocation,
     wa_access_id: waAccess.wa_access_id,
     wa_api_pre_fetch_token: waAccess.wa_api_pre_fetch_token,
 });
 
-// 🌖🌖 Request : wa-config-by-monwoo deploy api  🌖🌖
+// 🌖🌖 Request : wa-config-monwoo deploy api  🌖🌖
 // 🌖🌖           with build at build/static.zip  🌖🌖
 
 const deploy_init = (infinitRetrySentinelCount = 4) => {
-    if (infinitRetrySentinelCount < 0) {
+    if (infinitRetrySentinelCount <= 0) {
         debug("infinitRetrySentinelCount reached, STOPPING deploy_init.");
         error("Fail deploy INIT.");
         return { code : "infinit_retry_sentinel_count_reached_error" } ;
@@ -189,19 +207,19 @@ const deploy_init = (infinitRetrySentinelCount = 4) => {
     const postData = new FormData();
 
     // loading zip file 
-    // TODO : 406 error solved with curl using "zip_bundle='@tmp.zip;type=application/zip'", but fail with below :
-    // const stats = fs.statSync(zip_bundle);
+    // TODO : 406 error solved with curl using "wa_zip_bundle='@tmp.zip;type=application/zip'", but fail with below :
+    // const stats = fs.statSync(wa_zip_bundle);
     // const fileSizeInBytes = stats.size;
-    // const fileStream = fs.createReadStream(zip_bundle);
-    // postData.append('zip_bundle', fileStream, {
+    // const fileStream = fs.createReadStream(wa_zip_bundle);
+    // postData.append('wa_zip_bundle', fileStream, {
     //     // contentType: 'application/zip', // This is for request Headers / Full encoding, per file it's 'type' arg
     //     type: 'application/zip',
-    //     name: path.basename(zip_bundle),
+    //     name: path.basename(wa_zip_bundle),
     //     knownLength: fileSizeInBytes,
     // }); // TODO : Base64Encode for node >18, how in earlier version of node ? + dev env node install deps needed, bad for simple script...
     // const b64Stream = fileStream.pipe(new Base64Encode());
-    // postData.append('zip_bundle_b64', < ... b64Stream ... >);
-    const zipBuffer = fs.readFileSync(zip_bundle);
+    // postData.append('wa_zip_bundle_b64', < ... b64Stream ... >);
+    const zipBuffer = fs.readFileSync(wa_zip_bundle);
     
     // utf8.decode(base64.decode(base64Str));
     // const b64Buffer = base64.encode(utf8.encode(zipBuffer));
@@ -209,15 +227,15 @@ const deploy_init = (infinitRetrySentinelCount = 4) => {
     // https://stackoverflow.com/questions/6182315/how-can-i-do-base64-encoding-in-node-js
     const b64Buffer = Buffer.from(zipBuffer).toString('base64')
 
-    postData.append('zip_bundle_b64', b64Buffer);
+    postData.append('wa_zip_bundle_b64', b64Buffer);
 
     // TODO : 
     // loading extra params
     const extra = {
         ...defaultPostData(),
-        head_target,
-        zip_subpath,
-        zip_bundle,
+        wa_head_target,
+        wa_zip_subpath,
+        wa_zip_bundle,
     };
     Object.keys(extra).forEach(k => {
         // console.log("key", k);
@@ -311,8 +329,17 @@ const deploy_init = (infinitRetrySentinelCount = 4) => {
     })
     // Update internals from response
     .then(resp => {
-        if ('wa_auth_denied_since_wp_auth_denied' === resp.code) {
-            waAccess = {}; // clean our waAccess since we have some wrong value in it making server loop on bad access...
+        let needReCheck = false;
+        assert(resp && resp.code, "Internal error, please re-launch, wrong resp : ", resp);
+        if ((!resp) || 'wa_auth_denied_since_wp_auth_denied' === resp.code
+        || 'rest_cookie_invalid_nonce' === resp.code
+        || 'fail_access_id_validation' === resp.code) {
+            waAccess = {}; // clean our waAccess since we have some wrong value in it
+            needReCheck = true;
+        }
+        if ((!resp) || 'wa_fail_prefetch_access' === resp.code) {
+            waAccess.wa_api_pre_fetch_token = null;
+            needReCheck = true;
         }
 
         wa_api_pre_fetch_token = (resp.data?.wa_api_pre_fetch_token && resp.data?.wa_api_pre_fetch_token.length)
@@ -337,7 +364,12 @@ const deploy_init = (infinitRetrySentinelCount = 4) => {
 
         debug("Did update waAccess : ", waAccess);
 
-        return resp;
+        if (infinitRetrySentinelCount <= 1) {
+            needReCheck = false; // stop possible infinit loop, let user take external auth actions
+        }
+
+        return needReCheck ? deploy_init(1) // This error will fill up our credentials, next call should upload the zip
+        : resp;
     }).then(
         resp => 'wrong_auth_header_or_cookie' === resp.code
         ? deploy_init(infinitRetrySentinelCount - 1) // This error will fill up our credentials, next call should upload the zip
@@ -345,23 +377,137 @@ const deploy_init = (infinitRetrySentinelCount = 4) => {
     );
 }
 
-const deploy = () => deploy_init()
-.then(resp => {
-    console.log(resp);
+const getDocumentContent = Runtime => Runtime.evaluate({
+    // expression: "document.documentElement.outerHTML",
+    // expression: `({ // Will send an object ID as response, secu stuff ?
+    //     url: document.location.href,
+    //     html: document.documentElement.outerHTML,
+    // })`,
+    expression: `JSON.stringify({
+        url: document.location.href,
+        // html: document.documentElement.outerHTML,
+        text: document.documentElement.outerText,
+    })`,
+});
 
-    // Save headers, cookies, auth, etc...
-    // re-load deploy_init with updated headers will launch it right ;)
-    try {
-        let serializableWaAccess = JSON.stringify(waAccess);
-        if (shouldEncrypt) {
-            serializableWaAccess = cryptr.encrypt(serializableWaAccess);
+const deploy = (infinitRetrySentinelCount = 4) => {
+    if (infinitRetrySentinelCount <= 0) {
+        debug("infinitRetrySentinelCount reached, STOPPING deploy_init.");
+        error("Fail deploy INIT.");
+        return { code : "infinit_retry_sentinel_count_reached_error" } ;
+    }
+
+    return deploy_init()
+    .then(async resp => {
+        if ('wa_fail_prefetch_access' === resp.code) {
+            info(`Did you succed to authenticate with :\n${resp.data.location}\n?`)
+            resp = await new Promise(async (resolveAccess, rejectAcceess) => {
+                // Optim ? : close ChromeLauncher in case of script error ?
+                await ChromeLauncher.launch({
+                    chromeFlags: allowSslSelfSignedCertificates
+                    ? [ "--ignore-certificate-errors" ] : [],
+                    startingUrl: '',
+                    // startingUrl: resp.data.location,
+                    // chromeFlags: ['--headless', '--disable-gpu'],
+                }).then(async chrome => {
+                    // https://www.npmjs.com/package/chrome-launcher
+                    debug(`Chrome debugging port running on ${chrome.port}`);
+        
+                    let client = null;
+                    try {
+                        // connect to endpoint
+                        await CDP({
+                            port: chrome.port,
+                        }, async (baseClient) => {
+                            client = baseClient;
+                            // https://snyk.io/advisor/npm-package/chrome-remote-interface/example
+                            // https://github.com/artlimes/meteor-chrome-headless-spiderable/blob/5bd386d80ff9a1c7941b950f00fb7d4e49bd14c6/lib/server.js#L226
+                            // Extract the parts of the DevTools protocol we need for the task.
+                            // See API docs: https://chromedevtools.github.io/debugger-protocol-viewer/
+                            const {Page, Runtime} = baseClient;
+                            // First, need to enable the domains we're going to use.
+                            await Promise.all([
+                              Page.enable(),
+                              Runtime.enable()
+                            ]).then(() => {
+                                Page.navigate({url: resp.data.location});
+
+                                // Wait for window.onload before doing stuff.
+                                Page.loadEventFired(async (...args) => {
+                                    debug("Page load event fired", args);
+                                    succeeded = true;
+                                    await getDocumentContent(Runtime).then((resp) => {
+                                        let result = resp?.result;
+                                        if (result && 'string' === result.type) {
+                                            result = JSON.parse(result.value);
+                                            debug("HTML URL : ", result.url);
+                                            debugVeryVerbose("HTML content : ", result.html);    
+                                        }
+                                        return result;
+                                    }).then(async (resp) => {
+
+                                        if (resp?.url && /api-wa-config-nonce-rest\?wa_api_pre_fetch_token/
+                                        .test(resp.url)) {
+                                            if (/Your pre-fetch token/.test(resp.text)) {
+                                                debug("Pre-fetch Done, closing browser");
+                                                await baseClient.close();
+                                                client = null;
+                                                ChromeLauncher.killAll();
+                                                resolveAccess(deploy_init());    
+                                            } else {
+                                                debug("Pre-fetch unknow output : ", resp.text);
+                                            }
+                                        }
+
+                                        return resp;
+                                    });
+                                });
+                            })
+                        });
+        
+                        info(`Try to authenticate with :\n${resp.data.location}\n\nFrom Chrome Browser`)
+                        // type 'thisisunsafe' over Chrome tab warning if you try
+                        // to access self signed SSL url from chrome
+                        // (Close the opened window when done)`) => more like : close the open browser if having bugs... ?
+        
+                        return resp;
+                    } catch (err) {
+                        console.error(err);
+                    } finally {
+                        if (client) {
+                            await client.close();
+                        }
+                    }
+                    return resp;
+                });
+                // resolveAccess(resp);
+            });
         }
+        return resp;
+    }).then(resp => {
+        console.log(resp);
 
-        fs.writeFileSync(secuTmpFile, serializableWaAccess);
-    } catch (err) {
-        console.error(err);
-    }    
-})
+        // Save headers, cookies, auth, etc...
+        // re-load deploy_init with updated headers will launch it right ;)
+        try {
+            let serializableWaAccess = JSON.stringify(waAccess);
+            if (shouldEncrypt) {
+                serializableWaAccess = cryptr.encrypt(serializableWaAccess);
+            }
+
+            fs.writeFileSync(secuTmpFile, serializableWaAccess);
+        } catch (err) {
+            console.error(err);
+        }
+        return resp;
+    })
+    .then(async resp => {
+        if (resp && 'fail_access_id_validation' === resp.code) {
+            // Re-launch deploy with previousely saved context
+            deploy(infinitRetrySentinelCount - 1);
+        }
+    });
+};
 
 // Launch the deploy process
 deploy();

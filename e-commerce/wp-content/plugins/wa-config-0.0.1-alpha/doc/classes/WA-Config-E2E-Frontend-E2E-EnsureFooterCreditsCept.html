@@ -72,20 +72,6 @@
     <a href="packages/waConfig.html" class="">waConfig</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerceTemplates.html" class="">WooCommerceTemplates</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerce.html" class="">WooCommerce</a>
-</h4>
-    <ul class="phpdocumentor-list">
-                    <li>
-                <a href="packages/WooCommerce-Templates.html" class="">Templates</a>
-                
-            </li>
-            </ul>
-
                         </section>
             
     <section class="phpdocumentor-sidebar__category">
@@ -127,7 +113,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php"><a href="files/tests-acceptance-frontend-e2e-ensurefootercreditscept.html"><abbr title="tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php">E2E_EnsureFooterCreditsCept.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">43</span>
+    <span class="phpdocumentor-element-found-in__line">55</span>
 
     </aside>
 
@@ -139,6 +125,10 @@ DO NOT MESS UP WITH REAL BUISINESS DATA FROM YOUR TESTS.</p>
 <p>This end to end user test is an example of a simple safe test.
 See <a href="https://codeception.com/docs/03-AcceptanceTests">Codeception</a>
 documentation for more advanced usage.</p>
+<p>You can also launch it with command line :</p>
+<pre class="prettyprint"><code class="language-bash">alias e2e-footer=&quot;php 'tools/codecept.phar' run&quot;
+e2e-footer 'acceptance' 'Frontend/E2E_EnsureFooterCreditsCept'
+</code></pre>
 </section>
 
 
@@ -190,7 +180,14 @@ documentation for more advanced usage.</p>
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/WA-Config-E2E-Frontend-E2E-EnsureFooterCreditsCept.html#constant_FOOTER_CREDIT">FOOTER_CREDIT</a>
     <span>
-        &nbsp;= &#039;Build by Monwoo and autre&#039;                            </span>
+        &nbsp;= [&#039;fr_FR&#039; =&gt; &#039;Construit par Monwoo et autre&#039;, &#039;en_US&#039; =&gt; &#039;Build by Monwoo and other&#039;, &#039;es_ES&#039; =&gt; &#039;Construido por Monwoo y otro&#039;]                            </span>
+</dt>
+<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a href="classes/WA-Config-E2E-Frontend-E2E-EnsureFooterCreditsCept.html#constant_FOOTER_TEST_POOL">FOOTER_TEST_POOL</a>
+    <span>
+        &nbsp;= [&#039;fr_FR&#039; =&gt; [&#039;/&#039;, &#039;/missions&#039;], &#039;en_US&#039; =&gt; [&#039;/en&#039;, &#039;/en/missions&#039;], &#039;es_ES&#039; =&gt; [&#039;/es&#039;, &#039;/es/misiones&#039;]]                            </span>
 </dt>
 <dd></dd>
 
@@ -213,7 +210,7 @@ documentation for more advanced usage.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php"><a href="files/tests-acceptance-frontend-e2e-ensurefootercreditscept.html"><abbr title="tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php">E2E_EnsureFooterCreditsCept.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">46</span>
+    <span class="phpdocumentor-element-found-in__line">56</span>
 
     </aside>
 
@@ -222,7 +219,36 @@ documentation for more advanced usage.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">FOOTER_CREDIT</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;Build by Monwoo and autre&#039;</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;fr_FR&#039; =&gt; &#039;Construit par Monwoo et autre&#039;, &#039;en_US&#039; =&gt; &#039;Build by Monwoo and other&#039;, &#039;es_ES&#039; =&gt; &#039;Construido por Monwoo y otro&#039;]</span>
+</code>
+
+
+        <section class="phpdocumentor-description"></section>
+
+        <section class="phpdocumentor-description"></section>
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_FOOTER_TEST_POOL">
+        FOOTER_TEST_POOL
+        <a href="classes/WA-Config-E2E-Frontend-E2E-EnsureFooterCreditsCept.html#constant_FOOTER_TEST_POOL" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php"><a href="files/tests-acceptance-frontend-e2e-ensurefootercreditscept.html"><abbr title="tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php">E2E_EnsureFooterCreditsCept.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">61</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">FOOTER_TEST_POOL</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;fr_FR&#039; =&gt; [&#039;/&#039;, &#039;/missions&#039;], &#039;en_US&#039; =&gt; [&#039;/en&#039;, &#039;/en/missions&#039;], &#039;es_ES&#039; =&gt; [&#039;/es&#039;, &#039;/es/misiones&#039;]]</span>
 </code>
 
 

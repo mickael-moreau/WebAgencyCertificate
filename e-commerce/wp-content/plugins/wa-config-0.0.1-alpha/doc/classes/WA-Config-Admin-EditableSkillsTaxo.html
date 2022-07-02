@@ -72,20 +72,6 @@
     <a href="packages/waConfig.html" class="">waConfig</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerceTemplates.html" class="">WooCommerceTemplates</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerce.html" class="">WooCommerce</a>
-</h4>
-    <ul class="phpdocumentor-list">
-                    <li>
-                <a href="packages/WooCommerce-Templates.html" class="">Templates</a>
-                
-            </li>
-            </ul>
-
                         </section>
             
     <section class="phpdocumentor-sidebar__category">
@@ -114,16 +100,40 @@
     </h2>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4407</span>
+    <span class="phpdocumentor-element-found-in__line">3538</span>
 
     </aside>
 
             <p class="phpdocumentor-summary">This trait will add the wa-skill taxonomy</p>
 
-    <section class="phpdocumentor-description"><p>You could use it frontend side with this kind of plugin :</p>
+    <section class="phpdocumentor-description"><p>You could use it frontend side with the REST API or this kind of plugin :</p>
 <p><a href="https://fr.wordpress.org/plugins/custom-post-type-widget-blocks/">Custom Post Type Widget Blocks by thingsym</a></p>
+<p><a href="https://developer.wordpress.org/rest-api/reference/categories/"><abbr title="https://developer.wordpress.org/rest-api/reference/categories/">https://developer.wordpress.org/rest-api/reference/categories/</abbr></a></p>
+<pre class="prettyprint"><code class="language-js">// JS ES6 usage example to fecth skill taxonomies :
+// You can copy/past below code in your Chrome console to test it :
+// (A Console you should open by inspecting the same domain name to
+// avoid fetch errors)
+async function getSkills() {
+    const WpV2ApiBaseUrl = &quot;https://web-agency.local.dev/e-commerce/wp-json/wp/v2&quot;;
+    let response = await fetch(`${WpV2ApiBaseUrl}/wa-skill`, {
+        method: 'GET',
+        mode: 'no-cors',
+        withCredentials: false,
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    });
+    let skills = await response.json();
+    return skills;
+}
+getSkills().then(data =&gt; console.log(data) &amp;&amp; data);
+</code></pre>
+<pre class="prettyprint"><code class="language-bash"># curl example to fecth skill taxonomies :
+WP_V2API_BASEURL=&quot;https://web-agency.local.dev/e-commerce/wp-json/wp/v2&quot;
+curl &quot;$WP_V2API_BASEURL/wa-skill&quot;
+</code></pre>
 </section>
 
 
@@ -133,6 +143,30 @@
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types/"><abbr title="https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types/">https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types/</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="https://developer.wordpress.org/rest-api/reference/"><abbr title="https://developer.wordpress.org/rest-api/reference/">https://developer.wordpress.org/rest-api/reference/</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters"><abbr title="https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters">https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">since</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
@@ -175,7 +209,7 @@
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Register wa-skill admin menu.</dd>
+<dd>Register wa-skill admin menu as sub page of Wa-config.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_data_review">e_skill_taxo_data_review()</a>
@@ -192,9 +226,9 @@
 <dd>Add a new term to the Skill taxonomy.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_register">e_skill_taxo_polylang_register()</a>
+    <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_pll_taxonomies">e_skill_taxo_filter_pll_taxonomies()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: array&lt;string|int, string&gt;    </span>
 </dt>
 <dd>Register wa-skill taxonomy with polylang plugin</dd>
 
@@ -227,13 +261,13 @@
         <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_admin_menu" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4451</span>
+    <span class="phpdocumentor-element-found-in__line">3582</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Register wa-skill admin menu.</p>
+        <p class="phpdocumentor-summary">Register wa-skill admin menu as sub page of Wa-config.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -260,9 +294,9 @@
         <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_data_review" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4570</span>
+    <span class="phpdocumentor-element-found-in__line">3656</span>
 
     </aside>
 
@@ -305,9 +339,9 @@
         <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_ensure_term" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4854</span>
+    <span class="phpdocumentor-element-found-in__line">3891</span>
 
     </aside>
 
@@ -387,8 +421,8 @@ Optional. Array or query string of arguments for inserting a term.</p>
             &mdash;
             <section class="phpdocumentor-description"><p>{
 An array of the new term data, false otherwise.</p>
-<pre class="prettyprint"><code class="prettyprint">@type int        $term_id          The new term ID.
-@type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+<pre class="prettyprint"><code class="prettyprint">@type int    $term_id    The new term ID.
+@type WP_Term|array|false    $term_taxonomy_id   The new term taxonomy.
 </code></pre>
 <p>}</p>
 </section>
@@ -401,14 +435,14 @@ An array of the new term data, false otherwise.</p>
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_skill_taxo_polylang_register">
-        e_skill_taxo_polylang_register()
-        <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_register" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_skill_taxo_filter_pll_taxonomies">
+        e_skill_taxo_filter_pll_taxonomies()
+        <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_pll_taxonomies" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4437</span>
+    <span class="phpdocumentor-element-found-in__line">3570</span>
 
     </aside>
 
@@ -416,25 +450,32 @@ An array of the new term data, false otherwise.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_skill_taxo_polylang_register</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$taxonomies</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$is_settings</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_skill_taxo_filter_pll_taxonomies</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$taxonomies</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$is_settings</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, string&gt;</span></code>
 
-    
+        <section class="phpdocumentor-description"><p>Filters the list of taxonomies available for translation.
+The default are taxonomies which have the parameter ‘public’ set to true.
+The filter must be added soon in the WordPress loading process:
+in a function hooked to ‘plugins_loaded’ or directly in functions.php for themes.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$taxonomies</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, string&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>List of taxonomy names.</p>
+</section>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$is_settings</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>True when displaying the list of custom taxonomies in Polylang settings.</p>
+</section>
 
             </dd>
             </dl>
@@ -442,9 +483,11 @@ An array of the new term data, false otherwise.</p>
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type">array&lt;string|int, string&gt;</span>
             &mdash;
-        
+            <section class="phpdocumentor-description"><p>Filtered list of taxonomy names.</p>
+</section>
+
     
 </article>
                     <article
@@ -458,9 +501,9 @@ An array of the new term data, false otherwise.</p>
         <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_register_taxonomy" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4514</span>
+    <span class="phpdocumentor-element-found-in__line">3610</span>
 
     </aside>
 

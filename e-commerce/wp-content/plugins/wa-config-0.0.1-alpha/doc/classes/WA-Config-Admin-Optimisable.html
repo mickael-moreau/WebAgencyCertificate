@@ -72,20 +72,6 @@
     <a href="packages/waConfig.html" class="">waConfig</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerceTemplates.html" class="">WooCommerceTemplates</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerce.html" class="">WooCommerce</a>
-</h4>
-    <ul class="phpdocumentor-list">
-                    <li>
-                <a href="packages/WooCommerce-Templates.html" class="">Templates</a>
-                
-            </li>
-            </ul>
-
                         </section>
             
     <section class="phpdocumentor-sidebar__category">
@@ -114,17 +100,18 @@
     </h2>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9746</span>
+    <span class="phpdocumentor-element-found-in__line">7954</span>
 
     </aside>
 
             <p class="phpdocumentor-summary">This trait will help with speed optimisations</p>
 
     <section class="phpdocumentor-description"><p>It will also enable WordPress http request filterings
-to help you remove some internal calls</p>
-<p>It will not optimize wp_http_requests on CRON jobs.</p>
+to help you remove some internal calls.</p>
+<p>It will optimize wp_http_requests (HTTP Request Filtering) on CRON jobs too
+unless you define the WA_SHOULD_NOT_OPTIMIZE_CRON constant to true.</p>
 </section>
 
 
@@ -182,28 +169,28 @@ to help you remove some internal calls</p>
                     <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/WA-Config-Admin-Optimisable.html#property_ALLOWED_URL_REVIEW_REPORT">$ALLOWED_URL_REVIEW_REPORT</a>
     <span>
-                        &nbsp;: mixed            </span>
+                        &nbsp;: string            </span>
 </dt>
 <dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/WA-Config-Admin-Optimisable.html#property_BLOCKED_URL_REVIEW_REPORT">$BLOCKED_URL_REVIEW_REPORT</a>
     <span>
-                        &nbsp;: mixed            </span>
+                        &nbsp;: string            </span>
 </dt>
 <dd></dd>
 
                 <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_add_url_to_allowed_review_report">opti_add_url_to_allowed_review_report()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: void    </span>
 </dt>
 <dd>Add a 30 minutes backlog review report about allowed url</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_add_url_to_blocked_review_report">opti_add_url_to_blocked_review_report()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: void    </span>
 </dt>
 <dd>Add a 30 minutes backlog review report about blocked url</dd>
 
@@ -212,14 +199,14 @@ to help you remove some internal calls</p>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Review for common checkpoints</dd>
+<dd>Add the common optimisation reviews</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_disabled_review">opti_disabled_review()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Review the no optimisations checkpoints</dd>
+<dd>Add the no optimisation reviews (Disabled optimisations)</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_filter_wp_http_requests">opti_filter_wp_http_requests()</a>
@@ -233,14 +220,14 @@ to help you remove some internal calls</p>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Review the maximum optimisation checkpoints</dd>
+<dd>Add the MAX speed optimisation reviews</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_medium_speed_review">opti_medium_speed_review()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Review the medium optimisation checkpoints</dd>
+<dd>Add the MEDIUM speed optimisation reviews</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_print_allowed_urls_report">opti_print_allowed_urls_report()</a>
@@ -280,22 +267,22 @@ to help you remove some internal calls</p>
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9821</span>
+    <span class="phpdocumentor-element-found-in__line">8022</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
+        <span class="phpdocumentor-signature__type">string</span>
     <span class="phpdocumentor-signature__name">$ALLOWED_URL_REVIEW_REPORT</span>
      = <span class="phpdocumentor-signature__default-value">&quot;wa_allowed_url_review_report&quot;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
+    
+        <section class="phpdocumentor-description"><p>Transient key for the list of allowed url report</p>
+</section>
 
     
 
@@ -314,22 +301,22 @@ to help you remove some internal calls</p>
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9820</span>
+    <span class="phpdocumentor-element-found-in__line">8018</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
+        <span class="phpdocumentor-signature__type">string</span>
     <span class="phpdocumentor-signature__name">$BLOCKED_URL_REVIEW_REPORT</span>
      = <span class="phpdocumentor-signature__default-value">&quot;wa_blocked_url_review_report&quot;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
+    
+        <section class="phpdocumentor-description"><p>Transient key for the list of blocked url report</p>
+</section>
 
     
 
@@ -352,9 +339,9 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_add_url_to_allowed_review_report" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9896</span>
+    <span class="phpdocumentor-element-found-in__line">8088</span>
 
     </aside>
 
@@ -362,9 +349,9 @@ to help you remove some internal calls</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">opti_add_url_to_allowed_review_report</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sentinel</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">opti_add_url_to_allowed_review_report</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sentinel</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"><p>It use transient cache, to keep stuff fast, check verbose log if want to be sur to track all followed sub links...</p>
+        <section class="phpdocumentor-description"><p>It use transient cache, to keep stuff fast, check the verbose log if you wana to be sur to track all followed sub links...</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -392,7 +379,7 @@ to help you remove some internal calls</p>
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type">void</span>
             &mdash;
         
     
@@ -408,9 +395,9 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_add_url_to_blocked_review_report" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9830</span>
+    <span class="phpdocumentor-element-found-in__line">8031</span>
 
     </aside>
 
@@ -418,9 +405,9 @@ to help you remove some internal calls</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">opti_add_url_to_blocked_review_report</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sentinel</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">opti_add_url_to_blocked_review_report</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sentinel</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"><p>It use transient cache, to keep stuff fast, check verbose log if want to be sur to track all blocked links...</p>
+        <section class="phpdocumentor-description"><p>It use transient cache, to keep stuff fast, check the verbose log if you wana to be sur to track all blocked links...</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -448,7 +435,7 @@ to help you remove some internal calls</p>
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type">void</span>
             &mdash;
         
     
@@ -464,13 +451,13 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_common_review" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10339</span>
+    <span class="phpdocumentor-element-found-in__line">8475</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Review for common checkpoints</p>
+        <p class="phpdocumentor-summary">Add the common optimisation reviews</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -509,13 +496,13 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_disabled_review" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10321</span>
+    <span class="phpdocumentor-element-found-in__line">8462</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Review the no optimisations checkpoints</p>
+        <p class="phpdocumentor-summary">Add the no optimisation reviews (Disabled optimisations)</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -554,9 +541,9 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_filter_wp_http_requests" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10132</span>
+    <span class="phpdocumentor-element-found-in__line">8299</span>
 
     </aside>
 
@@ -619,13 +606,13 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_max_speed_review" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10228</span>
+    <span class="phpdocumentor-element-found-in__line">8377</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Review the maximum optimisation checkpoints</p>
+        <p class="phpdocumentor-summary">Add the MAX speed optimisation reviews</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -664,13 +651,13 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_medium_speed_review" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10279</span>
+    <span class="phpdocumentor-element-found-in__line">8424</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Review the medium optimisation checkpoints</p>
+        <p class="phpdocumentor-summary">Add the MEDIUM speed optimisation reviews</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -709,9 +696,9 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_print_allowed_urls_report" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10046</span>
+    <span class="phpdocumentor-element-found-in__line">8221</span>
 
     </aside>
 
@@ -721,7 +708,7 @@ to help you remove some internal calls</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">opti_print_allowed_urls_report</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$shouldEcho</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$reportOrder</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
-        <section class="phpdocumentor-description"><p>It use transient cache, to keep stuff fast, check verbose log if want to be sur to track all allowed links...</p>
+        <section class="phpdocumentor-description"><p>It use transient cache, to keep stuff fast, check the verbose log if you wana to be sur to track all allowed links...</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -767,9 +754,9 @@ to help you remove some internal calls</p>
         <a href="classes/WA-Config-Admin-Optimisable.html#method_opti_print_blocked_urls_report" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9959</span>
+    <span class="phpdocumentor-element-found-in__line">8142</span>
 
     </aside>
 
@@ -779,7 +766,7 @@ to help you remove some internal calls</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">opti_print_blocked_urls_report</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$shouldEcho</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$reportOrder</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
-        <section class="phpdocumentor-description"><p>It use transient cache, to keep stuff fast, check verbose log if want to be sur to track all blocked links...</p>
+        <section class="phpdocumentor-description"><p>It use transient cache, to keep stuff fast, check the verbose log if you wana to be sur to track all blocked links...</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>

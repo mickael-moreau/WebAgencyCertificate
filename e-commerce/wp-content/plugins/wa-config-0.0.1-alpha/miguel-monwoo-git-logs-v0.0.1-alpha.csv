@@ -96,7 +96,7 @@
 "fb59c7d","Mickaël MOREAU","2022-06-07 05:55:40 +0200","[wa-config] testing on fresh updated install from wp 5.9 to 6, having error add_submenu_page undefined, wrong upgrade or stuff to fix ?"
 "6230740","Mickaël MOREAU","2022-06-07 05:10:44 +0200","[wa-config] improving browser compatibility review report"
 "d9cfd0f","Mickaël MOREAU","2022-06-06 16:13:26 +0200","[wa-config] logo integration + artistic rebuild for low-size resolution"
-"8ca8c23","Mickaël MOREAU","2022-06-06 15:49:57 +0200","[wa-config] adding 'wa-config by Monwoo' logo"
+"8ca8c23","Mickaël MOREAU","2022-06-06 15:49:57 +0200","[wa-config] adding 'WA-Config Monwoo' logo"
 "dfa669e","Mickaël MOREAU","2022-06-06 03:27:30 +0200","[wa-config] allow quick edit of end-date metabox from wa-mission post list"
 "debf5a1","Mickaël MOREAU","2022-06-05 22:51:15 +0200","[wa-config] adding end-date metabox save and frontend display OK"
 "bbeffcb","Mickaël MOREAU","2022-06-05 21:57:29 +0200","[wa-config] adding end-date metabox for wa-mission custom post type"

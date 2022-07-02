@@ -1,4 +1,4 @@
-=== Wa-config by Monwoo ===
+=== WA-Config Monwoo ===
 Contributors: monwoo
 Donate link: https://www.monwoo.com/don
 Tags: wa-config, codeception, quality review, web agency, optimisations, project management
@@ -13,7 +13,7 @@ Wa-config is a Web Agency production tool. Build from researches and developpeme
 
 == Description ==
 
-Wa-config by Monwoo will help with Web Agency jobs like :
+WA-Config Monwoo will help with Web Agency jobs like :
 * Posting past or current missions managable by skills
 * Ensure light human and automatic reviews.
 * Launch custom authenticated End to End user tests under production server with existing user accounts (Codeception).
@@ -50,7 +50,7 @@ When all is green, and you humanly argree with it, all is done ;)
 == Upgrade Notice == 
 
 = 0.0.1 =
-Fist version of wa-config-by-monwoo
+Fist version of wa-config-monwoo
 
 == Screenshots ==
 

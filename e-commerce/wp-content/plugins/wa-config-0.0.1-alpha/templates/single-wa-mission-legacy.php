@@ -1,16 +1,22 @@
 <?php
 /**
- * 
- * Template Name: wa-mission single page rendering
- * 
- * 
  * 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
  * service@monwoo.com.
+ * 
+ * Template Name: wa-mission legacy single page rendering
+ * 
+ * The template for displaying all single posts.
+ * 
+ * {@see https://code.tutsplus.com/tutorials/a-guide-to-wordpress-custom-post-types-creation-display-and-meta-boxes--wp-27645
+ * A-guide-to-wordpress-custom-post-types}
  *
+ * @see storefront
+ * 
+ * @since 0.0.1
+ * @package
+ * @author service@monwoo.com
  */
-
-// Biblio :
-// https://code.tutsplus.com/tutorials/a-guide-to-wordpress-custom-post-types-creation-display-and-meta-boxes--wp-27645
+//  * @package waConfig\templates\themes
 
 get_header(); ?>
 <div id="primary">

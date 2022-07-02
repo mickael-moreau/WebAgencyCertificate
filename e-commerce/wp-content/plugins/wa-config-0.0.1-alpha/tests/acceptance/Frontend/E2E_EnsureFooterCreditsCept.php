@@ -14,15 +14,21 @@
  * documentation for more advanced usage.
  * 
  * It will show you how to simply test the open Frontend.
+ * 
+ * You can also launch it with command line :
+ * ```bash
+ * alias e2e-footer="php 'tools/codecept.phar' run"
+ * e2e-footer 'acceptance' 'Frontend/E2E_EnsureFooterCreditsCept'
+ * ```
+ * 
  *
- * @link https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo wa-config by Monwoo
+ * @link https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en WA-Config Monwoo
  * @since 0.0.1
  * @package
  * @filesource
  * @author service@monwoo.com
  **/
 namespace WA\Config\E2E\Frontend {
-    use AcceptanceTester;
     /**
      * Simple end to end data test 
 
@@ -35,25 +41,80 @@ namespace WA\Config\E2E\Frontend {
      * See {@link https://codeception.com/docs/03-AcceptanceTests
      * Codeception}
      * documentation for more advanced usage.
+     * 
+     * You can also launch it with command line :
+     * ```bash
+     * alias e2e-footer="php 'tools/codecept.phar' run"
+     * e2e-footer 'acceptance' 'Frontend/E2E_EnsureFooterCreditsCept'
+     * ```
      *
      * @see \WA\Config\E2E\E2E_EnsureAdminConfigPanelCest More advanced example
      * @since 0.0.1
      * @author service@monwoo.com
      */   
     class E2E_EnsureFooterCreditsCept {
-        // const FOOTER_CREDIT = '© Monwoo 2022';
-        // TODO : Lang sync translations test ? __(...) ?
-        const FOOTER_CREDIT = 'Build by Monwoo and autre';
-        // const FOOTER_CREDIT = __("Build by Monwoo and", /*📜*/ 'wa-config'/*📜*/);
+        const FOOTER_CREDIT = [
+            'fr_FR' => 'Construit par Monwoo et autre',
+            'en_US' => 'Build by Monwoo and other',
+            'es_ES' => 'Construido por Monwoo y otro',
+        ];
+        const FOOTER_TEST_POOL = [
+            'fr_FR' => [
+                '/', '/missions'
+            ],
+            'en_US' => [
+                '/en', '/en/missions'
+            ],
+            'es_ES' => [
+                '/es', '/es/misiones'
+            ],
+        ];
     }
+}
+
+namespace WA\Config\E2E\Frontend {
+    use WA\Config\E2E\Frontend\E2E_EnsureFooterCreditsCept as E2eCept;
+    use AcceptanceTester;
+    use Codeception\Util\HttpCode;
 
     $I = new AcceptanceTester($scenario);
-    $I->wantTo('Test that footer credits are presents');
-    $I->amOnPage('/');
-    $I->see(E2E_EnsureFooterCreditsCept::FOOTER_CREDIT);
 
-    // TODO : ensure plugin test folder
-    //        AND private bckkup test upload folder
-    //        are not listable, cf output of :
-    // https://web-agency.local.dev/e-commerce/wp-content/plugins/wa-config/tests/
+    function test_footer($page, $I, $locale, $expected) {
+        $I->wantTo("Test footer credits for [$locale]");
+        $I->amOnPage($page);
+        $I->see($expected);    
+    }
+    foreach (E2eCept::FOOTER_CREDIT as $locale => $expected) {
+        $testPool = E2eCept::FOOTER_TEST_POOL[$locale];
+        foreach ($testPool as $testPage) {
+           test_footer($testPage, $I, $locale, $expected);
+        }
+
+    }
+
+    // BONUS : simple secu test to ensurre our tests stay safe from public access (not directly accessible)
+
+    // $matches = [];
+    // preg_match( // WILL NO WORK ON SYMLINK, thoses are not under wp dir...
+    //     "/wp-content\/plugins\/([^\/]+)\/(.*)/",
+    //     "/Users/miguel/goinfre/WA-wp-plugins/wa-config/wa-config.php",
+    //     $matches
+    // );
+    // codecept_debug($matches);
+    // $pluginFolder = $matches[1] ?? null;
+    // $pluginRelativeTestFile = $matches[2] ?? null;
+
+    // wa-config/tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php
+    $pluginFolder = "wa-config";
+    $pluginRelativeTestFile = "tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php";
+    $I->wantTo("Test test Access for $pluginFolder");
+
+    $pluginBaseUrl = "/wp-content/plugins/$pluginFolder";
+    $I->amOnPage("$pluginBaseUrl/tests/");
+    // https://codeception.com/docs/reference/HttpCode
+    $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
+    $I->amOnPage("$pluginBaseUrl/$pluginRelativeTestFile");
+    $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
+
+    // TODO BONUS : private bckkup test upload folder should not be accessible too
 }

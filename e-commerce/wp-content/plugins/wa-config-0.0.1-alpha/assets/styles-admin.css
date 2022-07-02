@@ -236,6 +236,37 @@ body .wa-blocked-url-frames span {
     margin: 0%;
   }
 }
+body .wa-api-access-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+body .wa-api-access-list .wa-api-access-item {
+  padding: 7px;
+  width: 20%;
+}
+@media (max-width: 700px) {
+  body .wa-api-access-list .wa-api-access-item {
+    width: 50%;
+  }
+}
+body .wa-api-access-list .wa-api-access-item .wa-time {
+  color: gray;
+  padding: 2px 7px;
+  display: inline-flex;
+  border: solid 2px lightgray;
+  margin: 2px 0px;
+  border-top: none;
+  border-left: none;
+  padding-left: 0px;
+}
+body.plugins-php tr.active.is-uninstallable {
+  position: relative;
+}
+body.plugins-php tr.active.is-uninstallable .wa-link-anchor {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
 body pre {
   overflow: scroll;
 }
@@ -252,16 +283,16 @@ body.auto-fold #wpcontent {
     padding-right: 2px;
   }
 }
-body #adminmenu .toplevel_page_wa-config-e-admin-config .wp-menu-image img {
+body #adminmenu .toplevel_page_wa-e-admin-config .wp-menu-image img {
   padding: 7px 0 0;
 }
-body textarea[name^="wa_config_e_admin"] {
+body textarea[name^=wa_e_config], body textarea[name^=wa_e_review] {
   width: 100%;
 }
 body .wa-add-page-btn-icon {
   font-family: dashicons, -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
-body input[name^="wa_config_e_admin"] {
+body input[name^=wa_e_config], body input[name^=wa_e_review] {
   width: 100%;
 }
 body input[type="checkbox"].wppd-ui-toggle {

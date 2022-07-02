@@ -22,7 +22,7 @@
  * It will also show you how to use the saved wa-config options
  * from the admin "WA Config" "Parameters" sub menu.
  *
- * @link https://moonkiosk.monwoo.com/missions/wa-config-par-monwoo wa-config by Monwoo
+ * @link https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en WA-Config Monwoo
  * @since 0.0.1
  * @package
  * @filesource
@@ -159,7 +159,7 @@ namespace WA\Config\E2E {
      * @see https://github.com/lucatume/wp-browser
      * @see https://github.com/10up/wp-codeception
      * @see https://stackoverflow.com/questions/40235954/testing-file-uploads-with-codeception
-     * @see \WA\Config\E2E\EnsureFooterCredits\DATA Simplier example
+     * @see \WA\Config\E2E\Frontend\E2E_EnsureFooterCreditsCept E2E_EnsureFooterCreditsCept, Simplier example
      * @since 0.0.1
      * @author service@monwoo.com
      */
@@ -235,13 +235,17 @@ namespace WA\Config\E2E {
 
             $key = 'wa_acceptance_tests_users'; // TODO : better use $inst->eConfOptATestsUsers or hard defined values ?
             $default = '';
-            $eAdminConfigOptsKey = 'wa_config_e_admin_config_opts';
-            $eAdminConfigOpts = get_option($eAdminConfigOptsKey, [
+            $eConfigOptsKey = 'wa_e_config_opts';
+            $eConfigOpts = get_option($eConfigOptsKey, [
                 $key => $default,
             ]);
-            $testUsersList = $default;
-            if (key_exists($key, $eAdminConfigOpts)) {
-                $testUsersList = $eAdminConfigOpts[$key];
+            global $_wa_fetch_instance;
+            $app = $_wa_fetch_instance();
+
+            $testUsersList = $app->E_DEFAULT_A_TESTS_USERS_LIST;
+            if (key_exists($key, $eConfigOpts)
+            && strlen($eConfigOpts[$key])) {
+                $testUsersList = $eConfigOpts[$key];
             }
             $I->comment("Having test user list : {$testUsersList}");
 
@@ -338,11 +342,11 @@ namespace WA\Config\E2E {
 
             // 🌖🌖 Going to wa-config pannel : 🌖🌖
             $I->amOnPage('/wp-admin');
-            $I->click('a[href="admin.php?page=wa-config-e-admin-config-param-page"]');
+            $I->click('a[href="admin.php?page=wa-e-admin-config-param-page"]');
             $I->see('Copyright de bas de page');
-            $footerCreditId = '#wa_config_e_admin_config_opts_wa_footer_credit';
+            $footerCreditId = '#wa_e_config_opts_wa_footer_credit';
             $I->seeElement($footerCreditId);
-            $footerEnableId = '#wa_config_e_admin_config_opts_wa_enable_footer';
+            $footerEnableId = '#wa_e_config_opts_wa_enable_footer';
             $I->seeElement($footerEnableId);
 
             // 🌖🌖 testing options updates : 🌖🌖
@@ -363,7 +367,7 @@ namespace WA\Config\E2E {
                 $initialEnableFooter,
                 $footerEnableId
             ) {
-                $I->amOnPage('/wp-admin/admin.php?page=wa-config-e-admin-config-param-page');
+                $I->amOnPage('/wp-admin/admin.php?page=wa-e-admin-config-param-page');
                 if ($initialEnableFooter) {
                     $I->checkOption($footerEnableId);
                 } else {
@@ -407,8 +411,8 @@ namespace WA\Config\E2E {
          */
         public function testingWAConfig_emailTrackingForComments(AcceptanceTester $I, Example $example): void
         {
-            $eAdminConfigE2ETestsOptsKey = 'wa_config_e_admin_config_e2e_tests_opts';
-            $E2ETestsOptions = get_option($eAdminConfigE2ETestsOptsKey, []);
+            $eConfigE2ETestsOptsKey = 'wa_e_config_e2e_tests_opts';
+            $E2ETestsOptions = get_option($eConfigE2ETestsOptsKey, []);
             // https://codeception.com/docs/02-GettingStarted#Interactive-Pause
             // https://codeception.com/docs/02-GettingStarted#Debugging
             // $I->pause(); // for cmd line with --debug option, missing display output under php 8 ?
@@ -431,7 +435,7 @@ namespace WA\Config\E2E {
             $I->click('#commentform #submit');
 
             wp_cache_delete("alloptions", "options"); // avoid wrong value do to cached stuff
-            $E2ETestsOptions = get_option($eAdminConfigE2ETestsOptsKey, []);
+            $E2ETestsOptions = get_option($eConfigE2ETestsOptsKey, []);
 
             // codecept_debug($E2ETestsOptions['emails-sended']); $I->pause();
 
@@ -672,13 +676,13 @@ namespace WA\Config\E2E {
             return [
                 [
                     'title' => __('Paramètres', /*📜*/ 'wa-config'/*📜*/),
-                    'url' => "/wp-admin/admin.php?page=wa-config-e-admin-config-param-page"
+                    'url' => "/wp-admin/admin.php?page=wa-e-admin-config-param-page"
                 ], [
                     'title' => __('Documentation', /*📜*/ 'wa-config'/*📜*/),
-                    'url' => "/wp-admin/admin.php?page=wa-config-e-admin-config-doc-page"
+                    'url' => "/wp-admin/admin.php?page=wa-e-admin-config-doc-page"
                 ], [
                     'title' => __('Revue qualité', /*📜*/ 'wa-config'/*📜*/),
-                    'url' => "/wp-admin/admin.php?page=wa-config-e-admin-config-review-page"
+                    'url' => "/wp-admin/admin.php?page=wa-e-admin-config-review-page"
                 ],
             ];
         }

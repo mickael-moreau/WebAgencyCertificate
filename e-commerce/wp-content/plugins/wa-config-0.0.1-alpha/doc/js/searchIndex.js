@@ -21,39 +21,54 @@ Search.appendIndex(
             "summary": "Get\u0020a\u0020translated\u0020string\u0020in\u0020the\u0020given\u0020translated\u0020domain",
             "url": "namespaces/wa-config-utils.html#function__lx"
         },                {
+            "fqsen": "\\WA\\Config\\Utils\\wa_filesystem\u0028\u0029",
+            "name": "wa_filesystem",
+            "summary": "Return\u0020our\u0020wa\u0020filesystem\u0020\u0028Direct\u0020mode\u0029",
+            "url": "namespaces/wa-config-utils.html#function_wa_filesystem"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\wa_redirect\u0028\u0029",
+            "name": "wa_redirect",
+            "summary": "Redirect\u0020to\u0020the\u0020targeted\u0020url\u0020using\u0020an\u0020optional\u0020appHandler.",
+            "url": "namespaces/wa-config-utils.html#function_wa_redirect"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\WPFilters",
             "name": "WPFilters",
             "summary": "This\u0020class\u0020register\u0020all\u0020wa\u002Dconfig\u0020WordPress\u0020filters\u0020like\u0020an\u0020ENUM",
             "url": "classes/WA-Config-Core-WPFilters.html"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_config_e_footer_render",
-            "name": "wa_config_e_footer_render",
+            "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_e_footer_render",
+            "name": "wa_e_footer_render",
             "summary": "Filters\u0020the\u0020HTML\u0020Editable\u0020footer\u0020rendered\u0020by\u0020wa\u002Dconfig\u0020package",
-            "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_config_e_footer_render"
+            "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_e_footer_render"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_config_reviews_ids_to_trash",
-            "name": "wa_config_reviews_ids_to_trash",
+            "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_review_ids_to_trash",
+            "name": "wa_review_ids_to_trash",
             "summary": "Filters\u0020the\u0020reviews\u0020fixed_id\u0020to\u0020trash\u0020at\u0020the\u0020end\u0020of\u0020the\u0020base\u0020review",
-            "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_config_reviews_ids_to_trash"
+            "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_review_ids_to_trash"
+        },                {
+            "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_get_ip",
+            "name": "wa_get_ip",
+            "summary": "Filters\u0020the\u0020IP\u0020used\u0020by\u0020protected\u0020functions\u0020of\u0020wa\u002Dconfig",
+            "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_get_ip"
         },                {
             "fqsen": "\\WA\\Config\\Core\\WPActions",
             "name": "WPActions",
             "summary": "This\u0020class\u0020register\u0020all\u0020wa\u002Dconfig\u0020WordPress\u0020actions\u0020like\u0020an\u0020ENUM",
             "url": "classes/WA-Config-Core-WPActions.html"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\WPActions\u003A\u003Awa_ac_render_after_parameters",
-            "name": "wa_ac_render_after_parameters",
+            "fqsen": "\\WA\\Config\\Core\\WPActions\u003A\u003Awa_ecp_render_after_parameters",
+            "name": "wa_ecp_render_after_parameters",
             "summary": "Fire\u0020after\u0020admin\u0020config\u0020parameters\u0020panel\u0020renderings.",
-            "url": "classes/WA-Config-Core-WPActions.html#constant_wa_ac_render_after_parameters"
+            "url": "classes/WA-Config-Core-WPActions.html#constant_wa_ecp_render_after_parameters"
         },                {
             "fqsen": "\\WA\\Config\\Core\\WPActions\u003A\u003Awa_do_base_review_preprocessing",
             "name": "wa_do_base_review_preprocessing",
-            "summary": "Fire\u0020before\u0020base\u0020review\u0020is\u0020computed\u0020for\u0020the\u0020review\u0020panel.",
+            "summary": "Fire\u0020\u002A\u002Abefore\u002A\u002A\u0020base\u0020review\u0020is\u0020computed\u0020for\u0020the\u0020review\u0020panel.",
             "url": "classes/WA-Config-Core-WPActions.html#constant_wa_do_base_review_preprocessing"
         },                {
             "fqsen": "\\WA\\Config\\Core\\WPActions\u003A\u003Awa_do_base_review_postprocessing",
             "name": "wa_do_base_review_postprocessing",
-            "summary": "Fire\u0020after\u0020base\u0020review\u0020is\u0020computed\u0020for\u0020the\u0020review\u0020panel.",
+            "summary": "Fire\u0020\u002A\u002Aafter\u002A\u002A\u0020base\u0020review\u0020is\u0020computed\u0020for\u0020the\u0020review\u0020panel.",
             "url": "classes/WA-Config-Core-WPActions.html#constant_wa_do_base_review_postprocessing"
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface",
@@ -81,11 +96,6 @@ Search.appendIndex(
             "summary": "Get\u0020All\u0020registred\u0020App\u0020instance\u0020by\u0020index",
             "url": "classes/WA-Config-Core-AppInterface.html#method_allInstances"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AdecreasePluginLoadOrder\u0028\u0029",
-            "name": "decreasePluginLoadOrder",
-            "summary": "Decrease\u0020the\u0020plugin\u0020load\u0020order,\u0020to\u0020handle\u0020multiple\u0020plugins\u0020class\u0020load\u0020orderings",
-            "url": "classes/WA-Config-Core-AppInterface.html#method_decreasePluginLoadOrder"
-        },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AuIdx\u0028\u0029",
             "name": "uIdx",
             "summary": "Get\u0020a\u0020unique\u0020index\u0020counter\u0020shared\u0020by\u0020all\u0020App\u0020instance",
@@ -96,10 +106,10 @@ Search.appendIndex(
             "summary": "Get\u0020last\u0020registred\u0020App\u0020instance",
             "url": "classes/WA-Config-Core-AppInterface.html#method_lastInstance"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AinstanceByRelativePath\u0028\u0029",
-            "name": "instanceByRelativePath",
+            "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AinstanceByRelativeFile\u0028\u0029",
+            "name": "instanceByRelativeFile",
             "summary": "Get\u0020App\u0020instance\u0020by\u0020relative\u0020plugin\u0020path\u0020and\u0020plugin\u0020instance\u0020index",
-            "url": "classes/WA-Config-Core-AppInterface.html#method_instanceByRelativePath"
+            "url": "classes/WA-Config-Core-AppInterface.html#method_instanceByRelativeFile"
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AinstanceByIId\u0028\u0029",
             "name": "instanceByIId",
@@ -128,7 +138,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Ae2e_tests_access_hash_open\u0028\u0029",
             "name": "e2e_tests_access_hash_open",
-            "summary": "",
+            "summary": "Open\u0020an\u0020e2e\u0020test\u0020access\u0020and\u0020return\u0020the\u0020corresponding\u0020access\u0020hash",
             "url": "classes/WA-Config-Core-AppInterface.html#method_e2e_tests_access_hash_open"
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Ae2e_tests_filter_wp_die_callback\u0028\u0029",
@@ -136,19 +146,24 @@ Search.appendIndex(
             "summary": "Soft\u0020kill\u0020wordpress,\u0020to\u0020allow\u0020end\u0020to\u0020end\u0020tests\u0020to\u0020keep\u0020going\u0020without\u0020COMMAND\u0020DID\u0020NOT\u0020FINISH\u0020PROPERLY\u0020error.",
             "url": "classes/WA-Config-Core-AppInterface.html#method_e2e_tests_filter_wp_die_callback"
         },                {
+            "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Aexit\u0028\u0029",
+            "name": "exit",
+            "summary": "",
+            "url": "classes/WA-Config-Core-AppInterface.html#method_exit"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Ae2e_tests_emails_middleware\u0028\u0029",
             "name": "e2e_tests_emails_middleware",
-            "summary": "",
+            "summary": "Email\u0020middleware\u0020to\u0020prevent\u0020email\u0020expedition\u0020if\u0020requested\u0020by\u0020configuration",
             "url": "classes/WA-Config-Core-AppInterface.html#method_e2e_tests_emails_middleware"
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Ae2e_tests_access_hash_close\u0028\u0029",
             "name": "e2e_tests_access_hash_close",
-            "summary": "",
+            "summary": "Close\u0020an\u0020e2e\u0020test\u0020access\u0020and\u0020restore\u0020the\u0020regular\u0020website\u0020access",
             "url": "classes/WA-Config-Core-AppInterface.html#method_e2e_tests_access_hash_close"
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Ae2e_tests_validate_access_hash\u0028\u0029",
             "name": "e2e_tests_validate_access_hash",
-            "summary": "",
+            "summary": "Validate\u0020an\u0020e2e\u0020test\u0020access",
             "url": "classes/WA-Config-Core-AppInterface.html#method_e2e_tests_validate_access_hash"
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Ae2e_test_clean_and_restore_test_users\u0028\u0029",
@@ -168,7 +183,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Ae2e_test_stream_notification_callback\u0028\u0029",
             "name": "e2e_test_stream_notification_callback",
-            "summary": "",
+            "summary": "Dev\u0020in\u0020progress,\u0020not\u0020ready\u0020yet",
             "url": "classes/WA-Config-Core-AppInterface.html#method_e2e_test_stream_notification_callback"
         },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AisFirstMethodCall\u0028\u0029",
@@ -348,12 +363,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Admin\\OptiLvl\u003A\u003AMEDIUM",
             "name": "MEDIUM",
-            "summary": "Medium\u0020optimisation",
+            "summary": "Medium\u0020optimisation\u0020\u0028Removing\u0020CRON\u0029",
             "url": "classes/WA-Config-Admin-OptiLvl.html#constant_MEDIUM"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\OptiLvl\u003A\u003AMAX",
             "name": "MAX",
-            "summary": "Full\u0020optimisation",
+            "summary": "Full\u0020optimisation\u0020\u0028Removing\u0020Wordpress\u0020and\u0020Plugins\u0020audo\u002Dupdate\u0029",
             "url": "classes/WA-Config-Admin-OptiLvl.html#constant_MAX"
         },                {
             "fqsen": "\\WA\\Config\\App",
@@ -368,12 +383,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Core\\Identifiable",
             "name": "Identifiable",
-            "summary": "This\u0020trait\u0020will\u0020provide\u0020the\u0020loaded\u0020plugin\u0020information\nand\u0020instance\u0020identifications",
+            "summary": "This\u0020trait\u0020will\u0020provide\u0020the\u0020loaded\u0020plugin\u0020information\nand\u0020instance\u0020identifiers",
             "url": "classes/WA-Config-Core-Identifiable.html"
         },                {
             "fqsen": "\\WA\\Config\\Core\\Identifiable\u003A\u003Ais_cli\u0028\u0029",
             "name": "is_cli",
-            "summary": "",
+            "summary": "Test\u0020if\u0020current\u0020script\u0020is\u0020called\u0020from\u0020Comand\u0020Line\u0020Interface",
             "url": "classes/WA-Config-Core-Identifiable.html#method_is_cli"
         },                {
             "fqsen": "\\WA\\Config\\Core\\Identifiable\u003A\u003A\u0024iPrefix",
@@ -391,15 +406,20 @@ Search.appendIndex(
             "summary": "Current\u0020instance\u0020index\u0020\u0028follow\u0020class\u0020constructor\u0020calls\u0020order\u0029",
             "url": "classes/WA-Config-Core-Identifiable.html#property_iIndex"
         },                {
+            "fqsen": "\\WA\\Config\\Core\\Identifiable\u003A\u003A\u0024iRelativeIndex",
+            "name": "iRelativeIndex",
+            "summary": "Current\u0020instance\u0020index\u0020for\u0020current\u0020pluginRelativeFile",
+            "url": "classes/WA-Config-Core-Identifiable.html#property_iRelativeIndex"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\Identifiable\u003A\u003A\u0024pluginName",
             "name": "pluginName",
             "summary": "Plugin\u0020name\u0020only",
             "url": "classes/WA-Config-Core-Identifiable.html#property_pluginName"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\Identifiable\u003A\u003A\u0024pluginRelativePath",
-            "name": "pluginRelativePath",
+            "fqsen": "\\WA\\Config\\Core\\Identifiable\u003A\u003A\u0024pluginRelativeFile",
+            "name": "pluginRelativeFile",
             "summary": "Plugin\u0020relative\u0020path\u0020from\u0020WordPress\u0020root\u0020folder",
-            "url": "classes/WA-Config-Core-Identifiable.html#property_pluginRelativePath"
+            "url": "classes/WA-Config-Core-Identifiable.html#property_pluginRelativeFile"
         },                {
             "fqsen": "\\WA\\Config\\Core\\Identifiable\u003A\u003A\u0024pluginVersion",
             "name": "pluginVersion",
@@ -428,7 +448,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Core\\Debugable\u003A\u003Adebug_stream_notification_callback\u0028\u0029",
             "name": "debug_stream_notification_callback",
-            "summary": "",
+            "summary": "Dev\u0020in\u0020progress,\u0020not\u0020ready\u0020yet",
             "url": "classes/WA-Config-Core-Debugable.html#method_debug_stream_notification_callback"
         },                {
             "fqsen": "\\WA\\Config\\Core\\Debugable\u003A\u003Adebug_exception_error_handler\u0028\u0029",
@@ -445,6 +465,11 @@ Search.appendIndex(
             "name": "debug_trace",
             "summary": "Return\u0020the\u0020current\u0020debug\u0020trace",
             "url": "classes/WA-Config-Core-Debugable.html#method_debug_trace"
+        },                {
+            "fqsen": "\\WA\\Config\\Core\\Debugable\u003A\u003Adebug_routes\u0028\u0029",
+            "name": "debug_routes",
+            "summary": "Return\u0020the\u0020current\u0020routes",
+            "url": "classes/WA-Config-Core-Debugable.html#method_debug_routes"
         },                {
             "fqsen": "\\WA\\Config\\Core\\Debugable\u003A\u003Ainfo\u0028\u0029",
             "name": "info",
@@ -496,6 +521,16 @@ Search.appendIndex(
             "summary": "This\u0020trait\u0020will\u0020provide\u0020common\u0020end\u0020user\u0020editable\u0020options\u0020for\u0020WA\u0020Config.",
             "url": "classes/WA-Config-Core-Editable.html"
         },                {
+            "fqsen": "\\WA\\Config\\Core\\Editable\u003A\u003A\u0024E_DEFAULT_OPTIMISABLE_SAFE_FILTER",
+            "name": "E_DEFAULT_OPTIMISABLE_SAFE_FILTER",
+            "summary": "",
+            "url": "classes/WA-Config-Core-Editable.html#property_E_DEFAULT_OPTIMISABLE_SAFE_FILTER"
+        },                {
+            "fqsen": "\\WA\\Config\\Core\\Editable\u003A\u003A\u0024E_DEFAULT_A_TESTS_USERS_LIST",
+            "name": "E_DEFAULT_A_TESTS_USERS_LIST",
+            "summary": "",
+            "url": "classes/WA-Config-Core-Editable.html#property_E_DEFAULT_A_TESTS_USERS_LIST"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\EditableWaConfigOptions",
             "name": "EditableWaConfigOptions",
             "summary": "This\u0020trait\u0020will\u0020handle\u0020our\u0020wa\u002Dconfig\u0020options.",
@@ -506,20 +541,20 @@ Search.appendIndex(
             "summary": "Will\u0020get\u0020the\u0020saved\u0020option\u0020for\u0020\u0024key\u0020and\u0020default\u0020to\u0020\u0024default\u0020if\u0020none.",
             "url": "classes/WA-Config-Core-EditableWaConfigOptions.html#method_getWaConfigOption"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\EditableWaConfigOptions\u003A\u003A\u0024eAdminConfigOptsKey",
-            "name": "eAdminConfigOptsKey",
+            "fqsen": "\\WA\\Config\\Core\\EditableWaConfigOptions\u003A\u003A\u0024eConfigOptsKey",
+            "name": "eConfigOptsKey",
             "summary": "eAdminConfigOptsKey\u0020is\u0020our\u0020main\u0020store\u0020key\nused\u0020for\u0020WordPress\u0020get_option\u0020and\u0020admin\u0020panel\u0020configs",
-            "url": "classes/WA-Config-Core-EditableWaConfigOptions.html#property_eAdminConfigOptsKey"
+            "url": "classes/WA-Config-Core-EditableWaConfigOptions.html#property_eConfigOptsKey"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\EditableWaConfigOptions\u003A\u003A\u0024eAdminConfigReviewOptsKey",
-            "name": "eAdminConfigReviewOptsKey",
-            "summary": "eAdminConfigReviewOptsKey\u0020is\u0020our\u0020review\u0020store\u0020key\nused\u0020for\u0020review\u0020panel\u0020in\u0020package\u0020wa\u002Dconfig",
-            "url": "classes/WA-Config-Core-EditableWaConfigOptions.html#property_eAdminConfigReviewOptsKey"
+            "fqsen": "\\WA\\Config\\Core\\EditableWaConfigOptions\u003A\u003A\u0024eReviewSettingsFormKey",
+            "name": "eReviewSettingsFormKey",
+            "summary": "eReviewSettingsFormKey\u0020is\u0020our\u0020admin\u0020panel\nform\u0020input\u0020option\u0020key\u0020used\u0020for\u0020the\u0020review\u0020panel\u0020in\u0020wa\u002Dconfig",
+            "url": "classes/WA-Config-Core-EditableWaConfigOptions.html#property_eReviewSettingsFormKey"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\EditableWaConfigOptions\u003A\u003A\u0024eAdminConfigE2ETestsOptsKey",
-            "name": "eAdminConfigE2ETestsOptsKey",
+            "fqsen": "\\WA\\Config\\Core\\EditableWaConfigOptions\u003A\u003A\u0024eConfigE2ETestsOptsKey",
+            "name": "eConfigE2ETestsOptsKey",
             "summary": "eAdminConfigE2ETestsOptsKey\u0020is\u0020our\u0020end\u0020to\u0020end\u0020tests\nstore\u0020key\u0020for\u0020internal\u0020options\u0020and\u0020security",
-            "url": "classes/WA-Config-Core-EditableWaConfigOptions.html#property_eAdminConfigE2ETestsOptsKey"
+            "url": "classes/WA-Config-Core-EditableWaConfigOptions.html#property_eConfigE2ETestsOptsKey"
         },                {
             "fqsen": "\\WA\\Config\\Core\\EditableWaConfigOptions\u003A\u003A\u0024oPluginLoadsMasterPathOptKey",
             "name": "oPluginLoadsMasterPathOptKey",
@@ -528,13 +563,18 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Core\\Translatable",
             "name": "Translatable",
-            "summary": "This\u0020trait\u0020will\u0020load\u0020the\u0020i18n\u0020plugin\u0020text\u0020domain\u0020internationals\u0020translations.",
+            "summary": "This\u0020trait\u0020will\u0020load\u0020the\u0020i18n\u0020plugin\u0020text\u0020domain\u0020international\u0020translations.",
             "url": "classes/WA-Config-Core-Translatable.html"
         },                {
             "fqsen": "\\WA\\Config\\Core\\Translatable\u003A\u003At_loadTextdomains\u0028\u0029",
             "name": "t_loadTextdomains",
             "summary": "Will\u0020load\u0020the\u0020text\u0020domain\u0020translations\u0020with\nWordPress\u0020load_plugin_textdomain\u0020function",
             "url": "classes/WA-Config-Core-Translatable.html#method_t_loadTextdomains"
+        },                {
+            "fqsen": "\\WA\\Config\\Core\\Translatable\u003A\u003A\u0024waConfigTextDomain",
+            "name": "waConfigTextDomain",
+            "summary": "Plugin\u0020text\u0020domain,\u0020used\u0020to\u0020load\u0020plugin\u0020translations\u0020from\u0020.\/languages\u0020folder",
+            "url": "classes/WA-Config-Core-Translatable.html#property_waConfigTextDomain"
         },                {
             "fqsen": "\\WA\\Config\\Utils\\PdfToHTMLable",
             "name": "PdfToHTMLable",
@@ -573,7 +613,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableAdminScripts\u003A\u003Ae_admin_scripts_do_enqueue\u0028\u0029",
             "name": "e_admin_scripts_do_enqueue",
-            "summary": "Enqueue\u0020stylesheet\u0020for\u0020wp\u002Dadmin\u0020customisation\u0020by\u0020wa\u002Dconfig.",
+            "summary": "Enqueue\u0020stylesheet\u0020and\u0020javascripts\u0020for\u0020wp\u002Dadmin\u0020customisation\u0020by\u0020wa\u002Dconfig.",
             "url": "classes/WA-Config-Admin-EditableAdminScripts.html#method_e_admin_scripts_do_enqueue"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\OrderablePluginLoads",
@@ -583,137 +623,152 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Admin\\OrderablePluginLoads\u003A\u003Ao_plugin_loads_master_first\u0028\u0029",
             "name": "o_plugin_loads_master_first",
-            "summary": "Enqueue\u0020stylesheet\u0020for\u0020wp\u002Dadmin\u0020customisation\u0020by\u0020wa\u002Dconfig.",
+            "summary": "Ensure\u0020master\u0020plugin\u0020is\u0020loaded\u0020first.",
             "url": "classes/WA-Config-Admin-OrderablePluginLoads.html#method_o_plugin_loads_master_first"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\OrderablePluginLoads\u003A\u003Aplugin_loads_admin_do_order_action\u0028\u0029",
+            "name": "plugin_loads_admin_do_order_action",
+            "summary": "Will\u0020run\u0020the\u0020associated\u0020order\u0020action\u0020\u0027wa_order_action\u0027.\u0020\u0028ajax\u0020admin\u0020request\u0029",
+            "url": "classes/WA-Config-Admin-OrderablePluginLoads.html#method_plugin_loads_admin_do_order_action"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ExtendablePluginDescription",
+            "name": "ExtendablePluginDescription",
+            "summary": "This\u0020trait\u0020will\u0020allow\u0020to\u0020extend\u0020the\u0020plugin\u0020description\u0020inside\u0020the\u0020WordPress\u0020plugin\u0020list\u0020panel",
+            "url": "classes/WA-Config-Admin-ExtendablePluginDescription.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ExtendablePluginDescription\u003A\u003Aext_plugin_description_meta\u0028\u0029",
+            "name": "ext_plugin_description_meta",
+            "summary": "Update\u0020the\u0020plugin\u0020description\u0020meta\u0020with\u0020extra\u0020informations",
+            "url": "classes/WA-Config-Admin-ExtendablePluginDescription.html#method_ext_plugin_description_meta"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost",
             "name": "EditableMissionPost",
             "summary": "This\u0020trait\u0020will\u0020add\u0020the\u0020wa\u002Dmission\u0020post\u0020type",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_layout_class\u0028\u0029",
-            "name": "e_mission_post_type_layout_class",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_layout_class\u0028\u0029",
+            "name": "e_mission_CPT_layout_class",
             "summary": "Alter\u0020your\u0020post\u0020layouts",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_layout_class"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_layout_class"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_oceanwp_metabox\u0028\u0029",
-            "name": "e_mission_post_type_oceanwp_metabox",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_oceanwp_metabox\u0028\u0029",
+            "name": "e_mission_CPT_oceanwp_metabox",
             "summary": "Add\u0020the\u0020OceanWP\u0020Settings\u0020metabox\u0020in\u0020your\u0020CPT",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_oceanwp_metabox"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_oceanwp_metabox"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_change_woocommerce_order_number\u0028\u0029",
-            "name": "e_mission_post_type_change_woocommerce_order_number",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_change_woocommerce_order_number\u0028\u0029",
+            "name": "e_mission_CPT_change_woocommerce_order_number",
             "summary": "Add\u0020prefix\u0020to\u0020woocommerce\u0020order\u0020numbers",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_change_woocommerce_order_number"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_change_woocommerce_order_number"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_load_template_includes\u0028\u0029",
-            "name": "e_mission_post_type_load_template_includes",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_load_template_includes\u0028\u0029",
+            "name": "e_mission_CPT_load_template_includes",
             "summary": "Filter\u0020templates\u0020to\u0020load\u0020custom\u0020templates\u0020if\u0020availables",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_load_template_includes"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_load_template_includes"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_do_template_nav_menus\u0028\u0029",
-            "name": "e_mission_post_type_do_template_nav_menus",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_do_template_nav_menus\u0028\u0029",
+            "name": "e_mission_CPT_do_template_nav_menus",
             "summary": "Add\u0020nav\u0020menu",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menus"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menus"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_do_template_nav_menus_filter\u0028\u0029",
-            "name": "e_mission_post_type_do_template_nav_menus_filter",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_do_template_nav_menus_filter\u0028\u0029",
+            "name": "e_mission_CPT_do_template_nav_menus_filter",
             "summary": "Filter\u0020to\u0020render\u0020our\u0020nav\u0020menu",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menus_filter"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menus_filter"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_do_template_nav_menu_metabox\u0028\u0029",
-            "name": "e_mission_post_type_do_template_nav_menu_metabox",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_do_template_nav_menu_metabox\u0028\u0029",
+            "name": "e_mission_CPT_do_template_nav_menu_metabox",
             "summary": "Add\u0020nav\u0020menu\u0020admin\u0020metabox",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menu_metabox"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menu_metabox"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_polylang_lang_link\u0028\u0029",
-            "name": "e_mission_post_type_polylang_lang_link",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_polylang_lang_link\u0028\u0029",
+            "name": "e_mission_CPT_polylang_lang_link",
             "summary": "Register\u0020polylang\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_lang_link"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_lang_link"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_polylang_rewrite_slugs\u0028\u0029",
-            "name": "e_mission_post_type_polylang_rewrite_slugs",
-            "summary": "Register\u0020polylang\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_rewrite_slugs"
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_polylang_rewrite_slugs\u0028\u0029",
+            "name": "e_mission_CPT_polylang_rewrite_slugs",
+            "summary": "Register\u0020polylang\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs\u0020\u0028Dev\u0020in\u0020progres...\u0029",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_rewrite_slugs"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_register_localized_slug\u0028\u0029",
             "name": "e_mission_register_localized_slug",
             "summary": "Register\u0020polylang\u0020localized\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs\u0020Polylang\u0020404\u0020page\u0020fixes",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_register_localized_slug"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_polylang_register\u0028\u0029",
-            "name": "e_mission_post_type_polylang_register",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_polylang_register\u0028\u0029",
+            "name": "e_mission_CPT_polylang_register",
             "summary": "Register\u0020wa\u002Dmission\u0020post\u0020type\u0020with\u0020polylang\u0020plugin",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_register"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_register"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_admin_menu\u0028\u0029",
-            "name": "e_mission_post_type_admin_menu",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_admin_menu\u0028\u0029",
+            "name": "e_mission_CPT_admin_menu",
             "summary": "Register\u0020wa\u002Dmission\u0020admin\u0020menu.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_admin_menu"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_admin_menu"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_register\u0028\u0029",
-            "name": "e_mission_post_type_register",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_register\u0028\u0029",
+            "name": "e_mission_CPT_register",
             "summary": "Register\u0020wa\u002Dmission\u0020custom\u0020Post\u0020type.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_register"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_register"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_get_meta_from_rest\u0028\u0029",
-            "name": "e_mission_post_type_get_meta_from_rest",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_get_meta_from_rest\u0028\u0029",
+            "name": "e_mission_CPT_get_meta_from_rest",
             "summary": "Get\u0020Site\u0020URL",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_get_meta_from_rest"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_get_meta_from_rest"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_type_get_the_date\u0028\u0029",
-            "name": "e_mission_post_type_get_the_date",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_get_the_date\u0028\u0029",
+            "name": "e_mission_CPT_get_the_date",
             "summary": "Overwsite\u0020post\u0020date\u0020to\u0020show\u0020mission\u0020date\u0020range\u0020instead.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_get_the_date"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_get_the_date"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_end_date_add_metabox\u0028\u0029",
-            "name": "e_mission_post_end_date_add_metabox",
-            "summary": "Enqueue\u0020stylesheet\u0020for\u0020wp\u002Dadmin\u0020customisation\u0020by\u0020wa\u002Dconfig.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_add_metabox"
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_end_date_add_metabox\u0028\u0029",
+            "name": "e_mission_CPT_end_date_add_metabox",
+            "summary": "Add\u0020wa\u002Dmission\u0020end\u002Ddate\u0020meta\u0020box",
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_add_metabox"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_end_date_save_metabox\u0028\u0029",
-            "name": "e_mission_post_end_date_save_metabox",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_end_date_save_metabox\u0028\u0029",
+            "name": "e_mission_CPT_end_date_save_metabox",
             "summary": "Save\u0020the\u0020meta\u0020box\u0020for\u0020end\u002Ddate\u0020meta.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_save_metabox"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_save_metabox"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_end_date_render_metabox\u0028\u0029",
-            "name": "e_mission_post_end_date_render_metabox",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_end_date_render_metabox\u0028\u0029",
+            "name": "e_mission_CPT_end_date_render_metabox",
             "summary": "Render\u0020the\u0020meta\u0020box\u0020for\u0020end\u002Ddate\u0020meta.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_render_metabox"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_render_metabox"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_end_date_add_column\u0028\u0029",
-            "name": "e_mission_post_end_date_add_column",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_end_date_add_column\u0028\u0029",
+            "name": "e_mission_CPT_end_date_add_column",
             "summary": "Add\u0020the\u0020end\u002Ddate\u0020column\u0020from\u0020end\u002Ddate\u0020meta\u0020of\u0020wa\u002Dmission\u0020posts.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_add_column"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_add_column"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_end_date_render_column_row\u0028\u0029",
-            "name": "e_mission_post_end_date_render_column_row",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_end_date_render_column_row\u0028\u0029",
+            "name": "e_mission_CPT_end_date_render_column_row",
             "summary": "Render\u0020the\u0020column\u0020row\u0020data\u0020for\u0020end\u002Ddate\u0020meta\u0020of\u0020wa\u002Dmission\u0020posts.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_render_column_row"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_render_column_row"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_end_date_quick_edit\u0028\u0029",
-            "name": "e_mission_post_end_date_quick_edit",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_end_date_quick_edit\u0028\u0029",
+            "name": "e_mission_CPT_end_date_quick_edit",
             "summary": "Allow\u0020quick\u0020edit\u0020for\u0020end\u002Ddate\u0020meta\u0020of\u0020wa\u002Dmission\u0020posts.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_quick_edit"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_quick_edit"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_post_end_date_quick_edit_js\u0028\u0029",
-            "name": "e_mission_post_end_date_quick_edit_js",
+            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_end_date_quick_edit_js\u0028\u0029",
+            "name": "e_mission_CPT_end_date_quick_edit_js",
             "summary": "JS\u0020to\u0020allow\u0020quick\u0020edit\u0020value\u0020sync\u0020for\u0020end\u002Ddate\u0020meta\u0020of\u0020wa\u002Dmission\u0020posts.",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_quick_edit_js"
+            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_quick_edit_js"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo",
             "name": "EditableSkillsTaxo",
             "summary": "This\u0020trait\u0020will\u0020add\u0020the\u0020wa\u002Dskill\u0020taxonomy",
             "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_polylang_register\u0028\u0029",
-            "name": "e_skill_taxo_polylang_register",
+            "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_filter_pll_taxonomies\u0028\u0029",
+            "name": "e_skill_taxo_filter_pll_taxonomies",
             "summary": "Register\u0020wa\u002Dskill\u0020taxonomy\u0020with\u0020polylang\u0020plugin",
-            "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_register"
+            "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_pll_taxonomies"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_admin_menu\u0028\u0029",
             "name": "e_skill_taxo_admin_menu",
-            "summary": "Register\u0020wa\u002Dskill\u0020admin\u0020menu.",
+            "summary": "Register\u0020wa\u002Dskill\u0020admin\u0020menu\u0020as\u0020sub\u0020page\u0020of\u0020Wa\u002Dconfig.",
             "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_admin_menu"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_register_taxonomy\u0028\u0029",
@@ -736,100 +791,125 @@ Search.appendIndex(
             "summary": "This\u0020trait\u0020load\u0020the\u0020wa\u002Dconfig\u0020admin\u0020panels",
             "url": "classes/WA-Config-Admin-EditableConfigPanels.html"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_on_plugins_activated\u0028\u0029",
-            "name": "e_admin_config_on_plugins_activated",
-            "summary": "Fires\u0020after\u0020a\u0020plugin\u0020has\u0020been\u0020activated.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_on_plugins_activated"
+            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_config_param_and_root_admin_menu\u0028\u0029",
+            "name": "e_config_param_and_root_admin_menu",
+            "summary": "Initialise\u0020the\u0020WA\u0020Config\u0020Root\u0020admin\u0020menu\u0020and\u0020parameter\u0020panel",
+            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_param_and_root_admin_menu"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_do_admin_menu\u0028\u0029",
-            "name": "e_admin_config_do_admin_menu",
-            "summary": "Build\u0020the\u0020\u0022WA\u0020Config\u0022\u0020admin\u0020menu\u0020for\u0020wa\u002Dconfig\u0020package.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_do_admin_menu"
+            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_config_param_and_root_admin_init\u0028\u0029",
+            "name": "e_config_param_and_root_admin_init",
+            "summary": "Initialise\u0020WA\u0020Config\u0020root\u0020and\u0020parameters\u0020Admin\u0020Settings",
+            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_param_and_root_admin_init"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_do_admin_menu_review\u0028\u0029",
-            "name": "e_admin_config_do_admin_menu_review",
-            "summary": "Add\u0020the\u0020\u0027WA\u0020Config\u0027\u0020\u0027Review\u0027\u0020panel.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_do_admin_menu_review"
+            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_config_param_form_validator\u0028\u0029",
+            "name": "e_config_param_form_validator",
+            "summary": "Validator\u0020used\u0020to\u0020validate\u0020options\u0020saved\u0020from\u0020parameter\u0020admin\u0020panel",
+            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_param_form_validator"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_do_admin_menu_doc\u0028\u0029",
-            "name": "e_admin_config_do_admin_menu_doc",
-            "summary": "Add\u0020the\u0020\u0027WA\u0020Config\u0027\u0020\u0027Documentation\u0027\u0020panel.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_do_admin_menu_doc"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_do_admin_init\u0028\u0029",
-            "name": "e_admin_config_do_admin_init",
-            "summary": "Initialise\u0020WA\u0020Config\u0020Admin\u0020Settings\u0020and\u0020Options",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_do_admin_init"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_list_capabilities_and_roles\u0028\u0029",
-            "name": "e_admin_config_list_capabilities_and_roles",
-            "summary": "Used\u0020for\u0020ajax\u0020suggest\u0020lists\u0020of\u0020inputs\u0020with\u0020class\u0020.wa\u002Dsuggest\u002Dcapabilities\u002Dand\u002Droles",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_list_capabilities_and_roles"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_opts_validate\u0028\u0029",
-            "name": "e_admin_config_opts_validate",
-            "summary": "Validator\u0020used\u0020to\u0020validate\u0020saved\u0020options\u0020for\u0020wa\u002Dconfig\u0020package",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_opts_validate"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_render_param_section\u0028\u0029",
-            "name": "e_admin_config_render_param_section",
+            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_config_param_render_panel\u0028\u0029",
+            "name": "e_config_param_render_panel",
             "summary": "Render\u0020the\u0020\u0027WA\u0020Config\u0027\u0020\u0027Parameters\u0027\u0020panel.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_render_param_section"
+            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_param_render_panel"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_list_review_data_by_key\u0028\u0029",
-            "name": "e_admin_config_list_review_data_by_key",
-            "summary": "Used\u0020for\u0020ajax\u0020suggest\u0020lists\u0020of\u0020inputs\u0020with\u0020class\u0020.wa\u002Dsuggest\u002Dcapabilities\u002Dand\u002Droles",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_list_review_data_by_key"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_opts_review_validate\u0028\u0029",
-            "name": "e_admin_config_opts_review_validate",
-            "summary": "Validator\u0020used\u0020to\u0020validate\u0020saved\u0020\u0027review\u0027\u0020options\u0020for\u0020wa\u002Dconfig\u0020package",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_opts_review_validate"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_review_option_page_capability\u0028\u0029",
-            "name": "e_admin_config_review_option_page_capability",
-            "summary": "Capability\u0020filter\u0020for\u0020review\u0020option\u0020page\u0020edits",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_review_option_page_capability"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_pre_update_review_filter\u0028\u0029",
-            "name": "e_admin_config_pre_update_review_filter",
-            "summary": "Filters\u0020the\u0020review\u0020options\u0020before\u0020it\u0020get\u0027s\u0020updated.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_pre_update_review_filter"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_review_action\u0028\u0029",
-            "name": "e_admin_config_review_action",
-            "summary": "Launch\u0020the\u0020review\u0020action\u0020received\u0020by\u0020post\u0020contents.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_review_action"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_add_base_review\u0028\u0029",
-            "name": "e_admin_config_add_base_review",
-            "summary": "Build\u0020and\u0020add\u0020base\u0020review\u0020checkpoints,\u0020ensuring\u0020checked\u0020data",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_add_base_review"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_render_review_section\u0028\u0029",
-            "name": "e_admin_config_render_review_section",
-            "summary": "Render\u0020the\u0020\u0027WA\u0020Config\u0027\u0020\u0027Review\u0027\u0020panel.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_render_review_section"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_admin_config_render_doc_section\u0028\u0029",
-            "name": "e_admin_config_render_doc_section",
+            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_config_doc_render_panel\u0028\u0029",
+            "name": "e_config_doc_render_panel",
             "summary": "Render\u0020the\u0020\u0027WA\u0020Config\u0027\u0020\u0027Documentation\u0027\u0020panel.",
-            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_admin_config_render_doc_section"
+            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_doc_render_panel"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\ExtendablePluginDescription",
-            "name": "ExtendablePluginDescription",
-            "summary": "This\u0020trait\u0020will\u0020allow\u0020to\u0020extend\u0020the\u0020plugin\u0020description\u0020inside\u0020the\u0020WordPress\u0020plugin\u0020list\u0020panel",
-            "url": "classes/WA-Config-Admin-ExtendablePluginDescription.html"
+            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_config_doc_admin_menu\u0028\u0029",
+            "name": "e_config_doc_admin_menu",
+            "summary": "Add\u0020the\u0020\u0027WA\u0020Config\u0027\u0020\u0027Documentation\u0027\u0020panel.",
+            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_doc_admin_menu"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\ExtendablePluginDescription\u003A\u003Aext_plugin_description_meta\u0028\u0029",
-            "name": "ext_plugin_description_meta",
-            "summary": "Update\u0020the\u0020plugin\u0020description\u0020meta\u0020with\u0020parallel\u0020load\u0020extra\u0020informations",
-            "url": "classes/WA-Config-Admin-ExtendablePluginDescription.html#method_ext_plugin_description_meta"
+            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_config_form_field_templates\u0028\u0029",
+            "name": "e_config_form_field_templates",
+            "summary": "Get\u0020available\u0020field\u0020templates\u0020usable\u0020with\u0020WP\u0020Admin\u0020Settings\u0020API",
+            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_form_field_templates"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableConfigPanels\u003A\u003Ae_config_list_capabilities_and_roles\u0028\u0029",
+            "name": "e_config_list_capabilities_and_roles",
+            "summary": "Output\u0020a\u0020suggestion\u0020list\u0020of\u0020all\u0020available\u0020capabilities\u0020and\u0020roles",
+            "url": "classes/WA-Config-Admin-EditableConfigPanels.html#method_e_config_list_capabilities_and_roles"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\AdminParamActivable",
+            "name": "AdminParamActivable",
+            "summary": "This\u0020trait\u0020is\u0020under\u0020developpement",
+            "url": "classes/WA-Config-Admin-AdminParamActivable.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview",
+            "name": "EditableReview",
+            "summary": "This\u0020trait\u0020load\u0020the\u0020wa\u002Dconfig\u0020review\u0020system\u0020and\u0020admin\u0020panel",
+            "url": "classes/WA-Config-Admin-EditableReview.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_on_plugins_activated\u0028\u0029",
+            "name": "e_review_on_plugins_activated",
+            "summary": "Fires\u0020after\u0020a\u0020plugin\u0020has\u0020been\u0020activated.",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_on_plugins_activated"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_render_admin_panel\u0028\u0029",
+            "name": "e_review_render_admin_panel",
+            "summary": "Render\u0020the\u0020\u0027WA\u0020Config\u0027\u0020\u0027Review\u0027\u0020panel\u0020for\u0020wp\u002Dadmin.",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_render_admin_panel"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_list_data_by_key\u0028\u0029",
+            "name": "e_review_list_data_by_key",
+            "summary": "Output\u0020a\u0020suggestion\u0020list\u0020from\u0020all\u0020available\u0020\u0027review\u0027\u0020data\u0020key",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_list_data_by_key"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_settings_validate\u0028\u0029",
+            "name": "e_review_settings_validate",
+            "summary": "Validator\u0020used\u0020to\u0020validate\u0020saved\u0020\u0027review\u0027\u0020options\u0020for\u0020wa\u002Dconfig",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_settings_validate"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_settings_page_capability\u0028\u0029",
+            "name": "e_review_settings_page_capability",
+            "summary": "Capability\u0020filter\u0020for\u0020review\u0020option\u0020page\u0020edits",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_settings_page_capability"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_settings_pre_update_filter\u0028\u0029",
+            "name": "e_review_settings_pre_update_filter",
+            "summary": "Filters\u0020the\u0020review\u0020form\u0020options\u0020from\u0020our\u0020eReviewSettingsForm\u0020before\u0020it\u0020get\u0027s\u0020updated.",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_settings_pre_update_filter"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_settings_do_admin_menu\u0028\u0029",
+            "name": "e_review_settings_do_admin_menu",
+            "summary": "Add\u0020the\u0020\u0027WA\u0020Config\u0027\u0020\u0027Review\u0027\u0020panel.",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_settings_do_admin_menu"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_settings_init_form\u0028\u0029",
+            "name": "e_review_settings_init_form",
+            "summary": "Initialise\u0020settings\u0020section,\u0020form\u0020fields\u0020and\u0020options",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_settings_init_form"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_data_action\u0028\u0029",
+            "name": "e_review_data_action",
+            "summary": "Launch\u0020the\u0020review\u0020action\u0020received\u0020by\u0020HTML\u002DPOST\u0020contents.",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_data_action"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003Ae_review_data_add_base_review\u0028\u0029",
+            "name": "e_review_data_add_base_review",
+            "summary": "Build\u0020and\u0020add\u0020the\u0020base\u0020review\u0020checkpoints,\u0020ensuring\u0020checked\u0020data",
+            "url": "classes/WA-Config-Admin-EditableReview.html#method_e_review_data_add_base_review"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableReview\u003A\u003A\u0024eReviewDataStoreKey",
+            "name": "eReviewDataStoreKey",
+            "summary": "eReviewDataStoreKey\u0020is\u0020our\u0020\u0027review\u0027\u0020option\u0020store\u0020key\nused\u0020to\u0020store\u0020our\u0020reviews",
+            "url": "classes/WA-Config-Admin-EditableReview.html#property_eReviewDataStoreKey"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable",
             "name": "ApiInstanciable",
-            "summary": "This\u0020trait\u0020will\u0020allow\u0020to\u0020move\u0020wa\u002Dconfig\u0020plugins\u0020load\u0020orders",
+            "summary": "This\u0020trait\u0020will\u0020instanciate\u0020the\u0020\u0027wa\u002Dconfig\u0027\u0020REST\u0020API\u0020and\u0020the\u0020related\u0020auth\u0020system",
             "url": "classes/WA-Config-Admin-ApiInstanciable.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_parse_request\u0028\u0029",
+            "name": "api_inst_parse_request",
+            "summary": "Adding\u0020root\u0020secu\u0020request\u0020\u0027\/api\u002Dwa\u002Dconfig\u002Dnonce\u002Drest\u0027\u0020to\u0020website\u0020base\u0020url",
+            "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_parse_request"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_admin_delete_all_api_access\u0028\u0029",
+            "name": "api_inst_admin_delete_all_api_access",
+            "summary": "Delete\u0020all\u0020access\u0020tokens\u0020for\u0020wa\u002Dconfig\u0020rest\u0020api\u0020access",
+            "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_admin_delete_all_api_access"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_rest_init\u0028\u0029",
             "name": "api_inst_rest_init",
@@ -841,25 +921,35 @@ Search.appendIndex(
             "summary": "Verify\u0020errors\u0020and\u0020invalidate\u0020pre\u002Dfetch\u0020token\u0020if\u0020wordpress\u0020did\u0020send\u0020regular\u0020error\u0020event\u0020on\u0020it.",
             "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_rest_check_auth_errors"
         },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_load_parameters\u0028\u0029",
+            "name": "api_inst_load_parameters",
+            "summary": "Load\u0020ApiInstanciable\u0020parameters\u0020from\u0020the\u0020targeted\u0020\u0024request",
+            "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_load_parameters"
+        },                {
             "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_run_action\u0028\u0029",
             "name": "api_inst_run_action",
-            "summary": "Will\u0020handle\u0020an\u0020api\u0020instanciable\u0020action\u0020call",
+            "summary": "Will\u0020run\u0020an\u0020api\u0020instanciable\u0020action\u0020call",
             "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_run_action"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadSynchronisable",
-            "name": "ApiFrontHeadSynchronisable",
-            "summary": "This\u0020trait\u0020will\u0020allow\u0020Frontend\u0020developers\u0020to\u0020synchronise\u0020theire\u0020front\u0020heads",
-            "url": "classes/WA-Config-Admin-ApiFrontHeadSynchronisable.html"
+            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadable",
+            "name": "ApiFrontHeadable",
+            "summary": "This\u0020trait\u0020will\u0020allow\u0020Frontend\u0020developers\u0020to\u0020synchronise\u0020front\u0020heads",
+            "url": "classes/WA-Config-Admin-ApiFrontHeadable.html"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadSynchronisable\u003A\u003Aapi_fronthead_sync_rest_init\u0028\u0029",
-            "name": "api_fronthead_sync_rest_init",
-            "summary": "Init\u0020wa\u002Dconfig\u0020fronthead\u0020sync\u0020routings",
-            "url": "classes/WA-Config-Admin-ApiFrontHeadSynchronisable.html#method_api_fronthead_sync_rest_init"
+            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadable\u003A\u003Aapi_fronthead_rest_init\u0028\u0029",
+            "name": "api_fronthead_rest_init",
+            "summary": "Init\u0020wa\u002Dconfig\u0020fronthead\u0020API\u0020routings",
+            "url": "classes/WA-Config-Admin-ApiFrontHeadable.html#method_api_fronthead_rest_init"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadSynchronisable\u003A\u003Aapi_fronthead_sync_deploy\u0028\u0029",
-            "name": "api_fronthead_sync_deploy",
-            "summary": "Deploy\u0020the\u0020associated\u0020zip\u0020archive\u0020to\u0020wa\u002Dconfig\u0020front\u0020heads\u0020folder",
-            "url": "classes/WA-Config-Admin-ApiFrontHeadSynchronisable.html#method_api_fronthead_sync_deploy"
+            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadable\u003A\u003Aapi_fronthead_deploy\u0028\u0029",
+            "name": "api_fronthead_deploy",
+            "summary": "Run\u0020deploy\u0020actions\u0020of\u0020zip\u0020archive\u0020to\u0020wa\u002Dconfig\u0020front\u0020heads\u0020folder",
+            "url": "classes/WA-Config-Admin-ApiFrontHeadable.html#method_api_fronthead_deploy"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiFrontHeadable\u003A\u003Aapi_fronthead_admin_sugestion_list\u0028\u0029",
+            "name": "api_fronthead_admin_sugestion_list",
+            "summary": "Output\u0020a\u0020suggestion\u0020list\u0020of\u0020all\u0020available\u0020front\u002Dheads",
+            "url": "classes/WA-Config-Admin-ApiFrontHeadable.html#method_api_fronthead_admin_sugestion_list"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\Optimisable",
             "name": "Optimisable",
@@ -893,22 +983,22 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_max_speed_review\u0028\u0029",
             "name": "opti_max_speed_review",
-            "summary": "Review\u0020the\u0020maximum\u0020optimisation\u0020checkpoints",
+            "summary": "Add\u0020the\u0020MAX\u0020speed\u0020optimisation\u0020reviews",
             "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_max_speed_review"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_medium_speed_review\u0028\u0029",
             "name": "opti_medium_speed_review",
-            "summary": "Review\u0020the\u0020medium\u0020optimisation\u0020checkpoints",
+            "summary": "Add\u0020the\u0020MEDIUM\u0020speed\u0020optimisation\u0020reviews",
             "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_medium_speed_review"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_disabled_review\u0028\u0029",
             "name": "opti_disabled_review",
-            "summary": "Review\u0020the\u0020no\u0020optimisations\u0020checkpoints",
+            "summary": "Add\u0020the\u0020no\u0020optimisation\u0020reviews\u0020\u0028Disabled\u0020optimisations\u0029",
             "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_disabled_review"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003Aopti_common_review\u0028\u0029",
             "name": "opti_common_review",
-            "summary": "Review\u0020for\u0020common\u0020checkpoints",
+            "summary": "Add\u0020the\u0020common\u0020optimisation\u0020reviews",
             "url": "classes/WA-Config-Admin-Optimisable.html#method_opti_common_review"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\Optimisable\u003A\u003A\u0024BLOCKED_URL_REVIEW_REPORT",
@@ -923,27 +1013,27 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableScripts",
             "name": "EditableScripts",
-            "summary": "This\u0020trait\u0020will\u0020load\u0020wa\u002Dconfig\u0020Frontend\u0020javascript\u0020sources",
+            "summary": "This\u0020trait\u0020will\u0020load\u0020wa\u002Dconfig\u0020frontend\u0020javascript\u0020sources",
             "url": "classes/WA-Config-Frontend-EditableScripts.html"
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableScripts\u003A\u003Ae_scripts_do_enqueue\u0028\u0029",
             "name": "e_scripts_do_enqueue",
-            "summary": "wp_enqueue_script\u0020the\u0020Frontend\u0020scripts\u0020of\u0020wa\u002Dconfig\u0020package.",
+            "summary": "wp_enqueue_script\u0020the\u0020frontend\u0020assets\/app.js\u0020script\u0020from\u0020plugin\u0020directory.",
             "url": "classes/WA-Config-Frontend-EditableScripts.html#method_e_scripts_do_enqueue"
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableStyles",
             "name": "EditableStyles",
-            "summary": "This\u0020trait\u0020will\u0020load\u0020wa\u002Dconfig\u0020Frontend\u0020stylesheets\u0020sources",
+            "summary": "This\u0020trait\u0020will\u0020load\u0020wa\u002Dconfig\u0020frontend\u0020stylesheets\u0020sources",
             "url": "classes/WA-Config-Frontend-EditableStyles.html"
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableStyles\u003A\u003Ae_styles_do_enqueue\u0028\u0029",
             "name": "e_styles_do_enqueue",
-            "summary": "wp_enqueue_style\u0020custom\u0020Frontend\u0020sylesheets\u0020from\u0020wa\u002Dconfig\u0020package",
+            "summary": "wp_enqueue_style\u0020the\u0020frontend\u0020assets\/styles.css\u0020script\u0020from\u0020plugin\u0020directory.",
             "url": "classes/WA-Config-Frontend-EditableStyles.html#method_e_styles_do_enqueue"
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableFooter",
             "name": "EditableFooter",
-            "summary": "This\u0020trait\u0020will\u0020render\u0020the\u0020Frontend\u0020footer\u0020based\u0020on\u0020wa\u002Dconfig\u0020options",
+            "summary": "This\u0020trait\u0020will\u0020render\u0020the\u0020frontend\u0020footer\u0020based\u0020on\u0020wa\u002Dconfig\u0020options",
             "url": "classes/WA-Config-Frontend-EditableFooter.html"
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableFooter\u003A\u003Ae_footer_filter_render_block_twentytwentytwo\u0028\u0029",
@@ -953,173 +1043,13 @@ Search.appendIndex(
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableFooter\u003A\u003Ae_footer_do_wp_footer_twentytwenty\u0028\u0029",
             "name": "e_footer_do_wp_footer_twentytwenty",
-            "summary": "Hide\u0020the\u0020twentytwenty\u0020footer\u0020and\u0020inject\u0020WA\u0020Admin\u0020configured\u0020footer",
+            "summary": "Hide\u0020the\u0020template\u0020footer\u0020and\u0020inject\u0020WA\u0020Admin\u0020configured\u0020footer",
             "url": "classes/WA-Config-Frontend-EditableFooter.html#method_e_footer_do_wp_footer_twentytwenty"
         },                {
             "fqsen": "\\WA\\Config\\Frontend\\EditableFooter\u003A\u003Ae_footer_render\u0028\u0029",
             "name": "e_footer_render",
             "summary": "Return\u0020the\u0020rendered\u0020Frontend\u0020footer\u0020acordingly\u0020to\u0020wa\u002Dconfig\u0020Admin\u0020options\u0020\u003A",
             "url": "classes/WA-Config-Frontend-EditableFooter.html#method_e_footer_render"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize",
-            "name": "Restaurant_Food_Delivery_Customize",
-            "summary": "Singleton\u0020class\u0020for\u0020handling\u0020the\u0020theme\u0027s\u0020customizer\u0020integration.",
-            "url": "classes/Restaurant-Food-Delivery-Customize.html"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize\u003A\u003Aget_instance\u0028\u0029",
-            "name": "get_instance",
-            "summary": "Returns\u0020the\u0020instance.",
-            "url": "classes/Restaurant-Food-Delivery-Customize.html#method_get_instance"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize\u003A\u003Asections\u0028\u0029",
-            "name": "sections",
-            "summary": "Sets\u0020up\u0020the\u0020customizer\u0020sections.",
-            "url": "classes/Restaurant-Food-Delivery-Customize.html#method_sections"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize\u003A\u003Aenqueue_control_scripts\u0028\u0029",
-            "name": "enqueue_control_scripts",
-            "summary": "Loads\u0020theme\u0020customizer\u0020CSS.",
-            "url": "classes/Restaurant-Food-Delivery-Customize.html#method_enqueue_control_scripts"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_customizer_settings\u0028\u0029",
-            "name": "restaurant_food_delivery_customizer_settings",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_customizer_settings"
-        },                {
-            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_DOCS_FREE",
-            "name": "RESTAURANT_FOOD_DELIVERY_DOCS_FREE",
-            "summary": "",
-            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_DOCS_FREE"
-        },                {
-            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_DOCS_PRO",
-            "name": "RESTAURANT_FOOD_DELIVERY_DOCS_PRO",
-            "summary": "",
-            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_DOCS_PRO"
-        },                {
-            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_BUY_NOW",
-            "name": "RESTAURANT_FOOD_DELIVERY_BUY_NOW",
-            "summary": "",
-            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_BUY_NOW"
-        },                {
-            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_SUPPORT_FREE",
-            "name": "RESTAURANT_FOOD_DELIVERY_SUPPORT_FREE",
-            "summary": "",
-            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_SUPPORT_FREE"
-        },                {
-            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_REVIEW_FREE",
-            "name": "RESTAURANT_FOOD_DELIVERY_REVIEW_FREE",
-            "summary": "",
-            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_REVIEW_FREE"
-        },                {
-            "fqsen": "\\RESTAURANT_FOOD_DELIVERY_DEMO_PRO",
-            "name": "RESTAURANT_FOOD_DELIVERY_DEMO_PRO",
-            "summary": "",
-            "url": "namespaces/default.html#constant_RESTAURANT_FOOD_DELIVERY_DEMO_PRO"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_getting_started\u0028\u0029",
-            "name": "restaurant_food_delivery_getting_started",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_getting_started"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_admin_enqueue_scripts\u0028\u0029",
-            "name": "restaurant_food_delivery_admin_enqueue_scripts",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_admin_enqueue_scripts"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_test_guide\u0028\u0029",
-            "name": "restaurant_food_delivery_test_guide",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_test_guide"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_register_recommended_plugins\u0028\u0029",
-            "name": "restaurant_food_delivery_register_recommended_plugins",
-            "summary": "Recommended\u0020plugins.",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_register_recommended_plugins"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro",
-            "name": "Restaurant_Food_Delivery_Customize_Section_Pro",
-            "summary": "Pro\u0020customizer\u0020section.",
-            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro\u003A\u003Ajson\u0028\u0029",
-            "name": "json",
-            "summary": "Add\u0020custom\u0020parameters\u0020to\u0020pass\u0020to\u0020the\u0020JS\u0020via\u0020JSON.",
-            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html#method_json"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro\u003A\u003A\u0024type",
-            "name": "type",
-            "summary": "The\u0020type\u0020of\u0020customize\u0020section\u0020being\u0020rendered.",
-            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html#property_type"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro\u003A\u003A\u0024pro_text",
-            "name": "pro_text",
-            "summary": "Custom\u0020button\u0020text\u0020to\u0020output.",
-            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html#property_pro_text"
-        },                {
-            "fqsen": "\\Restaurant_Food_Delivery_Customize_Section_Pro\u003A\u003A\u0024pro_url",
-            "name": "pro_url",
-            "summary": "Custom\u0020pro\u0020button\u0020URL.",
-            "url": "classes/Restaurant-Food-Delivery-Customize-Section-Pro.html#property_pro_url"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_enqueue_google_fonts\u0028\u0029",
-            "name": "restaurant_food_delivery_enqueue_google_fonts",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_enqueue_google_fonts"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_enqueue_scripts\u0028\u0029",
-            "name": "restaurant_food_delivery_enqueue_scripts",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_enqueue_scripts"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_after_setup_theme\u0028\u0029",
-            "name": "restaurant_food_delivery_after_setup_theme",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_after_setup_theme"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_logo_resizer\u0028\u0029",
-            "name": "restaurant_food_delivery_logo_resizer",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_logo_resizer"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_comment\u0028\u0029",
-            "name": "restaurant_food_delivery_comment",
-            "summary": "Template\u0020for\u0020comments\u0020and\u0020pingbacks.",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_comment"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_widgets_init\u0028\u0029",
-            "name": "restaurant_food_delivery_widgets_init",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_widgets_init"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_get_categories_select\u0028\u0029",
-            "name": "restaurant_food_delivery_get_categories_select",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_get_categories_select"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_sanitize_select\u0028\u0029",
-            "name": "restaurant_food_delivery_sanitize_select",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_sanitize_select"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_loop_columns\u0028\u0029",
-            "name": "restaurant_food_delivery_loop_columns",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_loop_columns"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_remove_sections\u0028\u0029",
-            "name": "restaurant_food_delivery_remove_sections",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_remove_sections"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_load_dashicons_front_end\u0028\u0029",
-            "name": "restaurant_food_delivery_load_dashicons_front_end",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_load_dashicons_front_end"
-        },                {
-            "fqsen": "\\restaurant_food_delivery_notice\u0028\u0029",
-            "name": "restaurant_food_delivery_notice",
-            "summary": "",
-            "url": "namespaces/default.html#function_restaurant_food_delivery_notice"
         },                {
             "fqsen": "\\WA\\Config\\E2E\\E2E_EnsureAdminConfigPanelCest",
             "name": "E2E_EnsureAdminConfigPanelCest",
@@ -1151,6 +1081,11 @@ Search.appendIndex(
             "summary": "Testing\u0020admin\u0020panel\u0020WA\u0020Config\u0020panels\u0020availability",
             "url": "classes/WA-Config-E2E-E2E-EnsureAdminConfigPanelCest.html#method_testingWAConfig_panelsAvailability"
         },                {
+            "fqsen": "\\WA\\Config\\E2E\\Frontend\\test_footer\u0028\u0029",
+            "name": "test_footer",
+            "summary": "",
+            "url": "namespaces/wa-config-e2e-frontend.html#function_test_footer"
+        },                {
             "fqsen": "\\WA\\Config\\E2E\\Frontend\\E2E_EnsureFooterCreditsCept",
             "name": "E2E_EnsureFooterCreditsCept",
             "summary": "Simple\u0020end\u0020to\u0020end\u0020data\u0020test",
@@ -1160,6 +1095,11 @@ Search.appendIndex(
             "name": "FOOTER_CREDIT",
             "summary": "",
             "url": "classes/WA-Config-E2E-Frontend-E2E-EnsureFooterCreditsCept.html#constant_FOOTER_CREDIT"
+        },                {
+            "fqsen": "\\WA\\Config\\E2E\\Frontend\\E2E_EnsureFooterCreditsCept\u003A\u003AFOOTER_TEST_POOL",
+            "name": "FOOTER_TEST_POOL",
+            "summary": "",
+            "url": "classes/WA-Config-E2E-Frontend-E2E-EnsureFooterCreditsCept.html#constant_FOOTER_TEST_POOL"
         },                {
             "fqsen": "\\WA_Config_BASE_CLASS",
             "name": "WA_Config_BASE_CLASS",
@@ -1205,6 +1145,21 @@ Search.appendIndex(
             "name": "WA",
             "summary": "",
             "url": "namespaces/wa.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Templates\\Themes\\TwentyTwenty",
+            "name": "TwentyTwenty",
+            "summary": "",
+            "url": "namespaces/wa-config-templates-themes-twentytwenty.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Templates\\Themes",
+            "name": "Themes",
+            "summary": "",
+            "url": "namespaces/wa-config-templates-themes.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Templates",
+            "name": "Templates",
+            "summary": "",
+            "url": "namespaces/wa-config-templates.html"
         },                {
             "fqsen": "\\WA\\Config\\E2E",
             "name": "E2E",

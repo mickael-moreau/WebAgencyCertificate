@@ -72,20 +72,6 @@
     <a href="packages/waConfig.html" class="">waConfig</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerceTemplates.html" class="">WooCommerceTemplates</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerce.html" class="">WooCommerce</a>
-</h4>
-    <ul class="phpdocumentor-list">
-                    <li>
-                <a href="packages/WooCommerce-Templates.html" class="">Templates</a>
-                
-            </li>
-            </ul>
-
                         </section>
             
     <section class="phpdocumentor-sidebar__category">
@@ -124,9 +110,9 @@
     </h2>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9719</span>
+    <span class="phpdocumentor-element-found-in__line">7888</span>
 
     </aside>
 
@@ -174,14 +160,14 @@
     <span>
         &nbsp;= &#039;full&#039;                            </span>
 </dt>
-<dd>Full optimisation</dd>
+<dd>Full optimisation (Removing Wordpress and Plugins audo-update)</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/WA-Config-Admin-OptiLvl.html#constant_MEDIUM">MEDIUM</a>
     <span>
         &nbsp;= &#039;medium&#039;                            </span>
 </dt>
-<dd>Medium optimisation</dd>
+<dd>Medium optimisation (Removing CRON)</dd>
 
                     </dl>
 
@@ -200,13 +186,13 @@
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9727</span>
+    <span class="phpdocumentor-element-found-in__line">7936</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Full optimisation</p>
+        <p class="phpdocumentor-summary">Full optimisation (Removing Wordpress and Plugins audo-update)</p>
 
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -216,7 +202,32 @@
 </code>
 
 
-    
+        <section class="phpdocumentor-description"><p>Auto-update can slow down admin calls, and potentially client calls in case
+of server overloads due to plugin updates in progress on top of client requests.</p>
+<p>For maximum optimisation, we will disable those. You can still update plugins from
+the regular wordpress update status panel.</p>
+<p>Please, do the updates and reviews with regularity, since automatic mode have been disabled.</p>
+<p>Moreover, <strong>automatic</strong> mode <strong>or manual</strong> mode
+<strong>dose not</strong> launch the <strong>reviews</strong> and <strong>end to end</strong> tests.</p>
+<p>You will gain more controle and quality for your website updates by doin thoses.</p>
+<p>Updates may breaks some plugins or data. We will be pleased to provide some
+of our expertise to solve thoses issues : <a href="https://moonkiosk.monwoo.com"><abbr title="https://moonkiosk.monwoo.com">https://moonkiosk.monwoo.com</abbr></a>.</p>
+<p>We honor paied contracts, and let open source request follow the open source community
+'delay' and 'will' to solve the request.</p>
+<p>With this FULL level activated, common auto-update hooks will be disabled :</p>
+<ul>
+<li>plugins_auto_update_enabled is filtered to false</li>
+<li>themes_auto_update_enabled is filtered to false</li>
+</ul>
+<p>Review will also test that wp-config.php define :</p>
+<ul>
+<li>
+<strong>WP_AUTO_UPDATE_CORE</strong> to false, removing server side Wordpress auto-update calls</li>
+<li>
+<strong>AUTOMATIC_UPDATER_DISABLED</strong> to true, removing server side Plugins auto-update calls</li>
+</ul>
+</section>
+
         <section class="phpdocumentor-description"></section>
 
     
@@ -229,13 +240,13 @@
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9723</span>
+    <span class="phpdocumentor-element-found-in__line">7904</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Medium optimisation</p>
+        <p class="phpdocumentor-summary">Medium optimisation (Removing CRON)</p>
 
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -245,7 +256,20 @@
 </code>
 
 
-    
+        <section class="phpdocumentor-description"><p>CRON slow down frontend and admin calls, specially if you have lot of plugins
+doing lot of heavy (or slow) short period jobs.</p>
+<p>Indeed, default WP CRON strategy is to run those jobs at same time as client requests
+and consume client waiting time loads on simple request that should not consume so much.</p>
+<p>With this MEDIUM level activated review will test that wp-config.php define :</p>
+<ul>
+<li>
+<strong>DISABLE_WP_CRON</strong> : to true. Then you should handle CRON
+with your website provider or call '/wp-cron.php?doing_wp_cron' purposely
+to still run those background jobs (or run them from another
+WP instance sharing the same database connection... cf LOCK and parallel DB operations)</li>
+</ul>
+</section>
+
         <section class="phpdocumentor-description"></section>
 
     

@@ -12,12 +12,12 @@
  *
  * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
- * @package waConfig\templates\themes\twentyTwenty
- * @since 0.0.1
  * @package
+ * @since 0.0.1
  * @author service@monwoo.com
  * @ignore
  */
+// * @ package waConfig\templates\themes\twentyTwenty
 
 namespace WA\Config\Templates\Themes\TwentyTwenty {
 // TODO : refactor, not used yet, since use CSS hide instead, r&d keep looking or simply remove this file...

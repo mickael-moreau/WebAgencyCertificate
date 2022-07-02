@@ -72,20 +72,6 @@
     <a href="packages/waConfig.html" class="">waConfig</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerceTemplates.html" class="">WooCommerceTemplates</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/WooCommerce.html" class="">WooCommerce</a>
-</h4>
-    <ul class="phpdocumentor-list">
-                    <li>
-                <a href="packages/WooCommerce-Templates.html" class="">Templates</a>
-                
-            </li>
-            </ul>
-
                         </section>
             
     <section class="phpdocumentor-sidebar__category">
@@ -114,16 +100,40 @@
     </h2>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3552</span>
+    <span class="phpdocumentor-element-found-in__line">2931</span>
 
     </aside>
 
             <p class="phpdocumentor-summary">This trait will add the wa-mission post type</p>
 
-    <section class="phpdocumentor-description"><p>You could use it frontend side with this kind of plugin :</p>
+    <section class="phpdocumentor-description"><p>You could use it frontend side with the REST API or this kind of plugin :</p>
 <p><a href="https://fr.wordpress.org/plugins/custom-post-type-widget-blocks/">Custom Post Type Widget Blocks by thingsym</a></p>
+<p><a href="https://developer.wordpress.org/rest-api/reference/posts"><abbr title="https://developer.wordpress.org/rest-api/reference/posts">https://developer.wordpress.org/rest-api/reference/posts</abbr></a></p>
+<pre class="prettyprint"><code class="language-js">// JS ES6 usage example to fecth skill taxonomies :
+// You can copy/past below code in your Chrome console to test it :
+// (A Console opened by inspecting the same domain name to
+// avoid fetch errors)
+async function getMissions() {
+    const WpV2ApiBaseUrl = &quot;https://web-agency.local.dev/e-commerce/wp-json/wp/v2&quot;;
+    let response = await fetch(`${WpV2ApiBaseUrl}/wa-mission`, {
+        method: 'GET',
+        mode: 'no-cors',
+        withCredentials: false,
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    });
+    let missions = await response.json();
+    return missions;
+}
+getMissions().then(data =&gt; console.log(data) &amp;&amp; data);
+</code></pre>
+<pre class="prettyprint"><code class="language-bash"># curl example to fecth skill taxonomies :
+WP_V2API_BASEURL=&quot;https://web-agency.local.dev/e-commerce/wp-json/wp/v2&quot;
+curl &quot;$WP_V2API_BASEURL/wa-mission&quot;
+</code></pre>
 </section>
 
 
@@ -133,6 +143,30 @@
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types"><abbr title="https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types">https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-rest-api-support-for-custom-content-types</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="https://developer.wordpress.org/rest-api/reference"><abbr title="https://developer.wordpress.org/rest-api/reference">https://developer.wordpress.org/rest-api/reference</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters"><abbr title="https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters">https://developer.wordpress.org/rest-api/using-the-rest-api/global-parameters</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">since</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
@@ -171,147 +205,147 @@
 
 <dl class="phpdocumentor-table-of-contents">
                         <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_add_column">e_mission_post_end_date_add_column()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>Add the end-date column from end-date meta of wa-mission posts.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_add_metabox">e_mission_post_end_date_add_metabox()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-<dd>Enqueue stylesheet for wp-admin customisation by wa-config.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_quick_edit">e_mission_post_end_date_quick_edit()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>Allow quick edit for end-date meta of wa-mission posts.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_quick_edit_js">e_mission_post_end_date_quick_edit_js()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>JS to allow quick edit value sync for end-date meta of wa-mission posts.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_render_column_row">e_mission_post_end_date_render_column_row()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>Render the column row data for end-date meta of wa-mission posts.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_render_metabox">e_mission_post_end_date_render_metabox()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-<dd>Render the meta box for end-date meta.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_save_metabox">e_mission_post_end_date_save_metabox()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-<dd>Save the meta box for end-date meta.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_admin_menu">e_mission_post_type_admin_menu()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_admin_menu">e_mission_CPT_admin_menu()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
 <dd>Register wa-mission admin menu.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_change_woocommerce_order_number">e_mission_post_type_change_woocommerce_order_number()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_change_woocommerce_order_number">e_mission_CPT_change_woocommerce_order_number()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Add prefix to woocommerce order numbers</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menu_metabox">e_mission_post_type_do_template_nav_menu_metabox()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menu_metabox">e_mission_CPT_do_template_nav_menu_metabox()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Add nav menu admin metabox</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menus">e_mission_post_type_do_template_nav_menus()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menus">e_mission_CPT_do_template_nav_menus()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Add nav menu</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menus_filter">e_mission_post_type_do_template_nav_menus_filter()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menus_filter">e_mission_CPT_do_template_nav_menus_filter()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Filter to render our nav menu</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_get_meta_from_rest">e_mission_post_type_get_meta_from_rest()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_add_column">e_mission_CPT_end_date_add_column()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd>Add the end-date column from end-date meta of wa-mission posts.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_add_metabox">e_mission_CPT_end_date_add_metabox()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Add wa-mission end-date meta box</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_quick_edit">e_mission_CPT_end_date_quick_edit()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd>Allow quick edit for end-date meta of wa-mission posts.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_quick_edit_js">e_mission_CPT_end_date_quick_edit_js()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd>JS to allow quick edit value sync for end-date meta of wa-mission posts.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_render_column_row">e_mission_CPT_end_date_render_column_row()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd>Render the column row data for end-date meta of wa-mission posts.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_render_metabox">e_mission_CPT_end_date_render_metabox()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Render the meta box for end-date meta.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_save_metabox">e_mission_CPT_end_date_save_metabox()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Save the meta box for end-date meta.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_get_meta_from_rest">e_mission_CPT_get_meta_from_rest()</a>
     <span>
                                 &nbsp;: string    </span>
 </dt>
 <dd>Get Site URL</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_get_the_date">e_mission_post_type_get_the_date()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_get_the_date">e_mission_CPT_get_the_date()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Overwsite post date to show mission date range instead.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_layout_class">e_mission_post_type_layout_class()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_layout_class">e_mission_CPT_layout_class()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: string    </span>
 </dt>
 <dd>Alter your post layouts</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_load_template_includes">e_mission_post_type_load_template_includes()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_load_template_includes">e_mission_CPT_load_template_includes()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Filter templates to load custom templates if availables</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_oceanwp_metabox">e_mission_post_type_oceanwp_metabox()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_oceanwp_metabox">e_mission_CPT_oceanwp_metabox()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Add the OceanWP Settings metabox in your CPT</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_lang_link">e_mission_post_type_polylang_lang_link()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_lang_link">e_mission_CPT_polylang_lang_link()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Register polylang rewrite rule for wa-mission slugs</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_register">e_mission_post_type_polylang_register()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_register">e_mission_CPT_polylang_register()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Register wa-mission post type with polylang plugin</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_rewrite_slugs">e_mission_post_type_polylang_rewrite_slugs()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_rewrite_slugs">e_mission_CPT_polylang_rewrite_slugs()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd>Register polylang rewrite rule for wa-mission slugs</dd>
+<dd>Register polylang rewrite rule for wa-mission slugs (Dev in progres...)</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_register">e_mission_post_type_register()</a>
+    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_register">e_mission_CPT_register()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
@@ -341,323 +375,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_end_date_add_column">
-        e_mission_post_end_date_add_column()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_add_column" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_admin_menu">
+        e_mission_CPT_admin_menu()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_admin_menu" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4259</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Add the end-date column from end-date meta of wa-mission posts.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_end_date_add_column</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$columns</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$columns</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_end_date_add_metabox">
-        e_mission_post_end_date_add_metabox()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_add_metabox" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">4187</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Enqueue stylesheet for wp-admin customisation by wa-config.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_end_date_add_metabox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$post</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_end_date_quick_edit">
-        e_mission_post_end_date_quick_edit()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_quick_edit" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">4283</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Allow quick edit for end-date meta of wa-mission posts.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_end_date_quick_edit</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$column</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$postType</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$column</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$postType</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_end_date_quick_edit_js">
-        e_mission_post_end_date_quick_edit_js()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_quick_edit_js" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">4296</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">JS to allow quick edit value sync for end-date meta of wa-mission posts.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_end_date_quick_edit_js</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-    
-    
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_end_date_render_column_row">
-        e_mission_post_end_date_render_column_row()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_render_column_row" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">4270</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Render the column row data for end-date meta of wa-mission posts.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_end_date_render_column_row</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$column</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$postId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$column</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$postId</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_end_date_render_metabox">
-        e_mission_post_end_date_render_metabox()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_render_metabox" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">4232</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Render the meta box for end-date meta.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_end_date_render_metabox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$post</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_end_date_save_metabox">
-        e_mission_post_end_date_save_metabox()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_end_date_save_metabox" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">4211</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Save the meta box for end-date meta.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_end_date_save_metabox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post_ID</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$post_ID</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_admin_menu">
-        e_mission_post_type_admin_menu()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_admin_menu" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">3841</span>
+    <span class="phpdocumentor-element-found-in__line">3142</span>
 
     </aside>
 
@@ -665,7 +390,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_admin_menu</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_admin_menu</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     
     
@@ -683,14 +408,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_change_woocommerce_order_number">
-        e_mission_post_type_change_woocommerce_order_number()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_change_woocommerce_order_number" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_change_woocommerce_order_number">
+        e_mission_CPT_change_woocommerce_order_number()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_change_woocommerce_order_number" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3643</span>
+    <span class="phpdocumentor-element-found-in__line">2979</span>
 
     </aside>
 
@@ -698,7 +423,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_change_woocommerce_order_number</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$order_id</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$order</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_change_woocommerce_order_number</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$order_id</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$order</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -735,14 +460,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_do_template_nav_menu_metabox">
-        e_mission_post_type_do_template_nav_menu_metabox()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menu_metabox" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_do_template_nav_menu_metabox">
+        e_mission_CPT_do_template_nav_menu_metabox()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menu_metabox" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3716</span>
+    <span class="phpdocumentor-element-found-in__line">3040</span>
 
     </aside>
 
@@ -750,7 +475,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_do_template_nav_menu_metabox</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_do_template_nav_menu_metabox</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
     
@@ -768,14 +493,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_do_template_nav_menus">
-        e_mission_post_type_do_template_nav_menus()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menus" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_do_template_nav_menus">
+        e_mission_CPT_do_template_nav_menus()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menus" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3693</span>
+    <span class="phpdocumentor-element-found-in__line">3018</span>
 
     </aside>
 
@@ -783,7 +508,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_do_template_nav_menus</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_do_template_nav_menus</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
     
@@ -801,14 +526,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_do_template_nav_menus_filter">
-        e_mission_post_type_do_template_nav_menus_filter()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_do_template_nav_menus_filter" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_do_template_nav_menus_filter">
+        e_mission_CPT_do_template_nav_menus_filter()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menus_filter" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3701</span>
+    <span class="phpdocumentor-element-found-in__line">3025</span>
 
     </aside>
 
@@ -816,7 +541,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_do_template_nav_menus_filter</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$items</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$menu</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$args</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_do_template_nav_menus_filter</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$items</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$menu</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$args</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -861,14 +586,325 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_get_meta_from_rest">
-        e_mission_post_type_get_meta_from_rest()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_get_meta_from_rest" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_end_date_add_column">
+        e_mission_CPT_end_date_add_column()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_add_column" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4113</span>
+    <span class="phpdocumentor-element-found-in__line">3401</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Add the end-date column from end-date meta of wa-mission posts.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_end_date_add_column</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$columns</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$columns</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_end_date_add_metabox">
+        e_mission_CPT_end_date_add_metabox()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_add_metabox" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3356</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Add wa-mission end-date meta box</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_end_date_add_metabox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$post</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>wa-mission with end-date meta</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_end_date_quick_edit">
+        e_mission_CPT_end_date_quick_edit()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_quick_edit" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3422</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Allow quick edit for end-date meta of wa-mission posts.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_end_date_quick_edit</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$column</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$postType</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$column</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$postType</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_end_date_quick_edit_js">
+        e_mission_CPT_end_date_quick_edit_js()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_quick_edit_js" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3431</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">JS to allow quick edit value sync for end-date meta of wa-mission posts.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_end_date_quick_edit_js</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_end_date_render_column_row">
+        e_mission_CPT_end_date_render_column_row()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_render_column_row" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3410</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Render the column row data for end-date meta of wa-mission posts.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_end_date_render_column_row</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$column</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$postId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$column</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$postId</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_end_date_render_metabox">
+        e_mission_CPT_end_date_render_metabox()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_render_metabox" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3385</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Render the meta box for end-date meta.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_end_date_render_metabox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$post</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_end_date_save_metabox">
+        e_mission_CPT_end_date_save_metabox()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_end_date_save_metabox" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3372</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Save the meta box for end-date meta.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_end_date_save_metabox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post_ID</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$post_ID</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href=""><abbr title=""></abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_get_meta_from_rest">
+        e_mission_CPT_get_meta_from_rest()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_get_meta_from_rest" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3313</span>
 
     </aside>
 
@@ -876,7 +912,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_get_meta_from_rest</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$object</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$field_name</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_get_meta_from_rest</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$object</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$field_name</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -926,14 +962,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_get_the_date">
-        e_mission_post_type_get_the_date()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_get_the_date" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_get_the_date">
+        e_mission_CPT_get_the_date()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_get_the_date" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4139</span>
+    <span class="phpdocumentor-element-found-in__line">3326</span>
 
     </aside>
 
@@ -941,7 +977,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_get_the_date</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$the_date</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$d</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_get_the_date</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$the_date</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$d</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -986,14 +1022,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_layout_class">
-        e_mission_post_type_layout_class()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_layout_class" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_layout_class">
+        e_mission_CPT_layout_class()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_layout_class" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3612</span>
+    <span class="phpdocumentor-element-found-in__line">2957</span>
 
     </aside>
 
@@ -1001,7 +1037,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_layout_class</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$class</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_layout_class</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$class</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -1019,9 +1055,11 @@
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type">string</span>
             &mdash;
-        
+            <section class="phpdocumentor-description"><p>class : [ <strong>full-width</strong> ], full-screen, left-sidebar, right-sidebar or both-sidebars</p>
+</section>
+
     
 </article>
                     <article
@@ -1030,14 +1068,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_load_template_includes">
-        e_mission_post_type_load_template_includes()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_load_template_includes" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_load_template_includes">
+        e_mission_CPT_load_template_includes()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_load_template_includes" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3662</span>
+    <span class="phpdocumentor-element-found-in__line">2992</span>
 
     </aside>
 
@@ -1045,7 +1083,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_load_template_includes</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$template_path</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_load_template_includes</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$template_path</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -1075,14 +1113,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_oceanwp_metabox">
-        e_mission_post_type_oceanwp_metabox()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_oceanwp_metabox" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_oceanwp_metabox">
+        e_mission_CPT_oceanwp_metabox()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_oceanwp_metabox" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3631</span>
+    <span class="phpdocumentor-element-found-in__line">2970</span>
 
     </aside>
 
@@ -1090,7 +1128,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_oceanwp_metabox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$types</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_oceanwp_metabox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$types</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -1119,14 +1157,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_polylang_lang_link">
-        e_mission_post_type_polylang_lang_link()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_lang_link" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_polylang_lang_link">
+        e_mission_CPT_polylang_lang_link()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_lang_link" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3754</span>
+    <span class="phpdocumentor-element-found-in__line">3071</span>
 
     </aside>
 
@@ -1134,7 +1172,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_polylang_lang_link</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$slug</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$locale</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_polylang_lang_link</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$slug</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$locale</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -1179,14 +1217,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_polylang_register">
-        e_mission_post_type_polylang_register()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_register" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_polylang_register">
+        e_mission_CPT_polylang_register()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_register" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3825</span>
+    <span class="phpdocumentor-element-found-in__line">3129</span>
 
     </aside>
 
@@ -1194,7 +1232,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_polylang_register</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post_types</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$is_settings</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_polylang_register</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post_types</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$is_settings</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -1231,22 +1269,22 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_polylang_rewrite_slugs">
-        e_mission_post_type_polylang_rewrite_slugs()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_polylang_rewrite_slugs" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_polylang_rewrite_slugs">
+        e_mission_CPT_polylang_rewrite_slugs()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_rewrite_slugs" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3762</span>
+    <span class="phpdocumentor-element-found-in__line">3079</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Register polylang rewrite rule for wa-mission slugs</p>
+        <p class="phpdocumentor-summary">Register polylang rewrite rule for wa-mission slugs (Dev in progres...)</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_polylang_rewrite_slugs</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post_type_translated_slugs</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_polylang_rewrite_slugs</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post_type_translated_slugs</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -1275,14 +1313,14 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_post_type_register">
-        e_mission_post_type_register()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_post_type_register" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_register">
+        e_mission_CPT_register()
+        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_register" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3957</span>
+    <span class="phpdocumentor-element-found-in__line">3224</span>
 
     </aside>
 
@@ -1290,7 +1328,7 @@
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_post_type_register</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_register</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     
     
@@ -1313,9 +1351,9 @@
         <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_register_localized_slug" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/App.php"><a href="files/src-app.html"><abbr title="src/App.php">App.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3795</span>
+    <span class="phpdocumentor-element-found-in__line">3107</span>
 
     </aside>
 
