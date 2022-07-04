@@ -109,6 +109,62 @@ See <a href="https://codeception.com/docs/03-AcceptanceTests">Codeception</a>
 documentation for more advanced usage.</p>
 <p>It will also show you how to use the saved wa-config options
 from the admin &quot;WA Config&quot; &quot;Parameters&quot; sub menu.</p>
+<p>You can also launch it with command line :</p>
+<pre class="prettyprint"><code class="language-bash">alias e2e=&quot;php 'tools/codecept.phar' run&quot;
+
+e2e --no-redirect  'acceptance' --html
+
+e2e --no-redirect  'acceptance' 'E2E_EnsureAdminConfigPanelCest' --html
+
+e2e --no-redirect  'acceptance' \
+'E2E_EnsureAdminConfigPanelCest::testingWAConfig_emailTrackingForComments' \
+--html --debug
+</code></pre>
+<p>In case of test failure failling user login roolback, use this
+curl commande 1 or 2 times (first time may get an invalid access error) :</p>
+<pre class="prettyprint"><code class="language-bash">WA_BACKEND=https://web-agency.local.dev/e-commerce
+curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \
+&quot;$WA_BACKEND/wp-admin/admin-ajax.php?action=wa-e2e-test-action&amp;wa-action=force-clean-and-restore-users&quot;
+# for apache servers (secu on header syntax ?)
+curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \
+&quot;$WA_BACKEND/wp-admin/admin-ajax.php?action=wa-e2e-test-action&amp;wa-action=force-clean-and-restore-users&quot;
+</code></pre>
+<p>If still not able to login with the targeted test user real login name after test, update manually :
+Open your Database access (<strong>phpmyadmin</strong>) and look for <strong>'wp_users' table</strong>
+Then look for the real login name test user from other data than the login name
+that may change during test authentification, and fix back the :</p>
+<ul>
+<li>
+<strong>'user_login'</strong> field with right login data.</li>
+<li>
+<strong>'user_email'</strong> field with right login data.</li>
+</ul>
+<p>Common errors about login is the missing real login name target.
+ex : demo@monwoo.com and editor-wa@monwoo.com are our default value for tests users list.
+So if no accessible account with demo@monwoo.com and editor-wa@monwoo.com exist under your database,
+then login will fail...</p>
+<p>You may also experiment some Guzzle clash on WebLaunch side, since codecept.phar
+will use a different version of Guzzle than the one it have been build with if present.
+If new Guzzle version is not comptaible with the codecept.phar version you have,
+you may have trouble launching the tests.</p>
+<p>For exemple, with codecept version at the time of this documentation,
+we need to desactivate
+'Google Listings and Ads' plugins that is defining
+it's own version of Guzzle to succed test launch ...</p>
+<p>You may also get an error like :
+'I fail &quot;to rollback e2e sent email : Failed asserting that on page ...'
+if 'Check &amp; Log Email' plugin is not configured to log incoming emails.
+cf : /wp-admin/admin.php?page=check-email-settings&amp;tab=logging</p>
+<p>Purging cache example :
+<a href="https://docs.litespeedtech.com/lscache/basics"><abbr title="https://docs.litespeedtech.com/lscache/basics">https://docs.litespeedtech.com/lscache/basics</abbr></a>.
+If the home page http://example.com/index.php needs to be purged,
+the trailing / is required. The index page will not be purged without it.</p>
+<pre class="prettyprint"><code class="language-bash">curl -i -X PURGE https://web-agency.local.dev/e-commerce/
+</code></pre>
+<p>If you see a 404 in your detailed page result, it's because the test did return a 404.
+If you try to access a missing ressource from the test _output folder, you will see
+a 404 message like this :
+<code class="prettyprint">[404] for Request: %{THE_REQUEST} Referrer: %{HTTP_REFERER} Host: %{HTTP_HOST}</code></p>
 </section>
 
 

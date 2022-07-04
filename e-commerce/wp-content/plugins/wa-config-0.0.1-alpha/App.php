@@ -61,6 +61,7 @@ namespace {
          * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
          */
         function _wa_e2e_tests_wp_die_handler( $message, $title = '', $args = array() ) {
+            AppInterface::exitAll();
             $inst = AppInterface::instance();
             $inst->debug(
                 "Will _wa_e2e_tests_wp_die_handler '$message' $title",
@@ -367,6 +368,10 @@ namespace WA\Config\Core {
             protected $shouldDebug = false;
             protected $shouldDebugVerbose = false;
             protected $shouldDebugVeryVerbose = false;
+            /**
+             * WARNING : Keep _000_debug__bootstrap at 000 and nothing others, to be able to debug
+             * all next calls with our wa-config debug tools
+             */
             protected function _000_debug__bootstrap() {
                 if (!$this->shouldDebug) {
                     return;
@@ -872,10 +877,10 @@ namespace WA\Config\Core {
              * @author service@monwoo.com
              */
             public $oPluginLoadsMasterPathOptKey = 'wa_orderable_plugin_load_master_path_opt';
-            protected $eConfigPageKey = 'wa-e-admin-config-param-page'; 
-            protected $eConfigParamPageKey = 'wa-e-admin-config-param-page';
-            protected $eConfigDocPageKey = 'wa-e-admin-config-doc-page';
-            protected $eConfigParamSettingsKey = 'wa-e-admin-config-param-section';
+            protected $eConfigPageKey = 'wa-e-config-param-page'; 
+            protected $eConfigParamPageKey = 'wa-e-config-param-page';
+            protected $eConfigDocPageKey = 'wa-e-config-doc-page';
+            protected $eConfigParamSettingsKey = 'wa-e-config-param-section';
             protected $eConfigOptsGroupKey = 'wa_e_config_opts_group'; 
             protected $eConfigOpts = [];
             /**
@@ -943,7 +948,7 @@ namespace WA\Config\Core {
              * @var string
              */
             public $waConfigTextDomain =  'wa-config';
-            protected function _000_t_scripts__bootstrap()
+            protected function _001_t_scripts__bootstrap()
             {
                 add_action( 'plugins_loaded', [$this, 't_loadTextdomains'] );
             }
@@ -1026,6 +1031,15 @@ namespace WA\Config\Core {
             {
                 return self::$_compatibilityReports;
             }
+            protected static $shouldExitAll = false;
+            /**
+             * Setup all registred instances to exit
+             * 
+             * Usefull for end to end testings avoiding direct script exit breaking test runs
+             */
+            public static function exitAll() {
+                self::$shouldExitAll = true;
+            }
             protected static $_instances = [];
             protected static $_iByRelativeFile = [];
             protected static $_iByIId = [];
@@ -1036,6 +1050,9 @@ namespace WA\Config\Core {
              */
             protected static function addInstance(AppInterface $inst)
             {
+                if (self::$shouldExitAll) {
+                    return; 
+                }
                 $inst->iIndex = count(self::$_instances);
                 $inst->iId = $inst->iPrefix . "-"
                     . $inst->iIndex;
@@ -1212,6 +1229,7 @@ namespace WA\Config\Core {
                     $testUsers = $E2ETestsOptions['test-users'] ?? [];
                     $user->user_login = $emailTarget;
                     $user->user_email = $emailTarget;
+                    clean_user_cache($user); 
                     /** @var wpdb $wpdb*/
                     global $wpdb;
                     if (false === $wpdb->update(
@@ -1294,6 +1312,7 @@ namespace WA\Config\Core {
                         . __("Utilisateur non existant ou déjà déconnecté", 'wa-config'),
                     ]);
                 }
+                clean_user_cache($user); 
                 $testMeta = get_user_meta( $user->ID, 'wa-e2e-test' );
                 $this->debugVeryVerbose("[$user->ID] Meta 'wa-e2e-test' : ", $testMeta);
                 $realUserName = $testMeta[0]['real-username'] ?? $user->user_login;
@@ -1321,6 +1340,7 @@ namespace WA\Config\Core {
                         $this->err("Fail to clean user 'wa-e2e-test' meta from '$userLoginName' to '{$user->user_login}'");
                     }
                 }
+                clean_user_cache($user); 
                 wp_clear_auth_cookie();
                 $this->info("Succed to logout test user from '$userLoginName' to '{$user->user_login}'");
                 http_response_code(200);
@@ -1398,10 +1418,14 @@ namespace WA\Config\Core {
                 $dataPOST = filter_input(INPUT_POST, 'wa-data', FILTER_SANITIZE_SPECIAL_CHARS);
                 $dataJson = base64_decode($dataPOST);
                 $data = json_decode($dataJson, true);
+                $this->debugVerbose("POST", $_POST);
                 switch ($action) {
                     case 'authenticate-user': {
                         $emailTarget = null;
-                        @[$email, $emailTarget] = filter_input(INPUT_POST, 'wa-data', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
+                        $waData = filter_input(INPUT_POST, 'wa-data', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY);
+                        $this->debugVeryVerbose("wa-data", $waData);
+                        $email = $waData[0];
+                        $emailTarget = $waData[1] ?? null;
                         $test_user = $this->e2e_test_authenticateTestUser(
                             $email, $aHash, $emailTarget
                         );
@@ -1534,7 +1558,7 @@ namespace WA\Config\Core {
                 $E2ETestsOptions["tests-in-progress"] = array_filter(
                     $E2ETestsOptions["tests-in-progress"],
                     function($testMeta) {
-                        return time() - $testMeta['started_at'] < 1000 * 60 * 60;
+                        return time() - $testMeta['started_at'] < 60 * 60;
                     }
                 );
                 $E2ETestsOptions['access-open'] = false;
@@ -1555,7 +1579,7 @@ namespace WA\Config\Core {
                 $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
                 $this->debugVerbose(
                     "e2e_tests_validate_access_hash '$accessHash'"
-                    . $E2ETestsOptions["tests-in-progress"][$accessHash]['started_by'] ?? 'TEST HASH NOT FOUND'
+                    . (($E2ETestsOptions["tests-in-progress"][$accessHash] ?? [])['started_by'] ?? 'TEST HASH NOT FOUND')
                 );
                 if (!$accessHash || !strlen($accessHash)
                 || !array_key_exists(
@@ -1564,7 +1588,7 @@ namespace WA\Config\Core {
                 )) { return false; }
                 $accessInfos = $E2ETestsOptions["tests-in-progress"][$accessHash];
                 $requestIP = $this->get_user_ip(false);
-                if ((time() - $accessInfos['started_at']) < (1000 * 60 * 60)
+                if ((time() - $accessInfos['started_at']) < (60 * 60)
                 && !array_key_exists('ended_at', $accessInfos)
                 && $requestIP === $accessInfos['started_by']) {
                     return $accessInfos;
@@ -1575,11 +1599,12 @@ namespace WA\Config\Core {
              * Check pending tests users and restore them
              * 
              * Usefull if you have buggy tests launch that 
-             * fails to restore users by themselves
+             * fails to restore users by themselves. You might need to launch it 2 times...
              * 
              * Curl test
              * ```bash
-             * curl "https://web-agency.local.dev/e-commerce/wp-admin/admin-ajax.php?action=wa-e2e-test-action&wa-action=force-clean-and-restore-users"
+             * curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \
+             * "https://web-agency.local.dev/e-commerce/wp-admin/admin-ajax.php?action=wa-e2e-test-action&wa-action=force-clean-and-restore-users"
              * ```
              */
             public function e2e_test_clean_and_restore_test_users() {
@@ -1591,9 +1616,9 @@ namespace WA\Config\Core {
                 $this->debug(
                     "[$anonimizedIp] Will e2e_test_clean_and_restore_test_users for $testUsersCount users."
                 );
+                $aInfo = $this->e2e_tests_access_hash_open();
+                $aHash = $aInfo['access-hash'];
                 if ($testUsersCount) {
-                    $aInfo = $this->e2e_tests_access_hash_open();
-                    $aHash = $aInfo['access-hash'];
                     foreach ($testUsers as $test_name => $user) {
                         $this->debug("[$anonimizedIp] Will e2e_test logout", $test_name);
                         $this->debugVeryVerbose(" for user :", $user);
@@ -1601,8 +1626,8 @@ namespace WA\Config\Core {
                     }
                     unset($E2ETestsOptions['test-users']);
                     update_option($this->eConfigE2ETestsOptsKey, $E2ETestsOptions);
-                    $this->e2e_tests_access_hash_close($aHash);
                 }
+                $this->e2e_tests_access_hash_close($aHash);
                 return json_encode([
                     "did_update" => "E2ETestsOptions 'test-users' with clean_and_restore",
                     "caller" => "[$anonimizedIp][{$this->iId}]",
@@ -2000,14 +2025,14 @@ namespace WA\Config\Core {
                 };
                 $wa_backup_sql();
             }
-            protected function  _000_e2e_test__bootstrap()
+            protected function  _002_e2e_test__bootstrap()
             {
-                if ($this->p_higherThanOneCallAchievedSentinel('_000_e2e_test__bootstrap')) {
+                if ($this->p_higherThanOneCallAchievedSentinel('_002_e2e_test__bootstrap')) {
                     return; 
                 }
                 wp_cache_delete("alloptions", "options"); 
                 $E2ETestsOptions = get_option($this->eConfigE2ETestsOptsKey, []);
-                $maxTestDelay = 1000 * 60 * 15; 
+                $maxTestDelay = 60 * 15; 
                 if ($E2ETestsOptions['access-open'] ?? false) {
                     if ((time() - $E2ETestsOptions['access-open']) > $maxTestDelay) {
                         $this->err(
@@ -2036,8 +2061,13 @@ namespace WA\Config\Core {
                         }, 100, 2);
                     }
                     $default = stream_context_set_default($default_opts);
-                    if ('wa-config-e2e-tests' !== ($_SERVER['HTTP_WA_E2E_TEST_MODE'] ?? false)) {
-                        $this->debug(
+                    $headersRaw = getallheaders();
+                    $headers = [];
+                    foreach($headersRaw as $h => $v) {
+                        $headers[strtolower($h)] = $v;
+                    }
+                    if ('wa-config-e2e-tests' !== ($headers['wa-e2e-test-mode'] ?? false)) {
+                            $this->debug(
                             "Website under test mode, serving maintenance page for external access",
                         );
                         $this->debugVeryVerbose(
@@ -2046,7 +2076,10 @@ namespace WA\Config\Core {
                                 return substr($k, 0, 5) === 'HTTP_';
                             }, ARRAY_FILTER_USE_BOTH)
                         );
-                        echo "<strong>Tests en cours, merci de revenir plus tard (15 minutes à 2 heures de délais). MAINTENANCE MODE, please come back later.</strong>";
+                        if ($this->shouldDebug) {
+                            var_dump($headers);
+                        }
+                        echo __("<strong>Tests en cours, merci de revenir plus tard (15 minutes à 2 heures de délais). MAINTENANCE MODE, please come back later.</strong>", 'wa-config');
                         wp_die(); return;
                     }
                 }
@@ -2067,9 +2100,9 @@ namespace WA\Config\Core {
                     );
                 }
             }
-            protected function  _000_e2e_test__load()
+            protected function  _002_e2e_test__load()
             {
-                if ($this->p_higherThanOneCallAchievedSentinel('_000_e2e_test__load')) {
+                if ($this->p_higherThanOneCallAchievedSentinel('_002_e2e_test__load')) {
                     return; 
                 }
                 wp_cache_delete("alloptions", "options"); 
@@ -2163,6 +2196,7 @@ namespace WA\Config\Core {
             {
                 global $wp;
                 $this->debug("\n");
+                $iid = $this->iId;
                 if ($_SERVER && isset($_SERVER['SERVER_PORT'])) {
                     $protocole = (($_SERVER["HTTPS"] == "on") ? "https" : "http") ?? "http";
                     $domain = $_SERVER['HTTP_HOST'];
@@ -2174,16 +2208,21 @@ namespace WA\Config\Core {
                     }
                     $uri = $_SERVER['REQUEST_URI'];
                     $url = "$protocole://$domain$uri";
-                    $this->debug("Plugin bootstraping\n\nFrom :\n $url");
+                    $this->debug("Plugin bootstraping\n\nFrom [$iid] :\n $url");
                 } else {
                     global $argv;
-                    $this->debug("Plugin bootstraping\n\nFrom :\n {$argv[0]}");
+                    $this->debug("Plugin bootstraping\n\nFrom [$iid] :\n {$argv[0]}");
                 }
                 $methods = get_class_methods($this);
+                usort($methods, 'strnatcasecmp'); 
                 foreach ($methods as $m) {
                     if (strEndsWith($m, "__bootstrap")) {
-                        $this->$m();
                         $this->debugVerbose("Bootstrap with: '$m'");
+                        $this->$m();
+                        if (self::$shouldExitAll) {
+                            $this->debugVerbose("Should exit after last bootstrap : '$m'");
+                            return; 
+                        }
                     }
                 }
                 add_action('plugins_loaded', [$this, 'loadPlugin'], 11);
@@ -2199,10 +2238,15 @@ namespace WA\Config\Core {
             {
                 $this->debug("Loading plugin from action 'plugins_loaded'");
                 $methods = get_class_methods($this);
+                usort($methods, 'strnatcasecmp'); 
                 foreach ($methods as $m) {
                     if (strEndsWith($m, "__load")) {
                         $this->debugVerbose("Load with: '$m'");
                         $this->$m();
+                        if (self::$shouldExitAll) {
+                            $this->debugVerbose("Should exit after last load : '$m'");
+                            return; 
+                        }
                     }
                 }
                 $this->debugVerbose("Did load plugin");
@@ -2697,19 +2741,19 @@ namespace WA\Config\Admin {
          */
         trait OrderablePluginLoads
         {
-            protected function _000_o_plugin_loads__bootstrap()
+            protected function _001_o_plugin_loads__bootstrap()
             {
-                if ($this->p_higherThanOneCallAchievedSentinel('_000_o_plugin_loads__bootstrap')) {
+                if ($this->p_higherThanOneCallAchievedSentinel('_001_o_plugin_loads__bootstrap')) {
                     return; 
                 }
                 if (is_admin()) {
-                    $this->debug("Will _000_o_plugin_loads__bootstrap");
+                    $this->debug("Will _001_o_plugin_loads__bootstrap");
                     add_action( 'activated_plugin', [$this, 'o_plugin_loads_master_first']);
                 }
             }
-            protected function _000_o_plugin_loads__load()
+            protected function _001_o_plugin_loads__load()
             {
-                if ($this->p_higherThanOneCallAchievedSentinel('_000_o_plugin_loads__load')) {
+                if ($this->p_higherThanOneCallAchievedSentinel('_001_o_plugin_loads__load')) {
                     return; 
                 }
                 add_action(
@@ -3970,9 +4014,6 @@ namespace WA\Config\Admin {
                 PdfToHTMLable;
             protected function _010_e_config__bootstrap()
             {
-                if (!is_admin()) {
-                    return; 
-                }
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_config__bootstrap')) {
                     return; 
                 }
@@ -4047,6 +4088,9 @@ namespace WA\Config\Admin {
                             $this->debugVerbose("EditableConfigPannels did keep wp url safe for : '{$wp->request}'");
                         }
                     }); 
+                }
+                if (!is_admin()) {
+                    return; 
                 }
             }
             protected function _010_e_config__load()
@@ -5669,8 +5713,9 @@ namespace WA\Config\Admin {
                     return;
                 }
                 $siteUrl = site_url();
-                global $wp;
-                $current_url = add_query_arg($wp->query_vars, home_url($wp->request));
+                $current_url = add_query_arg([
+                    'page' => $this->eReviewPageKey,
+                ], admin_url( 'admin.php' ));
                 echo "<h1> " . __(
                     "CRITIQUE : prevoir un roolback SQL",
                     'wa-config'
@@ -5931,12 +5976,12 @@ namespace WA\Config\Admin {
                 set_time_limit(15*60); 
                 $Codecept = new \Codeception\Codecept(array(
                     'steps' => true,
-                    'verbosity' => 1,
+                    'verbosity' => $this->shouldDebug ? 2 : 1,
                     'seed' => time(), 
                     'html' => 'results.html',
                     'colors' => false, 
                     'no-redirect' => true,
-                    'silent' => true,
+                    'silent' => false,
                     'interactive' => false,
                 ));
                 $Codecept->run('acceptance');
@@ -6176,7 +6221,7 @@ namespace WA\Config\Admin {
                     'value' => $value,
                 ]);
                 if (!strlen($checkpointValue['category'])) {
-                    $self->err("WRONG checkpoing, missing 'category'");
+                    $self->err("WRONG .checkpoint, missing 'category'");
                     $self->debug("WRONG value : ", $value, $self->debug_trace());
                     Notice::displayError(__("Echec de l'enregistrement de la revue.", 'wa-config'));
                     return $value; 
@@ -7251,7 +7296,13 @@ namespace WA\Config\Admin {
                 }
                 return $accessId;
             }
-            protected function api_inst_print_access_report($shouldEcho = true) {
+            /**
+             * Load ApiInstanciable parameters from the targeted $request
+             * 
+             * @param bool $shouldEcho Will echo the content if true
+             * @return string The printed access report
+             */
+            public function api_inst_print_access_report($shouldEcho = true) {
                 if (!current_user_can('administrator')) {
                     $this->err("Only administrator can access this report...");
                     return false; 

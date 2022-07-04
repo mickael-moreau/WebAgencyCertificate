@@ -21,7 +21,71 @@
  * 
  * It will also show you how to use the saved wa-config options
  * from the admin "WA Config" "Parameters" sub menu.
+ * 
+ * You can also launch it with command line :
+ * ```bash
+ * alias e2e="php 'tools/codecept.phar' run"
+ * 
+ * e2e --no-redirect  'acceptance' --html
+ * 
+ * e2e --no-redirect  'acceptance' 'E2E_EnsureAdminConfigPanelCest' --html
+ * 
+ * e2e --no-redirect  'acceptance' \
+ * 'E2E_EnsureAdminConfigPanelCest::testingWAConfig_emailTrackingForComments' \
+ * --html --debug
+ * ```
  *
+ * In case of test failure failling user login roolback, use this 
+ * curl commande 1 or 2 times (first time may get an invalid access error) :
+ * ```bash
+ * WA_BACKEND=https://web-agency.local.dev/e-commerce
+ * curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \
+ * "$WA_BACKEND/wp-admin/admin-ajax.php?action=wa-e2e-test-action&wa-action=force-clean-and-restore-users"
+ * # for apache servers (secu on header syntax ?)
+ * curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \
+ * "$WA_BACKEND/wp-admin/admin-ajax.php?action=wa-e2e-test-action&wa-action=force-clean-and-restore-users"
+ * ```
+ * 
+ * If still not able to login with the targeted test user real login name after test, update manually :
+ * Open your Database access (**phpmyadmin**) and look for **'wp_users' table**
+ * Then look for the real login name test user from other data than the login name
+ * that may change during test authentification, and fix back the :
+ * - **'user_login'** field with right login data.
+ * - **'user_email'** field with right login data.
+ *
+ * Common errors about login is the missing real login name target.
+ * ex : demo@monwoo.com and editor-wa@monwoo.com are our default value for tests users list.
+ * So if no accessible account with demo@monwoo.com and editor-wa@monwoo.com exist under your database,
+ * then login will fail...
+ * 
+ * You may also experiment some Guzzle clash on WebLaunch side, since codecept.phar
+ * will use a different version of Guzzle than the one it have been build with if present.
+ * If new Guzzle version is not comptaible with the codecept.phar version you have,
+ * you may have trouble launching the tests.
+ * 
+ * For exemple, with codecept version at the time of this documentation, 
+ * we need to desactivate 
+ * 'Google Listings and Ads' plugins that is defining
+ * it's own version of Guzzle to succed test launch ...
+ * 
+ * You may also get an error like :
+ * 'I fail "to rollback e2e sent email : Failed asserting that on page ...'
+ * if 'Check & Log Email' plugin is not configured to log incoming emails.
+ * cf : /wp-admin/admin.php?page=check-email-settings&tab=logging
+ * 
+ * Purging cache example :
+ * {@see https://docs.litespeedtech.com/lscache/basics}.
+ * If the home page http://example.com/index.php needs to be purged,
+ * the trailing / is required. The index page will not be purged without it.
+ * ```bash
+ * curl -i -X PURGE https://web-agency.local.dev/e-commerce/
+ * ```
+ * 
+ * If you see a 404 in your detailed page result, it's because the test did return a 404.
+ * If you try to access a missing ressource from the test _output folder, you will see
+ * a 404 message like this :
+ * ```[404] for Request: %{THE_REQUEST} Referrer: %{HTTP_REFERER} Host: %{HTTP_HOST}```
+ * 
  * @link https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en WA-Config Monwoo
  * @since 0.0.1
  * @package
@@ -35,6 +99,8 @@ namespace WA\Config\E2E {
     use Codeception\Example;
     use Codeception\Util\Locator;
     use AcceptanceTester;
+    use Codeception\Codecept;
+    use Codeception\Util\HttpCode;
     use WA\Config\Core\AppInterface;
 
     /*
@@ -77,57 +143,12 @@ namespace WA\Config\E2E {
         require_once(__DIR__ . "/../../../../../wp-load.php");
     }
 
-    // TODO : load only ONCE before ALL TESTS
+    // TODO : load only ONCE before ALL TESTS ?
     // (same on all test end, close the door and/or have 
     //  time out server side on door open to close it
     //  if not closed by the end of tests script ?)
-    // global $wa_plugin;
-    // Why NEED to require wa-config since 
-    // already loaded by wp-load.php ? (Global export missing ? 
-    // bad to have globals...)
-    // require __DIR__ . "/../../wa-config.php"; // TODO : heavy php to load ALL before ALL test, should try to load only once at first ?
+
     $wa_plugin = AppInterface::instance();
-
-    /* 
-    // Framework load example, you IDE should load it since it's 
-    // already loaded by codecept tool
-    $pluginRoot = __DIR__ . "/../../";
-    $codeceptPharName = 'codecept.phar';
-    $codeceptPharPath = "{$pluginRoot}tools/{$codeceptPharName}";
-    try {
-        $p = new \Phar($codeceptPharPath, \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME, $codeceptPharName);
-    } catch (\UnexpectedValueException $e) {
-        $this->err("FAIL {$codeceptPharName} at {$codeceptPharPath}");
-        echo "Could not open {$codeceptPharName}";
-        exit;
-    } catch (\BadMethodCallException $e) {
-        echo 'technically, this cannot happen';
-        exit;
-    }
-    $codeceptionFramework  = "phar://$codeceptPharName/vendor/codeception/codeception/autoload.php";
-    if (file_exists($codeceptionFramework)) {
-        require_once($codeceptionFramework);
-    } else {
-        echo "Fail to load $codeceptionFramework";
-        exit;
-    }
-    */
-
-
-    // Ensuring script execution up to it's end even if some wordpress will exit() for security reasons
-    // $shouldExit = false;
-    // register_shutdown_function(function() use (&$shouldExit) {
-    //     if (! $shouldExit) {
-    //         return;
-    //     }
-    //     echo 'Something went wrong.';
-    // });
-
-    // function exit() 
-    // {
-    //     echo "EXIT Application requested ========== =========\n"; 
-    // }
-
 
     /**
      * This e2e will ensure wa-config options updates is working
@@ -145,6 +166,54 @@ namespace WA\Config\E2E {
      * stay coherent __ANY TIME__.
      * - IF you really want __to do hard tests__, change the test
      * config to fit a __SWITCH TO TEST DATABASE__ before testing.
+     * 
+     * You can also launch it with command line :
+     * ```bash
+     * alias e2e="php 'tools/codecept.phar' run"
+     * 
+     * e2e --no-redirect  'acceptance' --html
+     * 
+     * e2e --no-redirect  'acceptance' 'E2E_EnsureAdminConfigPanelCest' --html
+     * 
+     * e2e --no-redirect  'acceptance' \
+     * 'E2E_EnsureAdminConfigPanelCest::testingWAConfig_emailTrackingForComments' \
+     * --html --debug
+     * ```
+     *
+     * In case of test failure failling user login roolback, use this 
+     * curl commande 1 or 2 times (first time may get an invalid access error) :
+     * ```bash
+     * WA_BACKEND=https://web-agency.local.dev/e-commerce
+     * # curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \ _ will not pass some secured Apache servers
+     * curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \
+     * "$WA_BACKEND/wp-admin/admin-ajax.php?action=wa-e2e-test-action&wa-action=force-clean-and-restore-users"
+     * ```
+     * 
+     * If still not able to login with the targeted test user real login name after test, update manually :
+     * Open your Database access (**phpmyadmin**) and look for **'wp_users' table**
+     * Then look for the real login name test user from other data than the login name
+     * that may change during test authentification, and fix back the :
+     * - **'user_login'** field with right login data.
+     * - **'user_email'** field with right login data.
+     *
+     * Common errors about login is the missing real login name target.
+     * ex : demo@monwoo.com and editor-wa@monwoo.com are our default value for tests users list.
+     * So if no accessible account with demo@monwoo.com and editor-wa@monwoo.com exist under your database,
+     * then login will fail...
+     * 
+     * You may also experiment some Guzzle clash on WebLaunch side, since codecept.phar
+     * will use a different version of Guzzle than the one it have been build with if present.
+     * If new Guzzle version is not comptaible with the codecept.phar version you have,
+     * you may have trouble launching the tests.
+     * 
+     * For exemple, with codecept version at the time of this documentation, we need to desactivate 
+     * 'Google Listings and Ads' plugins that is defining it's own version of Guzzle...
+     * 
+     * You may also get an error like :
+     * 'I fail "to rollback e2e sent email : Failed asserting that on page ...'
+     * if 'Check & Log Email' plugin is not configured to log incoming emails.
+     * cf : /wp-admin/admin.php?page=check-email-settings&tab=logging
+     * 
      * {@see https://codeception.com/docs/modules/Db#sql-data-dump SQL DATA DUMP}
      * {@see https://generalchicken.guru/wp-codeception-tutorial/config-files/ Classic WordPress DB Duplication tutoriel }
      * {@see https://codeception.com/docs/07-AdvancedUsage}
@@ -196,11 +265,23 @@ namespace WA\Config\E2E {
         public function _before(AcceptanceTester $I): void
         // public function beforeAllTests(AcceptanceTester $I): void
         {
+            $I->comment("Running Codeception version : " . Codecept::VERSION);
+
+            // TODO : strange : why need to be called before wait to not be null ?
+            $wa_plugin = AppInterface::instance();
+
+            // For productions servers with limited calls per seconds for DDOS protections :
+            // Take some pause :
+            $time = time();
+            // https://codeception.com/docs/03-AcceptanceTests#wait
+            // $I->wait(2); // Buggy with PhpBrowser, use with WebDriver only ? $wa_plugin become null...
+            sleep(2);
+            $waitting = time() - $time;
+            $I->comment("☕️ 🥐🥯🥖🧀 Did take a $waitting seconds pause");
+
             $I->haveHttpHeader('wa-e2e-test-mode', 'wa-config-e2e-tests');
 
             $I->expectTo("Load access HASH before test");
-            // global $wa_plugin;
-            $wa_plugin = AppInterface::instance();
 
             $this->wa_plugin = $wa_plugin;
             $accessInfos = $this->wa_plugin->e2e_tests_access_hash_open(true);
@@ -231,7 +312,7 @@ namespace WA\Config\E2E {
             $I->haveServerParameter('HTTP_CLIENT_IP', $ip);
 
             $openHash = base64_decode($this->accessHash);
-            $I->comment("Access HASH : {$openHash}");
+            $I->comment("[$ip] Access HASH : {$openHash}");
 
             $key = 'wa_acceptance_tests_users'; // TODO : better use $inst->eConfOptATestsUsers or hard defined values ?
             $default = '';
@@ -287,7 +368,7 @@ namespace WA\Config\E2E {
                 try { // Run maximum rollback, even if some might fails
                     $callback();
                 } catch (\Exception $e) {
-                    codecept_debug($e);
+                    $this->debug($e);
                     $I->comment("Fail to rollback index $idx : " . $e->getMessage());
                     $successfulRollback = false;
                     $faillingRollback[] = $callback;
@@ -297,7 +378,7 @@ namespace WA\Config\E2E {
                 try { // Run maximum rollback, even if some might fails
                     $callback();
                 } catch (\Exception $e) {
-                    codecept_debug($e);
+                    $this->debug($e);
                     $I->comment("Fail to rollback late index $idx : " . $e->getMessage());
                     $successfulRollback = false;
                     $faillingRollback[] = $callback;
@@ -342,9 +423,13 @@ namespace WA\Config\E2E {
 
             // 🌖🌖 Going to wa-config pannel : 🌖🌖
             $I->amOnPage('/wp-admin');
-            $I->click('a[href="admin.php?page=wa-e-admin-config-param-page"]');
+            $I->click('a[href="admin.php?page=wa-e-config-param-page"]');
             $I->see('Copyright de bas de page');
-            $footerCreditId = '#wa_e_config_opts_wa_footer_credit';
+            // TODO : Language aware TESTINGS for 3 languages each time ?
+            //        WELL, language test sound more like FRONTEND easy tests.
+            //        Already done in :
+            //        tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php
+            $footerCreditId = '.wa_e_config_opts_wa_footer_credit_fr_FR';
             $I->seeElement($footerCreditId);
             $footerEnableId = '#wa_e_config_opts_wa_enable_footer';
             $I->seeElement($footerEnableId);
@@ -367,7 +452,7 @@ namespace WA\Config\E2E {
                 $initialEnableFooter,
                 $footerEnableId
             ) {
-                $I->amOnPage('/wp-admin/admin.php?page=wa-e-admin-config-param-page');
+                $I->amOnPage('/wp-admin/admin.php?page=wa-e-config-param-page');
                 if ($initialEnableFooter) {
                     $I->checkOption($footerEnableId);
                 } else {
@@ -377,22 +462,23 @@ namespace WA\Config\E2E {
                 $I->click('#submit');
                 $I->seeInField($footerCreditId, $initialFCredit);
             };
-            // $I->see('Thank you, Miles', "//table/tr[2]");
+            // $I->see('Thank you', "//table/tr[2]");
             // $I->dontSee('Form is filled incorrectly');
             // $I->seeElement('.notice');
             // $I->dontSeeElement('.error');
-            // $I->seeInCurrentUrl('/user/miles');
+            // $I->seeInCurrentUrl('/user/admin');
             // $I->seeCheckboxIsChecked('#agree');
             // $I->seeLink('Login');
             $I->seeInField($footerCreditId, $testValue);
 
             $I->amOnPage('/');
-            $credit = 'Build by Monwoo and ' . $testValue;
+            $credit = 'Construit par Monwoo et ' . $testValue;
             $I->see($credit);
 
             $I->wantTo('Test that credit link page is OK');
             $I->click($credit);
-            $I->see('Crédits');
+            // $I->see('Crédits');
+            $I->seeResponseCodeIs(HttpCode::OK);
         }
 
         /**
@@ -418,7 +504,7 @@ namespace WA\Config\E2E {
             // $I->pause(); // for cmd line with --debug option, missing display output under php 8 ?
 
             // $I->comment("e2e opts : " . print_r($E2ETestsOptions['emails-sended'], true));
-            // codecept_debug($E2ETestsOptions['emails-sended']);
+            // $this->debug($E2ETestsOptions['emails-sended']);
             // $I->pause();
 
             $editorUser = $this->authenticateUser($I, 1);
@@ -426,18 +512,30 @@ namespace WA\Config\E2E {
 
             // 🌖🌖 Going to credit page 🌖🌖
             $I->amOnPage('/credits');
-            $I->see('Crédits');
+            $I->seeResponseCodeIs(HttpCode::OK);
 
             // 🌖🌖 posting a comment and ensuring email notifications OK 🌖🌖
             $I->assertEquals(0, count($E2ETestsOptions['emails-sended']??[]), "No emails should have been sent yet.");
 
-            $I->fillField("#commentform #comment", $example["post_comment"]);
-            $I->click('#commentform #submit');
+            $commentSelector = '#commentform #comment';
+            $submitSelector = '#comment-submit';
+
+            // TODO : handle $submitSelector for multi-theme no fails if selectors changes on theme switch ?
+            // https://stackoverflow.com/questions/26183792/use-codeception-assertion-in-conditional-if-statement
+            // https://codeception.com/docs/modules/WebDriver#performOn
+            // $I->performOn('.model', ActionSequence::build()
+            //     ->see('Warning')
+            //     ->see('Are you sure you want to delete this?')
+            //     ->click('Yes')
+            // );
+
+            $I->fillField($commentSelector, $example["post_comment"]);
+            $I->click($submitSelector);
 
             wp_cache_delete("alloptions", "options"); // avoid wrong value do to cached stuff
             $E2ETestsOptions = get_option($eConfigE2ETestsOptsKey, []);
 
-            // codecept_debug($E2ETestsOptions['emails-sended']); $I->pause();
+            // $this->debug($E2ETestsOptions['emails-sended']); $I->pause();
 
             $I->assertEquals(1, count($E2ETestsOptions['emails-sended']??[]), "1 email should have been sent.");
 
@@ -456,7 +554,7 @@ namespace WA\Config\E2E {
                     $I->click(Locator::elementAt('#the-list td .delete a', 1));
                     $I->see('1 email log deleted'); // TODO : lang switch tests ? FR/EN/ES    
                 } catch (\Exception $e) {
-                    codecept_debug($e);
+                    $this->debug($e);
                     try { $I->fail(
                         "to rollback e2e sent email : "
                         . $e->getMessage()
@@ -480,7 +578,7 @@ namespace WA\Config\E2E {
                     $I->seeElement('.undo.untrash');
                     // throw new \Exception('testing $successfulRollback is failling last');
                 } catch (\Exception $e) {
-                    codecept_debug($e);
+                    $this->debug($e);
                     try { $I->fail(
                         "to rollback e2e credit page comment : "
                         . $e->getMessage()
@@ -516,14 +614,6 @@ namespace WA\Config\E2E {
             $I->see($example['title'], 'li.current'); // Testing currently selected menu from wp admin nav bar
         }
 
-        // TODO : ensure CRONS Are launch externally ?
-        //        => check min cron missed time delay
-        //       (some are each minutes, but external
-        //        CRON run each 5 minutes, if min dela
-        //        < 5 minutes = CRON DID run extenaly OK
-        //        WARNING on last CRON delay until last
-        //        missing pendings CRONS launch)
-
         ///////////////////////
         //////// UTILS ////////
         ///////////////////////
@@ -538,42 +628,33 @@ namespace WA\Config\E2E {
         protected function authenticateUser($I, $idx = 0) {
             // 🌖🌖 Login to admin pannel : 🌖🌖
 
-            // $I->amOnPage('/wp-admin');
-            // $I->fillField('#user_login', $this->testUsers[0]->email);
-            // $I->fillField('#user_pass', $this->testUsers[0]->pass);
-            // $I->click('#wp-submit');
-
-            // // Will authenticate for WEBCEPTION Tool
-            // // but not for php browser...
-            // $user = AppInterface::e2e_test_authenticateTestUser(
-            //     $this->testUsers[$idx]->email
-            // );
-
             // https://stackoverflow.com/questions/56700802/how-to-do-post-request-in-codeception-functionaltest-with-json-body
             // https://codeception.com/docs/modules/Yii2#sendAjaxPostRequest
             // $I->haveHttpHeader('X-Requested-With', 'Codeception');
-
             // $I->haveHttpHeader("Content-Type", "application/x-www-form-urlencoded");
+            $wantedLogin = $this->testUsers[$idx]->email;
+            $wantedTestLogin = $this->testUsers[$idx]->testLogin;
             $postData = [
                 'action' => 'wa-e2e-test-action',
                 'wa-access-hash' => $this->accessHash,
                 'wa-action' => 'authenticate-user',
                 'wa-data' => [
-                    $this->testUsers[$idx]->email,
-                    $this->testUsers[$idx]->testLogin,
+                    $wantedLogin,
+                    $wantedTestLogin,
                 ],
             ];
-            codecept_debug($postData);
+            $this->debug("postData : ", $postData);
+            $I->comment("Will try to connect as : '$wantedLogin' for login test target : '$wantedTestLogin'");
             $resp = $I->sendAjaxPostRequest(
-                // admin_url( 'admin-ajax.php?action=wa-e2e-test-action' ), // Will load externally with full url ?
+                // admin_url( 'admin-ajax.php?action=wa-e2e-test-action' ),
                 '/wp-admin/admin-ajax.php',
                 $postData
             );
             // $I->deleteHeader("Content-Type");
+            $this->debug("response : ", $resp);
 
             // Will send debug output to wa-config/tests/_output/debug/sendAjaxPostRequest_wa-e2e-test-action_authenticate-user.html
             $I->makeHtmlSnapshot('sendAjaxPostRequest_wa-e2e-test-action_authenticate-user');
-            // var_dump($resp); // EMPTY, no resp or strinfigy to empty str ?
 
             // $I->seeResponseContainsJson(array("test_user", "exact value to match"));
             $testUserLogin = $I->grabDataFromResponseByJsonPath('$..test_user.data.user_login');
@@ -594,7 +675,7 @@ namespace WA\Config\E2E {
             // });
 
             // https://codeception.com/docs/modules/REST.html#algolia:p:nth-of-type(40)
-            // $I->seeHttpHeader("Content-Type"); //=> TODO : load rest tools inside acceptance ?
+            // $I->seeHttpHeader("Content-Type");
             // https://github.com/Codeception/Codeception/issues/4258
             // In a PHPUnit test that extends Symfony's WebTestCase, you can do:
             // $resp->headers->contains(
@@ -612,7 +693,10 @@ namespace WA\Config\E2E {
             //     $I->amOnPage('/wp-admin');
             //     $I->makeHtmlSnapshot('wp-admin_wa-e2e-test-action_after-authenticate-user');
             //     $I->expect('To be logged as admin');
-            //     // $I->see('Dashboard'); // Wrong on lang
+            //     // Below comment is WRONG on language switch,
+            //     // split per language or use WP : __('Dashboard', 'wa-config')
+            //     // IF you test exact same strings from our Plugin php code
+            //     // $I->see('Dashboard');
             //     $I->seeElement('#menu-dashboard .wp-menu-name');    
             // }
 
@@ -630,12 +714,11 @@ namespace WA\Config\E2E {
          * @param \WP_User $userLogin The test user to logout
          */
         protected function logoutUser($I, $userLogin) {
-            // // Will logout for WEBCEPTION Tool
-            // // but not for php browser...
-            // AppInterface::e2e_test_authenticateTestUser(
-            //     $this->testUsers[0]->email
-            // );
-
+            if (!$userLogin) {
+                $I->comment("No userLogin provided for logoutUser, avoiding Logout");
+                return;
+            }
+            $I->makeHtmlSnapshot('htmlResult_before_logout-user');
             // $I->haveHttpHeader("Content-Type", "application/x-www-form-urlencoded");
             $postData = [
                 'action' => 'wa-e2e-test-action',
@@ -643,14 +726,57 @@ namespace WA\Config\E2E {
                 'wa-action' => 'logout-user',
                 'wa-data' => $userLogin,
             ];
-            codecept_debug($postData);
+            $this->debug("postData :", $postData);
             $resp = $I->sendAjaxPostRequest(
                 '/wp-admin/admin-ajax.php',
                 $postData
             );
+            $this->debug("response : ", $resp);
 
+            // TODO : sometime, in case of failure (403 or 404 page ?), last snapshoot is saved, 
+            //       so the sucessfull result of logout is send... for previous error
+            //       => should send the same as ? :
+            //       $I->makeHtmlSnapshot('htmlResult_before_logout-user'); (Or not, sound like
+            //       snapshoot of last success result... 
+            //       check wp-content/debug.log instead... => wp_die with page not found error...)
             $I->makeHtmlSnapshot('sendAjaxPostRequest_wa-e2e-test-action_logout-user');
         }
+
+        protected function debug(...$datas) {
+            if (!\Codeception\Util\Debug::isEnabled()) {
+                return; // Keep spped, nothing to do if not in debug state
+            }
+
+            // https://stackoverflow.com/questions/2110732/how-to-get-name-of-calling-function-method-in-php
+            // $caller = debug_backtrace(!DEBUG_BACKTRACE_PROVIDE_OBJECT|DEBUG_BACKTRACE_IGNORE_ARGS,2)[1];
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2);
+            $position = $backtrace[0];
+            $caller = $backtrace[1];
+            $source = "[{$caller['function']}] at {$position['file']}:{$position['line']}";
+            codecept_debug($source);
+            // codecept_debug(array_keys(get_object_vars($caller)));
+            // codecept_debug(array_keys($caller));
+
+            $len = count($datas);
+            $strBulk = "";
+            $idx = 0;
+            while($idx < $len && is_string($datas[0])) {
+                $strBulk .= array_shift($datas) . " ";
+                $idx++;
+            }
+            // $prettyPrint = "[$source] $strBulk" . print_r($datas, true);
+            // codecept_debug([$source => $datas]);
+            // codecept_debug($prettyPrint);
+            // \Codeception\Util\Debug::debug($datas);
+            codecept_debug($strBulk);
+            $len = count($datas);
+            $idx = 0;
+            while($idx < $len) {
+                codecept_debug($datas[$idx]);
+                $idx++;
+            }
+        }
+
 
         // /* *
         //  * @param AcceptanceTester $I Codeception Acceptance test browser
@@ -676,13 +802,13 @@ namespace WA\Config\E2E {
             return [
                 [
                     'title' => __('Paramètres', /*📜*/ 'wa-config'/*📜*/),
-                    'url' => "/wp-admin/admin.php?page=wa-e-admin-config-param-page"
+                    'url' => "/wp-admin/admin.php?page=wa-e-config-param-page"
                 ], [
                     'title' => __('Documentation', /*📜*/ 'wa-config'/*📜*/),
-                    'url' => "/wp-admin/admin.php?page=wa-e-admin-config-doc-page"
+                    'url' => "/wp-admin/admin.php?page=wa-e-config-doc-page"
                 ], [
                     'title' => __('Revue qualité', /*📜*/ 'wa-config'/*📜*/),
-                    'url' => "/wp-admin/admin.php?page=wa-e-admin-config-review-page"
+                    'url' => "/wp-admin/admin.php?page=wa-e-review-page"
                 ],
             ];
         }

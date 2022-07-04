@@ -9,7 +9,7 @@ actor: AcceptanceTester
 modules:
     enabled:
         - PhpBrowser:
-            url: https://web-agency.local.dev/e-commerce
+            url: https://moonkiosk.monwoo.com
             headers:
                 wa-e2e-test-mode: %wa_e2e_test_mode%
             curl:

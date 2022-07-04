@@ -112,7 +112,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php"><a href="files/tests-acceptance-e2e-ensureadminconfigpanelcest.html"><abbr title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php">E2E_EnsureAdminConfigPanelCest.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">166</span>
+    <span class="phpdocumentor-element-found-in__line">235</span>
 
     </aside>
 
@@ -133,12 +133,53 @@ so like a <strong>carefull administrator</strong>, allways have a way
 to <strong>ensure</strong> that your <strong>production data</strong>
 stay coherent <strong>ANY TIME</strong>.</li>
 <li>IF you really want <strong>to do hard tests</strong>, change the test
-config to fit a <strong>SWITCH TO TEST DATABASE</strong> before testing.
-<a href="https://codeception.com/docs/modules/Db#sql-data-dump"><abbr title="https://codeception.com/docs/modules/Db#sql-data-dump">https://codeception.com/docs/modules/Db#sql-data-dump</abbr></a>
-<a href="https://generalchicken.guru/wp-codeception-tutorial/config-files/"><abbr title="https://generalchicken.guru/wp-codeception-tutorial/config-files/">https://generalchicken.guru/wp-codeception-tutorial/config-files/</abbr></a>
-<a href="https://codeception.com/docs/07-AdvancedUsage"><abbr title="https://codeception.com/docs/07-AdvancedUsage">https://codeception.com/docs/07-AdvancedUsage</abbr></a>
-</li>
+config to fit a <strong>SWITCH TO TEST DATABASE</strong> before testing.</li>
 </ul>
+<p>You can also launch it with command line :</p>
+<pre class="prettyprint"><code class="language-bash">alias e2e=&quot;php 'tools/codecept.phar' run&quot;
+
+e2e --no-redirect  'acceptance' --html
+
+e2e --no-redirect  'acceptance' 'E2E_EnsureAdminConfigPanelCest' --html
+
+e2e --no-redirect  'acceptance' \
+'E2E_EnsureAdminConfigPanelCest::testingWAConfig_emailTrackingForComments' \
+--html --debug
+</code></pre>
+<p>In case of test failure failling user login roolback, use this
+curl commande 1 or 2 times (first time may get an invalid access error) :</p>
+<pre class="prettyprint"><code class="language-bash">WA_BACKEND=https://web-agency.local.dev/e-commerce
+# curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \ _ will not pass some secured Apache servers
+curl -H 'wa-e2e-test-mode: wa-config-e2e-tests' \
+&quot;$WA_BACKEND/wp-admin/admin-ajax.php?action=wa-e2e-test-action&amp;wa-action=force-clean-and-restore-users&quot;
+</code></pre>
+<p>If still not able to login with the targeted test user real login name after test, update manually :
+Open your Database access (<strong>phpmyadmin</strong>) and look for <strong>'wp_users' table</strong>
+Then look for the real login name test user from other data than the login name
+that may change during test authentification, and fix back the :</p>
+<ul>
+<li>
+<strong>'user_login'</strong> field with right login data.</li>
+<li>
+<strong>'user_email'</strong> field with right login data.</li>
+</ul>
+<p>Common errors about login is the missing real login name target.
+ex : demo@monwoo.com and editor-wa@monwoo.com are our default value for tests users list.
+So if no accessible account with demo@monwoo.com and editor-wa@monwoo.com exist under your database,
+then login will fail...</p>
+<p>You may also experiment some Guzzle clash on WebLaunch side, since codecept.phar
+will use a different version of Guzzle than the one it have been build with if present.
+If new Guzzle version is not comptaible with the codecept.phar version you have,
+you may have trouble launching the tests.</p>
+<p>For exemple, with codecept version at the time of this documentation, we need to desactivate
+'Google Listings and Ads' plugins that is defining it's own version of Guzzle...</p>
+<p>You may also get an error like :
+'I fail &quot;to rollback e2e sent email : Failed asserting that on page ...'
+if 'Check &amp; Log Email' plugin is not configured to log incoming emails.
+cf : /wp-admin/admin.php?page=check-email-settings&amp;tab=logging</p>
+<p><a href="https://codeception.com/docs/modules/Db#sql-data-dump"><abbr title="https://codeception.com/docs/modules/Db#sql-data-dump">https://codeception.com/docs/modules/Db#sql-data-dump</abbr></a>
+<a href="https://generalchicken.guru/wp-codeception-tutorial/config-files/"><abbr title="https://generalchicken.guru/wp-codeception-tutorial/config-files/">https://generalchicken.guru/wp-codeception-tutorial/config-files/</abbr></a>
+<a href="https://codeception.com/docs/07-AdvancedUsage"><abbr title="https://codeception.com/docs/07-AdvancedUsage">https://codeception.com/docs/07-AdvancedUsage</abbr></a></p>
 </section>
 
 
@@ -328,7 +369,7 @@ config to fit a <strong>SWITCH TO TEST DATABASE</strong> before testing.
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php"><a href="files/tests-acceptance-e2e-ensureadminconfigpanelcest.html"><abbr title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php">E2E_EnsureAdminConfigPanelCest.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">278</span>
+    <span class="phpdocumentor-element-found-in__line">359</span>
 
     </aside>
 
@@ -384,7 +425,7 @@ after a configuration edit test change.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php"><a href="files/tests-acceptance-e2e-ensureadminconfigpanelcest.html"><abbr title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php">E2E_EnsureAdminConfigPanelCest.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">196</span>
+    <span class="phpdocumentor-element-found-in__line">265</span>
 
     </aside>
 
@@ -470,7 +511,7 @@ string list ready for authentification</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php"><a href="files/tests-acceptance-e2e-ensureadminconfigpanelcest.html"><abbr title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php">E2E_EnsureAdminConfigPanelCest.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">412</span>
+    <span class="phpdocumentor-element-found-in__line">498</span>
 
     </aside>
 
@@ -568,7 +609,7 @@ string list ready for authentification</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php"><a href="files/tests-acceptance-e2e-ensureadminconfigpanelcest.html"><abbr title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php">E2E_EnsureAdminConfigPanelCest.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">513</span>
+    <span class="phpdocumentor-element-found-in__line">611</span>
 
     </aside>
 
@@ -667,7 +708,7 @@ use DataProvider otherwise</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php"><a href="files/tests-acceptance-e2e-ensureadminconfigpanelcest.html"><abbr title="tests/acceptance/E2E_EnsureAdminConfigPanelCest.php">E2E_EnsureAdminConfigPanelCest.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">333</span>
+    <span class="phpdocumentor-element-found-in__line">414</span>
 
     </aside>
 

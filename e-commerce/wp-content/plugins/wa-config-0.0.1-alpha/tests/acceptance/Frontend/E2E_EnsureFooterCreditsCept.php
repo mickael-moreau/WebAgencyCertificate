@@ -20,7 +20,6 @@
  * alias e2e-footer="php 'tools/codecept.phar' run"
  * e2e-footer 'acceptance' 'Frontend/E2E_EnsureFooterCreditsCept'
  * ```
- * 
  *
  * @link https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en WA-Config Monwoo
  * @since 0.0.1
@@ -75,9 +74,14 @@ namespace WA\Config\E2E\Frontend {
 namespace WA\Config\E2E\Frontend {
     use WA\Config\E2E\Frontend\E2E_EnsureFooterCreditsCept as E2eCept;
     use AcceptanceTester;
+    use Codeception\Codecept;
     use Codeception\Util\HttpCode;
+    // use Codeception\Extension\Logger;
 
     $I = new AcceptanceTester($scenario);
+
+    $I->comment("Running Codeception version : " . Codecept::VERSION);
+    // Logger::log((string)$var);
 
     function test_footer($page, $I, $locale, $expected) {
         $I->wantTo("Test footer credits for [$locale]");
@@ -105,16 +109,20 @@ namespace WA\Config\E2E\Frontend {
     // $pluginRelativeTestFile = $matches[2] ?? null;
 
     // wa-config/tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php
-    $pluginFolder = "wa-config";
+    // $pluginFolder = "wa-config";
+    $pluginFolder = "wa-config-0.0.1-alpha";
+
     $pluginRelativeTestFile = "tests/acceptance/Frontend/E2E_EnsureFooterCreditsCept.php";
     $I->wantTo("Test test Access for $pluginFolder");
 
     $pluginBaseUrl = "/wp-content/plugins/$pluginFolder";
     $I->amOnPage("$pluginBaseUrl/tests/");
     // https://codeception.com/docs/reference/HttpCode
-    $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
+    // $I->seeResponseCodeIs(HttpCode::FORBIDDEN); // 404 under production server, // TODO : same for dev...
+    $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
     $I->amOnPage("$pluginBaseUrl/$pluginRelativeTestFile");
-    $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
+    // $I->seeResponseCodeIs(HttpCode::FORBIDDEN); // 404 under production server, // TODO : same for dev...
+    $I->seeResponseCodeIs(HttpCode::NOT_FOUND);
 
     // TODO BONUS : private bckkup test upload folder should not be accessible too
 }

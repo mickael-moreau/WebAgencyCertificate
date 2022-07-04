@@ -67,11 +67,12 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 $WA_Config_SHOULD_DEBUG = false;
-if (file_exists(__DIR__ . "/src/App.php")) {
-    $WA_Config_SHOULD_DEBUG = [true, true, false];
+if (file_exists(__DIR__ . "/src/App.src.php")) {
+    $WA_Config_SHOULD_DEBUG = [true, false, false];
+    // $WA_Config_SHOULD_DEBUG = [true, true, false];
     // $WA_Config_SHOULD_DEBUG = [true, true, true];
     // $WA_Config_SHOULD_DEBUG = false;
-    include_once(__DIR__ . "/src/App.php");
+    include_once(__DIR__ . "/src/App.src.php");
 } else {
     include_once(__DIR__ . "/App.php");
 }

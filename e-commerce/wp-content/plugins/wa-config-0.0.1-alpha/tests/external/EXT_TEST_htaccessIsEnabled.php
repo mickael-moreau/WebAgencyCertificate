@@ -133,7 +133,7 @@ namespace WA\Config\ExtTest {
             }
 
             $expected = 'You have been redirected';
-            if(false !== strpos($result, $expected)) {
+            if(false === strpos($result, $expected)) {
                 self::$errors[] = "[HTTP $code] Fail to see expected output '$expected' in redirected html $targetUrl.<br />"
                 . curl_error($http) . "<br />Did Output: <br />$result";
             }

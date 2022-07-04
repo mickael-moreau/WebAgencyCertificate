@@ -283,7 +283,7 @@ body.auto-fold #wpcontent {
     padding-right: 2px;
   }
 }
-body #adminmenu .toplevel_page_wa-e-admin-config .wp-menu-image img {
+body #adminmenu .toplevel_page_wa-e-config .wp-menu-image img {
   padding: 7px 0 0;
 }
 body textarea[name^=wa_e_config], body textarea[name^=wa_e_review] {

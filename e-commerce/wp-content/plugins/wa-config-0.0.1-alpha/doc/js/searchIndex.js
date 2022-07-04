@@ -86,6 +86,11 @@ Search.appendIndex(
             "summary": "Will\u0020get\u0020all\u0020available\u0020compatibility\u0020reports",
             "url": "classes/WA-Config-Core-AppInterface.html#method_getCompatibilityReports"
         },                {
+            "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003AexitAll\u0028\u0029",
+            "name": "exitAll",
+            "summary": "Setup\u0020all\u0020registred\u0020instances\u0020to\u0020exit",
+            "url": "classes/WA-Config-Core-AppInterface.html#method_exitAll"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\AppInterface\u003A\u003Ainstance\u0028\u0029",
             "name": "instance",
             "summary": "Get\u0020App\u0020instance\u0020by\u0020index",
@@ -925,6 +930,11 @@ Search.appendIndex(
             "name": "api_inst_load_parameters",
             "summary": "Load\u0020ApiInstanciable\u0020parameters\u0020from\u0020the\u0020targeted\u0020\u0024request",
             "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_load_parameters"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_print_access_report\u0028\u0029",
+            "name": "api_inst_print_access_report",
+            "summary": "Load\u0020ApiInstanciable\u0020parameters\u0020from\u0020the\u0020targeted\u0020\u0024request",
+            "url": "classes/WA-Config-Admin-ApiInstanciable.html#method_api_inst_print_access_report"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\ApiInstanciable\u003A\u003Aapi_inst_run_action\u0028\u0029",
             "name": "api_inst_run_action",
