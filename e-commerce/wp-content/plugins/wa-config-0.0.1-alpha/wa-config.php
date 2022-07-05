@@ -9,7 +9,7 @@
  * @wordpress-plugin
  * Plugin Name:       WA-Config Monwoo
  * Plugin URI:        https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en
- * Description:       <strong>End to end user tests</strong> with <strong>Codeception</strong>. Speed up documentations and tests in <strong>parallel</strong>. Enjoy an <strong>editable footer</strong> copyright done by wa-config (by service@monwoo.com)
+ * Description:       <strong>End to end user tests</strong> with <strong>Codeception</strong>. Speed up documentations and tests in <strong>parallel</strong>. Enjoy an <strong>editable footer</strong> copyright etc...
  * Version:           0.0.1-alpha
  * Author:            Miguel Monwoo
  * Author URI:        https://miguel.monwoo.com

@@ -30,13 +30,12 @@ msgstr ""
 msgid ""
 "<strong>End to end user tests</strong> with <strong>Codeception</strong>. "
 "Speed up documentations and tests in <strong>parallel</strong>. Enjoy an "
-"<strong>editable footer</strong> copyright done by wa-config (by "
-"service@monwoo.com)"
+"<strong>editable footer</strong> copyright etc..."
 msgstr ""
 "<strong>Tests utilisateurs de bout en bout</strong> avec <strong>"
 "Codeception</strong>. Accélère la documentation et les tests en <strong>"
 "parallel</strong>. Profitez d'un copyright de <strong>bas de page "
-"éditable</strong> produit par wa-config (par service@monwoo.com)"
+"éditable</strong>, etc..."
 
 #. Author of the plugin
 msgid "Miguel Monwoo"
@@ -514,14 +513,14 @@ msgid ""
 msgstr ""
 
 #: App.php:3752
-msgid "CRITIQUE : prevoir un roolback SQL"
+msgid "CRITIQUE : prevoir un rollback SQL"
 msgstr ""
 
 #: App.php:3753
 msgid ""
 "<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de "
 "données en dehors de WordPress pour recharger cette dernière via le backup "
-"SQL suivant en cas d'echec de roolback des actions de tests (ex : accès "
+"SQL suivant en cas d'echec de rollback des actions de tests (ex : accès "
 "phpmyadmin) : "
 msgstr ""
 

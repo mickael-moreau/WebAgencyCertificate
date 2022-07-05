@@ -88,6 +88,7 @@ namespace WA\Config\Core {
     use WA\Config\Frontend\EditableFooter; 
     use WA\Config\Utils\DumpGzip;
     use WA\Config\Utils\DumpPlainTxt;
+    use WA\Config\Utils\DumpZip;
     use WA\Config\Utils\InsertSqlStatement;
     use WP;
     use WP_Filesystem_Direct;
@@ -1167,7 +1168,7 @@ namespace WA\Config\Core {
             /**
              * Authenticate and get test user
              * 
-             * WARNING : to ensure tests roolback and
+             * WARNING : to ensure tests rollback and
              *           tests traking actions vs real user action
              *           we MUST call logoutTestUser on end
              * 
@@ -1678,7 +1679,7 @@ namespace WA\Config\Core {
                 if ('simple-zip' === $bckUpType
                 || 'full-zip' === $bckUpType) {
                     $siteSlug = sanitize_title(get_bloginfo( 'name' ));
-                    $fileExtension = '.zip'; 
+                    $fileExtension = $compressionType ?? '.zip';  
                     $filename = "$siteSlug-simple-backup$fileExtension";
                     if ('full-zip' === $bckUpType) {
                         $filename = "$siteSlug-full-backup$fileExtension";
@@ -1860,7 +1861,7 @@ namespace WA\Config\Core {
                         mkdir($historyFolder, 0777, true);
                     } 
                     $historyFolder = realpath($historyFolder);
-                    $this->e2e_test_do_backup('sql', '.tar.gz', false, false);
+                    $this->e2e_test_do_backup('sql', '.zip', false, false);
                     $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath), RecursiveIteratorIterator::LEAVES_ONLY);
                     $zip = new ZipArchive;
                     $zip->open($lastBckupPath, ZipArchive::CREATE); 
@@ -1990,9 +1991,11 @@ namespace WA\Config\Core {
                     };
                     if (preg_match('/\.sql\.gz$/', $filePath)
                     || preg_match('/\.tar\.gz$/', $filePath)) {
-                        $dump_file = new DumpGzip($filePath);
+                        $dump_file = new DumpGzip($filePath); 
+                    } elseif (preg_match('/\.zip$/', $filePath)) {
+                        $dump_file = new DumpZip($filePath); 
                     } else {
-                        $dump_file = new DumpPlainTxt($filePath);
+                            $dump_file = new DumpPlainTxt($filePath);
                     }
                     $eol = "\r\n";
                     $dump_file->write("-- Generation time: " . date('r') . $eol);
@@ -2258,6 +2261,7 @@ namespace WA\Config\Utils {
     use WA\Config\Core\AppInterface;
     use Walker_Nav_Menu_Checklist;
     use WP_Filesystem_Direct;
+    use ZipArchive;
     if (!function_exists(strEndsWith::class)) {
         /**
          * Check if string $haystack end with $needle
@@ -2466,6 +2470,40 @@ namespace WA\Config\Utils {
             }
         }
     }
+    if (!class_exists(DumpZip::class)) { 
+        /**
+         * This class will dump SQL to a zip file
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        class DumpZip extends DumpPlainTxt {
+            function __construct($file) {
+                $this->file_location = str_replace('.zip', '.sql', $file);
+                DumpPlainTxt::__construct($this->file_location);
+            }
+            function open() {
+                return DumpPlainTxt::open();
+            }
+            function write($string) {
+                DumpPlainTxt::write($string);
+            }
+            function end() {
+                DumpPlainTxt::end();
+                $sqlFile = $this->file_location;
+                $this->file_location = str_replace('.sql', '.zip', $this->file_location);
+                $zip = new ZipArchive;
+                $zip->open($this->file_location, ZipArchive::CREATE | ZipArchive::OVERWRITE );
+                $relativePath = basename($sqlFile);
+                $relativeZip = basename($this->file_location);
+                global $_wa_fetch_instance;
+                $wa = $_wa_fetch_instance();
+                $wa->debug("DumpZip [$relativeZip] : Adding '$relativePath' from '$sqlFile'");
+                $zip->addFile($sqlFile, $relativePath);
+                $zip->close();
+            }
+        }
+    }
     if (!class_exists(DumpGzip::class)) { 
         /**
          * This class will dump to a .gz file (gzip compressed)
@@ -2529,6 +2567,11 @@ namespace WA\Config\Utils {
          */
         trait TranslatableProduct
         {
+            protected function _010_t_product__bootstrap() {
+                $waProductTypeVersion = ""; 
+                if ($waProductTypeVersion !== AppInterface::PLUGIN_VERSION) {
+                }
+            }
             protected function _010_t_product__load()
             {
                 $this->debugVerbose("Will _010_t_product__load");
@@ -3026,7 +3069,7 @@ namespace WA\Config\Admin {
                     ""
                 );
                 $suffix = ''; 
-                return $prefix . $order->id . $suffix;
+                return $prefix . $order_id . $suffix;
             }
             /**
              * Filter templates to load custom templates if availables
@@ -4305,6 +4348,7 @@ namespace WA\Config\Admin {
                 }
                 $booleanAdaptor($this->eConfShouldRenderFrontendScripts);
                 Notice::displaySuccess(__('Enregistrement OK.', 'wa-config'));
+                wp_cache_delete("alloptions", "options"); 
                 return $newinput;
             }
             protected function e_config_param_add_form_field($key, $title, $default = '', $template = null): void
@@ -5446,23 +5490,23 @@ namespace WA\Config\Admin {
                                 // $("#gadget_url").val("");
 
                                 // Use configured wa-config dynamic labelings ?
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_category')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_category')
                                 .value = duplicateData.category;
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_category_icon')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_category_icon')
                                 .value = duplicateData.category_icon || '';
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_title')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_title')
                                 .value = duplicateData.title;
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_title_icon')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_title_icon')
                                 .value = duplicateData.title_icon || '';
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_requirements')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_requirements')
                                 .value = duplicateData.requirements;
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_result')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_result')
                                 .checked = duplicateData.result;
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_value')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_value')
                                 .value = duplicateData.value;
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_is_activated')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_is_activated')
                                 .checked = duplicateData.is_activated;
-                                addCheckpointForm.querySelector('#wa_e_config_review_opts_wa_review_access_cap_or_role')
+                                addCheckpointForm.querySelector('#wa_e_review_settings_form_key_wa_review_access_cap_or_role')
                                 .value = duplicateData.access_cap_or_role || "";
                             }
                         });
@@ -5717,20 +5761,22 @@ namespace WA\Config\Admin {
                     'page' => $this->eReviewPageKey,
                 ], admin_url( 'admin.php' ));
                 echo "<h1> " . __(
-                    "CRITIQUE : prevoir un roolback SQL",
+                    "CRITIQUE : prevoir un rollback SQL",
                     'wa-config'
                 ) . " </h1>";
                 echo "<p> " . __(
-                    "<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de données en dehors de WordPress pour recharger cette dernière via le backup SQL suivant en cas d'echec de roolback des actions de tests (ex : accès phpmyadmin) : ",
+                    "<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de données en dehors de WordPress pour recharger cette dernière via le backup SQL suivant en cas d'echec de rollback des actions de tests (ex : accès phpmyadmin) : ",
                     'wa-config'
                 ) . " </p>";
                 if (current_user_can('administrator')) {
                     echo "<p> " . (
                         "<strong> DB_NAME : '" . DB_NAME . "'</strong> <br />"
-                        . "<strong> DB_USER : '" . DB_USER . "'</strong> <br />"
+                        . "<strong> DB_USER : <span class='wa-show-pass-on-hover'>'"
+                        . DB_USER . "'</span></strong> <br />"
                         . "<strong> DB_PASSWORD : <span class='wa-show-pass-on-hover'>'"
                         . DB_PASSWORD . "'</span></strong> <br />"
-                        . "<strong> DB_HOST : '" . DB_HOST . "'</strong> <br />"
+                        . "<strong> DB_HOST : <span class='wa-show-pass-on-hover'>'"
+                        . DB_HOST . "'</span></strong> <br />"
                         . "<strong> DB_CHARSET : '" . DB_CHARSET . "'</strong> <br />"
                     ) . " </p>";
                 }
@@ -5739,7 +5785,7 @@ namespace WA\Config\Admin {
                     'wa-action' => 'do-backup',
                     'wa-iid' => $this->iId,
                     'wa-backup-type' => 'sql',
-                    'wa-compression-type' => '.sql.gz'
+                    'wa-compression-type' => '.zip'
                 ], admin_url( 'admin-ajax.php' ));
                 echo "<p>[$this->iId] <strong><a
                 href='$bckupSQLUrl'
@@ -6242,6 +6288,7 @@ namespace WA\Config\Admin {
                 delete_transient($self->_reviewsByKeySearchCacheKey);
                 $self->_reviewsByKeySearchCacheKey = null;
                 $self->_eReviewSettingsPreUpdateSelfSentinel = false;
+                wp_cache_delete("alloptions", "options"); 
                 return $value;
             }
             protected function e_review_settings_fetch_field($key, $default)
@@ -8666,13 +8713,16 @@ namespace WA\Config\Admin {
                     __( 'Better Search Replace',  'wa-config' ),
                     'better-search-replace'
                 );
+                $this->eReviewIdsToTrash = array_merge($this->eReviewIdsToTrash, [
+                    "{$this->iId}-check-plugin-pods",
+                ]);    
                 $pluginReviewer(
-                    __( 'Ajustements des post et taxonomies personalisées en activant le plugin :',  'wa-config' ),
-                    __( 'Pods – Custom Content Types and Fields',  'wa-config' ),
-                    'pods', [
+                    __( 'Ajustements des posts et taxonomies personalisées en activant le plugin :',  'wa-config' ),
+                    __( 'Display Post Types – Post Grid, post list and post sliders',  'wa-config' ),
+                    'display-post-types', [
                         'custom-post-type-widgets' =>  __( 'Bonus : Custom Post Type Widgets',  'wa-config' ),
                     ]
-                );
+                ); 
             if ($this->shouldDebug|| $this->shouldDebugVerbose
                 || $this->shouldDebugVeryVerbose) {
                     $pluginReviewer(

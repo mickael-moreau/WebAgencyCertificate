@@ -20,12 +20,11 @@ var jQuery;
 
     var waConfigAdmin = {
         init: function() {
-            // TODO : find a way to remove those 'ID' targeting, and be generic on form model...
-            suggestFactory(
-                '.wa-suggest-blog-category',
-                "?action=ajax-tag-search&tax=category",
-                {multiple:true, multipleSep: ","}
-            );
+            // suggestFactory(
+            //     '.wa-suggest-blog-category',
+            //     "?action=ajax-tag-search&tax=category",
+            //     {multiple:true, multipleSep: ","}
+            // );
             suggestFactory(
                 '.wa-suggest-capabilities-and-roles',
                 "?action=wa-list-capabilities-and-roles",
@@ -52,7 +51,7 @@ var jQuery;
                 {multiple:false}
             );
             suggestFactory(
-                '#wa_e_config_review_opts_wa_review_requirements',
+                '.wa-review-textarea-wa_e_review_settings_form_key_wa_review_requirements',
                 "?action=wa-list-review-data-by-key&key=requirements",
                 {multiple:false}
             );

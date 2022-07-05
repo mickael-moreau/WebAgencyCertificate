@@ -514,14 +514,14 @@ msgid ""
 msgstr ""
 
 #: App.php:3752
-msgid "CRITIQUE : prevoir un roolback SQL"
+msgid "CRITIQUE : prevoir un rollback SQL"
 msgstr ""
 
 #: App.php:3753
 msgid ""
 "<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de "
 "données en dehors de WordPress pour recharger cette dernière via le backup "
-"SQL suivant en cas d'echec de roolback des actions de tests (ex : accès "
+"SQL suivant en cas d'echec de rollback des actions de tests (ex : accès "
 "phpmyadmin) : "
 msgstr ""
 

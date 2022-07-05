@@ -35,7 +35,7 @@
  * --html --debug
  * ```
  *
- * In case of test failure failling user login roolback, use this 
+ * In case of test failure failling user login rollback, use this 
  * curl commande 1 or 2 times (first time may get an invalid access error) :
  * ```bash
  * WA_BACKEND=https://web-agency.local.dev/e-commerce
@@ -180,7 +180,7 @@ namespace WA\Config\E2E {
      * --html --debug
      * ```
      *
-     * In case of test failure failling user login roolback, use this 
+     * In case of test failure failling user login rollback, use this 
      * curl commande 1 or 2 times (first time may get an invalid access error) :
      * ```bash
      * WA_BACKEND=https://web-agency.local.dev/e-commerce

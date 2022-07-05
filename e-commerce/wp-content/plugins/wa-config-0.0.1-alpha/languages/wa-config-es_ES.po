@@ -73,25 +73,24 @@ msgstr "7.4+ (se recomienda 7.4 o superior)"
 msgid ""
 "<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de "
 "données en dehors de WordPress pour recharger cette dernière via le backup "
-"SQL suivant en cas d'echec de roolback des actions de tests (ex : accès "
+"SQL suivant en cas d'echec de rollback des actions de tests (ex : accès "
 "phpmyadmin) : "
 msgstr ""
 "<strong>ATENCIÓN:</strong> asegúrese de que puede modificar su base de datos "
 "fuera de WordPress para recargarla a través de la siguiente copia de "
-"seguridad de SQL en caso de que falle el roolback de las acciones de prueba "
+"seguridad de SQL en caso de que falle el rollback de las acciones de prueba "
 "(por ejemplo, acceso a phpmyadmin):"
 
 #. Description of the plugin
 msgid ""
 "<strong>End to end user tests</strong> with <strong>Codeception</strong>. "
 "Speed up documentations and tests in <strong>parallel</strong>. Enjoy an "
-"<strong>editable footer</strong> copyright done by wa-config (by "
-"service@monwoo.com)"
+"<strong>editable footer</strong> copyright etc..."
 msgstr ""
-"<strong>Tests utilisateurs de bout en bout</strong> avec <strong>"
-"Codeception</strong>. Accélère la documentation et les tests en <strong>"
-"parallel</strong>. Profitez d'un copyright de <strong>bas de page "
-"éditable</strong> produit par wa-config (par service@monwoo.com)"
+"<strong>Pruebas de usuario de extremo a extremo</strong> con <strong>"
+"Codeception</strong>. Acelera la documentación y las pruebas al <strong>"
+"paralelas</strong>. Disfruta de un copyright de <strong>pie de página "
+"editable</strong> etc..."
 
 #: App.php:1951
 msgid "[wa-skill] Vérification de la présence des expertises de base.<br />"
@@ -362,7 +361,7 @@ msgid "Copyright de bas de page"
 msgstr "Derechos de autor del pie de página"
 
 #: App.php:3752
-msgid "CRITIQUE : prevoir un roolback SQL"
+msgid "CRITIQUE : prevoir un rollback SQL"
 msgstr "CRÍTICO: proporcionar una reversión de SQL"
 
 #: App.php:1797 App.php:1802

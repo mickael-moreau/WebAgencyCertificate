@@ -276,6 +276,31 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/WA-Config-Utils-DumpPlainTxt.html#method_end"
         },                {
+            "fqsen": "\\WA\\Config\\Utils\\DumpZip",
+            "name": "DumpZip",
+            "summary": "This\u0020class\u0020will\u0020dump\u0020SQL\u0020to\u0020a\u0020zip\u0020file",
+            "url": "classes/WA-Config-Utils-DumpZip.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\DumpZip\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/WA-Config-Utils-DumpZip.html#method___construct"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\DumpZip\u003A\u003Aopen\u0028\u0029",
+            "name": "open",
+            "summary": "",
+            "url": "classes/WA-Config-Utils-DumpZip.html#method_open"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\DumpZip\u003A\u003Awrite\u0028\u0029",
+            "name": "write",
+            "summary": "",
+            "url": "classes/WA-Config-Utils-DumpZip.html#method_write"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\DumpZip\u003A\u003Aend\u0028\u0029",
+            "name": "end",
+            "summary": "",
+            "url": "classes/WA-Config-Utils-DumpZip.html#method_end"
+        },                {
             "fqsen": "\\WA\\Config\\Utils\\DumpGzip",
             "name": "DumpGzip",
             "summary": "This\u0020class\u0020will\u0020dump\u0020to\u0020a\u0020.gz\u0020file\u0020\u0028gzip\u0020compressed\u0029",

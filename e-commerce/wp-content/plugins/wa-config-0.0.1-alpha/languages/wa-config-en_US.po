@@ -29,8 +29,7 @@ msgstr "https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo"
 msgid ""
 "<strong>End to end user tests</strong> with <strong>Codeception</strong>. "
 "Speed up documentations and tests in <strong>parallel</strong>. Enjoy an "
-"<strong>editable footer</strong> copyright done by wa-config (by "
-"service@monwoo.com)"
+"<strong>editable footer</strong> copyright etc..."
 msgstr ""
 
 #. Author of the plugin
@@ -508,14 +507,14 @@ msgstr ""
 "Delete all review data (Cleaning up current reviews and deletion history)"
 
 #: App.php:3752
-msgid "CRITIQUE : prevoir un roolback SQL"
+msgid "CRITIQUE : prevoir un rollback SQL"
 msgstr "CRITICAL: provide an SQL rollback"
 
 #: App.php:3753
 msgid ""
 "<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de "
 "données en dehors de WordPress pour recharger cette dernière via le backup "
-"SQL suivant en cas d'echec de roolback des actions de tests (ex : accès "
+"SQL suivant en cas d'echec de rollback des actions de tests (ex : accès "
 "phpmyadmin) : "
 msgstr ""
 "WARNING: Make sure you can modify your database outside of WordPress to "
