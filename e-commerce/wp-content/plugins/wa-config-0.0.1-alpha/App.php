@@ -12,11 +12,11 @@
  * {@see WA\Config\App} come with :
  * - **Skills and missions** concepts ready to use as taxonomy and custom post type
  * - **Internaionalisation** and **WooCommerce** integration
- * - A **securised REST API** to deploy custom static front head
+ * - A **securised REST API** to deploy custom static HTML front head
  * - A **commonJS deploy script** to easyliy deploy your static frontend 
  * - A **review system** for all team members using this plugin
  * - **Codeception** as end to end test tool
- * - **PhpDocumentor output** as an easy up to date documentation
+ * - **PhpDocumentor output** as an up to date HTML documentation
  * - **Pdf.js** for quick display of main documentation files
  * - results of **Miguel Monwoo R&D** for **parallel programmings** and **advanced integrations**
  * 
@@ -3759,7 +3759,7 @@ namespace WA\Config\Admin {
                     _x('Svelte','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise Svelte)"),
+                    'description' => __("Expertise Svelte"),
                     'slug'        => 'svelte',
                     'parent'      => $frontendTerm['term_id'],
                     )
@@ -3769,7 +3769,7 @@ namespace WA\Config\Admin {
                     _x('Angular JS','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise Angular JS)"),
+                    'description' => __("Expertise Angular JS"),
                     'slug'        => 'angular-js',
                     'parent'      => $frontendTerm['term_id'],
                     )
@@ -3779,7 +3779,7 @@ namespace WA\Config\Admin {
                     _x('Angular 2+','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise Angular 2+)"),
+                    'description' => __("Expertise Angular 2+"),
                     'slug'        => 'angular-2-etc',
                     'parent'      => $frontendTerm['term_id'],
                     )
@@ -3789,7 +3789,7 @@ namespace WA\Config\Admin {
                     _x('Vue JS','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise Vue JS)"),
+                    'description' => __("Expertise Vue JS"),
                     'slug'        => 'vue-js',
                     'parent'      => $frontendTerm['term_id'],
                     )
@@ -3799,7 +3799,7 @@ namespace WA\Config\Admin {
                     _x('React JS','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise React JS)"),
+                    'description' => __("Expertise React JS"),
                     'slug'        => 'react-js',
                     'parent'      => $frontendTerm['term_id'],
                     )
@@ -3809,7 +3809,7 @@ namespace WA\Config\Admin {
                     _x('WordPress Theme','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise en frontend WordPress)"),
+                    'description' => __("Expertise en frontend WordPress"),
                     'slug'        => 'wordpress-frontend',
                     'parent'      => $frontendTerm['term_id'],
                     )
@@ -3828,7 +3828,7 @@ namespace WA\Config\Admin {
                     _x('WordPress Plugin','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise en backend WordPress)"),
+                    'description' => __("Expertise en backend WordPress"),
                     'slug'        => 'wordpress-plugin',
                     'parent'      => $backendTerm['term_id'],
                     )
@@ -3838,7 +3838,7 @@ namespace WA\Config\Admin {
                     _x('Symfony','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise WordPress)"),
+                    'description' => __("Expertise WordPress"),
                     'slug'        => 'symfony',
                     'parent'      => $backendTerm['term_id'],
                     )
@@ -3848,7 +3848,7 @@ namespace WA\Config\Admin {
                     _x('Laravel','wa-skill term'),
                     'wa-skill',
                     array(
-                    'description' => __("Expertise Laravel)"),
+                    'description' => __("Expertise Laravel"),
                     'slug'        => 'laravel',
                     'parent'      => $backendTerm['term_id'],
                     )
@@ -9189,11 +9189,11 @@ namespace WA\Config {
          * **WA\Config\App** come with :
          * - **Skills and missions** concepts ready to use as taxonomy and custom post type
          * - **Internaionalisation** and **WooCommerce** integration
-         * - A **securised REST API** to deploy custom static front head
+         * - A **securised REST API** to deploy custom static HTML front head
          * - A **commonJS deploy script** to easyliy deploy your static frontend 
          * - A **review system** for all team members using this plugin
          * - **Codeception** as end to end test tool
-         * - **PhpDocumentor output** as an easy up to date documentation
+         * - **PhpDocumentor output** as an up to date HTML documentation
          * - **Pdf.js** for quick display of main documentation files
          * - results of **Miguel Monwoo R&D** for **parallel programmings** and **advanced integrations**
          *

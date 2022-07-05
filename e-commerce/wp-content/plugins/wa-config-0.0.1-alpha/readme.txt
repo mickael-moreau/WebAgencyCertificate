@@ -25,11 +25,11 @@ Licence requirements :
 It come with :
  - **Skills and missions** concepts ready to use as taxonomy and custom post type
  - **Internaionalisation** and **WooCommerce** integration
- - A **securised REST API** to deploy custom static front head
- - A **commonJS deploy script** to easyliy deploy your static frontend heads
+ - A **securised REST API** to deploy custom static HTML front head
+ - A **commonJS deploy script** to easyliy deploy your static HTML frontend heads
  - A **review system** for all team members using this plugin
  - **Codeception** as end to end test tool
- - **PhpDocumentor output** as an easy up to date documentation
+ - **PhpDocumentor output** as an up to date HTML documentation
  - **Pdf.js** for quick display of main documentation files
  - results of **Miguel Monwoo R&D** for **parallel programmings** and **advanced integrations**
 
@@ -47,9 +47,10 @@ WA-Config Monwoo will help with **Web Agency jobs** like :
  - Runing same **instance** of this plugin **in parallele**.
 
 
-https://www.youtube.com/watch?v=55jOhB5QcB4
+https://youtu.be/ItmLWXc4LZ0
 
-[Build by Miguel Monwoo](http://miguel.monwoo.com)
+
+[Build by Miguel Monwoo](https://miguel.monwoo.com)
 
 This plugin make your website ready to do **advanced** human and/or automatic tests **reviews**.
 

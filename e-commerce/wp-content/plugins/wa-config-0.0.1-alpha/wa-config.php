@@ -32,11 +32,11 @@
  * It come with :
  * - **Skills and missions** concepts ready to use as taxonomy and custom post type
  * - **Internaionalisation** and **WooCommerce** integration
- * - A **securised REST API** to deploy custom static front head
+ * - A **securised REST API** to deploy custom static HTML front head
  * - A **commonJS deploy script** to easyliy deploy your static frontend 
  * - A **review system** for all team members using this plugin
  * - **Codeception** as end to end test tool
- * - **PhpDocumentor output** as an easy up to date documentation
+ * - **PhpDocumentor output** as an up to date HTML documentation
  * - **Pdf.js** for quick display of main documentation files
  * - results of **Miguel Monwoo R&D** for **parallel programmings** and **advanced integrations**
  * 
