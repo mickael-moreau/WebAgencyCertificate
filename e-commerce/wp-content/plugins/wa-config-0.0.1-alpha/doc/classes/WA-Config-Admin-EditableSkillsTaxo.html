@@ -102,7 +102,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3625</span>
+    <span class="phpdocumentor-element-found-in__line">3811</span>
 
     </aside>
 
@@ -233,6 +233,20 @@ curl &quot;$WP_V2API_BASEURL/wa-skill&quot;
 <dd>Register wa-skill taxonomy with polylang plugin</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_the_category_list">e_skill_taxo_filter_the_category_list()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;    </span>
+</dt>
+<dd>Filters the categories to add skills to category before building the category list.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_lang_link">e_skill_taxo_polylang_lang_link()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd>Register polylang rewrite rule for wa-mission slugs</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_register_taxonomy">e_skill_taxo_register_taxonomy()</a>
     <span>
                                 &nbsp;: void    </span>
@@ -263,7 +277,7 @@ curl &quot;$WP_V2API_BASEURL/wa-skill&quot;
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3669</span>
+    <span class="phpdocumentor-element-found-in__line">3911</span>
 
     </aside>
 
@@ -296,7 +310,7 @@ curl &quot;$WP_V2API_BASEURL/wa-skill&quot;
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3743</span>
+    <span class="phpdocumentor-element-found-in__line">3985</span>
 
     </aside>
 
@@ -341,7 +355,7 @@ curl &quot;$WP_V2API_BASEURL/wa-skill&quot;
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3978</span>
+    <span class="phpdocumentor-element-found-in__line">4240</span>
 
     </aside>
 
@@ -442,7 +456,7 @@ An array of the new term data, false otherwise.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3657</span>
+    <span class="phpdocumentor-element-found-in__line">3882</span>
 
     </aside>
 
@@ -496,6 +510,126 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_e_skill_taxo_filter_the_category_list">
+        e_skill_taxo_filter_the_category_list()
+        <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_the_category_list" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3847</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Filters the categories to add skills to category before building the category list.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_skill_taxo_filter_the_category_list</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$categories</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int|bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post_id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$categories</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>An array of the post's categories.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$post_id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int|bool</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>ID of the post we're retrieving categories for.
+When <code class="prettyprint">false</code>, we assume the current post in the loop.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>$categories An array of the post's categories.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_skill_taxo_polylang_lang_link">
+        e_skill_taxo_polylang_lang_link()
+        <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_lang_link" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3898</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Register polylang rewrite rule for wa-mission slugs</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_skill_taxo_polylang_lang_link</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$slug</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$locale</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$url</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The link, null if no translation was found.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$slug</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The language code.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$locale</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The language locale</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_e_skill_taxo_register_taxonomy">
         e_skill_taxo_register_taxonomy()
         <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_register_taxonomy" class="headerlink"><i class="fas fa-link"></i></a>
@@ -503,7 +637,7 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3697</span>
+    <span class="phpdocumentor-element-found-in__line">3939</span>
 
     </aside>
 

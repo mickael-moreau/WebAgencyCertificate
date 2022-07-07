@@ -11,15 +11,15 @@ Search.appendIndex(
             "summary": "Check\u0020if\u0020string\u0020\u0024haystack\u0020end\u0020with\u0020\u0024needle",
             "url": "namespaces/wa-config-utils.html#function_strEndsWith"
         },                {
-            "fqsen": "\\WA\\Config\\Utils\\_l\u0028\u0029",
-            "name": "_l",
+            "fqsen": "\\WA\\Config\\Utils\\__\u0028\u0029",
+            "name": "__",
             "summary": "Get\u0020a\u0020translated\u0020string\u0020in\u0020the\u0020given\u0020translated\u0020domain",
-            "url": "namespaces/wa-config-utils.html#function__l"
+            "url": "namespaces/wa-config-utils.html#function___"
         },                {
-            "fqsen": "\\WA\\Config\\Utils\\_lx\u0028\u0029",
-            "name": "_lx",
+            "fqsen": "\\WA\\Config\\Utils\\_x\u0028\u0029",
+            "name": "_x",
             "summary": "Get\u0020a\u0020translated\u0020string\u0020in\u0020the\u0020given\u0020translated\u0020domain",
-            "url": "namespaces/wa-config-utils.html#function__lx"
+            "url": "namespaces/wa-config-utils.html#function__x"
         },                {
             "fqsen": "\\WA\\Config\\Utils\\wa_filesystem\u0028\u0029",
             "name": "wa_filesystem",
@@ -41,10 +41,15 @@ Search.appendIndex(
             "summary": "Filters\u0020the\u0020HTML\u0020Editable\u0020footer\u0020rendered\u0020by\u0020wa\u002Dconfig\u0020package",
             "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_e_footer_render"
         },                {
-            "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_review_ids_to_trash",
-            "name": "wa_review_ids_to_trash",
+            "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_base_review_ids_to_trash",
+            "name": "wa_base_review_ids_to_trash",
             "summary": "Filters\u0020the\u0020reviews\u0020fixed_id\u0020to\u0020trash\u0020at\u0020the\u0020end\u0020of\u0020the\u0020base\u0020review",
-            "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_review_ids_to_trash"
+            "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_base_review_ids_to_trash"
+        },                {
+            "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_base_review_skill_terms_to_ensure",
+            "name": "wa_base_review_skill_terms_to_ensure",
+            "summary": "Filters\u0020the\u0020skill\u0020terms\u0020to\u0020ensure\u0020for\u0020the\u0020base\u0020review",
+            "url": "classes/WA-Config-Core-WPFilters.html#constant_wa_base_review_skill_terms_to_ensure"
         },                {
             "fqsen": "\\WA\\Config\\Core\\WPFilters\u003A\u003Awa_get_ip",
             "name": "wa_get_ip",
@@ -411,6 +416,16 @@ Search.appendIndex(
             "summary": "App\u0020constructor.",
             "url": "classes/WA-Config-App.html#method___construct"
         },                {
+            "fqsen": "\\WA\\Config\\Core\\TestableSamples",
+            "name": "TestableSamples",
+            "summary": "This\u0020trait\u0020will\u0020run\u0020the\u0020provided\u0020examples\u0020from\u0020the\u0020domcumentation\u0020comments",
+            "url": "classes/WA-Config-Core-TestableSamples.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Core\\TestableSamples\u003A\u003Atest_sample_wa_base_review_skill_terms_to_ensure\u0028\u0029",
+            "name": "test_sample_wa_base_review_skill_terms_to_ensure",
+            "summary": "Run\u0020the\u0020example\u0020from\u0020WPFilters\u003A\u003Awa_base_review_skill_terms_to_ensure\u0020documentation",
+            "url": "classes/WA-Config-Core-TestableSamples.html#method_test_sample_wa_base_review_skill_terms_to_ensure"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\Identifiable",
             "name": "Identifiable",
             "summary": "This\u0020trait\u0020will\u0020provide\u0020the\u0020loaded\u0020plugin\u0020information\nand\u0020instance\u0020identifiers",
@@ -596,6 +611,16 @@ Search.appendIndex(
             "summary": "This\u0020trait\u0020will\u0020load\u0020the\u0020i18n\u0020plugin\u0020text\u0020domain\u0020international\u0020translations.",
             "url": "classes/WA-Config-Core-Translatable.html"
         },                {
+            "fqsen": "\\WA\\Config\\Core\\Translatable\u003A\u003At_ensure_route_sync\u0028\u0029",
+            "name": "t_ensure_route_sync",
+            "summary": "Will\u0020ensure\u0020rewrite\u0020rules\u0020are\u0020up\u0020to\u0020date.\u0020\u0028call\u0020wisely,\u0020heavy\u0020computs\u0020\u003F\u0029",
+            "url": "classes/WA-Config-Core-Translatable.html#method_t_ensure_route_sync"
+        },                {
+            "fqsen": "\\WA\\Config\\Core\\Translatable\u003A\u003At_on_permalink_structure_changed\u0028\u0029",
+            "name": "t_on_permalink_structure_changed",
+            "summary": "Filter\u0020done\u0020after\u0020the\u0020permalink\u0020structure\u0020is\u0020updated.",
+            "url": "classes/WA-Config-Core-Translatable.html#method_t_on_permalink_structure_changed"
+        },                {
             "fqsen": "\\WA\\Config\\Core\\Translatable\u003A\u003At_loadTextdomains\u0028\u0029",
             "name": "t_loadTextdomains",
             "summary": "Will\u0020load\u0020the\u0020text\u0020domain\u0020translations\u0020with\nWordPress\u0020load_plugin_textdomain\u0020function",
@@ -625,6 +650,11 @@ Search.appendIndex(
             "name": "TranslatableProduct",
             "summary": "This\u0020trait\u0020will\u0020add\u0020the\u0020polylang\u0020language\u0020feature\u0020to\u0020WooCommerce\u0020product\u0020post\u0020type",
             "url": "classes/WA-Config-Utils-TranslatableProduct.html"
+        },                {
+            "fqsen": "\\WA\\Config\\Utils\\TranslatableProduct\u003A\u003At_product_change_woocommerce_order_number\u0028\u0029",
+            "name": "t_product_change_woocommerce_order_number",
+            "summary": "Add\u0020prefix\u0020to\u0020woocommerce\u0020order\u0020numbers",
+            "url": "classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_change_woocommerce_order_number"
         },                {
             "fqsen": "\\WA\\Config\\Utils\\TranslatableProduct\u003A\u003At_product_post_type_polylang_register\u0028\u0029",
             "name": "t_product_post_type_polylang_register",
@@ -686,11 +716,6 @@ Search.appendIndex(
             "summary": "Add\u0020the\u0020OceanWP\u0020Settings\u0020metabox\u0020in\u0020your\u0020CPT",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_oceanwp_metabox"
         },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_change_woocommerce_order_number\u0028\u0029",
-            "name": "e_mission_CPT_change_woocommerce_order_number",
-            "summary": "Add\u0020prefix\u0020to\u0020woocommerce\u0020order\u0020numbers",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_change_woocommerce_order_number"
-        },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_load_template_includes\u0028\u0029",
             "name": "e_mission_CPT_load_template_includes",
             "summary": "Filter\u0020templates\u0020to\u0020load\u0020custom\u0020templates\u0020if\u0020availables",
@@ -720,11 +745,6 @@ Search.appendIndex(
             "name": "e_mission_CPT_polylang_rewrite_slugs",
             "summary": "Register\u0020polylang\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs\u0020\u0028Dev\u0020in\u0020progres...\u0029",
             "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_polylang_rewrite_slugs"
-        },                {
-            "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_register_localized_slug\u0028\u0029",
-            "name": "e_mission_register_localized_slug",
-            "summary": "Register\u0020polylang\u0020localized\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs\u0020Polylang\u0020404\u0020page\u0020fixes",
-            "url": "classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_register_localized_slug"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableMissionPost\u003A\u003Ae_mission_CPT_polylang_register\u0028\u0029",
             "name": "e_mission_CPT_polylang_register",
@@ -791,10 +811,20 @@ Search.appendIndex(
             "summary": "This\u0020trait\u0020will\u0020add\u0020the\u0020wa\u002Dskill\u0020taxonomy",
             "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html"
         },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_filter_the_category_list\u0028\u0029",
+            "name": "e_skill_taxo_filter_the_category_list",
+            "summary": "Filters\u0020the\u0020categories\u0020to\u0020add\u0020skills\u0020to\u0020category\u0020before\u0020building\u0020the\u0020category\u0020list.",
+            "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_the_category_list"
+        },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_filter_pll_taxonomies\u0028\u0029",
             "name": "e_skill_taxo_filter_pll_taxonomies",
             "summary": "Register\u0020wa\u002Dskill\u0020taxonomy\u0020with\u0020polylang\u0020plugin",
             "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_pll_taxonomies"
+        },                {
+            "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_polylang_lang_link\u0028\u0029",
+            "name": "e_skill_taxo_polylang_lang_link",
+            "summary": "Register\u0020polylang\u0020rewrite\u0020rule\u0020for\u0020wa\u002Dmission\u0020slugs",
+            "url": "classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_lang_link"
         },                {
             "fqsen": "\\WA\\Config\\Admin\\EditableSkillsTaxo\u003A\u003Ae_skill_taxo_admin_menu\u0028\u0029",
             "name": "e_skill_taxo_admin_menu",

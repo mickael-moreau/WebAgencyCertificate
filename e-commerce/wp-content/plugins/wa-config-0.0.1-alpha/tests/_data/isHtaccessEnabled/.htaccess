@@ -5,4 +5,5 @@ Allow from all
 
 # https://help.dreamhost.com/hc/en-us/articles/215747748-How-can-I-redirect-and-rewrite-my-URLs-with-an-htaccess-file-
 RewriteCond %{REQUEST_URI} index.html [NC]
+# TODO : ok in moonkiosk production, but failling in dev...
 RewriteRule . ./index2.html [R=302,L,NS]

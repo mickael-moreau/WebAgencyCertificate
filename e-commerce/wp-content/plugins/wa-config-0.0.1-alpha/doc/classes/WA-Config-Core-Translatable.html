@@ -102,13 +102,14 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">938</span>
+    <span class="phpdocumentor-element-found-in__line">1064</span>
 
     </aside>
 
             <p class="phpdocumentor-summary">This trait will load the i18n plugin text domain international translations.</p>
 
     <section class="phpdocumentor-description"><p>i18n translations files are located in &quot;./languages&quot; plugin subfolder.</p>
+<p>It Polylang plugin is available, it will also ensure some configurations for it</p>
 </section>
 
 
@@ -171,12 +172,26 @@
 <dd>Plugin text domain, used to load plugin translations from ./languages folder</dd>
 
                 <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Core-Translatable.html#method_t_ensure_route_sync">t_ensure_route_sync()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Will ensure rewrite rules are up to date. (call wisely, heavy computs ?)</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-Translatable.html#method_t_loadTextdomains">t_loadTextdomains()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
 <dd>Will load the text domain translations with
 WordPress load_plugin_textdomain function</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Core-Translatable.html#method_t_on_permalink_structure_changed">t_on_permalink_structure_changed()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Filter done after the permalink structure is updated.</dd>
 
         </dl>
 
@@ -204,7 +219,7 @@ WordPress load_plugin_textdomain function</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">951</span>
+    <span class="phpdocumentor-element-found-in__line">1077</span>
 
     </aside>
 
@@ -239,6 +254,52 @@ untranslatable by WPML or Loco translate.</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_t_ensure_route_sync">
+        t_ensure_route_sync()
+        <a href="classes/WA-Config-Core-Translatable.html#method_t_ensure_route_sync" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">1092</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Will ensure rewrite rules are up to date. (call wisely, heavy computs ?)</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">t_ensure_route_sync</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resetMode</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$resetMode</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Will flush rules imediately if true, or
+will flush after 'wp' action if false. Default false.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_t_loadTextdomains">
         t_loadTextdomains()
         <a href="classes/WA-Config-Core-Translatable.html#method_t_loadTextdomains" class="headerlink"><i class="fas fa-link"></i></a>
@@ -246,7 +307,7 @@ untranslatable by WPML or Loco translate.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">962</span>
+    <span class="phpdocumentor-element-found-in__line">1121</span>
 
     </aside>
 
@@ -274,6 +335,39 @@ WordPress load_plugin_textdomain function</p>
                                              
                                     </dd>
                         </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_t_on_permalink_structure_changed">
+        t_on_permalink_structure_changed()
+        <a href="classes/WA-Config-Core-Translatable.html#method_t_on_permalink_structure_changed" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">1111</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Filter done after the permalink structure is updated.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">t_on_permalink_structure_changed</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    
+    
+    
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
     <span class="phpdocumentor-signature__response_type">void</span>

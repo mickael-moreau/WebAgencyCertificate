@@ -83,6 +83,7 @@ namespace WA\Config\Core {
     use RecursiveIteratorIterator;
     use WA\Config\Admin\Notice;
     use WA\Config\Admin\EditableConfigPanels;
+    use WA\Config\Admin\EditableSkillsTaxo; 
     use WA\Config\Admin\OptiLvl; 
     use WA\Config\Admin\EditableReview; 
     use WA\Config\Frontend\EditableFooter; 
@@ -90,6 +91,7 @@ namespace WA\Config\Core {
     use WA\Config\Utils\DumpPlainTxt;
     use WA\Config\Utils\DumpZip;
     use WA\Config\Utils\InsertSqlStatement;
+    use WA\Config\Utils;
     use WP;
     use WP_Filesystem_Direct;
     use wpdb;
@@ -131,7 +133,74 @@ namespace WA\Config\Core {
              * @see EditableReview::e_review_data_add_base_review()
              * @since 0.0.1
              */
-            const wa_review_ids_to_trash = 'wa_review_ids_to_trash';
+            const wa_base_review_ids_to_trash = 'wa_base_review_ids_to_trash';
+            /**
+             * Filters the skill terms to ensure for the base review
+             * 
+             * 
+             * **@param** *array*   **$termsToEnsure**  The terms that need to be ensured.
+             * Cf {@see EditableSkillsTaxo::e_skill_taxo_data_review() methode usage}
+             * 
+             * **@param** *string*  **$locale**     The locale used to ensure thoses fields (Wordpress)
+             * 
+             * **@param** *string*  **$localeSlug** The locale slug used to ensure thoses fields (Polylang)
+             * 
+             * **@return** *array*   The terms that need to be ensured.
+             * 
+             * {@see EditableSkillsTaxo::e_skill_taxo_data_review()}
+             * {@see TestableSamples::test_sample_wa_base_review_skill_terms_to_ensure()}
+             * 
+             * 
+             * Example working with native 'wp i18n make-pot' or loco translate plugin :
+             * ```php
+             * // Somewhere at the begining of your namespace :
+             * use WA\Config\Utils;
+             *
+             * // Then, in your code :
+             * 
+             *  $app = $this;
+             *  add_filter(WPFilters::wa_base_review_skill_terms_to_ensure, function (
+             *      $termsToEnsure, $locale, $localeSlug
+             *  ) use($app) {
+             *      $termsToEnsure = array_merge($termsToEnsure, [
+             *          // ensureIdentifier, must be unique, and will be reused in '_parentEnsureID' term arguments
+             *          'health-care' => [
+             *              // Term Title
+             *              Utils\_x( 'Plaisir' , 'wa-skill term title', 'wa-config', $locale),
+             *              [
+             *                  // Term description
+             *                  'description' => Utils\__("Expertise en bien-être", 'wa-config', $locale),
+             *                  // Term slug. Must be UNIQUE over ALL languages.
+             *                  // We comonly use suffix '_$localeSlug' for slugs having same names over different languages
+             *                  'slug'        => Utils\_x('health-care' , 'wa-skill term slug', 'wa-config', $locale),
+             *              ],
+             *          ],
+             *          'physiological-health-care' => [
+             *              Utils\_x( 'Plaisir physiologique' , 'wa-skill term title', 'wa-config', $locale),
+             *              [
+             *                  'description' => Utils\__("Expertise en Plaisir de l'activité de l'organisme humain", 'wa-config', $locale),
+             *                  'slug'        => Utils\_x('physiological-health-care' , 'wa-skill term slug', 'wa-config', $locale),
+             *                  '_parentEnsureID' => 'health-care',
+             *              ],
+             *          ],
+             *          'organisational-health-care' => [
+             *              Utils\_x( 'Plaisir organisationnel' , 'wa-skill term title', 'wa-config', $locale),
+             *              [
+             *                  'description' => Utils\__("Expertise organisationnel pour se sentir bien ou améliorer un Plaisir relationnel ou physiologique", 'wa-config', $locale),
+             *                  'slug'        => Utils\_x('organisational-health-care' , 'wa-skill term slug', 'wa-config', $locale),
+             *                  '_parentEnsureID' => 'health-care',
+             *              ],
+             *          ],
+             *      ]);
+             *      $app->info("TestableSamples test_sample_wa_base_review_skill_terms_to_ensure : ", $termsToEnsure);
+             *      return $termsToEnsure;
+             *  }, 10, 3);
+             * }
+             * ```
+             *
+             * @since 0.0.1
+             */
+            const wa_base_review_skill_terms_to_ensure = 'wa_base_review_skill_terms_to_ensure';
             /**
              * Filters the IP used by protected functions of wa-config
              *
@@ -185,6 +254,61 @@ namespace WA\Config\Core {
              * @param AppInterface $app the plugin instance.
              */
             const wa_do_base_review_postprocessing = 'wa_do_base_review_postprocessing';
+        }
+    }
+    if (!trait_exists(TestableSamples::class)) { 
+        /**
+         * This trait will run the provided examples from the domcumentation comments
+         * 
+         * Activate only for testing purpose, use your own adaptation for production.
+         *
+         * @since 0.0.1
+         * @author service@monwoo.com
+         */
+        trait TestableSamples
+        {
+            protected function _000_test_sample__bootstrap() {
+                $this->test_sample_wa_base_review_skill_terms_to_ensure();
+            }
+            /**
+             * Run the example from WPFilters::wa_base_review_skill_terms_to_ensure documentation
+             * 
+             * @see WPFilters::wa_base_review_skill_terms_to_ensure
+             */
+            public function test_sample_wa_base_review_skill_terms_to_ensure() : void {
+                $app = $this;
+                add_filter(WPFilters::wa_base_review_skill_terms_to_ensure, function (
+                    $termsToEnsure, $locale, $localeSlug
+                ) use($app) {
+                    $termsToEnsure = array_merge($termsToEnsure, [
+                        'health-care' => [
+                            Utils\_x( 'Plaisir' , 'wa-skill term title', 'wa-config', $locale),
+                                [
+                                'description' => Utils\__("Expertise en bien-être", 'wa-config', $locale),
+                                'slug'        => Utils\_x('health-care' , 'wa-skill term slug', 'wa-config', $locale),
+                            ],
+                        ],
+                        'physiological-health-care' => [
+                            Utils\_x( 'Plaisir physiologique' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise en Plaisir de l'activité de l'organisme humain", 'wa-config', $locale),
+                                'slug'        => Utils\_x('physiological-health-care' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'health-care',
+                            ],
+                        ],
+                        'organisational-health-care' => [
+                            Utils\_x( 'Plaisir organisationnel' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise organisationnel pour se sentir bien ou améliorer un Plaisir relationnel ou physiologique", 'wa-config', $locale),
+                                'slug'        => Utils\_x('organisational-health-care' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'health-care',
+                            ],
+                        ],
+                    ]);
+                    $app->info("[$locale] TestableSamples test_sample_wa_base_review_skill_terms_to_ensure : ", $termsToEnsure);
+                    return $termsToEnsure;
+                }, 10, 3);
+            }
         }
     }
     if (!trait_exists(Identifiable::class)) { 
@@ -377,6 +501,9 @@ namespace WA\Config\Core {
                 if (!$this->shouldDebug) {
                     return;
                 }
+                if ($this->p_higherThanOneCallAchievedSentinel('_000_debug__bootstrap')) {
+                    return; 
+                }
                 error_reporting( 
                     E_CORE_ERROR |
                     E_CORE_WARNING |
@@ -407,9 +534,6 @@ namespace WA\Config\Core {
                     )
                 );
                 $default = stream_context_set_default($default_opts);
-                if ($this->p_higherThanOneCallAchievedSentinel('_000_debug__bootstrap')) {
-                    return; 
-                }
                 add_filter('pre_http_request', [$this, 'debug_trace_wp_http_requests'], 10, 3);
             }
             /**
@@ -930,6 +1054,8 @@ namespace WA\Config\Core {
          * This trait will load the i18n plugin text domain international translations.
          * i18n translations files are located in "./languages" plugin subfolder.
          * 
+         * It Polylang plugin is available, it will also ensure some configurations for it
+         * 
          * @since 0.0.1
          * @author service@monwoo.com
          * @uses Editable
@@ -949,9 +1075,42 @@ namespace WA\Config\Core {
              * @var string
              */
             public $waConfigTextDomain =  'wa-config';
-            protected function _001_t_scripts__bootstrap()
+            protected function _001_t__bootstrap()
             {
                 add_action( 'plugins_loaded', [$this, 't_loadTextdomains'] );
+                if ($this->p_higherThanOneCallAchievedSentinel('_001_t__bootstrap')) {
+                    return; 
+                }
+                add_action('permalink_structure_changed', [$this, 't_on_permalink_structure_changed']);
+            }
+            /**
+             * Will ensure rewrite rules are up to date. (call wisely, heavy computs ?)
+             * 
+             * @param bool $resetMode Will flush rules imediately if true, or
+             * will flush after 'wp' action if false. Default false.
+             */
+            public function t_ensure_route_sync($resetMode = false) : void {
+                $lowestActionTrigger = 'wp'; 
+                if ( !$resetMode && !did_action($lowestActionTrigger) ) {
+                    if ( !has_action($lowestActionTrigger, [$this, 't_ensure_route_sync']) ) {
+                        add_action($lowestActionTrigger, [$this, 't_ensure_route_sync']);
+                    }
+                    $this->debugVerbose("Will t_ensure_route_sync on next 'wp' action");
+                    return; 
+                }
+                flush_rewrite_rules(false);
+                $this->debugVerbose("Did flush_rules for t_ensure_route_sync");
+                $this->debugVeryVerbose("Current routes : ", $this->debug_routes());
+            }
+            /**
+             * Filter done after the permalink structure is updated.
+             *
+             * @param string $old_permalink_structure The previous permalink structure.
+             * @param string $permalink_structure     The new permalink structure.
+             */
+            public function t_on_permalink_structure_changed() : void {
+                $this->debugVerbose("Will t_on_permalink_structure_changed");
+                $this->t_ensure_route_sync();
             }
             /**
              * Will load the text domain translations with 
@@ -2211,7 +2370,7 @@ namespace WA\Config\Core {
                     }
                     $uri = $_SERVER['REQUEST_URI'];
                     $url = "$protocole://$domain$uri";
-                    $this->debug("Plugin bootstraping\n\nFrom [$iid] :\n $url");
+                    $this->debug("Plugin bootstraping\n{$this->pluginFile}\n\nFrom [$iid] :\n $url");
                 } else {
                     global $argv;
                     $this->debug("Plugin bootstraping\n\nFrom [$iid] :\n {$argv[0]}");
@@ -2259,6 +2418,7 @@ namespace WA\Config\Core {
 }
 namespace WA\Config\Utils {
     use WA\Config\Core\AppInterface;
+    use WA\Config\Core\Translatable;
     use Walker_Nav_Menu_Checklist;
     use WP_Filesystem_Direct;
     use ZipArchive;
@@ -2279,7 +2439,7 @@ namespace WA\Config\Utils {
             return substr($haystack, -$length) === $needle;
         }
     }
-    if (!function_exists(_l::class)) {
+    if (!function_exists(\WA\Config\Utils\__::class)) {
         /**
          * Get a translated string in the given translated domain
          * 
@@ -2287,11 +2447,12 @@ namespace WA\Config\Utils {
          * @param string $textdomain The 'textdomain id' to load the translations from (ex : wa-config)
          * @param string $locale The locale to load the related local value (ex : fr_FR)
          */
-        function _l($text, $textdomain, $locale){
+        function __($text, $textdomain, $locale){
             global $l10n;
             if(isset($l10n[$textdomain])) $backup = $l10n[$textdomain];
             $app = AppInterface::instance();
             $langFolder = $app->pluginRoot . "languages/$textdomain-$locale.mo";
+            unload_textdomain($textdomain); 
             $app->assertLog(
                 load_textdomain(
                     $textdomain,
@@ -2300,10 +2461,12 @@ namespace WA\Config\Utils {
                 "Fail to load textdomain $textdomain for $locale"
                     . " at $langFolder"
             );
-            $translation = __($text, $textdomain);
+            $translation = \__($text, $textdomain);
             if(isset($backup)) $l10n[$textdomain] = $backup;
             return $translation;
         }
+    }
+    if (!function_exists(\WA\Config\Utils\_x::class)) {
         /**
          * Get a translated string in the given translated domain
          * 
@@ -2312,11 +2475,12 @@ namespace WA\Config\Utils {
          * @param string $textdomain The 'textdomain id' to load the translations from (ex : wa-config)
          * @param string $locale The locale to load the related local value (ex : fr_FR)
          */
-        function _lx($text, $context, $textdomain, $locale){
+        function _x($text, $context, $textdomain, $locale){
             global $l10n;
             if(isset($l10n[$textdomain])) $backup = $l10n[$textdomain];
             $app = AppInterface::instance();
             $langFolder = $app->pluginRoot . "languages/$textdomain-$locale.mo";
+            unload_textdomain($textdomain); 
             $app->assertLog(
                 load_textdomain(
                     $textdomain,
@@ -2325,7 +2489,8 @@ namespace WA\Config\Utils {
                 "Fail to load textdomain '$textdomain' for '$locale'"
                     . " at $langFolder"
             );
-            $translation = _x($text, $context, $textdomain);
+            $translation = \_x($text, $context, $textdomain);
+            $app->debugVeryVerbose("Did _x [$locale] $translation");
             if(isset($backup)) $l10n[$textdomain] = $backup;
             return $translation;
         }
@@ -2567,6 +2732,7 @@ namespace WA\Config\Utils {
          */
         trait TranslatableProduct
         {
+            use Translatable;
             protected function _010_t_product__bootstrap() {
                 $waProductTypeVersion = ""; 
                 if ($waProductTypeVersion !== AppInterface::PLUGIN_VERSION) {
@@ -2578,10 +2744,23 @@ namespace WA\Config\Utils {
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_t_product_post__load')) {
                     return; 
                 }
+                add_filter( 'woocommerce_order_number', [$this, 't_product_change_woocommerce_order_number'], 1, 2);
                 if ( function_exists( 'pll_count_posts' ) ) {
-                    add_filter( 'pll_get_post_types', [$this, 't_product_post_type_polylang_register'], 10, 2 );
-                    add_filter( 'pll_get_taxonomies', [$this, 't_product_category_taxo_polylang_register'], 10, 2 );
+                    add_filter( 'pll_get_post_types', [$this, 't_product_post_type_polylang_register'], 1, 2 );
+                    add_filter( 'pll_get_taxonomies', [$this, 't_product_category_taxo_polylang_register'], 1, 2 );
                 }
+            }
+            /**
+             * Add prefix to woocommerce order numbers
+             * 
+             */
+            public function  t_product_change_woocommerce_order_number( $order_id, $order ) {
+                $prefix = $this->getWaConfigOption(
+                    $this->eConfWooCommerceOrderPrefix,
+                    ""
+                );
+                $suffix = ''; 
+                return $prefix . $order_id . $suffix;
             }
             /**
              * Register woocommerce product post type with polylang plugin
@@ -2637,7 +2816,7 @@ namespace WA\Config\Admin {
     use WP_REST_Request;
     use WP_REST_Response;
     use ZipArchive;
-    use function WA\Config\Utils\_lx;
+    use WA\Config\Utils;
     use function WA\Config\Utils\wa_filesystem;
     use function WA\Config\Utils\wa_redirect;
     if (!class_exists(Notice::class)) { 
@@ -3014,10 +3193,12 @@ namespace WA\Config\Admin {
          * @since 0.0.1
          * @author service@monwoo.com
          * @uses Editable
+         * @uses Translatable
          */
         trait EditableMissionPost
         {
             use Editable;
+            use Translatable;
             protected function _010_e_mission_CPT__load()
             {
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_mission_CPT__load')) {
@@ -3027,11 +3208,11 @@ namespace WA\Config\Admin {
                 add_action( 'admin_menu', [$this, 'e_mission_CPT_admin_menu'], 2);
                 add_action( 'get_the_date', [$this, 'e_mission_CPT_get_the_date'], 10, 3 );
                 add_filter( 'template_include', [$this, 'e_mission_CPT_load_template_includes'], 1 );
-                add_filter( 'woocommerce_order_number', [$this, 'e_mission_CPT_change_woocommerce_order_number'], 1, 2);
                 add_filter( 'ocean_main_metaboxes_post_types', [$this, 'e_mission_CPT_oceanwp_metabox'], 20 );
                 add_filter( 'ocean_post_layout_class', [$this, 'e_mission_CPT_layout_class'], 20 );
                 if ( function_exists( 'pll_count_posts' ) ) {
-                    add_filter( 'pll_get_post_types', [$this, 'e_mission_CPT_polylang_register'], 10, 2 );
+                    add_filter( 'pll_get_post_types', [$this, 'e_mission_CPT_polylang_register'], 1, 2 );
+                    add_filter( 'pll_the_language_link', [$this, 'e_mission_CPT_polylang_lang_link'], 10, 3 );
                 }
                 add_action( 'admin_head-nav-menus.php', [$this, 'e_mission_CPT_do_template_nav_menus'] );
                 add_filter( 'wp_get_nav_menu_items', [$this, 'e_mission_CPT_do_template_nav_menus_filter'], 10, 3 );
@@ -3058,18 +3239,6 @@ namespace WA\Config\Admin {
                 $this->debugVerbose("Will e_mission_CPT_oceanwp_metabox");
                 $types[] = 'wa-mission';
                 return $types;
-            }
-            /**
-             * Add prefix to woocommerce order numbers
-             * 
-             */
-            public function  e_mission_CPT_change_woocommerce_order_number( $order_id, $order ) {
-                $prefix = $this->getWaConfigOption(
-                    $this->eConfWooCommerceOrderPrefix,
-                    ""
-                );
-                $suffix = ''; 
-                return $prefix . $order_id . $suffix;
             }
             /**
              * Filter templates to load custom templates if availables
@@ -3104,7 +3273,7 @@ namespace WA\Config\Admin {
              */
             public function e_mission_CPT_do_template_nav_menus() {
                 $this->debugVerbose("Will e_mission_CPT_do_template_nav_menus");
-                add_meta_box( 'wa_mission_do_template_nav_menus', __( 'Missions' ), [$this, 'e_mission_CPT_do_template_nav_menu_metabox'], 'nav-menus', 'side', 'default' );
+                add_meta_box( 'wa_mission_do_template_nav_menus', __( 'Missions',  'wa-config'), [$this, 'e_mission_CPT_do_template_nav_menu_metabox'], 'nav-menus', 'side', 'default' );
             }
             /**
              * Filter to render our nav menu
@@ -3154,11 +3323,20 @@ namespace WA\Config\Admin {
             }
             /**
              * Register polylang rewrite rule for wa-mission slugs
+             * 
+			 * @param string|null $url    The link, null if no translation was found.
+			 * @param string      $slug   The language code.
+			 * @param string      $locale The language locale
              */
             public function e_mission_CPT_polylang_lang_link( $url, $slug, $locale ) {
-                $this->debugVerbose("Will e_mission_CPT_polylang_lang_link");
-                if ($url) return $url;
-                return home_url( "TODO from translated permalinks ? Or how is wooCommerce having all those links ready ? missing some top config and this check is useless if config found...");
+                $permalink = _x( 'missions', 'wa-mission post slug (url SEO)'
+                , 'wa-config');
+                $translated = Utils\_x( 'missions', 'wa-mission post slug (url SEO)'
+                , 'wa-config', $locale);
+                $this->debugVerbose("Will e_mission_CPT_polylang_lang_link from '$permalink' to [$locale] '$translated' for $url", );
+                $newUrl = str_replace( "/$permalink/", "/$translated/", $url );
+                if ($newUrl) return $newUrl;
+                return $url; 
             }            
             /**
              * Register polylang rewrite rule for wa-mission slugs (Dev in progres...)
@@ -3166,12 +3344,12 @@ namespace WA\Config\Admin {
             public function e_mission_CPT_polylang_rewrite_slugs( $post_type_translated_slugs ) {
                 $this->debugVerbose("Will e_mission_CPT_polylang_rewrite_slugs");
                 $pType = "wa-mission";
-                $locals = pll_languages_list();
+                $locales = pll_languages_list();
                 $rules = [];
-                foreach ($locals as $idx => $localeMetas) {
+                foreach ($locales as $idx => $localeMetas) {
                     $localeSlug = $localeMetas['slug'];
                     $locale = $localeMetas['locale'];
-                    $permalink = _lx( 'missions',
+                    $permalink = Utils\_x( 'missions',
                     'wa-mission post slug (url SEO)'
                     , 'wa-config', $locale);
                     $rules[$localeSlug] = [
@@ -3190,8 +3368,10 @@ namespace WA\Config\Admin {
             }
             /**
              * Register polylang localized rewrite rule for wa-mission slugs Polylang 404 page fixes
+             * 
+             * Not Used yet, under dev...
              */
-            public function e_mission_register_localized_slug() {
+            protected function e_mission_register_localized_slug() {
                 $this->debugVerbose("Will e_mission_register_localized_slug");
                 $permalink = _x( 'missions', 'wa-mission post slug (url SEO)'
                 , 'wa-config');
@@ -3214,7 +3394,7 @@ namespace WA\Config\Admin {
              * Register wa-mission post type with polylang plugin
              */
             public function e_mission_CPT_polylang_register( $post_types, $is_settings ) {
-                $this->debugVerbose("Will e_mission_CPT_polylang_register");
+                $this->debugVerbose("Will e_mission_CPT_polylang_register $is_settings");
                 $missionCptKey = 'wa-mission';
                 if ( $is_settings ) {
                     unset( $post_types[$missionCptKey] );
@@ -3363,7 +3543,10 @@ namespace WA\Config\Admin {
                         'show_in_admin_bar'   => true,                
                         'show_in_menu'      => false, 
                         'menu_icon'           => 'dashicons-clipboard',
-                        'taxonomies'        => [$skillTaxoKey],
+                        'taxonomies'        => [
+                            $skillTaxoKey,
+                            'category', 
+                        ],
                         'show_in_nav_menus'     	=> true,
                         'map_meta_cap'        => true, 
                         'hierarchical'        => false, 
@@ -3379,6 +3562,9 @@ namespace WA\Config\Admin {
                     $this->err("Register CPT : Missing 'menu_icon'.", $missionCpt);
                 } else {
                     $this->debugVeryVerbose("Registered CPT : ", $missionCpt);
+                }
+                if ( function_exists( 'pll_count_posts' ) ) {
+                    $this->t_ensure_route_sync(true); 
                 }
                 register_rest_field(
                     $missionCptKey,
@@ -3625,6 +3811,13 @@ namespace WA\Config\Admin {
         trait EditableSkillsTaxo
         {
             use Editable;
+            protected function _011_e_skill_taxo__bootstrap()
+            {
+                if ($this->p_higherThanOneCallAchievedSentinel('_011_e_skill_taxo__bootsrap')) {
+                    return; 
+                }
+                add_filter( 'the_category_list', [$this, 'e_skill_taxo_filter_the_category_list'], 10, 2);
+            }
             protected function _011_e_skill_taxo__load()
             {
                 if ($this->p_higherThanOneCallAchievedSentinel('_011_e_skill_taxo__load')) {
@@ -3637,11 +3830,43 @@ namespace WA\Config\Admin {
                     [$this, 'e_skill_taxo_data_review']
                 );
                 if ( function_exists( 'pll_count_posts' ) ) {
-                    add_filter( 'pll_get_taxonomies', [$this, 'e_skill_taxo_filter_pll_taxonomies'], 10, 2 );
+                    add_filter( 'pll_get_taxonomies', [$this, 'e_skill_taxo_filter_pll_taxonomies'], 1, 2 );
+                    add_filter( 'pll_the_language_link', [$this, 'e_skill_taxo_polylang_lang_link'], 10, 3 );
                 } else {
                     $this->debugVerbose("Polylang not detected. Avoiding 'pll_get_taxonomies' filter to 'e_skill_taxo_filter_pll_taxonomies'.");
                 }
             }
+            /**
+             * Filters the categories to add skills to category before building the category list.
+             *
+             * @param WP_Term[] $categories An array of the post's categories.
+             * @param int|bool  $post_id    ID of the post we're retrieving categories for.
+             *                              When `false`, we assume the current post in the loop.
+             * @return WP_Term[] $categories An array of the post's categories.
+             */
+            public function e_skill_taxo_filter_the_category_list( $categories, $post_id ) {
+                $post_id = false === $post_id ? get_the_ID() : $post_id;
+                $this->debugVerbose("Will e_skill_taxo_filter_the_category_list for $post_id.");
+                $taxoKey = "wa-skill";
+                $skills = wp_get_object_terms($post_id, $taxoKey); 
+                if (function_exists('pll_get_term')) {
+                    $locale = get_locale();
+                    $skills = array_filter($skills, function($s) use ($locale) {
+                        $termLocale = pll_get_term_language($s->term_id, 'locale');
+                        $this->debugVerbose("Filter skill terme {$s->term_id} [$termLocale] for $locale.");
+                        return $termLocale === $locale;
+                    });
+                }                    
+                if ( is_wp_error( $skills ) ) {
+                    /** @var WP_Error $err  */
+                    $err = $skills;
+                    $this->err("Fail to fetch terms $taxoKey for post ID : $post_id" . $err->get_error_message(), $err);
+                    $skills = [];
+                }
+                $categories = array_merge($categories, $skills);
+                $this->debugVeryVerbose("e_skill_taxo_filter_the_category_list TO : ", $categories);
+                return $categories;
+            }   
             /**
              * Register wa-skill taxonomy with polylang plugin
              * 
@@ -3662,6 +3887,23 @@ namespace WA\Config\Admin {
                     $taxonomies[$skillTaxoKey] = $skillTaxoKey;
                 }
                 return $taxonomies;
+            }
+            /**
+             * Register polylang rewrite rule for wa-mission slugs
+             * 
+			 * @param string|null $url    The link, null if no translation was found.
+			 * @param string      $slug   The language code.
+			 * @param string      $locale The language locale
+             */
+            public function e_skill_taxo_polylang_lang_link( $url, $slug, $locale ) {
+                $permalink = _x( 'expertises', 'wa-skill taxonomy slug (url SEO)',
+                'wa-config');
+                $translated = Utils\_x( 'expertises', 'wa-skill taxonomy slug (url SEO)',
+                'wa-config', $locale);
+                $this->debugVerbose("Will e_skill_taxo_polylang_lang_link from '$permalink' to [$locale] '$translated' for $url", );
+                $newUrl = str_replace( "/$permalink/", "/$translated/", $url );
+                if ($newUrl) return $newUrl;
+                return $url; 
             }
             /**
              * Register wa-skill admin menu as sub page of Wa-config.
@@ -3745,192 +3987,212 @@ namespace WA\Config\Admin {
                 $this->debugVerbose("Will e_skill_taxo_data_review");
                 $skillsSyncOK = true;
                 $reviewReport = '';
-                $skillsSyncOK = $skillsSyncOK
-                && ($frontendTerm = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x( 'Frontend' , 'wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise web frontend (UI, pages statiques, composant statiques)"),
-                    'slug'        => 'frontend'
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Svelte','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise Svelte"),
-                    'slug'        => 'svelte',
-                    'parent'      => $frontendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Angular JS','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise Angular JS"),
-                    'slug'        => 'angular-js',
-                    'parent'      => $frontendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Angular 2+','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise Angular 2+"),
-                    'slug'        => 'angular-2-etc',
-                    'parent'      => $frontendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Vue JS','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise Vue JS"),
-                    'slug'        => 'vue-js',
-                    'parent'      => $frontendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('React JS','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise React JS"),
-                    'slug'        => 'react-js',
-                    'parent'      => $frontendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('WordPress Theme','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise en frontend WordPress"),
-                    'slug'        => 'wordpress-frontend',
-                    'parent'      => $frontendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($backendTerm = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Backend','wa-skill term'),
-                    'wa-skill',
-                    array(
-                      'description' => __("Expertise web backend (SEO, pages dynamiques, données dynamiques)"),
-                      'slug'        => 'backend'
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('WordPress Plugin','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise en backend WordPress"),
-                    'slug'        => 'wordpress-plugin',
-                    'parent'      => $backendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Symfony','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise WordPress"),
-                    'slug'        => 'symfony',
-                    'parent'      => $backendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Laravel','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise Laravel"),
-                    'slug'        => 'laravel',
-                    'parent'      => $backendTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($rEtDTerm = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Recherche et développement','wa-skill term'),
-                    'wa-skill',
-                    array(
-                        'description' => __("Expertise de recherche et développement (R&D)"),
-                        'slug'        => __('r-et-d') 
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('POC','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Proof of concept (Preuve de conception tangible)"),
-                    'slug'        => __('poc'),
-                    'parent'      => $rEtDTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Etude technique','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Présentation des résultats de veille technologique plus ou moins longues"),
-                    'slug'        => __('etude-technique'),
-                    'parent'      => $rEtDTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Publication Open Source','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Publication des résultats et outils de mise en oeuvre pour un domaine public ciblée."),
-                    'slug'        => __('publication-open-source'),
-                    'parent'      => $rEtDTerm['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($healthCare = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Bien être','wa-skill term','wa-skill term'),
-                    'wa-skill',
-                    array(
-                        'description' => __("Expertise en bien-être"),
-                        'slug'        => __('health-care') 
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Bien être physiologique','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise en bien être de l'activité de l'organisme humain."),
-                    'slug'        => __('physiological-health-care'),
-                    'parent'      => $healthCare['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Bien être des relations humaines','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise en bien être relationnel. Team building etc..."),
-                    'slug'        => __('relationship-health-care'),
-                    'parent'      => $healthCare['term_id'],
-                    )
-                ));
-                $skillsSyncOK = $skillsSyncOK
-                && ($term = $this->e_skill_taxo_ensure_term($reviewReport,
-                    _x('Bien être organisationnel','wa-skill term'),
-                    'wa-skill',
-                    array(
-                    'description' => __("Expertise organisationnel pour se sentir bien ou améliorer un bien être relationnel ."),
-                    'slug'        => __('organisational-health-care'),
-                    'parent'      => $healthCare['term_id'],
-                    )
-                ));
+                $taxoKey = 'wa-skill';
+                $locales = [get_locale()];
+                $slugByLocale = [];
+                if (function_exists('pll_languages_list')) {
+                    $locales = pll_languages_list(array('fields' => 'locale'));
+                    $slugs = pll_languages_list(array('fields' => 'slug'));
+                    foreach ($locales as $idx => $locale) {
+                        $slugByLocale[$locale] = $slugs[$idx];
+                    }
+                }
+                $termByEnsureIdByLocale = [];
+                foreach ($locales as $locale) {
+                    $ensureDataset = [
+                        'frontend' => [
+                            Utils\_x( 'Frontend' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise web frontend (UI, pages statiques, composant statiques)", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'frontend' , 'wa-skill term slug', 'wa-config', $locale),
+                            ],
+                        ],
+                        'svelte' => [
+                            Utils\_x( 'Svelte' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise Svelte", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'svelte' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'frontend',
+                            ],
+                        ],
+                        'angular-js' => [
+                            Utils\_x( 'Angular JS' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise Angular JS", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'angular-js' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'frontend',
+                            ],
+                        ],
+                        'angular-2-etc' => [
+                            Utils\_x( 'Angular 2+' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise Angular 2+", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'angular-2-etc' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'frontend',
+                            ],
+                        ],
+                        'vue-js' => [
+                            Utils\_x( 'Vue JS' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise Vue JS", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'vue-js' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'frontend',
+                            ],
+                        ],
+                        'react-js' => [
+                            Utils\_x( 'React JS' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise React JS", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'react-js' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'frontend',
+                            ],
+                        ],
+                        'wordpress-frontend' => [
+                            Utils\_x( 'WordPress Theme' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise en frontend WordPress", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'wordpress-frontend' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'frontend',
+                            ],
+                        ],
+                        'backend' => [
+                            Utils\_x( 'Backend' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise web backend (SEO, pages dynamiques, données dynamiques)", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'backend' , 'wa-skill term slug', 'wa-config', $locale),
+                            ],
+                        ],
+                        'wordpress-plugin' => [
+                            Utils\_x( 'WordPress Plugin' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise en backend WordPress", 'wa-config', $locale),
+                                'slug'        => Utils\_x( 'wordpress-plugin' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'backend',
+                            ],
+                        ],
+                        'symfony' => [
+                            Utils\_x( 'Symfony' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise Symfony", 'wa-config', $locale),
+                                'slug'        => Utils\_x('symfony' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'backend',
+                            ],
+                        ],
+                        'laravel' => [
+                            Utils\_x( 'Laravel' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise Laravel", 'wa-config', $locale),
+                                'slug'        => Utils\_x('laravel' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'backend',
+                            ],
+                        ],
+                        'r-et-d' => [
+                            Utils\_x( 'Recherche et développement' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise de recherche et développement (R&D)", 'wa-config', $locale),
+                                'slug'        => Utils\_x('r-et-d' , 'wa-skill term slug', 'wa-config', $locale),
+                            ],
+                        ],
+                        'p-o-c' => [
+                            Utils\_x( 'POC' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Proof of concept (Preuve de conception)", 'wa-config', $locale),
+                                'slug'        => Utils\_x('p-o-c' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'r-et-d',
+                            ],
+                        ],
+                        'etude-technique' => [
+                            Utils\_x( 'Etude technique' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Présentation des résultats de veille technologique plus ou moins longues", 'wa-config', $locale),
+                                'slug'        => Utils\_x('etude-technique' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'r-et-d',
+                            ],
+                        ],
+                        'publication-open-source' => [
+                            Utils\_x( 'Publication Open Source' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Publication des résultats et outils de mise en oeuvre pour un domaine public ciblée", 'wa-config', $locale),
+                                'slug'        => Utils\_x('publication-open-source' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'r-et-d',
+                            ],
+                        ],
+                        'health-care' => [
+                            Utils\_x( 'Bien être' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise en bien-être", 'wa-config', $locale),
+                                'slug'        => Utils\_x('health-care' , 'wa-skill term slug', 'wa-config', $locale),
+                            ],
+                        ],
+                        'physiological-health-care' => [
+                            Utils\_x( 'Bien être physiologique' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise en bien être de l'activité de l'organisme humain", 'wa-config', $locale),
+                                'slug'        => Utils\_x('physiological-health-care' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'health-care',
+                            ],
+                        ],
+                        'relationship-health-care' => [
+                            Utils\_x( 'Bien être relationnel' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise en bien être relationnel. Team building etc...", 'wa-config', $locale),
+                                'slug'        => Utils\_x('relationship-health-care' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'health-care',
+                            ],
+                        ],
+                        'organisational-health-care' => [
+                            Utils\_x( 'Bien être organisationnel' , 'wa-skill term title', 'wa-config', $locale),
+                            [
+                                'description' => Utils\__("Expertise organisationnel pour se sentir bien ou améliorer un bien être relationnel ou physiologique", 'wa-config', $locale),
+                                'slug'        => Utils\_x('organisational-health-care' , 'wa-skill term slug', 'wa-config', $locale),
+                                '_parentEnsureID' => 'health-care',
+                            ],
+                        ],
+                    ];
+                    /**
+                     * @see WPFilters::wa_base_review_skill_terms_to_ensure
+                     */
+                    $ensureDataset = apply_filters(
+                        WPFilters::wa_base_review_skill_terms_to_ensure,
+                        $ensureDataset,
+                        $locale,
+                        $slugByLocale[$locale],
+                    );
+                    foreach ($ensureDataset as $ensureId => $ensureSkill) {
+                        $title = $ensureSkill[0];
+                        $args = $ensureSkill[1];
+                        if ($args['_parentEnsureID'] ?? false) {
+                            $pID = $args['_parentEnsureID'];
+                            $p = ($termByEnsureIdByLocale[$pID] ?? [])[$locale] ?? null;
+                            if (!$p) {
+                                $this->err("Fail to fetch _parentEnsureID '$pID' for child [$locale] '$ensureId' : ", $args);
+                                $reviewReport .=
+                                "<p>L'ajout du parent '$pID' pour [$locale] '$ensureId' a échoué.</p>";    
+                            } else {
+                                $args['parent'] = $p['term_id'];
+                                unset($args['_parentEnsureID']);    
+                            }
+                        }
+                        $skillsSyncOK = ($ensuredTerm = $this->e_skill_taxo_ensure_term(
+                            $reviewReport, $title, $taxoKey, $args
+                        )) && $skillsSyncOK;
+                        if ($ensuredTerm) {
+                            $langSlug = $slugByLocale[$locale];
+                            pll_set_term_language($ensuredTerm['term_id'], $langSlug);
+                        }
+                        if (!array_key_exists($ensureId, $termByEnsureIdByLocale)) {
+                            $termByEnsureIdByLocale[$ensureId] = [];
+                        }
+                        $termByEnsureIdByLocale[$ensureId][$locale] = $ensuredTerm;
+                    }
+                }
+                foreach($termByEnsureIdByLocale as $ensureID => $termByLocale) {
+                    $translations = [];
+                    foreach($termByLocale as $locale => $term) {
+                        $translations[$slugByLocale[$locale]] = $term['term_id'];
+                    }
+                    pll_save_term_translations($translations);
+                }
                 $this->e_review_data_check_insert([
                     'category' => __('02 - Maintenance',  'wa-config'),
                     'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>',
@@ -3941,8 +4203,8 @@ namespace WA\Config\Admin {
                     'value' => strlen($reviewReport)
                     ? (
                         $skillsSyncOK
-                        ? __( 'Les expertises sont définies même si certaines différent.' )
-                        : __( 'Supprimez les terms wa-skill basique puis rafraichir cette page.' )
+                        ? __( 'Les expertises sont définies même si certaines différent.',  'wa-config')
+                        : __( 'Supprimez les terms wa-skill basique puis rafraichir cette page.',  'wa-config')
                     )
                     : '',
                     'result'   => $skillsSyncOK ,
@@ -3999,8 +4261,8 @@ namespace WA\Config\Admin {
                     }
                     if (count($haveDiffs)) {
                         $reviewReport .=
-                        __("<p> L'expertise '$term' est différente de la version du plugin : <pre style='overflow:scroll'>\n"
-                        . implode(htmlentities("\n && \n"), $haveDiffs) . "\n</pre></p>");
+                        "<p> L'expertise '$term' est différente de la version du plugin : <pre style='overflow:scroll'>\n"
+                        . implode(htmlentities("\n && \n"), $haveDiffs) . "\n</pre></p>";
                     }
                     $this->debug("No need to add term $term for $taxonomy taxonomy since already registred, return loaded one, differ : " . count($haveDiffs));
                     return $termInstance;
@@ -4015,13 +4277,13 @@ namespace WA\Config\Admin {
                         $err = $termInstance;
                             $this->err("Fail to add term $term for $taxonomy taxonomy : " . $err->get_error_message(), $err);
                             $reviewReport .=
-                            __("<p>L'ajout de l'expertise '$term' a échoué : " . $err->get_error_message() . " </p>");
+                            "<p>L'ajout de l'expertise '$term' a échoué : " . $err->get_error_message() . " </p>";
                             return false;
                     }
                 }
                 if ( !count($termInstance)) {
                     $reviewReport .=
-                    __("<p> Echec de l'ajout de l'expertise '$term', réponse vide.</p>");
+                    "<p> Echec de l'ajout de l'expertise '$term', réponse vide.</p>";
                     $this->err("Fail to add term $term for $taxonomy taxonomy", $termInstance);
                     return false;
                 }
@@ -4395,7 +4657,7 @@ namespace WA\Config\Admin {
                         . "</p>";
                     return;
                 }
-                $pluginTitle = __("Web Agency Config ") . $this->iId;
+                $pluginTitle = __("Web Agency Config ",  'wa-config') . $this->iId;
                 $pluginDescription = __(
                     "Ce plugin permet d'<strong>optimiser</strong> la <strong>qualité</strong> de votre site web ainsi que les <strong>actions</strong> à mener pour votre <strong>processus métier</strong>.",
                     'wa-config'
@@ -6889,7 +7151,7 @@ namespace WA\Config\Admin {
              * 
              * NEED to be called AFTER init hook (After Taxonomy register, etc...)
              * 
-             * @see WPFilters::wa_review_ids_to_trash
+             * @see WPFilters::wa_base_review_ids_to_trash
              * @see WPActions::wa_do_base_review_preprocessing
              * @see WPActions::wa_do_base_review_postprocessing
              */
@@ -6971,10 +7233,10 @@ namespace WA\Config\Admin {
                  */
                 do_action(WPActions::wa_do_base_review_postprocessing, $app);
                 /**
-                 * @see WPFilters::wa_review_ids_to_trash
+                 * @see WPFilters::wa_base_review_ids_to_trash
                  */
                 $eReviewIdsToTrash = apply_filters(
-                    WPFilters::wa_review_ids_to_trash,
+                    WPFilters::wa_base_review_ids_to_trash,
                     $this->eReviewIdsToTrash,
                     $this
                 );
@@ -8481,7 +8743,7 @@ namespace WA\Config\Admin {
                 && constant('AUTOMATIC_UPDATER_DISABLED');
                 if (!$WPAutoUpdateOff) {
                     $reviewReport .=
-                    __("<p> AUTOMATIC_UPDATER_DISABLED doit être définit à 'true' dans wp-config.php.</p>");
+                    __("<p> AUTOMATIC_UPDATER_DISABLED doit être définit à 'true' dans wp-config.php.</p>",  'wa-config');
                     $this->warn("Fail to ensure AUTOMATIC_UPDATER_DISABLED is true");
                 }
                 $isOk = $isOk && $WPAutoUpdateOff;
@@ -8489,7 +8751,7 @@ namespace WA\Config\Admin {
                 && !constant('WP_AUTO_UPDATE_CORE');
                 if (!$WPHostAutoUpdateOff) {
                     $reviewReport .=
-                    __("<p> WP_AUTO_UPDATE_CORE doit être définit à 'false' dans wp-config.php.</p>");
+                    __("<p> WP_AUTO_UPDATE_CORE doit être définit à 'false' dans wp-config.php.</p>",  'wa-config');
                     $this->warn("Fail to ensure WP_AUTO_UPDATE_CORE is defined and falsy");
                 }
                 $isOk = $isOk && $WPHostAutoUpdateOff;
@@ -8504,7 +8766,7 @@ namespace WA\Config\Admin {
                     ? (
                         $isOk
                         ? null
-                        : __( 'Ajustez les configurations nécessaires puis rafraichir cette page.' )
+                        : __( 'Ajustez les configurations nécessaires puis rafraichir cette page.',  'wa-config')
                     )
                     : '',
                     'result'   => $isOk ,
@@ -8528,7 +8790,7 @@ namespace WA\Config\Admin {
                 && constant('DISABLE_WP_CRON');
                 if (!$cronDisabled) {
                     $reviewReport .=
-                    __("<p> DISABLE_WP_CRON doit être définit à 'true' dans wp-config.php et vos tache cron géré par un autre service externe.</p>");
+                    __("<p> DISABLE_WP_CRON doit être définit à 'true' dans wp-config.php et vos tache cron géré par un autre service externe.</p>",  'wa-config');
                     $this->warn("Fail to ensure DISABLE_WP_CRON is true");
                 }
                 $isOk = $isOk && $cronDisabled;
@@ -8543,7 +8805,7 @@ namespace WA\Config\Admin {
                     ? (
                         $isOk
                         ? null
-                        : __( 'Ajustez les configurations nécessaires puis rafraichir cette page.' )
+                        : __( 'Ajustez les configurations nécessaires puis rafraichir cette page.',  'wa-config')
                     )
                     : '',
                     'result'   => $isOk ,
@@ -8744,7 +9006,7 @@ namespace WA\Config\Frontend {
     use WA\Config\Core\Editable;
     use WA\Config\Core\EditableWaConfigOptions;
     use WA\Config\Core\WPFilters;
-    use function WA\Config\Utils\_lx;
+    use WA\Config\Utils;
     if (!trait_exists(EditableScripts::class)) { 
         /**
          * This trait will load wa-config frontend javascript sources
@@ -9011,30 +9273,30 @@ namespace WA\Config\Frontend {
                 return $path;
             }
             protected function e_footer_get_languages() {
-                $locals = [get_locale()];
+                $locales = [get_locale()];
                 if (function_exists('pll_languages_list')) {
-                    $locals = pll_languages_list(array('fields' => 'locale'));
-                    $this->debugVeryVerbose("Will e_footer_get_languages for Polylangs : ", $locals);
+                    $locales = pll_languages_list(array('fields' => 'locale'));
+                    $this->debugVeryVerbose("Will e_footer_get_languages for Polylangs : ", $locales);
                 }
-                return $locals;
+                return $locales;
             }
             protected function e_footer_get_empty_string_by_locale() {
-                $locals = $this->e_footer_get_languages();
+                $locales = $this->e_footer_get_languages();
                 $this->debugVerbose("Will e_footer_get_empty_string_by_locale");
                 $localizedCredit = [];
-                array_walk($locals, function($l)
+                array_walk($locales, function($l)
                 use (&$localizedCredit) {
                     $localizedCredit[$l] = "";
                 });
                 return $localizedCredit;
             }
             protected function e_footer_get_default_credit_by_locale() {
-                $locals = $this->e_footer_get_languages();
+                $locales = $this->e_footer_get_languages();
                 $this->debugVerbose("Will e_footer_get_default_credit_by_locale");
                 $localizedCredit = [];
-                array_walk($locals, function($l)
+                array_walk($locales, function($l)
                 use (&$localizedCredit) {
-                    $localizedCredit[$l] = _lx("autre", "Footer default credit",  'wa-config', $l);
+                    $localizedCredit[$l] = Utils\_x("autre", "Footer default credit",  'wa-config', $l);
                     _x("autre", "Footer default credit",  'wa-config');
                 });
                 return $localizedCredit;
@@ -9051,19 +9313,21 @@ namespace WA\Config\Frontend {
                 }
                 $waFooterCreditByLocale = array_merge($localizedCredit, $waFooterCreditByLocale);
                 $locale = get_locale();
-                $defaultLocale = 'fr_FR'; 
-                if ( function_exists( 'pll_count_posts' ) ) {
-                    $defaultLocale = pll_default_language('locale');
+                $waFooterCredit = $waFooterCreditByLocale[$locale] ?? null;
+                if (!$waFooterCredit) {
+                    $defaultLocale = 'fr_FR'; 
+                    if (function_exists( 'pll_default_language' ) ) {
+                        $defaultLocale = pll_default_language('locale');
+                    }
+                    $waFooterCredit = $waFooterCreditByLocale[$defaultLocale] ?? "";
                 }
-                $waFooterCredit = $waFooterCreditByLocale[$locale] ?? 
-                ($waFooterCreditByLocale[$defaultLocale] ?? "");
                 return $waFooterCredit;
             }
             protected function e_footer_get_localized_template() {
-                $locals = $this->e_footer_get_languages();
+                $locales = $this->e_footer_get_languages();
                 $this->debugVerbose("Will e_footer_get_localized_template");
                 $localizedTemplates = [];
-                array_walk($locals, function($l)
+                array_walk($locales, function($l)
                 use (&$localizedTemplates) {
                     $localizedTemplates[$l] = "";
                 });
@@ -9072,12 +9336,14 @@ namespace WA\Config\Frontend {
                     $localizedTemplates
                 );
                 $locale = get_locale();
-                $defaultLocale = 'fr_FR'; 
-                if ( function_exists( 'pll_count_posts' ) ) {
-                    $defaultLocale = pll_default_language('locale');
+                $waFooterTemplate = $waFooterTemplateByLocale[$locale] ?? null;
+                if (!$waFooterTemplate) {
+                    $defaultLocale = 'fr_FR'; 
+                    if (function_exists( 'pll_default_language' ) ) {
+                        $defaultLocale = pll_default_language('locale');
+                    }
+                    $waFooterTemplate = $waFooterTemplateByLocale[$defaultLocale] ?? "";
                 }
-                $waFooterTemplate = $waFooterTemplateByLocale[$locale] ?? 
-                ($waFooterTemplateByLocale[$defaultLocale] ?? "");
                 return $waFooterTemplate;
             }
             /**
@@ -9150,6 +9416,7 @@ namespace WA\Config {
     use WA\Config\Admin\ApiFrontHeadable;
     use WA\Config\Admin\ApiInstanciable;
     use WA\Config\Core\AppInterface;
+    use WA\Config\Core\TestableSamples;
     use WA\Config\Admin\EditableConfigPanels;
     use WA\Config\Admin\EditableReview;
     use WA\Config\Admin\EditableMissionPost;
@@ -9261,6 +9528,7 @@ namespace WA\Config {
             use TranslatableProduct;
             use ApiFrontHeadable;
             use ApiInstanciable;
+            /** use TestableSamples; **/
             /**
              * App constructor.
              *

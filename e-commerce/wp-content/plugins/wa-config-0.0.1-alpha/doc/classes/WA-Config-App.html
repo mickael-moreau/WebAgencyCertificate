@@ -117,7 +117,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9250</span>
+    <span class="phpdocumentor-element-found-in__line">9517</span>
 
     </aside>
 
@@ -617,13 +617,6 @@ used to store our reviews</dd>
 <dd>Register wa-mission admin menu.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_change_woocommerce_order_number">e_mission_CPT_change_woocommerce_order_number()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>Add prefix to woocommerce order numbers</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menu_metabox">e_mission_CPT_do_template_nav_menu_metabox()</a>
     <span>
                                 &nbsp;: mixed    </span>
@@ -757,13 +750,6 @@ used to store our reviews</dd>
 <dd>Register wa-mission custom Post type.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_register_localized_slug">e_mission_register_localized_slug()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>Register polylang localized rewrite rule for wa-mission slugs Polylang 404 page fixes</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-EditableReview.html#method_e_review_data_action">e_review_data_action()</a>
     <span>
                                 &nbsp;: void    </span>
@@ -867,6 +853,20 @@ used to store our reviews</dd>
                                 &nbsp;: array&lt;string|int, string&gt;    </span>
 </dt>
 <dd>Register wa-skill taxonomy with polylang plugin</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_the_category_list">e_skill_taxo_filter_the_category_list()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;    </span>
+</dt>
+<dd>Filters the categories to add skills to category before building the category list.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_lang_link">e_skill_taxo_polylang_lang_link()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd>Register polylang rewrite rule for wa-mission slugs</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_register_taxonomy">e_skill_taxo_register_taxonomy()</a>
@@ -1058,6 +1058,13 @@ used to store our reviews</dd>
 <dd>Sentinel will return false if aim is not reached, true otherwise.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Core-Translatable.html#method_t_ensure_route_sync">t_ensure_route_sync()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Will ensure rewrite rules are up to date. (call wisely, heavy computs ?)</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Core-Translatable.html#method_t_loadTextdomains">t_loadTextdomains()</a>
     <span>
                                 &nbsp;: void    </span>
@@ -1066,11 +1073,25 @@ used to store our reviews</dd>
 WordPress load_plugin_textdomain function</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Core-Translatable.html#method_t_on_permalink_structure_changed">t_on_permalink_structure_changed()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Filter done after the permalink structure is updated.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_category_taxo_polylang_register">t_product_category_taxo_polylang_register()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Register woocommerce product related taxonomy with polylang plugin</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_change_woocommerce_order_number">t_product_change_woocommerce_order_number()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd>Add prefix to woocommerce order numbers</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_post_type_polylang_register">t_product_post_type_polylang_register()</a>
@@ -1112,7 +1133,7 @@ WordPress load_plugin_textdomain function</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1166</span>
+    <span class="phpdocumentor-element-found-in__line">1325</span>
 
     </aside>
 
@@ -1141,7 +1162,7 @@ WordPress load_plugin_textdomain function</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1167</span>
+    <span class="phpdocumentor-element-found-in__line">1326</span>
 
     </aside>
 
@@ -1170,7 +1191,7 @@ WordPress load_plugin_textdomain function</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">990</span>
+    <span class="phpdocumentor-element-found-in__line">1149</span>
 
     </aside>
 
@@ -1214,7 +1235,7 @@ WordPress load_plugin_textdomain function</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8120</span>
+    <span class="phpdocumentor-element-found-in__line">8382</span>
 
     </aside>
 
@@ -1248,7 +1269,7 @@ WordPress load_plugin_textdomain function</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8116</span>
+    <span class="phpdocumentor-element-found-in__line">8378</span>
 
     </aside>
 
@@ -1282,7 +1303,7 @@ WordPress load_plugin_textdomain function</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4984</span>
+    <span class="phpdocumentor-element-found-in__line">5246</span>
 
     </aside>
 
@@ -1344,7 +1365,7 @@ sharing the main plugin review board.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">951</span>
+    <span class="phpdocumentor-element-found-in__line">1077</span>
 
     </aside>
 
@@ -1386,7 +1407,7 @@ untranslatable by WPML or Loco translate.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9273</span>
+    <span class="phpdocumentor-element-found-in__line">9541</span>
 
     </aside>
 
@@ -1458,7 +1479,7 @@ untranslatable by WPML or Loco translate.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1003</span>
+    <span class="phpdocumentor-element-found-in__line">1162</span>
 
     </aside>
 
@@ -1517,7 +1538,7 @@ like : information / warning / CRITICAL / etc...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1087</span>
+    <span class="phpdocumentor-element-found-in__line">1246</span>
 
     </aside>
 
@@ -1550,7 +1571,7 @@ like : information / warning / CRITICAL / etc...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7891</span>
+    <span class="phpdocumentor-element-found-in__line">8153</span>
 
     </aside>
 
@@ -1590,7 +1611,7 @@ like : information / warning / CRITICAL / etc...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7745</span>
+    <span class="phpdocumentor-element-found-in__line">8007</span>
 
     </aside>
 
@@ -1664,7 +1685,7 @@ like : information / warning / CRITICAL / etc...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7703</span>
+    <span class="phpdocumentor-element-found-in__line">7965</span>
 
     </aside>
 
@@ -1769,7 +1790,7 @@ node tools/wa-deploy.cjs)
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7194</span>
+    <span class="phpdocumentor-element-found-in__line">7456</span>
 
     </aside>
 
@@ -1804,7 +1825,7 @@ node tools/wa-deploy.cjs)
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7324</span>
+    <span class="phpdocumentor-element-found-in__line">7586</span>
 
     </aside>
 
@@ -1875,7 +1896,7 @@ or $_REQUEST object or similar</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7119</span>
+    <span class="phpdocumentor-element-found-in__line">7381</span>
 
     </aside>
 
@@ -1922,7 +1943,7 @@ or $_REQUEST object or similar</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7352</span>
+    <span class="phpdocumentor-element-found-in__line">7614</span>
 
     </aside>
 
@@ -1969,7 +1990,7 @@ or $_REQUEST object or similar</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7279</span>
+    <span class="phpdocumentor-element-found-in__line">7541</span>
 
     </aside>
 
@@ -2017,7 +2038,7 @@ null if we should handle it, or another value if not.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7221</span>
+    <span class="phpdocumentor-element-found-in__line">7483</span>
 
     </aside>
 
@@ -2066,7 +2087,7 @@ null if we should handle it, or another value if not.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">7569</span>
+    <span class="phpdocumentor-element-found-in__line">7831</span>
 
     </aside>
 
@@ -2115,7 +2136,7 @@ null if we should handle it, or another value if not.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">605</span>
+    <span class="phpdocumentor-element-found-in__line">729</span>
 
     </aside>
 
@@ -2193,7 +2214,7 @@ with the corresponding message.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">624</span>
+    <span class="phpdocumentor-element-found-in__line">748</span>
 
     </aside>
 
@@ -2254,7 +2275,7 @@ with the corresponding message.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2198</span>
+    <span class="phpdocumentor-element-found-in__line">2357</span>
 
     </aside>
 
@@ -2290,7 +2311,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">563</span>
+    <span class="phpdocumentor-element-found-in__line">687</span>
 
     </aside>
 
@@ -2340,7 +2361,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">453</span>
+    <span class="phpdocumentor-element-found-in__line">577</span>
 
     </aside>
 
@@ -2408,7 +2429,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">517</span>
+    <span class="phpdocumentor-element-found-in__line">641</span>
 
     </aside>
 
@@ -2470,7 +2491,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">418</span>
+    <span class="phpdocumentor-element-found-in__line">542</span>
 
     </aside>
 
@@ -2554,7 +2575,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">506</span>
+    <span class="phpdocumentor-element-found-in__line">630</span>
 
     </aside>
 
@@ -2601,7 +2622,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">489</span>
+    <span class="phpdocumentor-element-found-in__line">613</span>
 
     </aside>
 
@@ -2666,7 +2687,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">575</span>
+    <span class="phpdocumentor-element-found-in__line">699</span>
 
     </aside>
 
@@ -2716,7 +2737,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">587</span>
+    <span class="phpdocumentor-element-found-in__line">711</span>
 
     </aside>
 
@@ -2766,7 +2787,7 @@ It will call all owned <code class="prettyprint">{.*}__bootstrap()</code> functi
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1373</span>
+    <span class="phpdocumentor-element-found-in__line">1532</span>
 
     </aside>
 
@@ -2825,7 +2846,7 @@ since failling tests <strong>might mess</strong> up your website data or file or
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1181</span>
+    <span class="phpdocumentor-element-found-in__line">1340</span>
 
     </aside>
 
@@ -2903,7 +2924,7 @@ we MUST call logoutTestUser on end</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1611</span>
+    <span class="phpdocumentor-element-found-in__line">1770</span>
 
     </aside>
 
@@ -2943,7 +2964,7 @@ fails to restore users by themselves. You might need to launch it 2 times...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1789</span>
+    <span class="phpdocumentor-element-found-in__line">1948</span>
 
     </aside>
 
@@ -3011,7 +3032,7 @@ fails to restore users by themselves. You might need to launch it 2 times...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1643</span>
+    <span class="phpdocumentor-element-found-in__line">1802</span>
 
     </aside>
 
@@ -3063,7 +3084,7 @@ fails to restore users by themselves. You might need to launch it 2 times...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1292</span>
+    <span class="phpdocumentor-element-found-in__line">1451</span>
 
     </aside>
 
@@ -3116,7 +3137,7 @@ fails to restore users by themselves. You might need to launch it 2 times...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2093</span>
+    <span class="phpdocumentor-element-found-in__line">2252</span>
 
     </aside>
 
@@ -3200,7 +3221,7 @@ fails to restore users by themselves. You might need to launch it 2 times...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1541</span>
+    <span class="phpdocumentor-element-found-in__line">1700</span>
 
     </aside>
 
@@ -3245,7 +3266,7 @@ fails to restore users by themselves. You might need to launch it 2 times...</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1468</span>
+    <span class="phpdocumentor-element-found-in__line">1627</span>
 
     </aside>
 
@@ -3293,7 +3314,7 @@ avoid real email expedition for all mailings, default true.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1522</span>
+    <span class="phpdocumentor-element-found-in__line">1681</span>
 
     </aside>
 
@@ -3342,7 +3363,7 @@ allow regular logger to notify some emails activity</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1500</span>
+    <span class="phpdocumentor-element-found-in__line">1659</span>
 
     </aside>
 
@@ -3410,7 +3431,7 @@ allow regular logger to notify some emails activity</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1578</span>
+    <span class="phpdocumentor-element-found-in__line">1737</span>
 
     </aside>
 
@@ -3458,7 +3479,7 @@ false otherwise</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4588</span>
+    <span class="phpdocumentor-element-found-in__line">4850</span>
 
     </aside>
 
@@ -3491,7 +3512,7 @@ false otherwise</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4467</span>
+    <span class="phpdocumentor-element-found-in__line">4729</span>
 
     </aside>
 
@@ -3524,7 +3545,7 @@ false otherwise</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4631</span>
+    <span class="phpdocumentor-element-found-in__line">4893</span>
 
     </aside>
 
@@ -3577,7 +3598,7 @@ Factory usable to render the corresponding form field</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4800</span>
+    <span class="phpdocumentor-element-found-in__line">5062</span>
 
     </aside>
 
@@ -3631,7 +3652,7 @@ Factory usable to render the corresponding form field</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4185</span>
+    <span class="phpdocumentor-element-found-in__line">4447</span>
 
     </aside>
 
@@ -3664,7 +3685,7 @@ Factory usable to render the corresponding form field</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4161</span>
+    <span class="phpdocumentor-element-found-in__line">4423</span>
 
     </aside>
 
@@ -3697,7 +3718,7 @@ Factory usable to render the corresponding form field</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4306</span>
+    <span class="phpdocumentor-element-found-in__line">4568</span>
 
     </aside>
 
@@ -3744,7 +3765,7 @@ Factory usable to render the corresponding form field</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">4385</span>
+    <span class="phpdocumentor-element-found-in__line">4647</span>
 
     </aside>
 
@@ -3791,7 +3812,7 @@ Factory usable to render the corresponding form field</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8928</span>
+    <span class="phpdocumentor-element-found-in__line">9190</span>
 
     </aside>
 
@@ -3827,7 +3848,7 @@ and 'restaurant-food-delivery' themes</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8898</span>
+    <span class="phpdocumentor-element-found-in__line">9160</span>
 
     </aside>
 
@@ -3894,7 +3915,7 @@ and 'restaurant-food-delivery' themes</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">9095</span>
+    <span class="phpdocumentor-element-found-in__line">9361</span>
 
     </aside>
 
@@ -3950,7 +3971,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3229</span>
+    <span class="phpdocumentor-element-found-in__line">3409</span>
 
     </aside>
 
@@ -3976,58 +3997,6 @@ false if no footer rendering activated from WA Admin config</p>
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_change_woocommerce_order_number">
-        e_mission_CPT_change_woocommerce_order_number()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_change_woocommerce_order_number" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">3066</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Add prefix to woocommerce order numbers</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_CPT_change_woocommerce_order_number</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$order_id</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$order</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$order_id</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$order</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="method_e_mission_CPT_do_template_nav_menu_metabox">
         e_mission_CPT_do_template_nav_menu_metabox()
         <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_CPT_do_template_nav_menu_metabox" class="headerlink"><i class="fas fa-link"></i></a>
@@ -4035,7 +4004,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3127</span>
+    <span class="phpdocumentor-element-found-in__line">3296</span>
 
     </aside>
 
@@ -4068,7 +4037,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3105</span>
+    <span class="phpdocumentor-element-found-in__line">3274</span>
 
     </aside>
 
@@ -4101,7 +4070,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3112</span>
+    <span class="phpdocumentor-element-found-in__line">3281</span>
 
     </aside>
 
@@ -4161,7 +4130,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3488</span>
+    <span class="phpdocumentor-element-found-in__line">3674</span>
 
     </aside>
 
@@ -4204,7 +4173,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3443</span>
+    <span class="phpdocumentor-element-found-in__line">3629</span>
 
     </aside>
 
@@ -4249,7 +4218,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3509</span>
+    <span class="phpdocumentor-element-found-in__line">3695</span>
 
     </aside>
 
@@ -4301,7 +4270,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3518</span>
+    <span class="phpdocumentor-element-found-in__line">3704</span>
 
     </aside>
 
@@ -4334,7 +4303,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3497</span>
+    <span class="phpdocumentor-element-found-in__line">3683</span>
 
     </aside>
 
@@ -4386,7 +4355,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3472</span>
+    <span class="phpdocumentor-element-found-in__line">3658</span>
 
     </aside>
 
@@ -4429,7 +4398,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3459</span>
+    <span class="phpdocumentor-element-found-in__line">3645</span>
 
     </aside>
 
@@ -4472,7 +4441,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3400</span>
+    <span class="phpdocumentor-element-found-in__line">3586</span>
 
     </aside>
 
@@ -4537,7 +4506,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3413</span>
+    <span class="phpdocumentor-element-found-in__line">3599</span>
 
     </aside>
 
@@ -4597,7 +4566,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3044</span>
+    <span class="phpdocumentor-element-found-in__line">3225</span>
 
     </aside>
 
@@ -4643,7 +4612,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3079</span>
+    <span class="phpdocumentor-element-found-in__line">3248</span>
 
     </aside>
 
@@ -4688,7 +4657,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3057</span>
+    <span class="phpdocumentor-element-found-in__line">3238</span>
 
     </aside>
 
@@ -4732,7 +4701,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3158</span>
+    <span class="phpdocumentor-element-found-in__line">3331</span>
 
     </aside>
 
@@ -4740,33 +4709,36 @@ false if no footer rendering activated from WA Admin config</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_CPT_polylang_lang_link</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$slug</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$locale</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">e_mission_CPT_polylang_lang_link</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$slug</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$locale</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$url</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>The link, null if no translation was found.</p>
+</section>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$slug</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>The language code.</p>
+</section>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$locale</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><p>The language locale</p>
+</section>
 
             </dd>
             </dl>
@@ -4792,7 +4764,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3216</span>
+    <span class="phpdocumentor-element-found-in__line">3396</span>
 
     </aside>
 
@@ -4844,7 +4816,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3166</span>
+    <span class="phpdocumentor-element-found-in__line">3344</span>
 
     </aside>
 
@@ -4888,7 +4860,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3311</span>
+    <span class="phpdocumentor-element-found-in__line">3491</span>
 
     </aside>
 
@@ -4914,39 +4886,6 @@ false if no footer rendering activated from WA Admin config</p>
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_e_mission_register_localized_slug">
-        e_mission_register_localized_slug()
-        <a href="classes/WA-Config-Admin-EditableMissionPost.html#method_e_mission_register_localized_slug" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">3194</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Register polylang localized rewrite rule for wa-mission slugs Polylang 404 page fixes</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">e_mission_register_localized_slug</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-    
-    
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="method_e_review_data_action">
         e_review_data_action()
         <a href="classes/WA-Config-Admin-EditableReview.html#method_e_review_data_action" class="headerlink"><i class="fas fa-link"></i></a>
@@ -4954,7 +4893,7 @@ false if no footer rendering activated from WA Admin config</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">6507</span>
+    <span class="phpdocumentor-element-found-in__line">6769</span>
 
     </aside>
 
@@ -5013,7 +4952,7 @@ Delete all current and deleted review data.</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">6896</span>
+    <span class="phpdocumentor-element-found-in__line">7158</span>
 
     </aside>
 
@@ -5037,7 +4976,7 @@ Delete all current and deleted review data.</li>
                     <span class="phpdocumentor-tag__name">see</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-Core-WPFilters.html#constant_wa_review_ids_to_trash"><abbr title="\WA\Config\Core\WPFilters::wa_review_ids_to_trash">WPFilters::wa_review_ids_to_trash</abbr></a></span>
+                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/WA-Config-Core-WPFilters.html#constant_wa_base_review_ids_to_trash"><abbr title="\WA\Config\Core\WPFilters::wa_base_review_ids_to_trash">WPFilters::wa_base_review_ids_to_trash</abbr></a></span>
                                         
                                              
                                     </dd>
@@ -5078,7 +5017,7 @@ Delete all current and deleted review data.</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">6071</span>
+    <span class="phpdocumentor-element-found-in__line">6333</span>
 
     </aside>
 
@@ -5136,7 +5075,7 @@ Delete all current and deleted review data.</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">5084</span>
+    <span class="phpdocumentor-element-found-in__line">5346</span>
 
     </aside>
 
@@ -5194,7 +5133,7 @@ or just the current site. Multisite only. Default false.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">5094</span>
+    <span class="phpdocumentor-element-found-in__line">5356</span>
 
     </aside>
 
@@ -5227,7 +5166,7 @@ or just the current site. Multisite only. Default false.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">6342</span>
+    <span class="phpdocumentor-element-found-in__line">6604</span>
 
     </aside>
 
@@ -5260,7 +5199,7 @@ or just the current site. Multisite only. Default false.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">6362</span>
+    <span class="phpdocumentor-element-found-in__line">6624</span>
 
     </aside>
 
@@ -5293,7 +5232,7 @@ or just the current site. Multisite only. Default false.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">6212</span>
+    <span class="phpdocumentor-element-found-in__line">6474</span>
 
     </aside>
 
@@ -5340,7 +5279,7 @@ or just the current site. Multisite only. Default false.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">6227</span>
+    <span class="phpdocumentor-element-found-in__line">6489</span>
 
     </aside>
 
@@ -5408,7 +5347,7 @@ stored in our eReviewDataStore</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">6181</span>
+    <span class="phpdocumentor-element-found-in__line">6443</span>
 
     </aside>
 
@@ -5455,7 +5394,7 @@ stored in our eReviewDataStore</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8781</span>
+    <span class="phpdocumentor-element-found-in__line">9043</span>
 
     </aside>
 
@@ -5488,7 +5427,7 @@ stored in our eReviewDataStore</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3669</span>
+    <span class="phpdocumentor-element-found-in__line">3911</span>
 
     </aside>
 
@@ -5521,7 +5460,7 @@ stored in our eReviewDataStore</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3743</span>
+    <span class="phpdocumentor-element-found-in__line">3985</span>
 
     </aside>
 
@@ -5566,7 +5505,7 @@ stored in our eReviewDataStore</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3978</span>
+    <span class="phpdocumentor-element-found-in__line">4240</span>
 
     </aside>
 
@@ -5667,7 +5606,7 @@ An array of the new term data, false otherwise.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3657</span>
+    <span class="phpdocumentor-element-found-in__line">3882</span>
 
     </aside>
 
@@ -5721,6 +5660,126 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_e_skill_taxo_filter_the_category_list">
+        e_skill_taxo_filter_the_category_list()
+        <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_filter_the_category_list" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3847</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Filters the categories to add skills to category before building the category list.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_skill_taxo_filter_the_category_list</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$categories</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int|bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$post_id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$categories</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>An array of the post's categories.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$post_id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int|bool</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>ID of the post we're retrieving categories for.
+When <code class="prettyprint">false</code>, we assume the current post in the loop.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">array&lt;string|int, <abbr title="\WA\Config\Admin\WP_Term">WP_Term</abbr>&gt;</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>$categories An array of the post's categories.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_e_skill_taxo_polylang_lang_link">
+        e_skill_taxo_polylang_lang_link()
+        <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_polylang_lang_link" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">3898</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Register polylang rewrite rule for wa-mission slugs</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">e_skill_taxo_polylang_lang_link</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$slug</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$locale</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$url</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The link, null if no translation was found.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$slug</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The language code.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$locale</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The language locale</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_e_skill_taxo_register_taxonomy">
         e_skill_taxo_register_taxonomy()
         <a href="classes/WA-Config-Admin-EditableSkillsTaxo.html#method_e_skill_taxo_register_taxonomy" class="headerlink"><i class="fas fa-link"></i></a>
@@ -5728,7 +5787,7 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">3697</span>
+    <span class="phpdocumentor-element-found-in__line">3939</span>
 
     </aside>
 
@@ -5761,7 +5820,7 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8828</span>
+    <span class="phpdocumentor-element-found-in__line">9090</span>
 
     </aside>
 
@@ -5794,7 +5853,7 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">543</span>
+    <span class="phpdocumentor-element-found-in__line">667</span>
 
     </aside>
 
@@ -5844,7 +5903,7 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1503</span>
+    <span class="phpdocumentor-element-found-in__line">1662</span>
 
     </aside>
 
@@ -5877,7 +5936,7 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1041</span>
+    <span class="phpdocumentor-element-found-in__line">1200</span>
 
     </aside>
 
@@ -5912,7 +5971,7 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2932</span>
+    <span class="phpdocumentor-element-found-in__line">3111</span>
 
     </aside>
 
@@ -5968,7 +6027,7 @@ in a function hooked to ‘plugins_loaded’ or directly in functions.php for th
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1031</span>
+    <span class="phpdocumentor-element-found-in__line">1190</span>
 
     </aside>
 
@@ -6017,7 +6076,7 @@ Compatibility report</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1160</span>
+    <span class="phpdocumentor-element-found-in__line">1319</span>
 
     </aside>
 
@@ -6070,7 +6129,7 @@ The method call counts statistics by iId</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">533</span>
+    <span class="phpdocumentor-element-found-in__line">657</span>
 
     </aside>
 
@@ -6120,7 +6179,7 @@ The method call counts statistics by iId</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1078</span>
+    <span class="phpdocumentor-element-found-in__line">1237</span>
 
     </aside>
 
@@ -6168,7 +6227,7 @@ called after children intitialisation of internal attributes</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1137</span>
+    <span class="phpdocumentor-element-found-in__line">1296</span>
 
     </aside>
 
@@ -6227,7 +6286,7 @@ called after children intitialisation of internal attributes</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1120</span>
+    <span class="phpdocumentor-element-found-in__line">1279</span>
 
     </aside>
 
@@ -6281,7 +6340,7 @@ called after children intitialisation of internal attributes</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2139</span>
+    <span class="phpdocumentor-element-found-in__line">2298</span>
 
     </aside>
 
@@ -6342,7 +6401,7 @@ called after children intitialisation of internal attributes</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1109</span>
+    <span class="phpdocumentor-element-found-in__line">1268</span>
 
     </aside>
 
@@ -6375,7 +6434,7 @@ called after children intitialisation of internal attributes</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2240</span>
+    <span class="phpdocumentor-element-found-in__line">2399</span>
 
     </aside>
 
@@ -6411,7 +6470,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">652</span>
+    <span class="phpdocumentor-element-found-in__line">776</span>
 
     </aside>
 
@@ -6478,7 +6537,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2157</span>
+    <span class="phpdocumentor-element-found-in__line">2316</span>
 
     </aside>
 
@@ -6537,7 +6596,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8186</span>
+    <span class="phpdocumentor-element-found-in__line">8448</span>
 
     </aside>
 
@@ -6593,7 +6652,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8129</span>
+    <span class="phpdocumentor-element-found-in__line">8391</span>
 
     </aside>
 
@@ -6649,7 +6708,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8573</span>
+    <span class="phpdocumentor-element-found-in__line">8835</span>
 
     </aside>
 
@@ -6694,7 +6753,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8560</span>
+    <span class="phpdocumentor-element-found-in__line">8822</span>
 
     </aside>
 
@@ -6739,7 +6798,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8397</span>
+    <span class="phpdocumentor-element-found-in__line">8659</span>
 
     </aside>
 
@@ -6804,7 +6863,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8475</span>
+    <span class="phpdocumentor-element-found-in__line">8737</span>
 
     </aside>
 
@@ -6849,7 +6908,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8522</span>
+    <span class="phpdocumentor-element-found-in__line">8784</span>
 
     </aside>
 
@@ -6894,7 +6953,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8319</span>
+    <span class="phpdocumentor-element-found-in__line">8581</span>
 
     </aside>
 
@@ -6952,7 +7011,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">8240</span>
+    <span class="phpdocumentor-element-found-in__line">8502</span>
 
     </aside>
 
@@ -7010,7 +7069,7 @@ It will call all owned <code class="prettyprint">{.*}__load()</code> functions</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">337</span>
+    <span class="phpdocumentor-element-found-in__line">461</span>
 
     </aside>
 
@@ -7056,6 +7115,52 @@ to ajust method call counts.</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_t_ensure_route_sync">
+        t_ensure_route_sync()
+        <a href="classes/WA-Config-Core-Translatable.html#method_t_ensure_route_sync" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">1092</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Will ensure rewrite rules are up to date. (call wisely, heavy computs ?)</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">t_ensure_route_sync</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resetMode</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$resetMode</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Will flush rules imediately if true, or
+will flush after 'wp' action if false. Default false.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_t_loadTextdomains">
         t_loadTextdomains()
         <a href="classes/WA-Config-Core-Translatable.html#method_t_loadTextdomains" class="headerlink"><i class="fas fa-link"></i></a>
@@ -7063,7 +7168,7 @@ to ajust method call counts.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">962</span>
+    <span class="phpdocumentor-element-found-in__line">1121</span>
 
     </aside>
 
@@ -7104,6 +7209,39 @@ WordPress load_plugin_textdomain function</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_t_on_permalink_structure_changed">
+        t_on_permalink_structure_changed()
+        <a href="classes/WA-Config-Core-Translatable.html#method_t_on_permalink_structure_changed" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">1111</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Filter done after the permalink structure is updated.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">t_on_permalink_structure_changed</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    
+    
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">void</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_t_product_category_taxo_polylang_register">
         t_product_category_taxo_polylang_register()
         <a href="classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_category_taxo_polylang_register" class="headerlink"><i class="fas fa-link"></i></a>
@@ -7111,7 +7249,7 @@ WordPress load_plugin_textdomain function</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2602</span>
+    <span class="phpdocumentor-element-found-in__line">2781</span>
 
     </aside>
 
@@ -7156,6 +7294,58 @@ WordPress load_plugin_textdomain function</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_t_product_change_woocommerce_order_number">
+        t_product_change_woocommerce_order_number()
+        <a href="classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_change_woocommerce_order_number" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">2757</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Add prefix to woocommerce order numbers</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">t_product_change_woocommerce_order_number</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$order_id</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$order</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$order_id</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$order</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">mixed</span>
+            &mdash;
+        
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_t_product_post_type_polylang_register">
         t_product_post_type_polylang_register()
         <a href="classes/WA-Config-Utils-TranslatableProduct.html#method_t_product_post_type_polylang_register" class="headerlink"><i class="fas fa-link"></i></a>
@@ -7163,7 +7353,7 @@ WordPress load_plugin_textdomain function</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2589</span>
+    <span class="phpdocumentor-element-found-in__line">2768</span>
 
     </aside>
 
@@ -7215,7 +7405,7 @@ WordPress load_plugin_textdomain function</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1100</span>
+    <span class="phpdocumentor-element-found-in__line">1259</span>
 
     </aside>
 
@@ -7253,7 +7443,7 @@ but will hold a progressive order number per call</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="App.php"><a href="files/app.html"><abbr title="App.php">App.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">553</span>
+    <span class="phpdocumentor-element-found-in__line">677</span>
 
     </aside>
 
