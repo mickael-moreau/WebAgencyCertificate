@@ -1,0 +1,16 @@
+# Allow tests results display
+# You can also deny or ip specific, cf htaccess doc
+
+Allow from all
+
+# TODO Auth redirects ? targeting html in this folder do not load 
+# the html, but something like dashboard or login screen...
+
+# Improve error page (failling tests do WEBSITE FRONTEND 404, and missing ressource curstom message...)
+RewriteEngine on
+
+# https://serverfault.com/questions/87676/how-to-echo-out-from-htaccess
+ErrorDocument 404 "[404] for Request: %{THE_REQUEST} Referrer: %{HTTP_REFERER} Host: %{HTTP_HOST}"
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ - [L,R=404]

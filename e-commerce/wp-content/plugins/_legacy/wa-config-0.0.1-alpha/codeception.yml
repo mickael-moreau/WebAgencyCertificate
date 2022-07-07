@@ -1,0 +1,27 @@
+params:
+    -
+        wa_e2e_test_mode: "wa-config-e2e-tests"
+
+    - env # load params from environment vars
+
+paths:
+    tests: tests
+    output: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+actor_suffix: Tester
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+# https://codeception.com/docs/reference/Configuration.html#algolia:p:nth-of-type(1)
+settings:
+    # bootstrap: _bootstrap.php
+    # suite_class: \PHPUnit_Framework_TestSuite
+    colors: true
+    memory_limit: 1024M
+    log: true
+    #  Disable if you need to speed up tests execution.
+    lint: false
+    # https://codeception.com/docs/07-AdvancedUsage
+    shuffle: false
