@@ -1,0 +1,32 @@
+# Codeception Test Suite Configuration
+#
+#    🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
+#    service@monwoo.com
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+#
+# TIPS : use wp-browser instead of php browser
+#        by editing this codeception test folder
+# TIPS : If you need vendors exports, may clash with WP env if not prefixed ?
+# https://medium.com/typist-tech/wordpress-plugin-acceptance-test-with-codeception-on-vvv-2042d265c7cf
+actor: AcceptanceTester
+modules:
+    enabled:
+        - PhpBrowser:
+            url: https://web-agency.local.dev/e-commerce
+            # url: https://< your-domain >
+            headers:
+                wa-e2e-test-mode: %wa_e2e_test_mode%
+            curl:
+                CURLOPT_RETURNTRANSFER: true
+        - \Helper\Acceptance
+        - Asserts
+        - REST:
+            url: /wp-json
+            # url: /wp-json/wp/v2
+            # url: /wp-json/wp/v2/wa-mission
+            depends: PhpBrowser
+            part: Json
+step_decorators: ~
