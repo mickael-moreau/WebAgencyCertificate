@@ -2612,7 +2612,7 @@ namespace WA\Config\Core {
                 $this->debug("\n");
                 $iid = $this->iId;
                 if ($_SERVER && isset($_SERVER['SERVER_PORT'])) {
-                    $protocole = (($_SERVER["HTTPS"] == "on") ? "https" : "http") ?? "http";
+                    $protocole = "https";
                     $domain = $_SERVER['HTTP_HOST'];
                     if (
                         $_SERVER["SERVER_PORT"] != "80"
@@ -4455,7 +4455,7 @@ namespace WA\Config\Admin {
                         WPFilters::wa_base_review_skill_terms_to_ensure,
                         $ensureDataset,
                         $locale,
-                        $slugByLocale[$locale],
+                        $slugByLocale[$locale] ?? null,
                     );
                     foreach ($ensureDataset as $ensureId => $ensureSkill) {
                         $title = $ensureSkill[0];
@@ -4476,8 +4476,8 @@ namespace WA\Config\Admin {
                             $reviewReport, $title, $taxoKey, $args
                         )) && $skillsSyncOK;
                         if ($ensuredTerm) {
-                            $langSlug = $slugByLocale[$locale];
                             if (function_exists('pll_set_term_language')) {
+                                $langSlug = $slugByLocale[$locale];
                                 pll_set_term_language($ensuredTerm['term_id'], $langSlug);
                             }
                         }
@@ -4488,11 +4488,11 @@ namespace WA\Config\Admin {
                     }
                 }
                 foreach($termByEnsureIdByLocale as $ensureID => $termByLocale) {
-                    $translations = [];
-                    foreach($termByLocale as $locale => $term) {
-                        $translations[$slugByLocale[$locale]] = $term['term_id'];
-                    }
                     if (function_exists('pll_save_term_translations')) {
+                        $translations = [];
+                        foreach($termByLocale as $locale => $term) {
+                            $translations[$slugByLocale[$locale]] = $term['term_id'];
+                        }
                         pll_save_term_translations($translations);
                     }
                 }

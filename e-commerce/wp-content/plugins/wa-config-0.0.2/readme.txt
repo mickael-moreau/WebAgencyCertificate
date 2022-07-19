@@ -5,7 +5,7 @@ Tags: wa-config, codeception, quality review, web agency, optimisations, project
 Requires at least: 5.9.2
 Tested up to: 6.0
 Requires PHP: 7.4
-Stable tag: 0.0.1
+Stable tag: 0.0.2
 License: Apache-2.0
 License URI: https://directory.fsf.org/wiki/License:Apache-2.0
 
@@ -69,9 +69,9 @@ When all is green, and you humanly argree with it, all is done ;)
 == Changelog ==
 
 = 0.0.2 =
-*Release Date - 10 July 2022*
+*Release Date - 19 July 2022*
 
-* Fixing stuffs thanks to WordPress Plugin Review Team first feedback.
+* Fixing stuffs thanks to WordPress Plugin Review Team feedbacks.
 
 = 0.0.1 =
 *Release Date - 7 July 2022*
@@ -82,8 +82,8 @@ When all is green, and you humanly argree with it, all is done ;)
 
 == Upgrade Notice == 
 
-= 0.0.1 =
-Fist version of wa-config-monwoo
+= 0.0.2 =
+Clean code and bug fixes
 
 == Screenshots ==
 
