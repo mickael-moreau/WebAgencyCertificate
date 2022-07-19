@@ -1,1 +1,0 @@
-alert("Proxified JS Load sound OK !");
