@@ -62,6 +62,10 @@ body .powered-by-monwoo .contact {
   padding: 7px;
   align-self: center;
 }
+body #wa-site-footer {
+  text-align: right;
+  padding: 7px;
+}
 body .footer-widget.widget_polylang {
   display: flex;
   justify-content: flex-end;

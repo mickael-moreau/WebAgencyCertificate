@@ -1,0 +1,9 @@
+# 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
+# service@monwoo.com.
+
+# Silence is golden
+
+# Do not allow direct access to doc folders since thoses informations
+# should not be open to public, but monitored by authenticated access
+# to fit wordpress.org open source plugins guidelines 2022
+Deny from all

@@ -623,14 +623,14 @@ namespace WA\Config\Core {
             protected function get_user_ip($anonymize = true, $traceLog = false) {
                 $ip = "#IP-NOT-FOUND-ERROR#";
                 if ( $this->is_cli() ) {
-                    $ip = $_SERVER['SERVER_ADDR'] 
-                    ?? $_SERVER['REMOTE_ADDR'] ?? 
-                    $_SERVER['argv'][0];
+                    $ip = sanitize_text_field($_SERVER['SERVER_ADDR']) 
+                    ?? sanitize_text_field($_SERVER['REMOTE_ADDR']) ?? 
+                    sanitize_text_field($_SERVER['argv'][0]);
                 }
                 if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-                    $ip = $_SERVER['HTTP_CLIENT_IP'];
+                    $ip = sanitize_text_field($_SERVER['HTTP_CLIENT_IP']);
                 } elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-                    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                    $ip = sanitize_text_field($_SERVER['HTTP_X_FORWARDED_FOR']);
                 } else {
                 }
                 if ($anonymize) {
@@ -1545,6 +1545,31 @@ namespace WA\Config\Core {
                     ? self::$_methodes[$methodeName]
                     : null;
             }
+            protected function _000_e2e_test__bootstrap() {
+                if (is_admin()) {
+                    add_filter("pre_update_option_{$this->eConfigE2ETestsOptsKey}",
+                    [$this, "e2e_test_pre_update_filter"], 10, 3);    
+                }
+            }
+            /**
+             * Filters the end to end test data options from our tests launchs
+             *
+             * Filter the eConfigE2ETests
+             *
+             * @param mixed  $value     The new, unserialized option value.
+             * @param mixed  $old_value The old option value.
+             * @param string $option    Option name.
+             * @return mixed  The new, unserialized option value.
+             * @since 0.0.2
+             */
+            public function e2e_test_pre_update_filter($value, $old_value, $option) {
+                if (!$value) {
+                    $this->debug("e2e_test_pre_update_filter on null, avoiding pre_update ...");
+                    return $old_value;
+                }
+                $value = _wp_json_sanity_check($value, 42);
+                return $value;
+            }
             const ERR_AUTH_TEST_USER_FAIL_USERNAME = 1;
             const ERR_AUTH_TEST_USER_FAIL_USERNAME_UPDATE = 2;
             /**
@@ -2123,7 +2148,7 @@ namespace WA\Config\Core {
                             $length = $fileSize; 
                             if(isset($_SERVER['HTTP_RANGE'])) 
                             { 
-                                preg_match('/bytes=(\d+)-(\d+)?/', $_SERVER['HTTP_RANGE'], $matches); 
+                                preg_match('/bytes=(\d+)-(\d+)?/', sanitize_text_field($_SERVER['HTTP_RANGE']), $matches); 
                                 $offset = intval($matches[1]); 
                                 $length = intval($matches[2]) - $offset;
                                 $this->debug("Will offset range of lenght $length starting at $offset for $filename");
@@ -2477,15 +2502,6 @@ namespace WA\Config\Core {
                             $this->debug(
                             "Website under test mode, serving maintenance page for external access",
                         );
-                        $this->debugVeryVerbose(
-                            "Request headers :",
-                            array_filter($_SERVER, function($v, $k) {
-                                return substr($k, 0, 5) === 'HTTP_';
-                            }, ARRAY_FILTER_USE_BOTH)
-                        );
-                        if ($this->shouldDebug) {
-                            var_dump($headers);
-                        }
                         echo __("<strong>Tests en cours, merci de revenir plus tard (15 minutes à 2 heures de délais). MAINTENANCE MODE, please come back later.</strong>", 'monwoo-web-agency-config'/** 📜*/);
                         $this->exit(); return;
                     }
@@ -2613,14 +2629,15 @@ namespace WA\Config\Core {
                 $iid = $this->iId;
                 if ($_SERVER && isset($_SERVER['SERVER_PORT'])) {
                     $protocole = "https";
-                    $domain = $_SERVER['HTTP_HOST'];
+                    $domain = sanitize_text_field($_SERVER['HTTP_HOST']);
+                    $port = sanitize_text_field($_SERVER['SERVER_PORT']);
                     if (
-                        $_SERVER["SERVER_PORT"] != "80"
-                        && $_SERVER["SERVER_PORT"] != "443"
+                        $port != "80"
+                        && $port != "443"
                     ) {
-                        $domain .= ":" . $_SERVER["SERVER_PORT"];
+                        $domain .= ":" . $port;
                     }
-                    $uri = $_SERVER['REQUEST_URI'];
+                    $uri = sanitize_text_field($_SERVER['REQUEST_URI']);
                     $url = "$protocole://$domain$uri";
                     $this->debug("Plugin bootstraping\n{$this->pluginFile}\n\nFrom [$iid] :\n $url");
                 } else {
@@ -4625,6 +4642,10 @@ namespace WA\Config\Admin {
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_config__bootstrap')) {
                     return; 
                 }
+                add_action('parse_request', [$this, 'e_config_doc_parse_request'] );
+                if (!is_admin()) {
+                    return; 
+                }
                 $self = $this;
                 add_action(WPActions::wa_ecp_render_after_parameters, function () use ($self) {
                     if (!current_user_can('administrator')) {
@@ -4675,9 +4696,8 @@ namespace WA\Config\Admin {
                 $staticHeadTarget = trim($staticHeadTarget, '/');
                 if (strlen($staticHeadTarget) && !is_admin()) {
                     $self = $this;
-                    add_action('parse_request', function ()
+                    add_action('parse_request', function (WP $wp)
                     use ($self, $staticHeadTarget, $staticHeadTargetSafeWpKeeper) { 
-                        global $wp; 
                         $isSafeWp = strlen($staticHeadTargetSafeWpKeeper)
                         ? (!! preg_match($staticHeadTargetSafeWpKeeper, $wp->request))
                         : false;
@@ -5026,6 +5046,64 @@ namespace WA\Config\Admin {
                 do_action(WPActions::wa_ecp_render_after_parameters, $app);
             }
             /**
+             * 
+             * Allowing doc access for authenticated users
+             * 
+    		 * @param WP $wp Current WordPress environment instance (passed by reference).
+             * 
+             * @since 0.0.2
+             * 
+             */
+            public function e_config_doc_parse_request(WP $wp): void
+            {
+                $siteUrl = rtrim(site_url(), '/') . '/';
+                $docRootUrl = plugins_url('doc', $this->pluginFile);
+                $docRootPath = str_replace($siteUrl, "", $docRootUrl);
+                $docRelativePath = str_replace($docRootPath, "", $wp->request);
+                $localDocRootPath = $this->pluginRoot . "_doc";
+                $localDocPath = $localDocRootPath . $docRelativePath;
+                if (file_exists("$localDocPath/index.html")) {
+                    $docRelativePath .= "/index.html";
+                    $localDocPath = $localDocRootPath . $docRelativePath;
+                }
+                if (0 === strpos($wp->request, $docRootPath) && strlen($docRelativePath)) {
+                    $this->debug("Will e_config_doc_parse_request");
+                    if (!current_user_can($this->baseCabability)) {
+                        $this->err("wa-config Doc Display can be done by {$this->baseCabability} only.");
+                        return;
+                    }
+                    if (0 !== strpos(
+                        realpath($localDocPath),
+                        realpath($localDocRootPath)
+                    )) {
+                        $this->err("Doc path is OUTSIDE of doc folder or do not exist");
+                        return;
+                    }
+                    $file_parts = pathinfo($localDocPath);
+                    switch($file_parts['extension'] ?? NULL)
+                    {
+                        case "html": {
+                            header("content-type: text/html;charset=UTF-8");
+                        } break;
+                        case "js": {
+                            header("content-type: text/javascript");
+                        } break;
+                        case "css": {
+                            header("content-type: text/css");
+                        } break;
+                        case "": 
+                        case NULL: 
+                        break;
+                        default: {
+                            header("content-type: ".mime_content_type($localDocPath));
+                        } break;
+                    }
+                    wp_ob_end_flush_all(); 
+                    readfile($localDocPath);
+                    $this->exit(); return;
+                }
+            }
+            /**
              * Render the 'WA Config' 'Documentation' panel.
              */
             public function e_config_doc_render_panel(): void
@@ -5097,7 +5175,7 @@ namespace WA\Config\Admin {
                         <?php wa_render($docIframe) ?>
                     <?php };
                 }
-                $docIndex = plugins_url("doc/index.html", $this->pluginFile);
+                $docIndex = plugins_url("doc/", $this->pluginFile);
                 ?>
                     <script>
                         function wa_resizeDocIframe(oFrame) {
@@ -7121,6 +7199,98 @@ namespace WA\Config\Admin {
                     $eReviewChecksByCategoryByTitle,
                     SORT_NATURAL | SORT_FLAG_CASE
                 );
+                /**
+                 * @see WPFilters::wa_base_review_ids_to_trash
+                 */
+                $eReviewIdsToTrash = apply_filters(
+                    WPFilters::wa_base_review_ids_to_trash,
+                    $this->eReviewIdsToTrash,
+                    $this
+                );
+                $deleteds = $this->eReviewDataStore[$this->eConfOptReviewsDeleted] ?? [];
+                foreach ($eReviewIdsToTrash as $toTrash) {
+                    $trashId = $toTrash['id'] ?? $toTrash;
+                    $this->assert(
+                        is_string($trashId),
+                        "Missing ID in eReviewIdsToTrash for trash operation ?"
+                    );
+                    $trashSafeCategories = $toTrash['not_for_categories'] ?? null;
+                    $trashSafeTitles = $toTrash['not_for_titles'] ?? null;
+                    if (is_string($trashSafeCategories)) {
+                        $trashSafeCategories = [$trashSafeCategories];
+                    }
+                    if (is_string($trashSafeTitles)) {
+                        $trashSafeTitles = [$trashSafeTitles];
+                    }
+                    $this->assert(
+                        !$trashSafeCategories || is_array($trashSafeCategories),
+                        "Wrong type for trashSafeCategories", $trashSafeCategories
+                    );
+                    $this->assert(
+                        !$trashSafeTitles || is_array($trashSafeTitles),
+                        "Wrong type for trashSafeTitles", $trashSafeTitles
+                    );
+                    if ($trashSafeCategories && !count($trashSafeCategories)) {
+                        $trashSafeCategories = null;
+                    }
+                    if ($trashSafeTitles && !count($trashSafeTitles)) {
+                        $trashSafeTitles = null;
+                    }
+                    $categoryTrash = [];
+                    foreach ($eReviewChecksByCategoryByTitle as $c => & $checksByTitle) {
+                        $categoryIsSafe = $trashSafeCategories && in_array($c, $trashSafeCategories);
+                        $titleTrash = [];
+                        foreach ($checksByTitle as $t => & $checks) {
+                            $titleIsSafe = $categoryIsSafe 
+                            && $trashSafeTitles
+                            && in_array($t, $trashSafeTitles);
+                            $duplicatedIds = [];
+                            $checks = array_filter(
+                                $checks,
+                                function (& $check)
+                                use ($trashId, $titleIsSafe, & $duplicatedIds, & $deleteds) {
+                                    $checkId = $check['fixed_id'];
+                                    if (!$this->e_review_data_check_isReadable($check)) {
+                                        $this->debug("e_review_data_add_base_review trash not accessible for : $checkId");
+                                        return true;
+                                    }
+                                    if (!$titleIsSafe
+                                    && $trashId === $checkId) {
+                                        $check['is_deleted'] = true;
+                                        if (!$check['is_computed']) {
+                                            $deleteds[] = $check;                
+                                        }
+                                        return false;
+                                    }
+                                    if (array_key_exists($checkId, $duplicatedIds)) {
+                                        $check['is_deleted'] = true;
+                                        if (!$check['is_computed']) {
+                                            $deleteds[] = $check; 
+                                        }
+                                        return false;
+                                    }
+                                    $duplicatedIds[$checkId] = true;
+                                    return true;
+                                }
+                            );
+                            if (!count($checks)) {
+                                $titleTrash[] = $t;
+                            }
+                        }
+                        foreach ($titleTrash as $t) {
+                            unset($checksByTitle[$t]);
+                        }
+                        if (!count($checksByTitle)) {
+                            $categoryTrash[] = $c;
+                        }
+                    }
+                    foreach ($categoryTrash as $c) {
+                        unset($eReviewChecksByCategoryByTitle[$c]);
+                    }
+                }
+                $this->eReviewIdsToTrash = [];
+                $this->debugVeryVerbose("Trashed wa-reviews", $deleteds);
+                $this->eReviewDataStore[$this->eConfOptReviewsDeleted] = $deleteds;
                 $value[$this->eConfOptReviewsByCategorieByTitle] = $eReviewChecksByCategoryByTitle;
                 $self->_eReviewDataPreUpdateSelfSentinel = false;
                 return $value;
@@ -7574,7 +7744,7 @@ namespace WA\Config\Admin {
                 $report = "";
                 $result = (function () use (& $report) {
                     $version = null;
-                    $userAgent = strtolower($_SERVER['HTTP_USER_AGENT']);
+                    $userAgent = strtolower(sanitize_text_field($_SERVER['HTTP_USER_AGENT']));
                     if (strrpos($userAgent, 'firefox') !== false) {
                         preg_match('/firefox\/([0-9]+\.*[0-9]*)/', $userAgent, $matches);
                         if (!empty($matches)) {
@@ -7609,100 +7779,6 @@ namespace WA\Config\Admin {
                  * @see WPActions::wa_do_base_review_postprocessing
                  */
                 do_action(WPActions::wa_do_base_review_postprocessing, $app);
-                /**
-                 * @see WPFilters::wa_base_review_ids_to_trash
-                 */
-                $eReviewIdsToTrash = apply_filters(
-                    WPFilters::wa_base_review_ids_to_trash,
-                    $this->eReviewIdsToTrash,
-                    $this
-                );
-                $deleteds = $this->eReviewDataStore[$this->eConfOptReviewsDeleted] ?? [];
-                foreach ($eReviewIdsToTrash as $toTrash) {
-                    $trashId = $toTrash['id'] ?? $toTrash;
-                    $this->assert(
-                        is_string($trashId),
-                        "Missing ID in eReviewIdsToTrash for trash operation ?"
-                    );
-                    $trashSafeCategories = $toTrash['not_for_categories'] ?? null;
-                    $trashSafeTitles = $toTrash['not_for_titles'] ?? null;
-                    if (is_string($trashSafeCategories)) {
-                        $trashSafeCategories = [$trashSafeCategories];
-                    }
-                    if (is_string($trashSafeTitles)) {
-                        $trashSafeTitles = [$trashSafeTitles];
-                    }
-                    $this->assert(
-                        !$trashSafeCategories || is_array($trashSafeCategories),
-                        "Wrong type for trashSafeCategories", $trashSafeCategories
-                    );
-                    $this->assert(
-                        !$trashSafeTitles || is_array($trashSafeTitles),
-                        "Wrong type for trashSafeTitles", $trashSafeTitles
-                    );
-                    if ($trashSafeCategories && !count($trashSafeCategories)) {
-                        $trashSafeCategories = null;
-                    }
-                    if ($trashSafeTitles && !count($trashSafeTitles)) {
-                        $trashSafeTitles = null;
-                    }
-                    $categoryTrash = [];
-                    foreach ($this->eReviewChecksByCategoryByTitle as $c => & $checksByTitle) {
-                        $categoryIsSafe = $trashSafeCategories && in_array($c, $trashSafeCategories);
-                        $titleTrash = [];
-                        foreach ($checksByTitle as $t => & $checks) {
-                            $titleIsSafe = $categoryIsSafe 
-                            && $trashSafeTitles
-                            && in_array($t, $trashSafeTitles);
-                            $duplicatedIds = [];
-                            $checks = array_filter(
-                                $checks,
-                                function (& $check)
-                                use ($trashId, $titleIsSafe, & $duplicatedIds, & $deleteds) {
-                                    $checkId = $check['fixed_id'];
-                                    if (!$this->e_review_data_check_isReadable($check)) {
-                                        $this->debug("e_review_data_add_base_review trash not accessible for : $checkId");
-                                        return true;
-                                    }
-                                    if (!$titleIsSafe
-                                    && $trashId === $checkId) {
-                                        $check['is_deleted'] = true;
-                                        if (!$check['is_computed']) {
-                                            $deleteds[] = $check;                
-                                        }
-                                        return false;
-                                    }
-                                    if (array_key_exists($checkId, $duplicatedIds)) {
-                                        $check['is_deleted'] = true;
-                                        if (!$check['is_computed']) {
-                                            $deleteds[] = $check; 
-                                        }
-                                        return false;
-                                    }
-                                    $duplicatedIds[$checkId] = true;
-                                    return true;
-                                }
-                            );
-                            if (!count($checks)) {
-                                $titleTrash[] = $t;
-                            }
-                        }
-                        foreach ($titleTrash as $t) {
-                            unset($checksByTitle[$t]);
-                        }
-                        if (!count($checksByTitle)) {
-                            $categoryTrash[] = $c;
-                        }
-                    }
-                    foreach ($categoryTrash as $c) {
-                        unset($this->eReviewChecksByCategoryByTitle[$c]);
-                    }
-                }
-                $this->eReviewIdsToTrash = [];
-                $this->debugVeryVerbose("Trashed wa-reviews", $deleteds);
-                $this->eReviewDataStore[$this->eConfOptReviewsDeleted] = $deleteds;
-                $this->eReviewDataStore[$this->eConfOptReviewsByCategorieByTitle]
-                = $this->eReviewChecksByCategoryByTitle;
                 update_option($this->eReviewDataStoreKey, $this->eReviewDataStore);
                 flush_rewrite_rules();
             }
@@ -7757,8 +7833,8 @@ namespace WA\Config\Admin {
              */
             public function api_inst_parse_request(WP $wp) : void {
                 $self = $this;
-                $this->debug("Will api_inst_parse_request");
                 if (0 === strpos($wp->request, "api-wa-config-nonce-rest")) {
+                    $this->debug("Will api_inst_parse_request");
                     $this->api_inst_load_parameters($_REQUEST);
                     if (is_user_logged_in()) {
                         http_response_code(200); 
@@ -9493,7 +9569,7 @@ namespace WA\Config\Frontend {
                 $currentTheme = basename(get_parent_theme_file_path());
                 $enableFooter = boolVal($this->getWaConfigOption(
                     $this->eConfOptEnableFooter,
-                    true
+                    false
                 ));
                 if ($enableFooter) {
                     $this->debugVerbose("Will _010_e_footer__load for theme '$currentTheme'");
@@ -9560,7 +9636,7 @@ namespace WA\Config\Frontend {
             function e_footer_do_wp_footer_twentytwenty() : void {
                 $enableFooter = boolVal($this->getWaConfigOption(
                     $this->eConfOptEnableFooter,
-                    true
+                    false
                 ));
                 $currentTheme = basename(get_parent_theme_file_path());
                 if ($enableFooter && (
@@ -9742,7 +9818,7 @@ namespace WA\Config\Frontend {
             {
                 if (!boolVal($this->getWaConfigOption(
                     $this->eConfOptEnableFooter,
-                    true
+                    false
                 ))) {
                     $this->debugVerbose("e_footer_render not enabled");
                     return false;
@@ -9758,12 +9834,6 @@ namespace WA\Config\Frontend {
                     $mailTarget = get_option( 'admin_email' );
                     $monwooCredit = __("Build by Monwoo and", 'monwoo-web-agency-config'/** 📜*/);
                     $htmlFooter = "
-                    <style>
-                      #wa-site-footer {
-                        text-align: right;
-                        padding: 7px;
-                      }
-                    </style>
                     <footer id='wa-site-footer' class='header-footer-group'>
                         <div class='section-inner'>
                             <div class='footer-credits'>

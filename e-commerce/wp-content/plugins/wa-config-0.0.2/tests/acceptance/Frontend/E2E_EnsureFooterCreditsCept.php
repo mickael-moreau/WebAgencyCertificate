@@ -18,6 +18,7 @@
  * You can also launch it with command line :
  * ```bash
  * alias e2e-footer="php 'tools/codecept.phar' run"
+ * export WA_STANDALONE_WP_LOADER_FOR_E2E_CLI="../../WebAgencySources/e-commerce/wp-load.php"
  * e2e-footer 'acceptance' 'Frontend/E2E_EnsureFooterCreditsCept'
  * ```
  *
@@ -44,6 +45,7 @@ namespace WA\Config\E2E\Frontend {
      * You can also launch it with command line :
      * ```bash
      * alias e2e-footer="php 'tools/codecept.phar' run"
+     * export WA_STANDALONE_WP_LOADER_FOR_E2E_CLI="../../WebAgencySources/e-commerce/wp-load.php"
      * e2e-footer 'acceptance' 'Frontend/E2E_EnsureFooterCreditsCept'
      * ```
      *

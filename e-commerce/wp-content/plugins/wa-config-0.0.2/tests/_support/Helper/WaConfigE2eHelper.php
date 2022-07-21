@@ -16,17 +16,25 @@ use Codeception\Module\PhpBrowser;
 use WA\Config\Core\AppInterface;
 use WA\Config\App;
 
+use function PHPUnit\Framework\fileExists;
+
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-// Load custom WordPress
-$standaloneRelativeWp = __DIR__
-. "/../../../../../WebAgencySources/e-commerce/wp-load.php";
-// var_dump($standaloneRelativeWp); exit;
-if (file_exists($standaloneRelativeWp)) {
-    require_once($standaloneRelativeWp);
-} else {
-    require_once(__DIR__ . "/../../../../../../wp-load.php");
+/**
+ * Load custom wordpress for command line CLI.
+ * 
+ * https://www.binarytides.com/php-check-running-cli/
+ */
+if( defined('STDIN') ) {
+    $standaloneWpLoad = getenv('WA_STANDALONE_WP_LOADER_FOR_E2E_CLI');
+    // var_dump($standaloneRelativeWp); exit;
+    if ($standaloneWpLoad && fileExists($standaloneWpLoad)) {
+        require_once($standaloneWpLoad);
+    } else {
+        echo "You need to define the WA_STANDALONE_WP_LOADER_FOR_E2E_CLI environement variable to launch tests from CLI \n";
+        exit();
+    }
 }
 
 class WaConfigE2eHelper extends \Codeception\Module

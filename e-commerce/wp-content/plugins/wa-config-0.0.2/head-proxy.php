@@ -31,7 +31,7 @@ $force404 = function($msg) use ($frontHead) {
     $this->exit(); return;
 };
 
-if (false === strpos(
+if (0 !== strpos(
     realpath($this->pluginRoot . $frontHead),
     realpath($this->pluginRoot . 'heads')
 )) {

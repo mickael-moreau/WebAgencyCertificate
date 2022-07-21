@@ -25,6 +25,7 @@
  * You can also launch it with command line :
  * ```bash
  * alias e2e="php 'tools/codecept.phar' run"
+ * export WA_STANDALONE_WP_LOADER_FOR_E2E_CLI="../../WebAgencySources/e-commerce/wp-load.php"
  * 
  * e2e --no-redirect  'acceptance' --html
  * 
@@ -122,14 +123,14 @@ namespace WA\Config\E2E {
     // https://codeception.com/docs/03-AcceptanceTests
     // https://codeception.com/docs/07-AdvancedUsage
 
-    $standaloneRelativeWp = __DIR__
-        . "/../../../../WebAgencySources/e-commerce/wp-load.php";
-    // var_dump($standaloneRelativeWp); exit;
-    if (file_exists($standaloneRelativeWp)) {
-        require_once($standaloneRelativeWp);
-    } else {
-        require_once(__DIR__ . "/../../../../../wp-load.php");
-    }
+    // $standaloneRelativeWp = __DIR__
+    //     . "/../../../../WebAgencySources/e-commerce/wp-load.php";
+    // // var_dump($standaloneRelativeWp); exit;
+    // if (file_exists($standaloneRelativeWp)) {
+    //     require_once($standaloneRelativeWp);
+    // } else {
+    //     require_once(__DIR__ . "/../../../../../wp-load.php");
+    // }
 
     $wa_plugin = AppInterface::instance();
     // error_reporting(error_reporting() & ~E_NOTICE);
@@ -154,6 +155,7 @@ namespace WA\Config\E2E {
      * You can also launch it with command line :
      * ```bash
      * alias e2e="php 'tools/codecept.phar' run"
+     * export WA_STANDALONE_WP_LOADER_FOR_E2E_CLI="../../WebAgencySources/e-commerce/wp-load.php"
      * 
      * e2e --no-redirect  'acceptance' --html
      * 
