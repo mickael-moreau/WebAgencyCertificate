@@ -4643,9 +4643,6 @@ namespace WA\Config\Admin {
                     return; 
                 }
                 add_action('parse_request', [$this, 'e_config_doc_parse_request'] );
-                if (!is_admin()) {
-                    return; 
-                }
                 $self = $this;
                 add_action(WPActions::wa_ecp_render_after_parameters, function () use ($self) {
                     if (!current_user_can('administrator')) {
