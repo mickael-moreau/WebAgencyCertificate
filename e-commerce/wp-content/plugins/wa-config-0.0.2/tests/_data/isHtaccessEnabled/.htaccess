@@ -1,9 +1,0 @@
-# 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
-# service@monwoo.com
-
-Allow from all
-
-RewriteEngine On
-
-RewriteCond %{REQUEST_URI} ^(.*)/index.html$ [NC]
-RewriteRule . %1/index2.html [L,R=302,NS]

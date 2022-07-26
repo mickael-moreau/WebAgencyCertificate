@@ -1,6 +1,0 @@
-# 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
-# service@monwoo.com
-
-Allow from all
-
-SetEnv WA_CONFIG_HTACCESS_IS_ON on

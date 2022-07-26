@@ -95,6 +95,7 @@ namespace WA\Config\Core {
     use WA\Config\Utils\InsertSqlStatement;
     use WA\Config\Utils;
     use WP;
+    use WP_Error;
     use WP_Filesystem_Direct;
     use wpdb;
     use ZipArchive;
@@ -282,6 +283,8 @@ namespace WA\Config\Core {
         trait TestableEnd2End
         {
             protected function _000_test_e2e__bootstrap() {
+                $this->codeceptSource = sanitize_url(constant('WA_Config_E2E_CODECEPTION_SRC'));
+                $this->docAndTestsDatasetSource = sanitize_url(constant('WA_Config_DATASET_DOC_AND_TESTS_SRC'));
                 if ($this->p_higherThanOneCallAchievedSentinel('_000_test_e2e__bootstrap')) {
                     return; 
                 }
@@ -302,7 +305,14 @@ namespace WA\Config\Core {
             public function test_e2e_action_base_review($app): void
             {
                 $haveCodecept = $this->test_e2e_is_codecept_available();
+                $haveDocOrTests = file_exists($this->pluginRoot . '_doc')
+                || file_exists($this->pluginRoot . 'doc')
+                || file_exists($this->pluginRoot . 'tests');
                 $this->debugVerbose("Will test_e2e_action_base_review");
+                $docAndTestsSanityActionUrl = add_query_arg([
+                    'action' => 'wa-testable-e2e',
+                    'testable-e2e-action' => 'clean-doc-and-tests' 
+                ], admin_url( 'admin-ajax.php' ));
                 $this->e_review_data_check_insert([
                     'category' => __('02 - Maintenance', 'monwoo-web-agency-config'/** 📜*/),
                     'category_icon' => '<span class="dashicons dashicons-admin-tools"></span>',
@@ -311,7 +321,17 @@ namespace WA\Config\Core {
                     'requirements' => __( "Codeception doit être supprimé dès que la phase de test est validée.<br />
                     'codecept.phar' contient du code non lisible humainement. <br />
                     Les revues humaines et outils de sécurités peuvent échouer dans la validation de ce fichier."
-                    . ($haveCodecept ? $this->test_e2e_get_available_actions() : ""),
+                    . ($haveCodecept ? $this->test_e2e_get_available_actions() : "") . "<br />"
+                    . (
+                        $haveDocOrTests
+                        ? "<a
+                        href='$docAndTestsSanityActionUrl'
+                        >" 
+                        . __("Cliquer ici pour supprimer les dossiers '_doc', 'doc' et 'tests' de votre serveur.", 'monwoo-web-agency-config'/** 📜*/ )
+                        . "</a>"
+                        : ""
+                    )
+                    ,
                     'monwoo-web-agency-config'/** 📜*/ ),
                     'value' => '',
                     'result'   => ! $haveCodecept,
@@ -352,6 +372,7 @@ namespace WA\Config\Core {
                 }
                 $authenticatedActions = [
                     'deploy-codecept' => function($app, $instAction) use ($isJson, $reviewUrl) {
+                        set_time_limit(30*60); 
                         $pharPath = $this->test_e2e_codecept_phar_path();
                         $pharDir = dirname($pharPath);
                         if (!file_exists($pharDir)) {
@@ -383,6 +404,77 @@ namespace WA\Config\Core {
                         @unlink( $tmp_file );
                         $app->info("Succed to deploy-codecept to '$pharPath'"
                         . " from '{$this->codeceptSource}'");
+                        $tmp_file = wp_tempnam( basename( $this->docAndTestsDatasetSource ) );
+                        $response = wp_safe_remote_get(
+                            $this->docAndTestsDatasetSource,
+                            array(
+                                'timeout'  => 60 * 5, 
+                                'redirection' => 7,
+                                'stream'   => true,
+                                'filename' => $tmp_file,
+                                'headers'     => array(
+                                    'Accept' => 'application/octet-stream',
+                                ),
+                                'cookies'     => array(),                        
+                            )
+                        );
+                        $response_code = wp_remote_retrieve_response_code( $response );
+                        if ( !is_wp_error($response) && 200 !== $response_code ) {
+                            $data = array(
+                                'code' => $response_code,
+                            );
+                            $response = new WP_Error( "http_$response_code", trim( wp_remote_retrieve_response_message( $response ) ), $data );
+                        }
+                        if (is_wp_error($response)) {
+                            $srcStatus = $response->get_error_code();
+                            $app->err(
+                                "Fail to deploy-codecept doc and tests from {$this->docAndTestsDatasetSource} : '$srcStatus'", [
+                                "from" => $tmp_file,
+                                "error" => $response,
+                            ]);
+                            if (!$isJson) {
+                                Notice::displayError(__(
+                                    "[$srcStatus] Echec de la mise à jour de la doc et des tests : ", 'monwoo-web-agency-config'/** 📜*/
+                                ) . $this->docAndTestsDatasetSource);
+                                wa_redirect($reviewUrl, $this);
+                                $status = http_response_code();
+                            } else {
+                                http_response_code($srcStatus);    
+                            }
+                            return [
+                                "code" => $status,
+                                "action" => $instAction,
+                                "data" => [
+                                    "source_url" => $this->docAndTestsDatasetSource,
+                                    "load_fail" => $srcStatus,
+                                ]
+                            ];
+                        }
+                        $fs = wa_filesystem();
+                        if ($fs->move($tmp_file, "$tmp_file.zip")) {
+                            $tmp_file = "$tmp_file.zip";
+                        }
+                        $zip = new ZipArchive;
+                        if (true !== ($err = $zip->open($tmp_file))) {
+                                $err = print_r($err, true);
+                            $zipStatus = $zip->getStatusString();
+                            return new WP_Error(
+                                'wrong_zip_file',
+                                "Err [$err - $zipStatus] : Fail to open zip file : ", 
+                                [ 'deploy_action' => $instAction, 'zip-err-code' => $zipStatus, 'file' => $tmp_file, 'status' => 404 ]
+                            );
+                        }
+                        $zip->extractTo($this->pluginRoot);
+                        $zip->close();
+                        if (!constant('WA_Config_SHOULD_SECURE_DOCUMENTATION')) {
+                            $publicDocPath = $this->pluginRoot . "doc";
+                            $docPath = $this->pluginRoot . "_doc";
+                            $fs->move($docPath, $publicDocPath);
+                            @unlink( "$publicDocPath/.htaccess" ); 
+                        }
+                        @unlink( $tmp_file );
+                        $app->info("Succed to deploy-codecept doc and tests to '{$this->pluginRoot}'"
+                        . " from '{$this->docAndTestsDatasetSource}'");
                         $status = 200;
                         if (!$isJson) {
                             Notice::displaySuccess(__(
@@ -420,6 +512,33 @@ namespace WA\Config\Core {
                             "action" => $instAction,
                             "data" => [
                                 "phar_path_deleted" => $pharPath,
+                                "redirect_to" => $reviewUrl,
+                                "status" => $status,    
+                            ]
+                        ];
+                    },
+                    'clean-doc-and-tests' => function($app, $instAction) use ($isJson, $reviewUrl) {
+                        $testPath = $this->pluginRoot . "tests";
+                        $publicDocPath = $this->pluginRoot . "doc";
+                        $docPath = $this->pluginRoot . "_doc";
+                        $fs = wa_filesystem();
+                        $fs->rmdir($testPath, true);
+                        $fs->rmdir($publicDocPath, true);
+                        $fs->rmdir($docPath, true);
+                        $app->info("Succed to remove 'tests', 'doc' and '_doc' folders");
+                        $status = 200;
+                        if (!$isJson) {
+                            wa_redirect($reviewUrl, $this);
+                            $status = http_response_code();    
+                        } else {
+                            http_response_code($status);    
+                        }
+                        return [
+                            "code" => 'ok',
+                            "action" => $instAction,
+                            "data" => [
+                                "test_path_deleted" => $testPath,
+                                "doc_path_deleted" => $docPath,
                                 "redirect_to" => $reviewUrl,
                                 "status" => $status,    
                             ]
@@ -469,13 +588,14 @@ namespace WA\Config\Core {
                 ( $haveCodecept
                     ? __("Cliquer ici pour supprimer 'tools/codecept.phar' de votre serveur.", 'monwoo-web-agency-config'/** 📜*/ )
                     : (
-                        __("Cliquer ici pour Installer Codeception ('tools/codecept.phar') sur votre serveur via : ", 'monwoo-web-agency-config'/** 📜*/)
-                        . $this->codeceptSource
+                        __("Cliquer ici pour Installer Codeception ('tools/codecept.phar', doc, tests) sur votre serveur via : ", 'monwoo-web-agency-config'/** 📜*/)
+                        . $this->codeceptSource . " + " . $this->docAndTestsDatasetSource
                     )
                 )
                 . "</a></strong></p>";
             }
-            protected $codeceptSource = "https://codeception.com/codecept.phar";
+            protected $codeceptSource = null;
+            protected $docAndTestsDatasetSource = null;
             protected function test_e2e_is_codecept_available() {
                 $pharPath = $this->test_e2e_codecept_phar_path();
                 return file_exists($pharPath);
@@ -4642,8 +4762,46 @@ namespace WA\Config\Admin {
                 if ($this->p_higherThanOneCallAchievedSentinel('_010_e_config__bootstrap')) {
                     return; 
                 }
-                add_action('parse_request', [$this, 'e_config_doc_parse_request'] );
                 $self = $this;
+                $staticHeadTarget = $this->getWaConfigOption(
+                    $this->eConfStaticHeadTarget,
+                    ""
+                );
+                $staticHeadTargetSafeWpKeeper = $this->getWaConfigOption(
+                    $this->eConfStaticHeadSafeWpKeeper,
+                    ""
+                );
+                $staticHeadTarget = trim($staticHeadTarget, '/');
+                if (strlen($staticHeadTarget) && !is_admin()) {
+                    $self = $this;
+                    add_action('parse_request', function (WP $wp)
+                    use ($self, $staticHeadTarget, $staticHeadTargetSafeWpKeeper) { 
+                        $isSafeWp = strlen($staticHeadTargetSafeWpKeeper)
+                        ? (!! preg_match($staticHeadTargetSafeWpKeeper, $wp->request))
+                        : false;
+                        if (0 !== strpos($wp->request, "wp-admin")
+                        && 0 !== strpos($wp->request, "wp-json")
+                        && 0 !== strpos($wp->request, "api-wa-config-nonce-rest")
+                        && !$isSafeWp) {
+                            $proxy = $this->pluginRoot . "head-proxy.php";
+                            $GLOBALS["wa-proxy-url"] = $wp->request;
+                            $GLOBALS["wa-front-head"] = $staticHeadTarget;
+                            $this->debugVerbose("EditableConfigPannels proxify Frontend for : '{$wp->request}' at '$staticHeadTarget'");
+                            include($proxy); 
+                            $self->exit(); return; 
+                        }
+                        if ($isSafeWp) {
+                            $this->debugVerbose("EditableConfigPannels did keep wp url safe for : '{$wp->request}'");
+                        }
+                    }, 200); 
+                }
+                if (constant('WA_Config_SHOULD_SECURE_DOCUMENTATION') 
+                && current_user_can($this->optAdminEditCabability)) {
+                    add_action('parse_request', [$this, 'e_config_doc_parse_request'] );
+                }
+                if (!is_admin()) {
+                    return; 
+                } 
                 add_action(WPActions::wa_ecp_render_after_parameters, function () use ($self) {
                     if (!current_user_can('administrator')) {
                         return; 
@@ -4682,41 +4840,6 @@ namespace WA\Config\Admin {
                         
                     }
                 }); 
-                $staticHeadTarget = $this->getWaConfigOption(
-                    $this->eConfStaticHeadTarget,
-                    ""
-                );
-                $staticHeadTargetSafeWpKeeper = $this->getWaConfigOption(
-                    $this->eConfStaticHeadSafeWpKeeper,
-                    ""
-                );
-                $staticHeadTarget = trim($staticHeadTarget, '/');
-                if (strlen($staticHeadTarget) && !is_admin()) {
-                    $self = $this;
-                    add_action('parse_request', function (WP $wp)
-                    use ($self, $staticHeadTarget, $staticHeadTargetSafeWpKeeper) { 
-                        $isSafeWp = strlen($staticHeadTargetSafeWpKeeper)
-                        ? (!! preg_match($staticHeadTargetSafeWpKeeper, $wp->request))
-                        : false;
-                        if (0 !== strpos($wp->request, "wp-admin")
-                        && 0 !== strpos($wp->request, "wp-json")
-                        && 0 !== strpos($wp->request, "api-wa-config-nonce-rest")
-                        && !$isSafeWp) {
-                            $proxy = $this->pluginRoot . "head-proxy.php";
-                            $GLOBALS["wa-proxy-url"] = $wp->request;
-                            $GLOBALS["wa-front-head"] = $staticHeadTarget;
-                            $this->debugVerbose("EditableConfigPannels proxify Frontend for : '{$wp->request}' at '$staticHeadTarget'");
-                            include($proxy); 
-                            $self->exit(); return; 
-                        }
-                        if ($isSafeWp) {
-                            $this->debugVerbose("EditableConfigPannels did keep wp url safe for : '{$wp->request}'");
-                        }
-                    }, 200); 
-                }
-                if (!is_admin()) {
-                    return; 
-                }
             }
             protected function _010_e_config__load()
             {
@@ -5059,7 +5182,7 @@ namespace WA\Config\Admin {
                 $docRelativePath = str_replace($docRootPath, "", $wp->request);
                 $localDocRootPath = $this->pluginRoot . "_doc";
                 $localDocPath = $localDocRootPath . $docRelativePath;
-                if (file_exists("$localDocPath/index.html")) {
+                if ( @ file_exists("$localDocPath/index.html")) {
                     $docRelativePath .= "/index.html";
                     $localDocPath = $localDocRootPath . $docRelativePath;
                 }
@@ -5195,17 +5318,20 @@ namespace WA\Config\Admin {
                             };
                         }
                     </script>
-                    <div>
-                        <iframe
-                        class="wa-php-doc"
-                        scrolling='no'
-                        src="<?php echo esc_url("$docIndex") ?>"
-                        title="Php documentation"
-                        frameborder="0"
-                        onload="wa_resizeDocIframe(this)"
-                        width="100%">
-                        </iframe>
-                    </div>
+                    <?php if(file_exists($this->pluginRoot . '_doc')
+                    || file_exists($this->pluginRoot . 'doc')) { ?>
+                        <div>
+                            <iframe
+                            class="wa-php-doc"
+                            scrolling='no'
+                            src="<?php echo esc_url("$docIndex") ?>"
+                            title="Php documentation"
+                            frameborder="0"
+                            onload="wa_resizeDocIframe(this)"
+                            width="100%">
+                            </iframe>
+                        </div>
+                    <?php } ?>
                     <?php echo wp_kses_post("$readMeTitle") ?>
                     <div>
                         <iframe
@@ -6627,7 +6753,6 @@ namespace WA\Config\Admin {
                             'monwoo-web-agency-config'/** 📜*/
                         )
                         . "</p>");
-                    return;
                 }
                 echo wp_kses_post("<pre>$updatedConfig</pre>");
                 file_put_contents($aTestConfigFile, $updatedConfig);
@@ -7720,24 +7845,31 @@ namespace WA\Config\Admin {
                     'fixed_id' => "{$this->iId}-check-php-version",
                     'is_computed' => true,
                 ]);
-                $htaccessTestsFolder = 'tests';
-                $htaccessTestsBaseUrl = plugins_url($htaccessTestsFolder, $this->pluginFile);
-                require_once($this->pluginRoot . "tests/external/EXT_TEST_htaccessIsEnabled.php");
-                $htaccessOK = \WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::check($htaccessTestsBaseUrl);
-                if (!$htaccessOK) {
-                    foreach (\WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::$errors as $e) {
-                        $this->err($e); 
+                $htaccessTest = $this->pluginRoot . "tests/external/EXT_TEST_htaccessIsEnabled.php";
+                if (file_exists($htaccessTest)) {
+                    $htaccessTestsFolder = 'tests';
+                    $htaccessTestsBaseUrl = plugins_url($htaccessTestsFolder, $this->pluginFile);
+                    require_once($htaccessTest);
+                    $htaccessOK = \WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::check($htaccessTestsBaseUrl);
+                    if (!$htaccessOK) {
+                        foreach (\WA\Config\ExtTest\EXT_TEST_htaccessIsEnabled::$errors as $e) {
+                            $this->err($e); 
+                        }
                     }
+                    $this->e_review_data_check_insert([
+                        'category' => __('01 - Critique', 'monwoo-web-agency-config'/** 📜*/),
+                        'title' => __('02 - Securisations .htaccess', 'monwoo-web-agency-config'/** 📜*/),
+                        'title_icon' => '<span class="dashicons dashicons-shield"></span>',
+                        'requirements' => __( 'Activation des redirections .htaccess', 'monwoo-web-agency-config'/** 📜*/ ),
+                        'result'   => $htaccessOK,
+                        'fixed_id' => "{$this->iId}-check-htaccess-ok",
+                        'is_computed' => true,
+                    ]);
+                } else {
+                    $this->eReviewIdsToTrash = array_merge($this->eReviewIdsToTrash, [
+                        "{$this->iId}-check-htaccess-ok"
+                    ]);
                 }
-                $this->e_review_data_check_insert([
-                    'category' => __('01 - Critique', 'monwoo-web-agency-config'/** 📜*/),
-                    'title' => __('02 - Securisations .htaccess', 'monwoo-web-agency-config'/** 📜*/),
-                    'title_icon' => '<span class="dashicons dashicons-shield"></span>',
-                    'requirements' => __( 'Activation des redirections .htaccess', 'monwoo-web-agency-config'/** 📜*/ ),
-                    'result'   => $htaccessOK,
-                    'fixed_id' => "{$this->iId}-check-htaccess-ok",
-                    'is_computed' => true,
-                ]);
                 $report = "";
                 $result = (function () use (& $report) {
                     $version = null;
@@ -8516,6 +8648,7 @@ namespace WA\Config\Admin {
                         }
                         $fs->rmdir($zipTargetPath, true);
                         $fs->mkdir($zipTargetPath);
+                        @unlink($zipSource);
                         $zip = new ZipArchive;
                         if (true !== ($err = $zip->open($zipSource))) {
                             $err = print_r($err, true);

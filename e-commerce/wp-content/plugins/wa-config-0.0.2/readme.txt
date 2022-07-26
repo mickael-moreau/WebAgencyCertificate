@@ -101,5 +101,5 @@ Clean code and bug fixes
 12. [Admin] Block internal requests and debugs
 13. [WebMaster] Rollback db with phpmyadmin
 14. [WebMaster] Rollback db with phpmyadmin - specific auth rollback
-15. [Developer] Deploy a custom static frontend head (wa-deploy.js or ftp)
+15. [Developer] Deploy a custom static frontend head (tools/wa-deploy.js or ftp)
 16. [Developer] Publish a static head as a hybrid headless frontend

@@ -69,9 +69,6 @@ if ( ! defined( 'WPINC' ) ) {
 $WA_Config_SHOULD_DEBUG = false;
 if (file_exists(__DIR__ . "/src/App.src.php")) {
     $WA_Config_SHOULD_DEBUG = [true, false, false];
-    // $WA_Config_SHOULD_DEBUG = [true, true, false];
-    // $WA_Config_SHOULD_DEBUG = [true, true, true];
-    // $WA_Config_SHOULD_DEBUG = false;
     // Could include multiple times for quick hack in paralelle tests purpose
     include(__DIR__ . "/src/App.src.php");
 } else {
@@ -86,25 +83,38 @@ if (defined('WA_Config_SHOULD_DEBUG')) {
 // $WA_Config_SHOULD_DEBUG = [true, true, true];
 // $WA_Config_SHOULD_DEBUG = true;
 
-if ($WA_Config_SHOULD_DEBUG) {
-    // TODO : not working to set those here ?
-    // TODO : issue on ES lang ? => eveny if setup in config, will fail under WP in ES ?
-    //        If so, need doc on setup in wp-config.php...
-    // if (!defined('WP_DEBUG')) {
-    //     define( 'WP_DEBUG', true );
-    // }
-    // if (!defined('WP_DEBUG_LOG')) {
-    //     // wp-content/debug.log
-    //     define( 'WP_DEBUG_LOG', true );
-    // }
-}
-
 if (!defined('WA_Config_BASE_CLASS')) {
     define("WA_Config_BASE_CLASS", 'WA\Config\App');
 }
 
 if (!defined('WA_Config_INSTANCE_PREFIX')) {
     define("WA_Config_INSTANCE_PREFIX", 'wa-config');
+}
+
+if (!defined('WA_Config_SHOULD_SECURE_DOCUMENTATION')) {
+    // Set to true if you want to secure your documentaion Folder
+    // false to let it open to non authenticated users (public access allowed)
+    define("WA_Config_SHOULD_SECURE_DOCUMENTATION", true);
+}
+
+if (!defined('WA_Config_E2E_CODECEPTION_SRC')) {
+    // Set to true if you want to secure your documentaion Folder
+    // false to let it open to non authenticated users (public access allowed)
+    define(
+        "WA_Config_E2E_CODECEPTION_SRC",
+        "https://codeception.com/codecept.phar"
+    );
+}
+
+if (!defined('WA_Config_DATASET_DOC_AND_TESTS_SRC')) {
+    // Set to true if you want to secure your documentaion Folder
+    // false to let it open to non authenticated users (public access allowed)
+    define(
+        "WA_Config_DATASET_DOC_AND_TESTS_SRC",
+        // "http://localhost:8001/wa-config-0.0.2-doc-and-tests.zip", (wp http not allowed, only https allowed)
+        // "https://web-agency.local.dev/e-commerce/wp-content/plugins/wa-config/wa-config-0.0.2-doc-and-tests.zip",
+        "https://github.com/mickael-moreau/WebAgencyCertificate/blob/main/e-commerce/wp-content/plugins/_datasets/wa-config-0.0.2-doc-and-tests.zip?raw=true"
+    );
 }
 
 $wa_baseClass = WA_Config_BASE_CLASS;
@@ -117,7 +127,8 @@ $wa_plugin = new $wa_baseClass(
 
 $wa_plugin->bootstrap();
 
-// Quick test parallele load of same plugin, un-comment below :
+// Quick test parallele load of same plugin,
+// un-comment below or duplicate this file
 // Be CARFUL : not same as plugin duplication 
 // (source folders are same one with parallel test below)
 // BUT it's a start to see parallel load bugs etc...
