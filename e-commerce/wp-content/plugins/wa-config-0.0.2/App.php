@@ -4795,10 +4795,6 @@ namespace WA\Config\Admin {
                         }
                     }, 200); 
                 }
-                if (constant('WA_Config_SHOULD_SECURE_DOCUMENTATION') 
-                && current_user_can($this->optAdminEditCabability)) {
-                    add_action('parse_request', [$this, 'e_config_doc_parse_request'] );
-                }
                 if (!is_admin()) {
                     return; 
                 } 
@@ -4843,6 +4839,10 @@ namespace WA\Config\Admin {
             }
             protected function _010_e_config__load()
             {
+                if (constant('WA_Config_SHOULD_SECURE_DOCUMENTATION') 
+                && current_user_can($this->optAdminEditCabability)) {
+                    add_action('parse_request', [$this, 'e_config_doc_parse_request'] );
+                }
                 if (!is_admin()) {
                     return; 
                 }
@@ -6611,151 +6611,153 @@ namespace WA\Config\Admin {
                     "Cliquer ici pour effectuer et télécharger le backup Zip complet (SQL + tous les fichiers WordPress depuis la racine du site web).",
                     'monwoo-web-agency-config'/** 📜*/
                 ) . "</a></strong></p>");
-                $bckupATestUrl = add_query_arg([
-                    'wa-bckup-a-tests' => true,
-                ], $current_url);
-                $loadATestBckupUrl = add_query_arg([
-                    'wa-load-a-tests-bckup' => true,
-                ], $current_url);
-                $shouldBckupATest = filter_var( sanitize_text_field($_GET['wa-bckup-a-tests'] ?? null), FILTER_SANITIZE_SPECIAL_CHARS);
-                $shouldLoadATestBckup = filter_var( sanitize_text_field($_GET['wa-load-a-tests-bckup'] ?? null), FILTER_SANITIZE_SPECIAL_CHARS);
-                if ($shouldBckupATest && $shouldLoadATestBckup) {
-                    $current_url = remove_query_arg([
-                        'wa-bckup-a-tests', 'wa-load-a-tests-bckup'
-                    ]);
-                    Notice::displayError(""
-                    . __("Ne peut backuper et charger en même temps, choisissez l'un ou l'autre s.v.p.",
-                    'monwoo-web-agency-config'/** 📜*/));
-                    wp_redirect( $current_url );
-                    $this->exit(); return;
-                }
-                echo wp_kses_post("<p>[$this->iId] <strong><a
-                href='$bckupATestUrl'
-                >" . __(
-                    "Backuper les fichiers de tests dans un dossier upload privé.",
-                    'monwoo-web-agency-config'/** 📜*/
-                ) . "</a></strong></p>");
-                echo wp_kses_post("<p>[$this->iId] <strong><a
-                href='$loadATestBckupUrl'
-                >" . __(
-                    "Charger les fichers de tests depuis le dossier upload.",
-                    'monwoo-web-agency-config'/** 📜*/
-                ) . "</a></strong></p>");
-                require_once ( ABSPATH . '/wp-admin/includes/file.php' );
-                WP_Filesystem();
-                $bckupFolder = $this->get_backup_folder();
-                $bckupStructureSrc = $this->pluginRoot . "assets/backup-bootstrap";
-                if (!file_exists("$bckupFolder/test-wa-config")) {
-                    copy_dir(
-                        "$bckupStructureSrc",
-                        "$bckupFolder"
-                    );
-                }
-                $acceptanceSrcFolder = "{$this->pluginRoot}tests/acceptance";
-                $acceptanceUploadFolder = "$bckupFolder/acceptance";
-                if ($shouldBckupATest) {
-                    if (file_exists($acceptanceUploadFolder)) {
-                        rmdir($acceptanceUploadFolder);
+                $aTestConfigSubPath = 'tests/acceptance.suite.yml';
+                $aTestConfigFile = $this->pluginRoot . "$aTestConfigSubPath";
+                if (file_exists($aTestConfigFile)) {                
+                    $bckupATestUrl = add_query_arg([
+                        'wa-bckup-a-tests' => true,
+                    ], $current_url);
+                    $loadATestBckupUrl = add_query_arg([
+                        'wa-load-a-tests-bckup' => true,
+                    ], $current_url);
+                    $shouldBckupATest = filter_var( sanitize_text_field($_GET['wa-bckup-a-tests'] ?? null), FILTER_SANITIZE_SPECIAL_CHARS);
+                    $shouldLoadATestBckup = filter_var( sanitize_text_field($_GET['wa-load-a-tests-bckup'] ?? null), FILTER_SANITIZE_SPECIAL_CHARS);
+                    if ($shouldBckupATest && $shouldLoadATestBckup) {
+                        $current_url = remove_query_arg([
+                            'wa-bckup-a-tests', 'wa-load-a-tests-bckup'
+                        ]);
+                        Notice::displayError(""
+                        . __("Ne peut backuper et charger en même temps, choisissez l'un ou l'autre s.v.p.",
+                        'monwoo-web-agency-config'/** 📜*/));
+                        wp_redirect( $current_url );
+                        $this->exit(); return;
                     }
-                    mkdir($acceptanceUploadFolder, 0777, true);
-                    copy_dir(
-                        "$acceptanceSrcFolder",
-                        "$acceptanceUploadFolder"
-                    );
-                    Notice::displaySuccess(""
-                    . __("Backup des fichiers de test vers le backup upload privé OK",
-                    'monwoo-web-agency-config'/** 📜*/));
-                    wp_redirect( remove_query_arg([
-                        'wa-bckup-a-tests'
-                    ]) );
-                    $this->exit(); return;
-                }
-                if ($shouldLoadATestBckup) {
-                    if (file_exists($acceptanceUploadFolder)) {
+                    echo wp_kses_post("<p>[$this->iId] <strong><a
+                    href='$bckupATestUrl'
+                    >" . __(
+                        "Backuper les fichiers de tests dans un dossier upload privé.",
+                        'monwoo-web-agency-config'/** 📜*/
+                    ) . "</a></strong></p>");
+                    echo wp_kses_post("<p>[$this->iId] <strong><a
+                    href='$loadATestBckupUrl'
+                    >" . __(
+                        "Charger les fichers de tests depuis le dossier upload.",
+                        'monwoo-web-agency-config'/** 📜*/
+                    ) . "</a></strong></p>");
+                    require_once ( ABSPATH . '/wp-admin/includes/file.php' );
+                    WP_Filesystem();
+                    $bckupFolder = $this->get_backup_folder();
+                    $bckupStructureSrc = $this->pluginRoot . "assets/backup-bootstrap";
+                    if (!file_exists("$bckupFolder/test-wa-config")) {
                         copy_dir(
-                            "$acceptanceUploadFolder",
-                            "$acceptanceSrcFolder"
+                            "$bckupStructureSrc",
+                            "$bckupFolder"
+                        );
+                    }
+                    $acceptanceSrcFolder = "{$this->pluginRoot}tests/acceptance";
+                    $acceptanceUploadFolder = "$bckupFolder/acceptance";
+                    if ($shouldBckupATest) {
+                        if (file_exists($acceptanceUploadFolder)) {
+                            rmdir($acceptanceUploadFolder);
+                        }
+                        mkdir($acceptanceUploadFolder, 0777, true);
+                        copy_dir(
+                            "$acceptanceSrcFolder",
+                            "$acceptanceUploadFolder"
                         );
                         Notice::displaySuccess(""
-                        . __("Chargement des fichiers de test depuis le backup upload OK",
+                        . __("Backup des fichiers de test vers le backup upload privé OK",
                         'monwoo-web-agency-config'/** 📜*/));
-                    } else {
-                        Notice::displayError(""
-                        . __("Aucun backup de tests dans l'upload privé du site",
-                        'monwoo-web-agency-config'/** 📜*/));
+                        wp_redirect( remove_query_arg([
+                            'wa-bckup-a-tests'
+                        ]) );
+                        $this->exit(); return;
                     }
-                    wp_redirect( remove_query_arg([
-                        'wa-load-a-tests-bckup'
-                    ]) );
-                    $this->exit(); return;
-                }
-                $acceptanceTestsFolder = $this->pluginRoot . 'tests/acceptance';
-                $aTests = list_files($acceptanceTestsFolder);
-                $pFile = basename($this->pluginRoot) . "/" . basename($this->pluginFile);
-                $pFileEncoded = urlencode($pFile);
-                foreach ($aTests as $testFile) {
-                    $testFile = str_replace(
-                        $this->pluginRoot,
-                        basename($this->pluginRoot) . "/",
-                        $testFile
-                    );
-                    $encodedFile = urlencode($testFile);
-                    echo wp_kses_post("<p>[$this->iId] <a
-                    href='$siteUrl/wp-admin/plugin-editor.php?file=$encodedFile&plugin=$pFileEncoded'
-                    >Edit <strong>$testFile</strong> by clicking this link.</a></p>");
-                }
-                $reportPath = "{$this->pluginRoot}tests/_output/results.html";
-                $reportUrl = plugins_url('tests/_output/results.html', $this->pluginFile);
-                if (file_exists($reportPath)) {
-                    echo wp_kses_post("<p>[$this->iId] <strong><a
-                    href='$reportUrl'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    >" . __(
-                        "Cliquer ici pour visualiser le dernier rapport de test effectué",
-                        'monwoo-web-agency-config'/** 📜*/
-                    ) . "</a></strong></p>");    
-                }
-                $currentDirectory = getcwd();
-                chdir($this->pluginRoot);
-                $aTestConfigSubPath = 'tests/acceptance.suite.yml';
-                echo wp_kses_post("<p>[$this->iId] With config file $aTestConfigSubPath</p>");
-                $aTestConfigFile = $this->pluginRoot . "$aTestConfigSubPath";
-                $aTestBaseUrl = $this->getWaConfigOption(
-                    $this->eConfOptATestsBaseUrl,
-                    site_url()
-                );
-                $updatedConfig = "";
-                $lineFilter = [
-                    'matchPreviousLine' => '/- PhpBrowser:/',
-                    'onMatch' => function ($line) use ($aTestBaseUrl) {
-                        return "            url: $aTestBaseUrl\n";
-                    },
-                ];
-                $handle = fopen($aTestConfigFile, "r");
-                if ($handle) {
-                    $didMatchPreviousLine = false;
-                    while (($line = fgets($handle)) !== false) {
-                        $updatedConfig .= $didMatchPreviousLine
-                            ? $lineFilter['onMatch']($line)
-                            : $line;
-                        $didMatchPreviousLine = preg_match(
-                            $lineFilter['matchPreviousLine'],
-                            $line
+                    if ($shouldLoadATestBckup) {
+                        if (file_exists($acceptanceUploadFolder)) {
+                            copy_dir(
+                                "$acceptanceUploadFolder",
+                                "$acceptanceSrcFolder"
+                            );
+                            Notice::displaySuccess(""
+                            . __("Chargement des fichiers de test depuis le backup upload OK",
+                            'monwoo-web-agency-config'/** 📜*/));
+                        } else {
+                            Notice::displayError(""
+                            . __("Aucun backup de tests dans l'upload privé du site",
+                            'monwoo-web-agency-config'/** 📜*/));
+                        }
+                        wp_redirect( remove_query_arg([
+                            'wa-load-a-tests-bckup'
+                        ]) );
+                        $this->exit(); return;
+                    }
+                    $acceptanceTestsFolder = $this->pluginRoot . 'tests/acceptance';
+                    $aTests = list_files($acceptanceTestsFolder);
+                    $pFile = basename($this->pluginRoot) . "/" . basename($this->pluginFile);
+                    $pFileEncoded = urlencode($pFile);
+                    foreach ($aTests as $testFile) {
+                        $testFile = str_replace(
+                            $this->pluginRoot,
+                            basename($this->pluginRoot) . "/",
+                            $testFile
                         );
+                        $encodedFile = urlencode($testFile);
+                        echo wp_kses_post("<p>[$this->iId] <a
+                        href='$siteUrl/wp-admin/plugin-editor.php?file=$encodedFile&plugin=$pFileEncoded'
+                        >Edit <strong>$testFile</strong> by clicking this link.</a></p>");
                     }
-                    fclose($handle);
-                } else {
-                    $this->err("wa-config fail to load acceptance config test file $aTestConfigFile");
-                    echo wp_kses_post("<p> "
-                        . __(
-                            "Echec du chargement du fichier de configuration : " . $aTestConfigFile,
+                    $reportPath = "{$this->pluginRoot}tests/_output/results.html";
+                    $reportUrl = plugins_url('tests/_output/results.html', $this->pluginFile);
+                    if (file_exists($reportPath)) {
+                        echo wp_kses_post("<p>[$this->iId] <strong><a
+                        href='$reportUrl'
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        >" . __(
+                            "Cliquer ici pour visualiser le dernier rapport de test effectué",
                             'monwoo-web-agency-config'/** 📜*/
-                        )
-                        . "</p>");
+                        ) . "</a></strong></p>");    
+                    }
+                    $currentDirectory = getcwd();
+                    chdir($this->pluginRoot);
+                    echo wp_kses_post("<p>[$this->iId] With config file $aTestConfigSubPath</p>");
+                    $aTestBaseUrl = $this->getWaConfigOption(
+                        $this->eConfOptATestsBaseUrl,
+                        site_url()
+                    );
+                    $updatedConfig = "";
+                    $lineFilter = [
+                        'matchPreviousLine' => '/- PhpBrowser:/',
+                        'onMatch' => function ($line) use ($aTestBaseUrl) {
+                            return "            url: $aTestBaseUrl\n";
+                        },
+                    ];
+                    $handle = fopen($aTestConfigFile, "r");
+                    if ($handle) {
+                        $didMatchPreviousLine = false;
+                        while (($line = fgets($handle)) !== false) {
+                            $updatedConfig .= $didMatchPreviousLine
+                                ? $lineFilter['onMatch']($line)
+                                : $line;
+                            $didMatchPreviousLine = preg_match(
+                                $lineFilter['matchPreviousLine'],
+                                $line
+                            );
+                        }
+                        fclose($handle);
+                    } else {
+                        $this->err("wa-config fail to load acceptance config test file $aTestConfigFile");
+                        echo wp_kses_post("<p> "
+                            . __(
+                                "Echec du chargement du fichier de configuration : " . $aTestConfigFile,
+                                'monwoo-web-agency-config'/** 📜*/
+                            )
+                            . "</p>");
+                    }
+                    echo wp_kses_post("<pre>$updatedConfig</pre>");
+                    file_put_contents($aTestConfigFile, $updatedConfig);
                 }
-                echo wp_kses_post("<pre>$updatedConfig</pre>");
-                file_put_contents($aTestConfigFile, $updatedConfig);
                 $runCodecept = filter_var( sanitize_text_field($_GET['run-codecept'] ?? null), FILTER_SANITIZE_SPECIAL_CHARS);
                 $runLink = add_query_arg([
                     'run-codecept' => true,
