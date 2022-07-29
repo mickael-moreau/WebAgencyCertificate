@@ -117,6 +117,10 @@ if (!defined('WA_Config_DATASET_DOC_AND_TESTS_SRC')) {
     );
 }
 
+if (!defined('WA_Config_LOG_FOLDER')) {
+    define("WA_Config_LOG_FOLDER", plugin_dir_path(__FILE__));
+}
+
 $wa_baseClass = WA_Config_BASE_CLASS;
 $wa_plugin = new $wa_baseClass(
     site_url(),

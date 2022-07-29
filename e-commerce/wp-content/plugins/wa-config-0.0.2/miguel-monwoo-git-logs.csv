@@ -1,3 +1,7 @@
+"2580078","Mickaël MOREAU","2022-07-29 21:33:43 +0200","[wa-config] quick fix for last wordpress.org review : hardcoded paths like wp-content breaks file locations scalability"
+"8f03f7c","Mickaël MOREAU","2022-07-28 09:06:34 +0200","[wa-config] bug fixing after pre-production tests"
+"09dc46a","Mickaël MOREAU","2022-07-27 00:22:54 +0200","[wa-config] externalize doc and tests sound OK for public or private usage (default to private usage)"
+"b81d919","Mickaël MOREAU","2022-07-27 00:22:54 +0200","[wa-config] externalize doc and tests sound OK for public or private usage (default to private usage)"
 "9f81137","Mickaël MOREAU","2022-07-27 00:07:59 +0200","[wa-config] externalize doc and tests sound OK for public or private usage (default to private usage)"
 "448a989","Mickaël MOREAU","2022-07-26 23:39:21 +0200","[wa-config] externalize doc and tests in progress, speed up doc renderings for open documentation usage"
 "a47836b","Mickaël MOREAU","2022-07-26 07:09:20 +0200","[wa-config] externalize doc and tests in progress"

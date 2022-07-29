@@ -868,7 +868,7 @@ namespace WA\Config\Core {
                 );
                 if (!defined('WC_ABSPATH')) {
                     ini_set("log_errors", 1);
-                    $logPath = ABSPATH . "wp-content/debug.log";
+                    $logPath = rtrim(WA_Config_LOG_FOLDER, "/") . "/debug.log";
                     ini_set("error_log", $logPath);
                 }
                 if ($this->shouldDebug
@@ -1152,7 +1152,7 @@ namespace WA\Config\Core {
                     $logger->log($tags[0], $msg, $ctx);
                 }
                 { 
-                    $logPath = ABSPATH . "wp-content/debug.log";
+                    $logPath = rtrim(WA_Config_LOG_FOLDER, "/") . "/debug.log";
                     $timePrompt = date_i18n( 'Y-m-d @O H:i:s' );
                     $msg = "[$timePrompt] $msg"; 
                     if (count($ctx)) {
@@ -2357,11 +2357,13 @@ namespace WA\Config\Core {
                     $lastBckupInfoPath = "$bckupFolder/plugins-and-themes.txt";
                     wp_delete_file($lastBckupInfoPath);
                     $lbip = fopen($lastBckupInfoPath, "w");
-                    $files = glob("$wpRootPath/wp-content/plugins/*");
+                    $wpPluginsPath = dirname(plugin_dir_path($this->pluginFile));
+                    $files = glob("$wpPluginsPath/*");
                     foreach ($files as $f) {
                         fwrite($lbip, str_replace($wpRootPath, "", $f) . "\n");
                     }
-                    $files = glob("$wpRootPath/wp-content/themes/*");
+                    $wpThemesPath = dirname(get_stylesheet_directory());
+                    $files = glob("$wpThemesPath/*");
                     foreach ($files as $f) {
                         fwrite($lbip, str_replace($wpRootPath, "", $f) . "\n");
                     }
@@ -10011,10 +10013,10 @@ namespace WA\Config {
     use WA\Config\Utils\TranslatableProduct;
     $current_WA_Version = "0.0.2";
     $pFolder = basename(plugin_dir_path(__FILE__));
-    if ($pFolder === 'src') {
+    if ($pFolder === 'src') { 
         $pFolder = basename(plugin_dir_path(__DIR__));
     }
-    $pluginSrcPath = "wp-content/plugins/" . $pFolder;
+    $pluginSrcPath = "$pFolder/wa-config.php";
     if (class_exists(App::class)) { 
         $existing_WA_Version = AppInterface::PLUGIN_VERSION;
         $app = AppInterface::instanceByRelativeFile($pluginSrcPath, -1);
