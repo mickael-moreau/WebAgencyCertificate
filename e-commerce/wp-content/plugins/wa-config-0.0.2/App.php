@@ -2357,7 +2357,7 @@ namespace WA\Config\Core {
                     $lastBckupInfoPath = "$bckupFolder/plugins-and-themes.txt";
                     wp_delete_file($lastBckupInfoPath);
                     $lbip = fopen($lastBckupInfoPath, "w");
-                    $wpPluginsPath = dirname(plugin_dir_path($this->pluginFile));
+                    $wpPluginsPath = dirname(dirname(get_stylesheet_directory())) . "/plugins";
                     $files = glob("$wpPluginsPath/*");
                     foreach ($files as $f) {
                         fwrite($lbip, str_replace($wpRootPath, "", $f) . "\n");
