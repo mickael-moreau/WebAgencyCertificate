@@ -350,8 +350,6 @@ namespace WA\Config\Core {
              */
             public function test_e2e_action(): void
             {
-                global $wp;
-                $request = $wp->request ?? $_REQUEST;
                 $anonimizedIp = $this->get_user_ip();
                 $this->debug("Will test_e2e_action");
                 if (!current_user_can('administrator')) {
@@ -7971,7 +7969,7 @@ namespace WA\Config\Admin {
                     $this->api_inst_load_parameters($_REQUEST);
                     if (is_user_logged_in()) {
                         http_response_code(200); 
-                        $quickCookie = array_filter($_COOKIE, function ($c) {
+                        $quickCookie =  array_filter(_wp_json_sanity_check($_COOKIE, 7), function ($c) {
                             return in_array($c, [
                                 SECURE_AUTH_COOKIE,
                                 AUTH_COOKIE,
@@ -8001,7 +7999,7 @@ namespace WA\Config\Admin {
                                     "wa_api_pre_fetch_token" => $this->apiClientPreFetchToken,
                                 ],
                                 "info" => [
-                                    "COOKIE" => $_COOKIE,    
+                                    "COOKIE" => _wp_json_sanity_check($_COOKIE, 7),    
                                 ],
                             ]);    
                         } else {
@@ -8126,7 +8124,7 @@ namespace WA\Config\Admin {
              */
             function api_inst_rest_check_auth_errors($result) {
                 if (is_wp_error($result)) {
-                    $request = $_REQUEST;
+                    $request = _wp_json_sanity_check($_REQUEST, 7);
                     $this->api_inst_load_parameters($request);
                     $isWa = false;
                     if ( isset( $request['wa_api_pre_fetch_token'] ) ) {
@@ -8652,7 +8650,6 @@ namespace WA\Config\Admin {
                         }
                         $fs->rmdir($zipTargetPath, true);
                         $fs->mkdir($zipTargetPath);
-                        @unlink($zipSource);
                         $zip = new ZipArchive;
                         if (true !== ($err = $zip->open($zipSource))) {
                             $err = print_r($err, true);
@@ -8699,9 +8696,7 @@ namespace WA\Config\Admin {
                             $zip->extractTo($zipTargetPath);
                         }
                         $zip->close();
-                        if ($zipBundleB64) { 
-                            unlink($zipSource);
-                        }
+                        unlink($zipSource);
                         delete_transient($app->_frontheadsSearchCacheKey);
                         $status[] = ["end-status" => "OK"];
                         $app->info("Succed wa-api head publish to '$zipTargetPath'"
