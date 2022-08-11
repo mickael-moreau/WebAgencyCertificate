@@ -770,7 +770,7 @@ namespace WA\Config\Core {
                 if ($checkpoint['fixed_id']) {
                     return $checkpoint['fixed_id'];
                 }
-                $catSlug = sanitize_title($checkpoint['category']);
+                $catSlug = sanitize_title($checkpoint['category']); 
                 $titleSlug = sanitize_title($checkpoint['title']);
                 $keyId = "$catSlug-$titleSlug-{$checkpoint['created_by']}-{$checkpoint['create_time']}";
                 $checkpoint['fixed_id'] = $keyId;
@@ -5074,7 +5074,7 @@ namespace WA\Config\Admin {
                             ?>
                                 <input id='<?php echo esc_attr($fieldId) ?>' type='text'
                                 name='<?php echo esc_attr($fieldName) ?>'
-                                value='<?php echo sanitize_text_field($safeValue) ?>'
+                                value='<?php echo wp_kses_post($safeValue) ?>'
                                 />
                             <?php
                             
@@ -5416,7 +5416,7 @@ namespace WA\Config\Admin {
                             class="wppd-ui-toggle wa-checkbox"
                             id="<?php echo esc_attr($fieldId) ?>"
                             name="<?php echo esc_attr($fieldName) ?>"
-                            value="<?php echo sanitize_text_field($value) ?>"
+                            value="<?php echo wp_kses_post($value) ?>"
                             <?php echo esc_attr($checked) ?>
                             />
                         </div>
@@ -5452,7 +5452,7 @@ namespace WA\Config\Admin {
                                 <input class='<?php echo esc_attr("{$fieldId}_$locale") ?>'
                                 type='text'
                                 name='<?php echo esc_attr("{$fieldName}[$locale]") ?>'
-                                value='<?php echo sanitize_text_field($translate) ?>'
+                                value='<?php echo wp_kses_post($translate) ?>'
                                 />
                             </p>
                         <?php };
@@ -5488,7 +5488,7 @@ namespace WA\Config\Admin {
                     use ( & $fieldId, & $fieldName, & $safeValue ) { ?>
                         <input id='<?php echo esc_attr($fieldId) ?>' type='hidden'
                         name='<?php echo esc_attr($fieldName) ?>'
-                        value='<?php echo sanitize_text_field($safeValue) ?>'
+                        value='<?php echo wp_kses_post($safeValue) ?>'
                         />
                     <?php };
                 };
@@ -5645,7 +5645,7 @@ namespace WA\Config\Admin {
                     class="wa-suggest-capabilities-and-roles"
                     id="<?php echo esc_attr($fieldId) ?>"
                     name="<?php echo esc_attr($fieldName) ?>"
-                    value="<?php echo sanitize_text_field($safeValue) ?>"
+                    value="<?php echo wp_kses_post($safeValue) ?>"
                     />
                 <?php };
             }
@@ -7120,7 +7120,7 @@ namespace WA\Config\Admin {
                             ?>
                                 <input id='<?php echo esc_attr($fieldId) ?>' type='text'
                                 name='<?php echo esc_attr($fieldName) ?>'
-                                value='<?php echo sanitize_text_field($safeValue) ?>'
+                                value='<?php echo wp_kses_post($safeValue) ?>'
                                 />
                             <?php
                         }
@@ -7259,7 +7259,7 @@ namespace WA\Config\Admin {
                     class="wa-suggest-list-review-data-by-<?php echo esc_attr($key) ?>"
                     id="<?php echo esc_attr($fieldId) ?>"
                     name="<?php echo esc_attr($fieldName) ?>"
-                    value="<?php echo sanitize_text_field($safeValue) ?>"
+                    value="<?php echo wp_kses_post($safeValue) ?>"
                     />
                 <?php };
             }
@@ -7964,9 +7964,14 @@ namespace WA\Config\Admin {
              */
             public function api_inst_parse_request(WP $wp) : void {
                 $self = $this;
+                $request = _wp_json_sanity_check(array_filter($_REQUEST, function ($c) {
+                    return in_array($c, [
+                        'wa_api_pre_fetch_token', 'wa_user_location', 'wa_access_id'
+                    ]);
+                }, ARRAY_FILTER_USE_KEY), 7);
                 if (0 === strpos($wp->request, "api-wa-config-nonce-rest")) {
                     $this->debug("Will api_inst_parse_request");
-                    $this->api_inst_load_parameters($_REQUEST);
+                    $this->api_inst_load_parameters($request);
                     if (is_user_logged_in()) {
                         http_response_code(200); 
                         $quickCookie =  array_filter(_wp_json_sanity_check($_COOKIE, 7), function ($c) {
@@ -8124,7 +8129,11 @@ namespace WA\Config\Admin {
              */
             function api_inst_rest_check_auth_errors($result) {
                 if (is_wp_error($result)) {
-                    $request = _wp_json_sanity_check($_REQUEST, 7);
+                    $request = _wp_json_sanity_check(array_filter($_REQUEST, function ($c) {
+                        return in_array($c, [
+                            'wa_api_pre_fetch_token', 'wa_user_location', 'wa_access_id'
+                        ]);
+                    }, ARRAY_FILTER_USE_KEY), 7);
                     $this->api_inst_load_parameters($request);
                     $isWa = false;
                     if ( isset( $request['wa_api_pre_fetch_token'] ) ) {
@@ -8815,7 +8824,7 @@ namespace WA\Config\Admin {
                     class="wa-suggest-list-api-frontheads"
                     id="<?php echo esc_attr($fieldId) ?>"
                     name="<?php echo esc_attr($fieldName) ?>"
-                    value="<?php echo sanitize_text_field($safeValue) ?>"
+                    value="<?php echo wp_kses_post($safeValue) ?>"
                     />
                 <?php };
             }
