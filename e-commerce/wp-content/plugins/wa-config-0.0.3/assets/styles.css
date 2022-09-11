@@ -1,0 +1,79 @@
+@charset "UTF-8";
+/*
+* 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo,
+* service@monwoo.com
+*/
+body img {
+  border-radius: 7px;
+}
+body .wa-mission-list {
+  text-align: center;
+}
+body .wa-mission-list .wa-mission.list-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  align-content: space-around;
+  flex-wrap: wrap;
+  width: 20%;
+  margin: 1%;
+  text-align: center;
+}
+@media (max-width: 700px) {
+  body .wa-mission-list .wa-mission.list-item {
+    width: 42%;
+    margin: 0%;
+  }
+}
+body .wa-mission-list .wa-mission.list-item a {
+  padding: 7px;
+}
+body .wa-mission-list .wa-mission.list-item .excerpt {
+  color: lightgray;
+}
+body ul.meta li {
+  flex-wrap: wrap;
+  word-break: break-word;
+}
+body .wc-block-grid__products {
+  margin: 0px;
+}
+body .crp_related.crp-rounded-thumbs ul {
+  float: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+}
+body.single-wa-mission .thumbnail img {
+  max-width: 256px;
+}
+body .powered-by-monwoo {
+  padding: 12px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: flex-end;
+}
+body .powered-by-monwoo a {
+  padding: 4px;
+}
+body .powered-by-monwoo .copyright {
+  padding: 12px;
+  align-self: center;
+  text-align: center;
+}
+body .powered-by-monwoo .contact {
+  padding: 7px;
+  align-self: center;
+}
+body #wa-site-footer {
+  text-align: right;
+  padding: 7px;
+}
+body .footer-widget.widget_polylang {
+  display: flex;
+  justify-content: flex-end;
+}

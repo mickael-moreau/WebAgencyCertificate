@@ -1,0 +1,11 @@
+# Silence is golden
+
+Deny from all
+
+# OK, below will open file access, but then, anyone will access to backup informations,
+#  so do not do unless for debug or quick access hacks :
+# # https://stackoverflow.com/questions/44440484/deny-access-to-all-files-in-a-directory-unless-a-specific-php-page-is-referrer
+# RewriteEngine On
+# RewriteCond %{REQUEST_URI} !backup.zip$
+# RewriteRule ^ - [L,R=404]
+

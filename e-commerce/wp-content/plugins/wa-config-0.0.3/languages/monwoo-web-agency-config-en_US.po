@@ -1,0 +1,1212 @@
+# 🌖🌖 Copyright Monwoo 2022 🌖🌖, build by Miguel Monwoo.
+# Apache-2.0 Licence. service@monwoo.com.
+msgid ""
+msgstr ""
+"Project-Id-Version: Monwoo Web Agency Config 0.0.1-alpha\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/monwoo-web-agency-config\n"
+"Last-Translator: Monwoo Service\n"
+"Language-Team: English (United States)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-06-18T07:14:08+00:00\n"
+"PO-Revision-Date: 2022-07-07 18:44+0000\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Domain: monwoo-web-agency-config\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Loco-Version: 2.6.2; wp-5.9.2"
+
+#: App.php:8104 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10357
+msgid " ### Aucune tête de trouvée."
+msgstr ""
+
+#: App.php:8574 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10844
+msgid " : BLOQUE l'url : "
+msgstr ": BLOCK url:"
+
+#: App.php:4486 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5947
+msgid "'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :"
+msgstr "'RegEx to allow internal HTTP requests' INVALID:"
+
+#: App.php:4478 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5938
+msgid "'RegEx pour bloquer les requêtes HTTP interne' NON VALIDE :"
+msgstr "'RegEx to block internal HTTP requests' INVALID:"
+
+#: App.php:7060 App.php:7080 App.php:7111
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8882
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8912
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8984
+msgid "01 - Critique"
+msgstr "01 - Review"
+
+#: App.php:8781 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11097
+msgid "01 - Plugin : "
+msgstr "01 - Plugins:"
+
+#: App.php:7062 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8884
+msgid "01 - Version de PHP"
+msgstr "01 - PHP version"
+
+#: App.php:4090 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5108
+msgid "02 - [wa-skill] Contrôle des données"
+msgstr "02 - [wa-skill] Data Control"
+
+#: App.php:4088 App.php:8650 App.php:8689 App.php:8779
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5106
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10938
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10980
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11095
+msgid "02 - Maintenance"
+msgstr "02 - Long term services"
+
+#: App.php:7081 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8913
+msgid "02 - Securisations .htaccess"
+msgstr "02 - .htaccess security"
+
+#: App.php:8652 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10940
+msgid "03 - [Optimisations] Niveau maximal"
+msgstr "03 - [Optimizations] Max Level"
+
+#: App.php:8691 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10982
+msgid "03 - [Optimisations] Niveau moyen"
+msgstr "03 - [Optimizations] Medium Level"
+
+#: App.php:7112 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8985
+msgid "03 - Compatibilité"
+msgstr "03 - Compatibility"
+
+#: App.php:7064 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8886
+msgid "7.4+ (7.4 or higher recommended)"
+msgstr "7.4+ (7.4 or higher recommended)"
+
+#: App.php:8637
+msgid ""
+"<p> AUTOMATIC_UPDATER_DISABLED doit être définit à 'true' dans wp-config.php."
+"</p>"
+msgstr ""
+
+#: App.php:8684
+msgid ""
+"<p> DISABLE_WP_CRON doit être définit à 'true' dans wp-config.php et vos "
+"tache cron géré par un autre service externe.</p>"
+msgstr ""
+
+#: App.php:8645
+msgid ""
+"<p> WP_AUTO_UPDATE_CORE doit être définit à 'false' dans wp-config.php.</p>"
+msgstr ""
+
+#: App.php:5920 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7246
+msgid ""
+"<strong>ATTENTION :</strong> Assurez vous de pouvoir modifier votre base de "
+"données en dehors de WordPress pour recharger cette dernière via le backup "
+"SQL suivant en cas d'echec de rollback des actions de tests (ex : accès "
+"phpmyadmin) : "
+msgstr ""
+"WARNING: Make sure you can modify your database outside of WordPress to "
+"reload it via the following SQL backup in the event of failure to rollback "
+"some test actions (eg: phpmyadmin access):"
+
+#. Description of the plugin
+msgid ""
+"<strong>End to end user tests</strong> with <strong>Codeception</strong>. "
+"Speed up documentations and tests in <strong>parallel</strong>. Enjoy an "
+"<strong>editable footer</strong> copyright etc..."
+msgstr ""
+
+#: App.php:2136
+msgid ""
+"<strong>Tests en cours, merci de revenir plus tard (15 minutes à 2 heures de "
+"délais). MAINTENANCE MODE, please come back later.</strong>"
+msgstr ""
+
+#: App.php:4092 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5110
+msgid "[wa-skill] Vérification de la présence des expertises de base.<br />"
+msgstr "[wa-skill] Verification of basic skill dataset."
+
+#: App.php:5452 App.php:5522
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6771
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6841
+msgid "A faire"
+msgstr "Todo"
+
+#: App.php:7083 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8915
+msgid "Activation des redirections .htaccess"
+msgstr "Enabling .htaccess redirects"
+
+#: App.php:5473 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6792
+msgid "Activer"
+msgstr "Enable"
+
+#: App.php:6597 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8223
+msgid "Activer la revue"
+msgstr "Activate review"
+
+#: App.php:4369 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5450
+msgid "Activer le bas de page"
+msgstr "Enable footer"
+
+#: App.php:4431 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5515
+msgid "Activer le rapport des url bloquées"
+msgstr "Enable blocked url report"
+
+#: App.php:6305 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7818
+msgid "Ajouter le checkpoint"
+msgstr "Add checkpoint"
+
+#: App.php:3399 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4266
+msgid "Ajouter une mission"
+msgstr "Add a mission"
+
+#: App.php:3848 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4825
+msgid "Ajouter une nouvelle expertise"
+msgstr "Add a new skill"
+
+#: App.php:6528 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8149
+msgid "Ajouter une revue"
+msgstr "Add a review"
+
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11233
+msgid ""
+"Ajustements des post et taxonomies personalisées en activant le plugin :"
+msgstr "Adjustments to custom posts and taxonomies by activating the plugin:"
+
+#: App.php:8873
+msgid ""
+"Ajustements des posts et taxonomies personalisées en activant le plugin :"
+msgstr ""
+
+#: App.php:8865 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11192
+msgid "Ajustements divers de la base de données en activant le plugin :"
+msgstr "Miscellaneous database adjustments by activating the plugin:"
+
+#: App.php:8660 App.php:8699
+msgid "Ajustez les configurations nécessaires puis rafraichir cette page."
+msgstr ""
+
+#: App.php:8835 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11158
+msgid "All in One SEO"
+msgstr ""
+
+#: App.php:8828 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11150
+msgid "Alternative : SiteGround Optimizer"
+msgstr ""
+
+#: App.php:8805 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11127
+msgid "Alternative : Translate WordPress with GTranslate"
+msgstr ""
+
+#: App.php:8800 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11122
+msgid "Alternative : TranslatePress - Multilingual"
+msgstr ""
+
+#: App.php:8816 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11138
+msgid "Alternative : W3 Total Cache"
+msgstr ""
+
+#: App.php:8824 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11146
+msgid "Alternative : WP Super Cache"
+msgstr ""
+
+#: App.php:8820 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11142
+msgid "Alternative : WP-Optimize"
+msgstr ""
+
+#: App.php:8840 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11163
+msgid "Alternative : Yoast SEO"
+msgstr ""
+
+#: App.php:8766 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11079
+msgid "Alternative OK :"
+msgstr ""
+
+#: App.php:8834 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11157
+msgid ""
+"Amélioration du SEO (Search Engine Optimisation) en activant le plugin :"
+msgstr "Improved SEO (Search Engine Optimization) by activating the plugin:"
+
+#: App.php:6130 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7520
+msgid "ATTENTION : Ces tests sont lancés sur l'url de production : "
+msgstr "WARNING: These tests are launched on the production URL:"
+
+#: App.php:8882 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11244
+msgid ""
+"ATTENTION : MODE DEBUG activé, non conseillé en production. Cela dis, "
+"optimisons les débugs en activant le plugin :"
+msgstr ""
+"WARNING: DEBUG MODE enabled, not recommended in production. That said, let's "
+"optimize the debugs by activating the plugin:"
+
+#: App.php:5258 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6553
+msgid "ATTENTION : Mode débug activé."
+msgstr "WARNING: Debug mode activated."
+
+#: App.php:6043 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7402
+msgid "Aucun backup de tests dans l'upload privé du site"
+msgstr "No backup of tests in the private upload of the site"
+
+#: App.php:4409 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5493
+msgid "Axes d'optimisation"
+msgstr "Optimization axes"
+
+#: App.php:6025 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7374
+msgid "Backup des fichiers de test vers le backup upload privé OK"
+msgstr "Backup test files to private backup upload OK"
+
+#: App.php:5993 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7323
+msgid "Backuper les fichiers de tests dans un dossier upload privé."
+msgstr "Backup test files to a private upload folder."
+
+#: App.php:8866 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11193
+msgid "Better Search Replace"
+msgstr ""
+
+#: App.php:8851 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11177
+msgid "Bonus : Activer WooCommerce PDF Invoices & Packing Slips."
+msgstr "Bonus: Enable WooCommerce PDF Invoices & Packing Slips."
+
+#: App.php:8850 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11176
+msgid "Bonus : Activer WooCommerce."
+msgstr "Bonus: Enable WooCommerce."
+
+#: App.php:8797 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11119
+msgid "Bonus : Automatic Translate Addon For Loco Translate"
+msgstr ""
+
+#: App.php:8802 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11124
+msgid "Bonus : Automatic Translate Addon For TranslatePress"
+msgstr ""
+
+#: App.php:8876 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11238
+msgid "Bonus : Custom Post Type Widgets"
+msgstr ""
+
+#: App.php:8796 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11118
+msgid "Bonus : Loco Translate"
+msgstr ""
+
+#: App.php:8842 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11165
+msgid "Bonus : StockPack configuré sur Pixabay."
+msgstr ""
+
+#: App.php:8830 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11152
+msgid ""
+"Bonus : Utiliser 'Use Memcached' avec d'autres caches ne faisant pas de "
+"cache objet (Ex : SiteGround Optimizer)."
+msgstr ""
+"Bonus: Use 'Use Memcached' with other caches plugins that do not use object "
+"cache (Ex: SiteGround Optimizer)."
+
+#: App.php:9270 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11873
+msgid "Build by Monwoo and"
+msgstr ""
+
+#: App.php:4447 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5532
+msgid "Capacité pour lancer les tests"
+msgstr "Allow to launch tests"
+
+#: App.php:6548 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8174
+msgid "Categorie"
+msgstr "Category"
+
+#: App.php:4552 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6054
+msgid ""
+"Ce plugin permet d'<strong>optimiser</strong> la <strong>qualité</strong> de "
+"votre site web ainsi que les <strong>actions</strong> à mener pour votre "
+"<strong>processus métier</strong>."
+msgstr ""
+"This plugin allows you to optimize the quality of your website as well as "
+"the actions to be taken for your business process."
+
+#: App.php:4544 App.php:4957 App.php:6232 App.php:8048
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5767
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6046
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7714
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10276
+msgid "Cette opération nécessite une page d'administration."
+msgstr "This operation requires an administration page."
+
+#: App.php:6145 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7539
+msgid "Cette opérations ADMIN nécessite une capacité :"
+msgstr "This ADMIN operation requires a capacity:"
+
+#: App.php:6392 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7928
+msgid "Cette opérations nécessite une page admin"
+msgstr "This operation requires an admin page"
+
+#: App.php:6039 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7390
+msgid "Chargement des fichiers de test depuis le backup upload OK"
+msgstr "Loading test files from backup upload OK"
+
+#: App.php:3017 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:3790
+msgid "Charger en premier"
+msgstr ""
+
+#: App.php:5999 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7330
+msgid "Charger les fichers de tests depuis le dossier upload."
+msgstr "Load test files from upload folder."
+
+#: App.php:8856 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11183
+msgid "Check & Log Email"
+msgstr ""
+
+#: App.php:5945 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7270
+msgid ""
+"Cliquer ici pour effectuer et télécharger le backup SQL avant de lancer les "
+"tests."
+msgstr ""
+"Click here to perform and download the SQL backup before running the tests."
+
+#: App.php:5969 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7294
+msgid ""
+"Cliquer ici pour effectuer et télécharger le backup Zip complet (SQL + tous "
+"les fichiers WordPress depuis la racine du site web)."
+msgstr ""
+"Click here to make and download the complete Zip backup (SQL + all WordPress "
+"files from the root of the website)."
+
+#: App.php:5957 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7282
+msgid ""
+"Cliquer ici pour effectuer et télécharger le backup Zip simple (SQL + "
+"fichiers d'Upload)."
+msgstr ""
+"Click here to make and download the simple Zip backup (SQL + Upload files)."
+
+#: App.php:6124 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7513
+msgid "Cliquer ici pour lancer les tests"
+msgstr "Click here to run the tests"
+
+#: App.php:6073 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7438
+msgid "Cliquer ici pour visualiser le dernier rapport de test effectué"
+msgstr "Click here to view the last test report performed"
+
+#: App.php:5447 App.php:5517
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6766
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6836
+msgid "Compensé"
+msgstr "Compensated"
+
+#: App.php:4244
+msgid "Confirmer la remise aux paramêtre d'usine"
+msgstr ""
+
+#: App.php:4375 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5456
+msgid "Copyright de bas de page"
+msgstr "Footer copyright"
+
+#: App.php:5916 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7241
+msgid "CRITIQUE : prevoir un rollback SQL"
+msgstr "CRITICAL: provide an SQL rollback"
+
+#: App.php:3556 App.php:3567
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4535
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4548
+msgid "Date de fin"
+msgstr "End date"
+
+#: App.php:5470 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6789
+msgid "Desactiver"
+msgstr "Disable"
+
+#: App.php:8874
+msgid "Display Post Types – Post Grid, post list and post sliders"
+msgstr ""
+
+#: App.php:4751 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5389
+msgid "Doc"
+msgstr ""
+
+#: App.php:4752 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5390
+#: src/.backups/tests/acceptance/E2E_EnsureAdminConfigPanelCest.20220703.php:681
+#: tests/acceptance/E2E_EnsureAdminConfigPanelCest.php:807
+msgid "Documentation"
+msgstr ""
+
+#: App.php:4646 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6214
+msgid "Documentation supplémentaire"
+msgstr "Additional documentation"
+
+#: App.php:5496 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6815
+msgid "Dupliquer"
+msgstr "Duplicate"
+
+#: App.php:3526 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4486
+msgid "Définir la date de fin"
+msgstr "Set end date"
+
+#: App.php:7510 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:9491
+msgid "Détail des accès API en cours"
+msgstr ""
+
+#: App.php:8480 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10740
+msgid "Détail des urls autorisées"
+msgstr "Details of authorized urls"
+
+#: App.php:8401 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10652
+msgid "Détail des urls bloquées"
+msgstr "Details of blocked urls"
+
+#: App.php:6425 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7980
+msgid "Echec de l'enregistrement de la revue."
+msgstr "Failed to save review."
+
+#: App.php:1307 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1632
+msgid "Echec de la mise à jour des méta de test de l'utilisateur"
+msgstr "Failed to update user test meta"
+
+#: App.php:1297 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1614
+msgid "Echec de la mise à jour du nom utilisateur"
+msgstr "Failed to update user name"
+
+#: App.php:6110 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7495
+msgid "Echec du chargement du fichier de configuration : "
+msgstr "Failed to load configuration file:"
+
+#: App.php:1321 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1647
+msgid "Echec du rollback de l'utilisateur"
+msgstr "User rollback failed"
+
+#: App.php:3846 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4823
+msgid "Editer l'expertise"
+msgstr "Edit expertise"
+
+#: App.php:6440 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8004
+msgid "Enregistrement de la revue OK."
+msgstr "Save of the review OK."
+
+#: App.php:4503 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5975
+msgid "Enregistrement OK."
+msgstr "Save OK."
+
+#: App.php:1388 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1728
+msgid "Erreur de restauration d'utilisateur"
+msgstr "User restore error"
+
+#: App.php:5296 App.php:5303
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6610
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6617
+msgid "Exigence"
+msgstr "Requirement"
+
+#: App.php:6576 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8202
+msgid "Exigences"
+msgstr "Requirements"
+
+#: App.php:3921
+msgid "Expertise Angular 2+"
+msgstr "Angular 2+ skill"
+
+#: App.php:3913
+msgid "Expertise Angular JS"
+msgstr "Angular JS skill"
+
+#: App.php:3984
+msgid "Expertise de recherche et développement (R&D)"
+msgstr "(R&D) Research and development skill"
+
+#: App.php:3960
+msgid "Expertise en backend WordPress"
+msgstr "WordPress backend skill"
+
+#: App.php:4022
+msgid "Expertise en bien être de l'activité de l'organisme humain"
+msgstr "Physiological health care skill"
+
+#: App.php:4030
+msgid "Expertise en bien être relationnel. Team building etc..."
+msgstr "Relational health care skill"
+
+#: App.php:4015
+msgid "Expertise en bien-être"
+msgstr "Health care skill"
+
+#: App.php:3945
+msgid "Expertise en frontend WordPress"
+msgstr "WordPress frontend skill"
+
+#: App.php:3976
+msgid "Expertise Laravel"
+msgstr "Laravel skill"
+
+#: App.php:4038
+msgid ""
+"Expertise organisationnel pour se sentir bien ou améliorer un bien être "
+"relationnel ou physiologique"
+msgstr "Organisational health care skill"
+
+#: App.php:3844 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4821
+msgid "Expertise parente"
+msgstr "Parent skill"
+
+#: App.php:3845 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4822
+msgid "Expertise parente:"
+msgstr "Parent skill:"
+
+#: App.php:3937
+msgid "Expertise React JS"
+msgstr "React JS skill"
+
+#: App.php:3905
+msgid "Expertise Svelte"
+msgstr "Svelte skill"
+
+#: App.php:3968
+msgid "Expertise Symfony"
+msgstr "Symfony skill"
+
+#: App.php:3929
+msgid "Expertise Vue JS"
+msgstr "Vue JS skill"
+
+#: App.php:3953
+msgid "Expertise web backend (SEO, pages dynamiques, données dynamiques)"
+msgstr "Website backend skill"
+
+#: App.php:3898
+msgid "Expertise web frontend (UI, pages statiques, composant statiques)"
+msgstr "Website frontend skill"
+
+#: App.php:5540 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6859
+msgid "Exporter les checkpoints en CSV"
+msgstr "Export checkpoints to CSV"
+
+#: App.php:9190 App.php:9191
+msgctxt "Footer default credit"
+msgid "autre"
+msgstr "other"
+
+#: App.php:8847 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11173
+msgid "History Log by click5"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://miguel.monwoo.com"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo_en"
+msgstr "https://moonkiosk.monwoo.com/en/missions/wa-config-monwoo"
+
+#: App.php:4569 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6093
+msgid "Ici, vous pouvez configurer tous les réglages généraux de wa-config "
+msgstr "Here you can configure all general wa-config settings"
+
+#: App.php:6555 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8181
+msgid "Icône de categorie"
+msgstr "Category icon"
+
+#: App.php:6569 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8195
+msgid "Icône de titre"
+msgstr "Title icon"
+
+#: App.php:5546 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6868
+msgid "Importer les checkpoints depuis un fichier CSV"
+msgstr "Import checkpoints from a CSV file"
+
+#: App.php:8792 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11114
+msgid ""
+"Internationalisation continue de votre contenu web en activant le plugin :"
+msgstr ""
+"Continuous internationalization of your web content by activating the plugin:"
+
+#: App.php:1244 App.php:1355 App.php:1463 App.php:1598 App.php:6691
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1538
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1690
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1806
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:2000
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8353
+msgid "IP enregistrée suite à accès invalid"
+msgstr "invalid access - IP recorded"
+
+#: App.php:4097
+msgid "Les expertises sont définies avec quelques variations."
+msgstr ""
+
+#: App.php:3398 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4265
+msgid "Les missions"
+msgstr "Missions"
+
+#: App.php:6604 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8230
+msgid "Limiter l'accès"
+msgstr "Limit access"
+
+#: App.php:4442 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5527
+msgid "Liste des utilisateurs de test"
+msgstr "List of test users"
+
+#: App.php:8811 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11133
+msgid "LiteSpeed Cache"
+msgstr ""
+
+#: App.php:3847 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4824
+msgid "Mettre à jour l'expertise"
+msgstr "Update Expertise"
+
+#. Author of the plugin
+msgid "Miguel Monwoo"
+msgstr ""
+
+#: App.php:8810 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11132
+msgid "Mise en cache et optimisations en activant le plugin :"
+msgstr "Caching and optimizations by activating the plugin:"
+
+#: App.php:3397 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4264
+msgid "Mission"
+msgstr ""
+
+#: App.php:3168 App.php:3394 App.php:3396 App.php:3406
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4261
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4263
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4273
+msgid "Missions"
+msgstr ""
+
+#: App.php:1258 App.php:1262
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1561
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1565
+msgid "N'est pas un utilisateur enregistré"
+msgstr "Not a registered user"
+
+#: App.php:7114 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8987
+msgid "Navigateur compatible. Chrome > 102. Firefox > 101."
+msgstr "Compatible browser. Chrome > 102 ... or ... Firefox > 101."
+
+#: App.php:5986 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7313
+msgid ""
+"Ne peut backuper et charger en même temps, choisissez l'un ou l'autre s.v.p."
+msgstr ""
+"Cannot backup and load at the same time, please choose one or the other."
+
+#: App.php:3849 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4826
+msgid "Nom de la nouvelle expertise"
+msgstr "Name of the new expertise"
+
+#: App.php:5025 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5852
+msgid "Non définit."
+msgstr "Not defined."
+
+#: App.php:4425 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5509
+msgid "Notifier les requêttes HTTP bloquées"
+msgstr "Notify blocked HTTP requests"
+
+#: App.php:3401 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4268
+msgid "Nouvelle mission"
+msgstr "New mission"
+
+#: App.php:4328 App.php:4353 App.php:4568
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5368
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5419
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6092
+#: src/.backups/tests/acceptance/E2E_EnsureAdminConfigPanelCest.20220703.php:678
+#: tests/acceptance/E2E_EnsureAdminConfigPanelCest.php:804
+msgid "Paramètres"
+msgstr "Settings"
+
+#: App.php:1434 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1769
+msgid "Paramétre 'wa-action' manquant."
+msgstr "Missing 'wa-action' parameter."
+
+#: App.php:3405 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4272
+msgid "Pas de mission dans la corbeille"
+msgstr "No mission in the basket"
+
+#: App.php:3404 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4271
+msgid "Pas de mission trouvée"
+msgstr "No assignments found"
+
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11234
+msgid "Pods – Custom Content Types and Fields"
+msgstr ""
+
+#: App.php:8793 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11115
+msgid "Polylang"
+msgstr ""
+
+#: App.php:5363 App.php:5426
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6677
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6742
+msgid "Pour :"
+msgstr "For:"
+
+#: App.php:4562 App.php:5906
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6079
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7227
+msgid "Pour plus d'informations, nécessite une capacité ou un rôle :"
+msgstr "For more information, you need a capability or role:"
+
+#: App.php:4398 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5481
+msgid "Prefix pour num de commande WooCommerce"
+msgstr "Prefix for WooCommerce order number"
+
+#: App.php:3013 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:3786
+msgid "Première instance"
+msgstr ""
+
+#: App.php:6136 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:7527
+msgid ""
+"Prenons soin des données de productions. Utilisons une solution de backup ou "
+"de rollback dans la mise en oeuvre des tests."
+msgstr ""
+"Let's take care of the production data. Let's use a backup or rollback "
+"solution in the implementation of the tests."
+
+#: App.php:3991
+msgid "Proof of concept (Preuve de conception)"
+msgstr ""
+
+#: App.php:5297 App.php:5304
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6611
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6618
+msgid "Présent"
+msgstr "Present"
+
+#: App.php:3999
+msgid ""
+"Présentation des résultats de veille technologique plus ou moins longues"
+msgstr ""
+
+#: App.php:4007
+msgid ""
+"Publication des résultats et outils de mise en oeuvre pour un domaine public "
+"ciblée"
+msgstr ""
+
+#: App.php:8883 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11245
+msgid "Query Monitor"
+msgstr ""
+
+#: App.php:6503 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8097
+msgid "R.Q."
+msgstr ""
+
+#: App.php:3842 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4819
+msgid "Recherche d'expertises"
+msgstr "Search for skills"
+
+#: App.php:3403 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4270
+msgid "Rechercher parmi les missions"
+msgstr "Search among missions"
+
+#: App.php:4387 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5469
+msgid "Redirect du Fronthead"
+msgstr "Frontend redirect"
+
+#: App.php:4420 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5504
+msgid "RegEx pour autoriser les requêtes HTTP interne (Ex : $wordpress.org$)"
+msgstr "RegEx to allow internal HTTP requests (Ex: $wordpress.org$)"
+
+#: App.php:4415 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5499
+msgid "RegEx pour bloquer les requêtes HTTP interne (Ex : /.*/)"
+msgstr "RegEx to block internal HTTP requests (Ex: /.*/)"
+
+#: App.php:4393 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5475
+msgid "Regex pour exclure des url du Fronthead"
+msgstr "Regex to exclude urls from Fronthead"
+
+#: head-proxy.php:77 src/.backups/head-proxy.20220629.php:89
+msgid "Ressource frontend manquante."
+msgstr ""
+
+#: App.php:6504 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8098
+#: src/.backups/tests/acceptance/E2E_EnsureAdminConfigPanelCest.20220703.php:684
+#: tests/acceptance/E2E_EnsureAdminConfigPanelCest.php:810
+msgid "Revue qualité"
+msgstr "Quality review"
+
+#: App.php:6583 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8209
+msgid "Résultat"
+msgstr "Results"
+
+#: App.php:4403 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5486
+msgid "Scripts frontend"
+msgstr "Frontend scripts"
+
+#: App.php:6726 App.php:6769
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8399
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8450
+msgid "Specific checkpoint not accessible"
+msgstr ""
+
+#: App.php:6712 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8382
+msgid "Specific checkpoint not found"
+msgstr ""
+
+#: App.php:8860 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11187
+msgid "Suivi des CRON en activant le plugin :"
+msgstr "CRON monitoring by activating the plugin:"
+
+#: App.php:8855 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11182
+msgid "Suivi des emails en activant le plugin :"
+msgstr "Tracking emails by activating the plugin:"
+
+#: App.php:8846 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11172
+msgid "Suivi des utilisateurs en activant le plugin :"
+msgstr "User tracking by activating the plugin:"
+
+#: App.php:5485 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6804
+msgid "Supprimer"
+msgstr "Delete"
+
+#: App.php:5569 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6891
+msgid ""
+"Supprimer toutes les données de review (Nettoyage des revues en cours et "
+"historique de suppression)"
+msgstr ""
+"Delete all review data (Cleaning up current reviews and deletion history)"
+
+#: App.php:4243
+msgid "Supprimer toutes les options"
+msgstr ""
+
+#: App.php:4098
+msgid "Supprimez les terms wa-skill basique puis rafraichir cette page."
+msgstr ""
+
+#: App.php:3840 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4817
+msgctxt "taxonomy general name (plural)"
+msgid "Expertises"
+msgstr "Skills"
+
+#: App.php:3850 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4827
+msgctxt "taxonomy menu name"
+msgid "Expertise"
+msgstr "Skill"
+
+#: App.php:3841 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4818
+msgctxt "taxonomy singular name"
+msgid "Expertise"
+msgstr "Skill"
+
+#: App.php:4381 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5462
+msgid "Template de bas de page"
+msgstr "Footer template"
+
+#: App.php:6562 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8188
+msgid "Titre"
+msgstr "Title"
+
+#: App.php:3843 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4820
+msgid "Toutes les expertises"
+msgstr "All skills"
+
+#: App.php:1831 App.php:1966
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:2345
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:2527
+msgid "Type de backup invalid"
+msgstr "Invalid backup type"
+
+#: App.php:4630 App.php:4638 App.php:4675
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6190
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6199
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6244
+msgid "Télécharger"
+msgstr "Download"
+
+#: head-proxy.php:39 src/.backups/head-proxy.20220629.php:37
+msgid "Tête de rendue non trouvée."
+msgstr ""
+
+#: App.php:4437 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5522
+msgid "Url de base pour les tests d'acceptance"
+msgstr "Base url for acceptance tests"
+
+#: App.php:1364 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:1701
+msgid "Utilisateur non existant ou déjà déconnecté"
+msgstr "User unknown or already logged out"
+
+#: App.php:6590 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:8216
+msgid "Valeur (optionnel)"
+msgstr "Value (optional)"
+
+#: App.php:8784 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11101
+msgid "Validation humaine requise."
+msgstr "Human validation required."
+
+#: App.php:5443 App.php:5514
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6762
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6833
+msgid "Validé"
+msgstr "Valid"
+
+#: App.php:3402 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4269
+msgid "Voir la mission"
+msgstr "See the mission"
+
+#: App.php:8654 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10942
+msgid "Vérification de la présence des optimisations maximales.<br />"
+msgstr "Verification of the maximum optimizations validity."
+
+#: App.php:8693 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:10984
+msgid "Vérification de la présence des optimisations moyennes.<br />"
+msgstr "Verification of the medium optimizations validity."
+
+#: App.php:4319 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:5353
+msgid "WA Config"
+msgstr ""
+
+#. Plugin Name of the plugin
+msgid "Monwoo Web Agency Config"
+msgstr ""
+
+#: App.php:4597 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6150
+msgid "wa-config.admin.panel.param.doc"
+msgstr ""
+"<ul> <li> <strong>'Enable footer'</strong>: check this option to modify the "
+"footer </li> <li> <strong >'Footer copyright'</strong>: Second copyright to "
+"use if you activate our footer and do not provide a custom template (Text or "
+"HTML) </li> <li> <strong>'Footer template'</strong>: Footer template to use "
+"for the copyright (Text or HTML) </li> <li> <strong>'Frontend "
+"redirect'</strong>: path of the folder containing the files of the frontend. "
+"Related to the root of the plugin </li> <li> <strong>'Regex to exclude urls "
+"from Frontend'</strong>: Regular expression to use to give control to "
+"WordPress on the corresponding urls </li> <li > <strong>'Prefix for "
+"WooCommerce order number'</strong>: A prefix that will be added before the "
+"order number in WooCommerce </li> <li> <strong>'Frontend scripts'</strong>: "
+"Include plugin scripts in the frontend (Rounded pictures, etc...) </li> <li> "
+"<strong>'Optimization axes'</strong>: 'full' to use the optimization "
+"algorithm to its maximum . Please note that automatic updates will be "
+"disabled in this mode. It's up to you to do them manually or in a CRON. </li>"
+" <li> <strong>'RegEx to block internal HTTP requests'</strong>: Regular "
+"expression of urls to filter to avoid server calls to external services that "
+"can slow down the frontend or the admin. </li> <li> <strong>'RegEx to allow "
+"internal HTTP requests'</strong>: Regular expression of urls to allow if the "
+"'RegEx to block internal HTTP requests' filter is too restrictive. <br /> Ex:"
+" $(^https://)((web-agency.local.dev/)|(codeception.com/)|(api.wordpress.org/(plugins)"
+"|(themes/info))|(downloads.wordpress.org /(plugin)|(theme)|(translation))"
+"|(translate.wordpress.com)|(sitekit.withgoogle.com)|((www|plugin-cdn|api).monsterinsights.com)|(www.google.com/blank.html)|(woocommerce.com/wp-json/))$ </li> <li> <strong>"
+"'Notify blocked HTTP requests '</strong>: Check to display a notification in "
+"the admin for each url blocked. The notification cache lasts 2 minutes for "
+"ALL pages visited. </li> <li> <strong>'Enable blocked url report'</strong>: "
+"Check to display a report of blocked urls over the last 30 minutes. </li> "
+"<li> <strong>'Base Url for acceptance tests'</strong>: Url to use to launch "
+"the tests. Production or pre-production site for example. </li> <li> <strong>"
+"'List of test users'</strong>: List of users accessible to perform end-to-"
+"end tests. Ex: {user-login-1}'{force-test-user-login}',{user-login-2},{user-"
+"login-3} </li> <li> <strong>'Allow to launch tests'</strong>: WordPress user "
+"role or capability required to authorize the launch of end-to-end tests. "
+"</li></ul>"
+
+#: App.php:3224 App.php:3226 App.php:3244 App.php:3268 App.php:3389
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4078
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4253
+msgctxt "wa-mission post slug (url SEO)"
+msgid "missions"
+msgstr ""
+
+#: App.php:3791 App.php:3793 App.php:3837
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4813
+msgctxt "wa-skill taxonomy slug (url SEO)"
+msgid "expertises"
+msgstr "skills"
+
+#: App.php:3922
+msgctxt "wa-skill term slug"
+msgid "angular-2-etc"
+msgstr ""
+"angular-2_en"
+
+#: App.php:3914
+msgctxt "wa-skill term slug"
+msgid "angular-js"
+msgstr "angular-js_en"
+
+#: App.php:3954
+msgctxt "wa-skill term slug"
+msgid "backend"
+msgstr "backend_en"
+
+#: App.php:4000
+msgctxt "wa-skill term slug"
+msgid "etude-technique"
+msgstr "etude-technique_en"
+
+#: App.php:3899
+msgctxt "wa-skill term slug"
+msgid "frontend"
+msgstr "frontend_en"
+
+#: App.php:4016
+msgctxt "wa-skill term slug"
+msgid "health-care"
+msgstr ""
+"health-care_en"
+
+#: App.php:3977
+msgctxt "wa-skill term slug"
+msgid "laravel"
+msgstr "laravel_en"
+
+#: App.php:4039
+msgctxt "wa-skill term slug"
+msgid "organisational-health-care"
+msgstr ""
+"organisational-health-care_en"
+
+#: App.php:3992
+msgctxt "wa-skill term slug"
+msgid "p-o-c"
+msgstr "p-o-c_en"
+
+#: App.php:4023
+msgctxt "wa-skill term slug"
+msgid "physiological-health-care"
+msgstr "physiological-health-care_en"
+
+#: App.php:4008
+msgctxt "wa-skill term slug"
+msgid "publication-open-source"
+msgstr "publication-open-source_en"
+
+#: App.php:3985
+msgctxt "wa-skill term slug"
+msgid "r-et-d"
+msgstr "r-et-d_en"
+
+#: App.php:3938
+msgctxt "wa-skill term slug"
+msgid "react-js"
+msgstr "react-js_en"
+
+#: App.php:4031
+msgctxt "wa-skill term slug"
+msgid "relationship-health-care"
+msgstr "relationship-health-care_en"
+
+#: App.php:3906
+msgctxt "wa-skill term slug"
+msgid "svelte"
+msgstr "svelte_en"
+
+#: App.php:3969
+msgctxt "wa-skill term slug"
+msgid "symfony"
+msgstr "symfony_en"
+
+#: App.php:3930
+msgctxt "wa-skill term slug"
+msgid "vue-js"
+msgstr "vue-js_en"
+
+#: App.php:3946
+msgctxt "wa-skill term slug"
+msgid "wordpress-frontend"
+msgstr "wordpress-frontend_en"
+
+#: App.php:3961
+msgctxt "wa-skill term slug"
+msgid "wordpress-plugin"
+msgstr "wordpress-plugin_en"
+
+#: App.php:3919
+msgctxt "wa-skill term title"
+msgid "Angular 2+"
+msgstr ""
+
+#: App.php:3911
+msgctxt "wa-skill term title"
+msgid "Angular JS"
+msgstr ""
+
+#: App.php:3951
+msgctxt "wa-skill term title"
+msgid "Backend"
+msgstr ""
+
+#: App.php:4013
+msgctxt "wa-skill term title"
+msgid "Bien être"
+msgstr ""
+
+#: App.php:4036
+msgctxt "wa-skill term title"
+msgid "Bien être organisationnel"
+msgstr ""
+
+#: App.php:4020
+msgctxt "wa-skill term title"
+msgid "Bien être physiologique"
+msgstr ""
+
+#: App.php:4028
+msgctxt "wa-skill term title"
+msgid "Bien être relationnel"
+msgstr ""
+
+#: App.php:3997
+msgctxt "wa-skill term title"
+msgid "Etude technique"
+msgstr ""
+
+#: App.php:3896
+msgctxt "wa-skill term title"
+msgid "Frontend"
+msgstr ""
+
+#: App.php:3974
+msgctxt "wa-skill term title"
+msgid "Laravel"
+msgstr ""
+
+#: App.php:3989
+msgctxt "wa-skill term title"
+msgid "POC"
+msgstr ""
+
+#: App.php:4005
+msgctxt "wa-skill term title"
+msgid "Publication Open Source"
+msgstr ""
+
+#: App.php:3935
+msgctxt "wa-skill term title"
+msgid "React JS"
+msgstr ""
+
+#: App.php:3982
+msgctxt "wa-skill term title"
+msgid "Recherche et développement"
+msgstr ""
+
+#: App.php:3903
+msgctxt "wa-skill term title"
+msgid "Svelte"
+msgstr ""
+
+#: App.php:3966
+msgctxt "wa-skill term title"
+msgid "Symfony"
+msgstr ""
+
+#: App.php:3927
+msgctxt "wa-skill term title"
+msgid "Vue JS"
+msgstr ""
+
+#: App.php:3958
+msgctxt "wa-skill term title"
+msgid "WordPress Plugin"
+msgstr ""
+
+#: App.php:3943
+msgctxt "wa-skill term title"
+msgid "WordPress Theme"
+msgstr ""
+
+#: App.php:4551
+msgid "Web Agency Config "
+msgstr ""
+
+#: App.php:8861 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:11188
+msgid "WP Crontrol"
+msgstr ""
+
+#: App.php:5351 App.php:5414
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6665
+#: src/.backups/App.legacy.20220629-BuggyCPTMenu.php:6730
+msgid "Yes"
+msgstr ""
+
+#: App.php:3400 src/.backups/App.legacy.20220629-BuggyCPTMenu.php:4267
+msgid "Éditer la mission"
+msgstr "Edit mission"
