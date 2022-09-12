@@ -5094,29 +5094,34 @@ namespace WA\Config\Admin {
                 $newinput[$regExKey] = trim($input[$regExKey]);
                 $regExKeySafe = $this->eConfOptOptiWpRequestsSafeFilter;
                 $newinput[$regExKeySafe] = trim($input[$regExKeySafe]);
+                $regExKeys = [
+                    $this->eConfOptOptiWpRequestsFilter =>
+                    __("'RegEx pour bloquer les requêtes HTTP interne' NON VALIDE :",
+                    'monwoo-web-agency-config'/** 📜*/),
+                    $this->eConfOptOptiWpRequestsSafeFilter => 
+                    __("'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :",
+                    'monwoo-web-agency-config'/** 📜*/),
+                    $this->eConfStaticHeadNarrowFilter => 
+                    __("'Regex pour cibler les urls du Fronhead' NON VALIDE :",
+                    'monwoo-web-agency-config'/** 📜*/),
+                    $this->eConfStaticHeadSafeWpKeeper => 
+                    __("'Regex pour exclure des url du Fronthead' NON VALIDE :",
+                    'monwoo-web-agency-config'/** 📜*/),
+                ];
                 $eConf = error_reporting(E_ALL); 
-                ob_start();
-                $pMatch = preg_match($newinput[$regExKey], 'hello');
-                $noticeErr = ob_get_clean();
-                ob_start();
-                $pMatchSafe = preg_match($newinput[$regExKeySafe], 'hello');
-                $noticeErrSafe = ob_get_clean();
-                error_reporting($eConf); 
-                if (strlen($newinput[$regExKey])
-                && false === $pMatch) {
-                    Notice::displayError(""
-                    . __("'RegEx pour bloquer les requêtes HTTP interne' NON VALIDE :",
-                    'monwoo-web-agency-config'/** 📜*/) . "<br />\n{$newinput[$regExKey]}<br />\n" . $noticeErr);
-                    $newinput[$regExKey] = '';
+                foreach ($regExKeys as $regExKey => $errMsg) {
+                    $newinput[$regExKey] = trim($input[$regExKey]);
+                    ob_start();
+                    $pMatch = preg_match($newinput[$regExKey], 'hello');
+                    $noticeErr = ob_get_clean();
+                    if (strlen($newinput[$regExKey])
+                    && false === $pMatch) {
+                        Notice::displayError(""
+                        . $errMsg . "<br />\n{$newinput[$regExKey]}<br />\n" . $noticeErr);
+                        $newinput[$regExKey] = '';
+                    }    
                 }
-                $newinput[$regExKeySafe] = trim($input[$regExKeySafe]);
-                if (strlen($newinput[$regExKeySafe])
-                && false === $pMatchSafe) { 
-                    Notice::displayError(""
-                    . __("'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :",
-                    'monwoo-web-agency-config'/** 📜*/) . "<br />\n{$newinput[$regExKeySafe]}<br />\n" . $noticeErrSafe); 
-                    $newinput[$regExKeySafe] = '';
-                }
+                error_reporting($eConf);
                 $booleanAdaptor = function($fieldName) use ( & $newinput ) {
                     $newinput[$fieldName] = boolval( 
                         array_key_exists($fieldName, $newinput) ? $newinput[$fieldName] : false
