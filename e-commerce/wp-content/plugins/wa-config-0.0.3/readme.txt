@@ -5,7 +5,7 @@ Tags: wa-config, codeception, quality review, web agency, optimisations, project
 Requires at least: 5.9.2
 Tested up to: 6.0.2
 Requires PHP: 7.4
-Stable tag: 0.0.2
+Stable tag: 0.0.3
 License: Apache-2.0
 License URI: https://directory.fsf.org/wiki/License:Apache-2.0
 
