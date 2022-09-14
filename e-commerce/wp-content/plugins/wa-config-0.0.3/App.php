@@ -4845,12 +4845,17 @@ namespace WA\Config\Admin {
                     $self = $this;
                     add_action('parse_request', function (WP $wp)
                     use ($self, $staticHeadTarget, $staticHeadTargetSafeWpKeeper, $eConfStaticHeadNarrowFilter) { 
-                        $isSafeWp = strlen($eConfStaticHeadNarrowFilter)
-                        ? (! preg_match($eConfStaticHeadNarrowFilter, $wp->request))
-                        : false;
-                        $isSafeWp = (strlen($staticHeadTargetSafeWpKeeper)
-                        ? (!! preg_match($staticHeadTargetSafeWpKeeper, $wp->request))
-                        : $isSafeWp);
+                        $isSafeWp = false; 
+                        if (strlen($eConfStaticHeadNarrowFilter)) {
+                            $isSafeWp = true;
+                            if (preg_match($eConfStaticHeadNarrowFilter, $wp->request)) {
+                                $isSafeWp = false;
+                            }
+                        }
+                        if (strlen($staticHeadTargetSafeWpKeeper)
+                        && preg_match($staticHeadTargetSafeWpKeeper, $wp->request)) {
+                            $isSafeWp = true;
+                        }
                         if (0 !== strpos($wp->request, "wp-admin")
                         && 0 !== strpos($wp->request, "wp-json")
                         && 0 !== strpos($wp->request, "api-wa-config-nonce-rest")
@@ -5014,7 +5019,7 @@ namespace WA\Config\Admin {
                     );
                     $this->e_config_param_add_form_field(
                         $this->eConfStaticHeadNarrowFilter,
-                        __("Regex pour cibler les urls du Fronhead", 'monwoo-web-agency-config'/** 📜*/),
+                        __("Regex pour cibler les urls du Fronthead", 'monwoo-web-agency-config'/** 📜*/),
                         "",
                     );
                     $this->e_config_param_add_form_field(
@@ -5102,7 +5107,7 @@ namespace WA\Config\Admin {
                     __("'RegEx pour autoriser les requêtes HTTP interne' NON VALIDE :",
                     'monwoo-web-agency-config'/** 📜*/),
                     $this->eConfStaticHeadNarrowFilter => 
-                    __("'Regex pour cibler les urls du Fronhead' NON VALIDE :",
+                    __("'Regex pour cibler les urls du Fronthead' NON VALIDE :",
                     'monwoo-web-agency-config'/** 📜*/),
                     $this->eConfStaticHeadSafeWpKeeper => 
                     __("'Regex pour exclure des url du Fronthead' NON VALIDE :",
@@ -5512,9 +5517,7 @@ namespace WA\Config\Admin {
                         class="wa-review-textarea-<?php echo esc_attr($fieldId) ?>"
                         id="<?php echo esc_attr($fieldId) ?>"
                         name="<?php echo esc_attr($fieldName) ?>"
-                        >
-                            <?php echo htmlspecialchars(wp_kses_post($safeValue)) ?>
-                        </textarea>
+                        ><?php echo htmlspecialchars(wp_kses_post($safeValue)) ?></textarea>
                     <?php };
                 };
                 $multilLangTemplate = function ($safeValue, $fieldId, $fieldName) {

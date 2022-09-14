@@ -3,7 +3,7 @@ Contributors: monwoo
 Donate link: https://www.monwoo.com/don
 Tags: wa-config, codeception, quality review, web agency, optimisations, project management
 Requires at least: 5.9.2
-Tested up to: 6.0
+Tested up to: 6.0.2
 Requires PHP: 7.4
 Stable tag: 0.0.2
 License: Apache-2.0
@@ -68,6 +68,13 @@ When all is green, and you humanly argree with it, all is done ;)
 
 == Changelog ==
 
+= 0.0.3 =
+*Release Date - 14 Sept 2022*
+
+* Improving user ergonomy *
+* Fixing some bugs *
+* Tests ok under wordpress 6.0.2 *
+
 = 0.0.2 =
 *Release Date - 19 July 2022*
 
@@ -81,6 +88,9 @@ When all is green, and you humanly argree with it, all is done ;)
 * readme.txt tested with https://wpreadme.com/
 
 == Upgrade Notice == 
+
+= 0.0.3 =
+Bug fix, tests ok under wordpress 6.0.2
 
 = 0.0.2 =
 Clean code and bug fixes
